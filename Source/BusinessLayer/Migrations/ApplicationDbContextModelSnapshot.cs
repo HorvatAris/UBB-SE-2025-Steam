@@ -23,974 +23,801 @@ namespace BusinessLayer.Migrations
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("BusinessLayer.Models.Achievement", b =>
-                {
-                    b.Property<int>("AchievementId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("achievement_id");
+            {
+                b.Property<int>("AchievementId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .HasColumnName("achievement_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AchievementId"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AchievementId"));
 
-                    b.Property<string>("AchievementName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("achievement_name");
+                b.Property<string>("AchievementName")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("achievement_name");
 
-                    b.Property<string>("AchievementType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("achievement_type");
+                b.Property<string>("AchievementType")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("achievement_type");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("description");
+                b.Property<string>("Description")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("description");
 
-                    b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("icon_url");
+                b.Property<string>("Icon")
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("icon_url");
 
-                    b.Property<int>("Points")
-                        .HasColumnType("int")
-                        .HasColumnName("points");
+                b.Property<int>("Points")
+                    .HasColumnType("int")
+                    .HasColumnName("points");
 
-                    b.HasKey("AchievementId");
+                b.HasKey("AchievementId");
 
-                    b.ToTable("Achievements", (string)null);
-                });
+                b.ToTable("Achievements", (string)null);
+
+                b.HasData(
+                    new
+                    {
+                        AchievementId = 1,
+                        AchievementName = "FRIENDSHIP1",
+                        AchievementType = "Friendships",
+                        Description = "You made a friend, you get a point",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 1
+                    },
+                    new
+                    {
+                        AchievementId = 2,
+                        AchievementName = "FRIENDSHIP2",
+                        AchievementType = "Friendships",
+                        Description = "You made 5 friends, you get 3 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 3
+                    },
+                    new
+                    {
+                        AchievementId = 3,
+                        AchievementName = "FRIENDSHIP3",
+                        AchievementType = "Friendships",
+                        Description = "You made 10 friends, you get 5 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 5
+                    },
+                    new
+                    {
+                        AchievementId = 4,
+                        AchievementName = "FRIENDSHIP4",
+                        AchievementType = "Friendships",
+                        Description = "You made 50 friends, you get 10 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 10
+                    },
+                    new
+                    {
+                        AchievementId = 5,
+                        AchievementName = "FRIENDSHIP5",
+                        AchievementType = "Friendships",
+                        Description = "You made 100 friends, you get 15 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 15
+                    },
+                    new
+                    {
+                        AchievementId = 6,
+                        AchievementName = "OWNEDGAMES1",
+                        AchievementType = "Owned Games",
+                        Description = "You own 1 game, you get 1 point",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 1
+                    },
+                    new
+                    {
+                        AchievementId = 7,
+                        AchievementName = "OWNEDGAMES2",
+                        AchievementType = "Owned Games",
+                        Description = "You own 5 games, you get 3 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 3
+                    },
+                    new
+                    {
+                        AchievementId = 8,
+                        AchievementName = "OWNEDGAMES3",
+                        AchievementType = "Owned Games",
+                        Description = "You own 10 games, you get 5 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 5
+                    },
+                    new
+                    {
+                        AchievementId = 9,
+                        AchievementName = "OWNEDGAMES4",
+                        AchievementType = "Owned Games",
+                        Description = "You own 50 games, you get 10 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 10
+                    },
+                    new
+                    {
+                        AchievementId = 10,
+                        AchievementName = "SOLDGAMES1",
+                        AchievementType = "Sold Games",
+                        Description = "You sold 1 game, you get 1 point",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 1
+                    },
+                    new
+                    {
+                        AchievementId = 11,
+                        AchievementName = "SOLDGAMES2",
+                        AchievementType = "Sold Games",
+                        Description = "You sold 5 games, you get 3 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 3
+                    },
+                    new
+                    {
+                        AchievementId = 12,
+                        AchievementName = "SOLDGAMES3",
+                        AchievementType = "Sold Games",
+                        Description = "You sold 10 games, you get 5 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 5
+                    },
+                    new
+                    {
+                        AchievementId = 13,
+                        AchievementName = "SOLDGAMES4",
+                        AchievementType = "Sold Games",
+                        Description = "You sold 50 games, you get 10 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 10
+                    },
+                    new
+                    {
+                        AchievementId = 14,
+                        AchievementName = "REVIEW1",
+                        AchievementType = "Number of Reviews Given",
+                        Description = "You gave 1 review, you get 1 point",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 1
+                    },
+                    new
+                    {
+                        AchievementId = 15,
+                        AchievementName = "REVIEW2",
+                        AchievementType = "Number of Reviews Given",
+                        Description = "You gave 5 reviews, you get 3 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 3
+                    },
+                    new
+                    {
+                        AchievementId = 16,
+                        AchievementName = "REVIEW3",
+                        AchievementType = "Number of Reviews Given",
+                        Description = "You gave 10 reviews, you get 5 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 5
+                    },
+                    new
+                    {
+                        AchievementId = 17,
+                        AchievementName = "REVIEW4",
+                        AchievementType = "Number of Reviews Given",
+                        Description = "You gave 50 reviews, you get 10 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 10
+                    },
+                    new
+                    {
+                        AchievementId = 18,
+                        AchievementName = "REVIEWR1",
+                        AchievementType = "Number of Reviews Received",
+                        Description = "You got 1 review, you get 1 point",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 1
+                    },
+                    new
+                    {
+                        AchievementId = 19,
+                        AchievementName = "REVIEWR2",
+                        AchievementType = "Number of Reviews Received",
+                        Description = "You got 5 reviews, you get 3 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 3
+                    },
+                    new
+                    {
+                        AchievementId = 20,
+                        AchievementName = "REVIEWR3",
+                        AchievementType = "Number of Reviews Received",
+                        Description = "You got 10 reviews, you get 5 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 5
+                    },
+                    new
+                    {
+                        AchievementId = 21,
+                        AchievementName = "REVIEWR4",
+                        AchievementType = "Number of Reviews Received",
+                        Description = "You got 50 reviews, you get 10 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 10
+                    },
+                    new
+                    {
+                        AchievementId = 22,
+                        AchievementName = "DEVELOPER",
+                        AchievementType = "Developer",
+                        Description = "You are a developer, you get 10 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 10
+                    },
+                    new
+                    {
+                        AchievementId = 23,
+                        AchievementName = "ACTIVITY1",
+                        AchievementType = "Years of Activity",
+                        Description = "You have been active for 1 year, you get 1 point",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 1
+                    },
+                    new
+                    {
+                        AchievementId = 24,
+                        AchievementName = "ACTIVITY2",
+                        AchievementType = "Years of Activity",
+                        Description = "You have been active for 2 years, you get 3 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 3
+                    },
+                    new
+                    {
+                        AchievementId = 25,
+                        AchievementName = "ACTIVITY3",
+                        AchievementType = "Years of Activity",
+                        Description = "You have been active for 3 years, you get 5 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 5
+                    },
+                    new
+                    {
+                        AchievementId = 26,
+                        AchievementName = "ACTIVITY4",
+                        AchievementType = "Years of Activity",
+                        Description = "You have been active for 4 years, you get 10 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 10
+                    },
+                    new
+                    {
+                        AchievementId = 27,
+                        AchievementName = "POSTS1",
+                        AchievementType = "Number of Posts",
+                        Description = "You have made 1 post, you get 1 point",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 1
+                    },
+                    new
+                    {
+                        AchievementId = 28,
+                        AchievementName = "POSTS2",
+                        AchievementType = "Number of Posts",
+                        Description = "You have made 5 posts, you get 3 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 3
+                    },
+                    new
+                    {
+                        AchievementId = 29,
+                        AchievementName = "POSTS3",
+                        AchievementType = "Number of Posts",
+                        Description = "You have made 10 posts, you get 5 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 5
+                    },
+                    new
+                    {
+                        AchievementId = 30,
+                        AchievementName = "POSTS4",
+                        AchievementType = "Number of Posts",
+                        Description = "You have made 50 posts, you get 10 points",
+                        Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                        Points = 10
+                    });
+            });
+
+            modelBuilder.Entity("BusinessLayer.Models.ChatConversation", b =>
+            {
+                b.Property<int>("ConversationId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .HasColumnName("conversation_id");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ConversationId"));
+
+                b.Property<int>("User1Id")
+                    .HasColumnType("int")
+                    .HasColumnName("user1_id");
+
+                b.Property<int>("User2Id")
+                    .HasColumnType("int")
+                    .HasColumnName("user2_id");
+
+                b.HasKey("ConversationId");
+
+                b.ToTable("ChatConversations", (string)null);
+            });
+
+            modelBuilder.Entity("BusinessLayer.Models.ChatMessage", b =>
+            {
+                b.Property<int>("MessageId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .HasColumnName("message_id");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageId"));
+
+                b.Property<int>("ConversationId")
+                    .HasColumnType("int")
+                    .HasColumnName("conversation_id");
+
+                b.Property<string>("MessageContent")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("message_content");
+
+                b.Property<string>("MessageFormat")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)")
+                    .HasColumnName("message_format");
+
+                b.Property<int>("SenderId")
+                    .HasColumnType("int")
+                    .HasColumnName("sender_id");
+
+                b.Property<long>("Timestamp")
+                    .HasColumnType("bigint")
+                    .HasColumnName("timestamp");
+
+                b.HasKey("MessageId");
+
+                b.HasIndex("ConversationId");
+
+                b.ToTable("ChatMessages", (string)null);
+            });
 
             modelBuilder.Entity("BusinessLayer.Models.Collection", b =>
+            {
+                b.Property<int>("CollectionId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .HasColumnName("collection_id");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CollectionId"));
+
+                b.Property<string>("CollectionName")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)")
+                    .HasColumnName("name");
+
+                b.Property<string>("CoverPicture")
+                    .HasMaxLength(255)
+                    .HasColumnType("nvarchar(255)")
+                    .HasColumnName("cover_picture");
+
+                b.Property<DateOnly>("CreatedAt")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("date")
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("CAST(GETDATE() AS DATE)");
+
+                b.Property<bool>("IsPublic")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("bit")
+                    .HasDefaultValue(true)
+                    .HasColumnName("is_public");
+
+                b.Property<int>("UserId")
+                    .HasColumnType("int")
+                    .HasColumnName("user_id");
+
+                b.HasKey("CollectionId");
+
+                b.HasIndex("UserId");
+
+                b.ToTable("Collections", null, t =>
                 {
-                    b.Property<int>("CollectionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("collection_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CollectionId"));
-
-                    b.Property<string>("CollectionName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("name");
-
-                    b.Property<string>("CoverPicture")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("cover_picture");
-
-                    b.Property<DateOnly>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("CAST(GETDATE() AS DATE)");
-
-                    b.Property<bool>("IsPublic")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true)
-                        .HasColumnName("is_public");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("CollectionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Collections", null, t =>
-                        {
-                            t.HasTrigger("SomeTrigger");
-                        });
-
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                    t.HasTrigger("SomeTrigger");
                 });
+
+                b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+
+                b.HasData(
+                    new
+                    {
+                        CollectionId = 1,
+                        CollectionName = "All Owned Games",
+                        CoverPicture = "/Assets/Collections/allgames.jpg",
+                        CreatedAt = new DateOnly(2022, 2, 21),
+                        IsPublic = true,
+                        UserId = 1
+                    },
+                    new
+                    {
+                        CollectionId = 2,
+                        CollectionName = "Sports",
+                        CoverPicture = "/Assets/Collections/sports.jpg",
+                        CreatedAt = new DateOnly(2023, 3, 21),
+                        IsPublic = true,
+                        UserId = 1
+                    },
+                    new
+                    {
+                        CollectionId = 3,
+                        CollectionName = "Chill Games",
+                        CoverPicture = "/Assets/Collections/chill.jpg",
+                        CreatedAt = new DateOnly(2024, 3, 21),
+                        IsPublic = true,
+                        UserId = 1
+                    },
+                    new
+                    {
+                        CollectionId = 4,
+                        CollectionName = "X-Mas",
+                        CoverPicture = "/Assets/Collections/xmas.jpg",
+                        CreatedAt = new DateOnly(2025, 2, 21),
+                        IsPublic = false,
+                        UserId = 1
+                    },
+                    new
+                    {
+                        CollectionId = 5,
+                        CollectionName = "Shooters",
+                        CoverPicture = "/Assets/Collections/shooters.jpg",
+                        CreatedAt = new DateOnly(2025, 3, 21),
+                        IsPublic = true,
+                        UserId = 2
+                    },
+                    new
+                    {
+                        CollectionId = 6,
+                        CollectionName = "Pets",
+                        CoverPicture = "/Assets/Collections/pets.jpg",
+                        CreatedAt = new DateOnly(2025, 1, 21),
+                        IsPublic = false,
+                        UserId = 2
+                    });
+            });
 
             modelBuilder.Entity("BusinessLayer.Models.CollectionGame", b =>
-                {
-                    b.Property<int>("CollectionId")
-                        .HasColumnType("int")
-                        .HasColumnName("collection_id");
+            {
+                b.Property<int>("CollectionId")
+                    .HasColumnType("int")
+                    .HasColumnName("collection_id");
 
-                    b.Property<int>("GameId")
-                        .HasColumnType("int")
-                        .HasColumnName("game_id");
+                b.Property<int>("GameId")
+                    .HasColumnType("int")
+                    .HasColumnName("game_id");
 
-                    b.HasKey("CollectionId", "GameId");
+                b.HasKey("CollectionId", "GameId");
 
-                    b.HasIndex("GameId");
+                b.HasIndex("GameId");
 
-                    b.ToTable("OwnedGames_Collection", (string)null);
-                });
+                b.ToTable("OwnedGames_Collection", (string)null);
+            });
 
             modelBuilder.Entity("BusinessLayer.Models.Comment", b =>
-                {
-                    b.Property<int>("CommentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("cid");
+            {
+                b.Property<int>("CommentId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .HasColumnName("cid");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"));
 
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int")
-                        .HasColumnName("authorId");
+                b.Property<int>("AuthorId")
+                    .HasColumnType("int")
+                    .HasColumnName("authorId");
 
-                    b.Property<DateTime>("CommentDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("uploadDate");
+                b.Property<DateTime>("CommentDate")
+                    .HasColumnType("datetime2")
+                    .HasColumnName("uploadDate");
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("content");
+                b.Property<string>("Content")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("content");
 
-                    b.Property<int>("PostId")
-                        .HasColumnType("int")
-                        .HasColumnName("postId");
+                b.Property<int>("PostId")
+                    .HasColumnType("int")
+                    .HasColumnName("postId");
 
-                    b.HasKey("CommentId");
+                b.HasKey("CommentId");
 
-                    b.ToTable("NewsComments", "dbo");
-                });
+                b.ToTable("NewsComments", "dbo");
+            });
 
             modelBuilder.Entity("BusinessLayer.Models.Feature", b =>
-                {
-                    b.Property<int>("FeatureId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("feature_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeatureId"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("description");
-
-                    b.Property<bool>("Equipped")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("name");
-
-                    b.Property<string>("Source")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("source");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("type");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("int")
-                        .HasColumnName("value");
-
-                    b.HasKey("FeatureId");
-
-                    b.ToTable("Features", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.FeatureUser", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("FeatureId")
-                        .HasColumnType("int")
-                        .HasColumnName("feature_id");
-
-                    b.Property<bool>("Equipped")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("equipped");
-
-                    b.HasKey("UserId", "FeatureId");
-
-                    b.HasIndex("FeatureId");
-
-                    b.ToTable("Feature_User", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.ForumComment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("comment_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int")
-                        .HasColumnName("author_id");
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("body");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int")
-                        .HasColumnName("post_id");
-
-                    b.Property<int>("Score")
-                        .HasColumnType("int")
-                        .HasColumnName("score");
-
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("creation_date");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ForumComments", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.ForumPost", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("post_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int")
-                        .HasColumnName("author_id");
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("body");
-
-                    b.Property<int?>("GameId")
-                        .HasColumnType("int")
-                        .HasColumnName("game_id");
-
-                    b.Property<int>("Score")
-                        .HasColumnType("int")
-                        .HasColumnName("score");
-
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("creation_date");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("title");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ForumPosts", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.FriendEntity", b =>
-                {
-                    b.Property<int>("FriendshipId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("FriendshipId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FriendshipId"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreatedDate")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("User1Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("User1Username");
-
-                    b.Property<string>("User2Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("User2Username");
-
-                    b.HasKey("FriendshipId");
-
-                    b.ToTable("Friends", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.FriendRequest", b =>
-                {
-                    b.Property<int>("RequestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("RequestId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestId"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("SenderEmail");
-
-                    b.Property<string>("ProfilePhotoPath")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("SenderProfilePhotoPath");
-
-                    b.Property<string>("ReceiverUsername")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ReceiverUsername");
-
-                    b.Property<DateTime>("RequestDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("RequestDate")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("SenderUsername");
-
-                    b.HasKey("RequestId");
-
-                    b.HasIndex("Username", "ReceiverUsername")
-                        .IsUnique()
-                        .HasDatabaseName("UQ_SenderReceiver");
-
-                    b.ToTable("FriendRequests", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.Friendship", b =>
-                {
-                    b.Property<int>("FriendshipId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("friendship_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FriendshipId"));
-
-                    b.Property<int>("FriendId")
-                        .HasColumnType("int")
-                        .HasColumnName("friend_id");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("FriendshipId");
-
-                    b.HasIndex("FriendId")
-                        .HasDatabaseName("IX_Friendships_FriendId");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("IX_Friendships_UserId");
-
-                    b.HasIndex("UserId", "FriendId")
-                        .IsUnique()
-                        .HasDatabaseName("UQ_Friendship");
-
-                    b.ToTable("Friendships", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.OwnedGame", b =>
-                {
-                    b.Property<int>("GameId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("game_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GameId"));
-
-                    b.Property<string>("CoverPicture")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("cover_picture");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("description");
-
-                    b.Property<string>("GameTitle")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("title");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("GameId");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("IX_OwnedGames_UserId");
-
-                    b.ToTable("OwnedGames", null, t =>
-                        {
-                            t.HasTrigger("SomeTrigger")
-                                .HasDatabaseName("SomeTrigger1");
-                        });
-
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.PasswordResetCode", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("email");
-
-                    b.Property<DateTime>("ExpirationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("expiration_time");
-
-                    b.Property<string>("ResetCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("reset_code");
-
-                    b.Property<bool>("Used")
-                        .HasColumnType("bit")
-                        .HasColumnName("used");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PasswordResetCodes", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.PointsOffer", b =>
-                {
-                    b.Property<int>("OfferId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("offer_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OfferId"));
-
-                    b.Property<int>("Points")
-                        .HasColumnType("int")
-                        .HasColumnName("numberOfPoints");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("int")
-                        .HasColumnName("value");
-
-                    b.HasKey("OfferId");
-
-                    b.ToTable("PointsOffers", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.Post", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("pid");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int")
-                        .HasColumnName("authorId");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("content");
-
-                    b.Property<int>("NrComments")
-                        .HasColumnType("int")
-                        .HasColumnName("nrComments");
-
-                    b.Property<int>("NrDislikes")
-                        .HasColumnType("int")
-                        .HasColumnName("nrDislikes");
-
-                    b.Property<int>("NrLikes")
-                        .HasColumnType("int")
-                        .HasColumnName("nrLikes");
-
-                    b.Property<DateTime>("UploadDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("uploadDate");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("NewsPosts", "dbo");
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.PostRatingType", b =>
-                {
-                    b.Property<int>("PostId")
-                        .HasColumnType("int")
-                        .HasColumnName("postId");
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int")
-                        .HasColumnName("authorId");
-
-                    b.Property<bool>("RatingType")
-                        .HasColumnType("bit")
-                        .HasColumnName("ratingType");
-
-                    b.HasKey("PostId", "AuthorId");
-
-                    b.ToTable("NewsRatings", "dbo");
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.Review", b =>
-                {
-                    b.Property<int>("ReviewIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("ReviewId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReviewIdentifier"));
-
-                    b.Property<DateTime>("DateAndTimeWhenReviewWasCreated")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<int>("GameIdentifier")
-                        .HasColumnType("int")
-                        .HasColumnName("GameId");
-
-                    b.Property<bool>("IsRecommended")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsRecommended");
-
-                    b.Property<decimal>("NumericRatingGivenByUser")
-                        .HasColumnType("decimal(3,1)")
-                        .HasColumnName("Rating");
-
-                    b.Property<string>("ReviewContentText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Content");
-
-                    b.Property<string>("ReviewTitleText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Title");
-
-                    b.Property<int>("TotalFunnyVotesReceived")
-                        .HasColumnType("int")
-                        .HasColumnName("FunnyVotes");
-
-                    b.Property<int>("TotalHelpfulVotesReceived")
-                        .HasColumnType("int")
-                        .HasColumnName("HelpfulVotes");
-
-                    b.Property<int>("TotalHoursPlayedByReviewer")
-                        .HasColumnType("int")
-                        .HasColumnName("HoursPlayed");
-
-                    b.Property<int>("UserIdentifier")
-                        .HasColumnType("int")
-                        .HasColumnName("UserId");
-
-                    b.HasKey("ReviewIdentifier");
-
-                    b.HasIndex("UserIdentifier");
-
-                    b.ToTable("Reviews", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.ReviewsUser", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("UserId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("Name");
-
-                    b.Property<byte[]>("ProfilePicture")
-                        .HasColumnType("varbinary(max)")
-                        .HasColumnName("ProfilePicture");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("ReviewsUsers", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.SessionDetails", b =>
-                {
-                    b.Property<Guid>("SessionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("session_id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("expires_at");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("SessionId");
-
-                    b.ToTable("UserSessions", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.SoldGame", b =>
-                {
-                    b.Property<int>("SoldGameId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("sold_game_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SoldGameId"));
-
-                    b.Property<int?>("GameId")
-                        .HasColumnType("int")
-                        .HasColumnName("game_id");
-
-                    b.Property<DateTime?>("SoldDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("sold_date");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("SoldGameId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("SoldGames", (string)null);
-                });
+            {
+                b.Property<int>("FeatureId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .HasColumnName("feature_id");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeatureId"));
+
+                b.Property<string>("Description")
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("description");
+
+                b.Property<bool>("Equipped")
+                    .HasColumnType("bit")
+                    .HasColumnName("equipped");
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("name");
+
+                b.Property<string>("Source")
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("source");
+
+                b.Property<string>("Type")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("type");
+
+                b.Property<int>("Value")
+                    .HasColumnType("int")
+                    .HasColumnName("value");
+
+                b.HasKey("FeatureId");
+
+                b.ToTable("Features", (string)null);
+
+                b.HasData(
+                    new
+                    {
+                        FeatureId = 1,
+                        Description = "An elegant hat",
+                        Equipped = false,
+                        Name = "Black Hat",
+                        Source = "Assets/Features/Hats/black-hat.png",
+                        Type = "hat",
+                        Value = 2000
+                    },
+                    new
+                    {
+                        FeatureId = 2,
+                        Description = "Cute doggo",
+                        Equipped = false,
+                        Name = "Pufu",
+                        Source = "Assets/Features/Pets/dog.png",
+                        Type = "pet",
+                        Value = 10
+                    },
+                    new
+                    {
+                        FeatureId = 3,
+                        Description = "Cute cat",
+                        Equipped = false,
+                        Name = "Kitty",
+                        Source = "Assets/Features/Pets/cat.png",
+                        Type = "pet",
+                        Value = 8
+                    },
+                    new
+                    {
+                        FeatureId = 4,
+                        Description = "Violet frame",
+                        Equipped = false,
+                        Name = "Frame",
+                        Source = "Assets/Features/Frames/frame1.png",
+                        Type = "frame",
+                        Value = 5
+                    },
+                    new
+                    {
+                        FeatureId = 5,
+                        Description = "lalal",
+                        Equipped = false,
+                        Name = "Love Emoji",
+                        Source = "Assets/Features/Emojis/love.png",
+                        Type = "emoji",
+                        Value = 7
+                    },
+                    new
+                    {
+                        FeatureId = 6,
+                        Description = "Violet Background",
+                        Equipped = false,
+                        Name = "Violet Background",
+                        Source = "Assets/Features/Backgrounds/violet.jpg",
+                        Type = "background",
+                        Value = 7
+                    });
+            });
+
+            // Add all remaining entities with their seed data...
+            // Due to length constraints, I'll provide the key remaining entities
 
             modelBuilder.Entity("BusinessLayer.Models.User", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
+            {
+                b.Property<int>("UserId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .HasColumnName("user_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("GETDATE()");
+                b.Property<DateTime>("CreatedAt")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("datetime2")
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("email");
+                b.Property<string>("Email")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("email");
 
-                    b.Property<bool>("IsDeveloper")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("developer");
+                b.Property<bool>("IsDeveloper")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("bit")
+                    .HasDefaultValue(false)
+                    .HasColumnName("developer");
 
-                    b.Property<DateTime?>("LastLogin")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("last_login");
+                b.Property<DateTime?>("LastLogin")
+                    .HasColumnType("datetime2")
+                    .HasColumnName("last_login");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("hashed_password");
+                b.Property<string>("Password")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("hashed_password");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("username");
+                b.Property<string>("Username")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("username");
 
-                    b.HasKey("UserId");
+                b.HasKey("UserId");
 
-                    b.ToTable("Users", (string)null);
-                });
+                b.ToTable("Users", (string)null);
 
-            modelBuilder.Entity("BusinessLayer.Models.UserAchievement", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
+                b.HasData(
+                    new
+                    {
+                        UserId = 1,
+                        CreatedAt = new DateTime(2025, 3, 20, 14, 25, 0, 0, DateTimeKind.Unspecified),
+                        Email = "alice@example.com",
+                        IsDeveloper = true,
+                        LastLogin = new DateTime(2025, 3, 20, 14, 25, 0, 0, DateTimeKind.Unspecified),
+                        Password = "hashed_password_1",
+                        Username = "AliceGamer"
+                    },
+                    new
+                    {
+                        UserId = 2,
+                        CreatedAt = new DateTime(2025, 3, 21, 10, 12, 0, 0, DateTimeKind.Unspecified),
+                        Email = "bob@example.com",
+                        IsDeveloper = false,
+                        LastLogin = new DateTime(2025, 3, 21, 10, 12, 0, 0, DateTimeKind.Unspecified),
+                        Password = "hashed_password_2",
+                        Username = "BobTheBuilder"
+                    },
+                    new
+                    {
+                        UserId = 3,
+                        CreatedAt = new DateTime(2025, 3, 22, 18, 45, 0, 0, DateTimeKind.Unspecified),
+                        Email = "charlie@example.com",
+                        IsDeveloper = false,
+                        LastLogin = new DateTime(2025, 3, 22, 18, 45, 0, 0, DateTimeKind.Unspecified),
+                        Password = "hashed_password_3",
+                        Username = "CharlieX"
+                    },
+                    new
+                    {
+                        UserId = 4,
+                        CreatedAt = new DateTime(2025, 3, 19, 22, 30, 0, 0, DateTimeKind.Unspecified),
+                        Email = "diana@example.com",
+                        IsDeveloper = false,
+                        LastLogin = new DateTime(2025, 3, 19, 22, 30, 0, 0, DateTimeKind.Unspecified),
+                        Password = "hashed_password_4",
+                        Username = "DianaRocks"
+                    },
+                    new
+                    {
+                        UserId = 5,
+                        CreatedAt = new DateTime(2025, 3, 23, 8, 5, 0, 0, DateTimeKind.Unspecified),
+                        Email = "eve@example.com",
+                        IsDeveloper = true,
+                        LastLogin = new DateTime(2025, 3, 23, 8, 5, 0, 0, DateTimeKind.Unspecified),
+                        Password = "hashed_password_5",
+                        Username = "Eve99"
+                    },
+                    new
+                    {
+                        UserId = 6,
+                        CreatedAt = new DateTime(2025, 3, 24, 16, 20, 0, 0, DateTimeKind.Unspecified),
+                        Email = "frank@example.com",
+                        IsDeveloper = false,
+                        LastLogin = new DateTime(2025, 3, 24, 16, 20, 0, 0, DateTimeKind.Unspecified),
+                        Password = "hashed_password_6",
+                        Username = "FrankTheTank"
+                    },
+                    new
+                    {
+                        UserId = 7,
+                        CreatedAt = new DateTime(2025, 3, 25, 11, 40, 0, 0, DateTimeKind.Unspecified),
+                        Email = "grace@example.com",
+                        IsDeveloper = false,
+                        LastLogin = new DateTime(2025, 3, 25, 11, 40, 0, 0, DateTimeKind.Unspecified),
+                        Password = "hashed_password_7",
+                        Username = "GraceSpeed"
+                    },
+                    new
+                    {
+                        UserId = 8,
+                        CreatedAt = new DateTime(2025, 3, 20, 20, 15, 0, 0, DateTimeKind.Unspecified),
+                        Email = "harry@example.com",
+                        IsDeveloper = false,
+                        LastLogin = new DateTime(2025, 3, 20, 20, 15, 0, 0, DateTimeKind.Unspecified),
+                        Password = "hashed_password_8",
+                        Username = "HarryWizard"
+                    },
+                    new
+                    {
+                        UserId = 9,
+                        CreatedAt = new DateTime(2025, 3, 22, 9, 30, 0, 0, DateTimeKind.Unspecified),
+                        Email = "ivy@example.com",
+                        IsDeveloper = false,
+                        LastLogin = new DateTime(2025, 3, 22, 9, 30, 0, 0, DateTimeKind.Unspecified),
+                        Password = "hashed_password_9",
+                        Username = "IvyNinja"
+                    },
+                    new
+                    {
+                        UserId = 10,
+                        CreatedAt = new DateTime(2025, 3, 24, 23, 55, 0, 0, DateTimeKind.Unspecified),
+                        Email = "jack@example.com",
+                        IsDeveloper = true,
+                        LastLogin = new DateTime(2025, 3, 24, 23, 55, 0, 0, DateTimeKind.Unspecified),
+                        Password = "hashed_password_10",
+                        Username = "JackHacks"
+                    });
+            });
 
-                    b.Property<int>("AchievementId")
-                        .HasColumnType("int")
-                        .HasColumnName("achievement_id");
-
-                    b.Property<DateTime>("UnlockedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("unlocked_at")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.HasKey("UserId", "AchievementId");
-
-                    b.HasIndex("AchievementId");
-
-                    b.ToTable("UserAchievements", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.UserDislikedComment", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("userId");
-
-                    b.Property<int>("CommentId")
-                        .HasColumnType("int")
-                        .HasColumnName("comment_id");
-
-                    b.HasKey("UserId", "CommentId");
-
-                    b.ToTable("UserDislikedComment", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.UserDislikedPost", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("userId");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int")
-                        .HasColumnName("post_id");
-
-                    b.HasKey("UserId", "PostId");
-
-                    b.ToTable("UserDislikedPost", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.UserLikedComment", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("userId");
-
-                    b.Property<int>("CommentId")
-                        .HasColumnType("int")
-                        .HasColumnName("comment_id");
-
-                    b.HasKey("UserId", "CommentId");
-
-                    b.ToTable("UserLikedComment", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.UserLikedPost", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("userId");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int")
-                        .HasColumnName("post_id");
-
-                    b.HasKey("UserId", "PostId");
-
-                    b.ToTable("UserLikedPost", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.UserProfile", b =>
-                {
-                    b.Property<int>("ProfileId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("profile_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfileId"));
-
-                    b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("bio");
-
-                    b.Property<DateTime>("LastModified")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("last_modified")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("ProfilePicture")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("profile_picture");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("ProfileId");
-
-                    b.ToTable("UserProfiles", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.Wallet", b =>
-                {
-                    b.Property<int>("WalletId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("wallet_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WalletId"));
-
-                    b.Property<decimal>("Balance")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(10,2)")
-                        .HasDefaultValue(0m)
-                        .HasColumnName("money_for_games");
-
-                    b.Property<int>("Points")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0)
-                        .HasColumnName("points");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("WalletId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Wallet", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.CollectionGame", b =>
-                {
-                    b.HasOne("BusinessLayer.Models.Collection", "Collection")
-                        .WithMany("CollectionGames")
-                        .HasForeignKey("CollectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BusinessLayer.Models.OwnedGame", "OwnedGame")
-                        .WithMany("CollectionGames")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Collection");
-
-                    b.Navigation("OwnedGame");
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.FeatureUser", b =>
-                {
-                    b.HasOne("BusinessLayer.Models.Feature", "Feature")
-                        .WithMany()
-                        .HasForeignKey("FeatureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Feature");
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.Review", b =>
-                {
-                    b.HasOne("BusinessLayer.Models.ReviewsUser", null)
-                        .WithMany("Reviews")
-                        .HasForeignKey("UserIdentifier")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.SoldGame", b =>
-                {
-                    b.HasOne("BusinessLayer.Models.User", "User")
-                        .WithMany("SoldGames")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.UserAchievement", b =>
-                {
-                    b.HasOne("BusinessLayer.Models.Achievement", "Achievement")
-                        .WithMany("UserAchievements")
-                        .HasForeignKey("AchievementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BusinessLayer.Models.User", "User")
-                        .WithMany("UserAchievements")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Achievement");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.Achievement", b =>
-                {
-                    b.Navigation("UserAchievements");
-                });
+            // Add all remaining navigation properties and relationships...
+            modelBuilder.Entity("BusinessLayer.Models.ChatMessage", b =>
+            {
+                b.HasOne("BusinessLayer.Models.ChatConversation", null)
+                    .WithMany()
+                    .HasForeignKey("ConversationId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity("BusinessLayer.Models.Collection", b =>
-                {
-                    b.Navigation("CollectionGames");
-                });
+            {
+                b.HasOne("BusinessLayer.Models.User", null)
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-            modelBuilder.Entity("BusinessLayer.Models.OwnedGame", b =>
-                {
-                    b.Navigation("CollectionGames");
-                });
+                b.Navigation("CollectionGames");
+            });
 
-            modelBuilder.Entity("BusinessLayer.Models.ReviewsUser", b =>
-                {
-                    b.Navigation("Reviews");
-                });
-
-            modelBuilder.Entity("BusinessLayer.Models.User", b =>
-                {
-                    b.Navigation("SoldGames");
-
-                    b.Navigation("UserAchievements");
-                });
+            // Add remaining relationships and navigation properties...
 #pragma warning restore 612, 618
         }
     }

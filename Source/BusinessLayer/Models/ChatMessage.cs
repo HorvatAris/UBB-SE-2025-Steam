@@ -14,5 +14,7 @@ namespace BusinessLayer.Models
         public string MessageContent { get; set; }
         public string MessageFormat { get; set; }
         public long Timestamp { get; set; }
+
+        public virtual ChatConversation Conversation { get; set; }
     }
 }

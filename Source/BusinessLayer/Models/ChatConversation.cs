@@ -11,5 +11,6 @@ namespace BusinessLayer.Models
         public int ConversationId;
         public int User1Id;
         public int User2Id;
+        public virtual ICollection<ChatMessage> Messages { get; set; } = new List<ChatMessage>();
     }
 }

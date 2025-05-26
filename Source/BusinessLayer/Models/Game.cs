@@ -18,5 +18,7 @@ namespace BusinessLayer.Models
         // optianal display helpers
         public int RetrieveGameId() => GameIdentifier;
         public string RetrieveGameTitle() => TitleOfGame;
+
+        public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }
