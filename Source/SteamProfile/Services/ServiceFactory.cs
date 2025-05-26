@@ -3,7 +3,6 @@ using BusinessLayer.Services.Interfaces;
 using BusinessLayer.Services.Proxies;
 using Microsoft.Extensions.Configuration;
 using BusinessLayer.Services;
-using SteamProfile.Services.Proxies;
 
 namespace SteamProfile.Services
 {
@@ -96,12 +95,6 @@ namespace SteamProfile.Services
             return new AchievementsServiceProxy(apiBaseUrl);
         }
 
-        // Create owned games service instance
-        public static IOwnedGamesService CreateOwnedGamesService()
-        {
-            return new OwnedGamesServiceProxy(apiBaseUrl);
-        }
-
         // Create review service instance
         public static IReviewService CreateReviewService()
         {
@@ -132,10 +125,6 @@ namespace SteamProfile.Services
         public static IFriendService CreateFriendService()
         {
             return new FriendServiceProxy(apiBaseUrl);
-        }
-        public static TestServiceProxy CreateTestService()
-        {
-            return new TestServiceProxy(apiBaseUrl);
         }
     }
 }

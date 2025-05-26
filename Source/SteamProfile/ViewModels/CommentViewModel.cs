@@ -13,7 +13,7 @@ namespace SteamProfile.ViewModels
     public partial class CommentViewModel : ObservableObject
     {
         private readonly NewsService service;
-        private readonly Users users = Users.Instance;
+        private readonly UserService users;
 
         public event EventHandler? CommentUpdated;
         public event EventHandler? CommentDeleted;
@@ -55,7 +55,7 @@ namespace SteamProfile.ViewModels
         public void LoadComment(Comment comment)
         {
             CommentData = comment;
-            var user = users.GetUserById(comment.AuthorId);
+            var user = users.GetUserByIdentifier(comment.AuthorId);
 
             Username = user?.Username ?? "Unknown";
             CommentDate = comment.CommentDate.ToString("MMM d, yyyy");
