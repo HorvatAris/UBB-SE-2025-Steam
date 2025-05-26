@@ -6,6 +6,7 @@ public interface IUserDetails
     float PointsBalance { get; set; }
     UserRole UserRole { get; }
     string UserName { get; }
+    public string Password { get; }
     string Email { get; }
     float WalletBalance { get; set; }
 }

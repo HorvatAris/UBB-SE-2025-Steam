@@ -32,6 +32,7 @@ public class WebUserDetails: IUserDetails
 
     public UserRole UserRole => Enum.Parse<UserRole>(GetClaimValue(ClaimTypes.Role)!);
     public string UserName => GetClaimValue(ClaimTypes.Name)!;
+    public string Password => GetClaimValue(ClaimTypes.Hash)!;
     public string Email => GetClaimValue(ClaimTypes.Email)!;
     public float WalletBalance
     {

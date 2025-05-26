@@ -33,6 +33,7 @@ namespace SteamHub
         private MarketplaceServiceProxy marketplaceService;
         private TradeServiceProxy tradeService;
         private UserServiceProxy userService;
+        private SessionServiceProxy sessionService;
 
         public MainWindow()
         {
@@ -109,7 +110,9 @@ namespace SteamHub
 
             this.tradeService = new TradeServiceProxy(httpClientFactory, loggedInUser);
 
-            this.userService = new UserServiceProxy(httpClientFactory);
+            this.sessionService = new SessionServiceProxy();
+
+            this.userService = new UserServiceProxy(httpClientFactory, sessionService);
 
             this.marketplaceService = new MarketplaceServiceProxy(httpClientFactory, loggedInUser);
 

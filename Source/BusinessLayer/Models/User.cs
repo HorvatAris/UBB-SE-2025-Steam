@@ -27,43 +27,9 @@ namespace BusinessLayer.Models
         public string IpAddress;
         public string ProfilePicturePath;
         public FriendshipStatus FriendshipStatus;
-        private static Dictionary<int, User> usersConst = new Dictionary<int, User>
-        {
-            { 1, new User { UserId = 1, Username = "JaneSmith", ProfilePicturePath = "ms-appx:///Assets/friend1_avatar.png" } },
-            { 2, new User { UserId = 2, Username = "JohnDoe", ProfilePicturePath = "ms-appx:///Assets/default_avatar.png" } },
-            { 3, new User { UserId = 3, Username = "AlexJohnson", ProfilePicturePath = "ms-appx:///Assets/friend2_avatar.png" } }
-        };
-
-        public string GetFriendButtonText(FriendshipStatus status)
-        {
-            switch (status)
-            {
-                case FriendshipStatus.Friends:
-                    return "Friends";
-                case FriendshipStatus.RequestSent:
-                    return "Cancel Request";
-                case FriendshipStatus.RequestReceived:
-                    return "Accept Request";
-                case FriendshipStatus.NotFriends:
-                default:
-                    return "Add Friend";
-            }
-        }
-        public void UpdateFrom(User other)
-        {
-            Email = other.Email;
-            Username = other.Username;
-            Password = other.Password;
-            IpAddress = other.IpAddress;
-            FriendshipStatus = other.FriendshipStatus;
-            IsDeveloper = other.IsDeveloper;
-            CreatedAt = other.CreatedAt;
-            LastLogin = other.LastLogin;
-        }
-
         private async void LoadProfilePicture()
         {
-#if DEBUG
+            #if DEBUG
             try
             {
                 string exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -74,15 +40,10 @@ namespace BusinessLayer.Models
             {
                 ProfilePicture = new byte[0];
             }
-#endif
+            #endif
         }
         public static User GetUserById(int userId)
         {
-            if (usersConst.TryGetValue(userId, out User user))
-            {
-                return user;
-            }
-
             return new User
             {
                 UserId = userId,

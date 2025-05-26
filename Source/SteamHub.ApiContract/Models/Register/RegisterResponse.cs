@@ -1,14 +1,14 @@
 ﻿using SteamHub.ApiContract.Models.User;
 
-namespace SteamHub.ApiContract.Models.Login
+namespace SteamHub.ApiContract.Models.Register
 {
     /// <summary>
-    /// Represents the response payload for a successful login operation.
+    /// Represents the response payload for a successful registration operation.
     /// </summary>
-    public class LoginResponse
+    public class RegisterResponse
     {
         /// <summary>
-        /// Gets or sets the authenticated user's basic details.
+        /// Gets or sets the newly created user's basic details.
         /// </summary>
         public User.User User { get; set; }
 
