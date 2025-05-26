@@ -21,7 +21,7 @@ namespace SteamHub.ApiContract.Models
         public string TimeStamp => Comment.TimeStamp.ToString();
         public int AuthorId => Comment.AuthorId;
         // User properties
-        public string Username => Author.Username;
+        public string Username => Author.Username2;
         public string ProfilePicturePath => Author.ProfilePicturePath;
         // Indicates if the comment belongs to the current user (for delete button visibility)
         public bool IsCurrentUser => AuthorId == currentUserId;

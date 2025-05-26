@@ -18,6 +18,8 @@ namespace SteamHub.ApiContract.Models
         public string? Icon { get; set; }
 
         public ICollection<UserAchievement> UserAchievements { get; set; }
+        public Achievement()
+        { }
 
         public bool IsValidIcon()
         {

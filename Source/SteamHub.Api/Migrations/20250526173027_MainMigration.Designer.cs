@@ -12,8 +12,8 @@ using SteamHub.Api.Context;
 namespace SteamHub.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250526164155_MigrationWithTeam9242")]
-    partial class MigrationWithTeam9242
+    [Migration("20250526173027_MainMigration")]
+    partial class MainMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,6 +34,8 @@ namespace SteamHub.Api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("GamesGameId", "TagsTagId");
+
+                    b.HasIndex("TagsTagId");
 
                     b.ToTable("GameTag");
 
@@ -235,6 +237,409 @@ namespace SteamHub.Api.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SteamHub.Api.Entities.Game", b =>
+                {
+                    b.Property<int>("GameId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GameId"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("GameplayPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MinimumRequirements")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NumberOfRecentPurchases")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("PublisherUserId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Rating")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("RecommendedRequirements")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RejectMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TrailerPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("GameId");
+
+                    b.HasIndex("PublisherUserId");
+
+                    b.HasIndex("StatusId");
+
+                    b.ToTable("Games");
+
+                    b.HasData(
+                        new
+                        {
+                            GameId = 1,
+                            Description = "A rogue-like third-person shooter where players fight through hordes of monsters to escape an alien planet.",
+                            Discount = 0.20m,
+                            GameplayPath = "https://www.youtube.com/watch?v=Cwk3qmD28CE",
+                            ImagePath = "https://upload.wikimedia.org/wikipedia/en/c/c1/Risk_of_Rain_2.jpg",
+                            MinimumRequirements = "4GB RAM, 2.5GHz Processor, GTX 580",
+                            Name = "Risk of Rain 2",
+                            NumberOfRecentPurchases = 0,
+                            Price = 24.99m,
+                            PublisherUserId = 1,
+                            Rating = 4.2m,
+                            RecommendedRequirements = "8GB RAM, 3.0GHz Processor, GTX 680",
+                            RejectMessage = "Minimum requirements are too high",
+                            StatusId = 2,
+                            TrailerPath = "https://www.youtube.com/watch?v=pJ-aR--gScM"
+                        },
+                        new
+                        {
+                            GameId = 2,
+                            Description = "A multiplayer horror game where survivors must evade a killer.",
+                            Discount = 0.40m,
+                            GameplayPath = "https://www.youtube.com/watch?v=3wUHKO0ieyY",
+                            ImagePath = "https://pbs.twimg.com/media/FOEzJiXX0AcxBTi.jpg",
+                            MinimumRequirements = "8GB RAM, i3-4170, GTX 760",
+                            Name = "Dead by Daylight",
+                            NumberOfRecentPurchases = 0,
+                            Price = 19.99m,
+                            PublisherUserId = 1,
+                            Rating = 4.8m,
+                            RecommendedRequirements = "16GB RAM, i5-6500, GTX 1060",
+                            StatusId = 0,
+                            TrailerPath = "https://www.youtube.com/watch?v=JGhIXLO3ul8"
+                        },
+                        new
+                        {
+                            GameId = 3,
+                            Description = "A tactical first-person shooter featuring team-based gameplay.",
+                            Discount = 0.50m,
+                            GameplayPath = "https://www.youtube.com/watch?v=P22HqM9w500",
+                            ImagePath = "https://sm.ign.com/ign_nordic/cover/c/counter-st/counter-strike-2_jc2d.jpg",
+                            MinimumRequirements = "8GB RAM, i5-2500K, GTX 660",
+                            Name = "Counter-Strike 2",
+                            NumberOfRecentPurchases = 0,
+                            Price = 20.99m,
+                            PublisherUserId = 1,
+                            Rating = 4.9m,
+                            RecommendedRequirements = "16GB RAM, i7-7700K, GTX 1060",
+                            StatusId = 1,
+                            TrailerPath = "https://www.youtube.com/watch?v=c80dVYcL69E"
+                        },
+                        new
+                        {
+                            GameId = 4,
+                            Description = "A story-driven first-person shooter that revolutionized the genre.",
+                            Discount = 0.60m,
+                            GameplayPath = "https://www.youtube.com/watch?v=jElU1mD8JnI",
+                            ImagePath = "https://media.moddb.com/images/mods/1/47/46951/d1jhx20-dc797b78-5feb-4005-b206-.1.jpg",
+                            MinimumRequirements = "512MB RAM, 1.7GHz Processor, DirectX 8 GPU",
+                            Name = "Half-Life 2",
+                            NumberOfRecentPurchases = 0,
+                            Price = 9.99m,
+                            PublisherUserId = 1,
+                            Rating = 4.1m,
+                            RecommendedRequirements = "1GB RAM, 3.0GHz Processor, DirectX 9 GPU",
+                            StatusId = 1,
+                            TrailerPath = "https://www.youtube.com/watch?v=UKA7JkV51Jw"
+                        },
+                        new
+                        {
+                            GameId = 5,
+                            Description = "A classic platformer adventure with iconic characters and worlds.",
+                            Discount = 0.70m,
+                            GameplayPath = "https://www.youtube.com/watch?v=rLl9XBg7wSs",
+                            ImagePath = "https://play-lh.googleusercontent.com/3ZKfMRp_QrdN-LzsZTbXdXBH-LS1iykSg9ikNq_8T2ppc92ltNbFxS-tORxw2-6kGA",
+                            MinimumRequirements = "N/A",
+                            Name = "Mario",
+                            NumberOfRecentPurchases = 0,
+                            Price = 59.99m,
+                            PublisherUserId = 1,
+                            Rating = 5.0m,
+                            RecommendedRequirements = "N/A",
+                            StatusId = 1,
+                            TrailerPath = "https://www.youtube.com/watch?v=TnGl01FkMMo"
+                        },
+                        new
+                        {
+                            GameId = 6,
+                            Description = "An epic adventure game where heroes save the kingdom of Hyrule.",
+                            Discount = 0.30m,
+                            GameplayPath = "https://www.youtube.com/watch?v=wW7jkBJ_yK0",
+                            ImagePath = "https://m.media-amazon.com/images/I/71oHNyzdN1L.jpg",
+                            MinimumRequirements = "N/A",
+                            Name = "The Legend of Zelda",
+                            NumberOfRecentPurchases = 0,
+                            Price = 59.99m,
+                            PublisherUserId = 1,
+                            Rating = 4.5m,
+                            RecommendedRequirements = "N/A",
+                            StatusId = 1,
+                            TrailerPath = "https://www.youtube.com/watch?v=_X2h3SF7gd4"
+                        },
+                        new
+                        {
+                            GameId = 7,
+                            Description = "A puzzle game where you change the rules to solve challenges.",
+                            Discount = 0.20m,
+                            GameplayPath = "https://www.youtube.com/watch?v=dAiX8s-Eu7w",
+                            ImagePath = "https://is5-ssl.mzstatic.com/image/thumb/Purple113/v4/9e/30/61/9e3061a5-b2f0-87ad-9e90-563f37729be5/source/256x256bb.jpg",
+                            MinimumRequirements = "2GB RAM, 1.0GHz Processor",
+                            Name = "Baba Is You",
+                            NumberOfRecentPurchases = 0,
+                            Price = 14.99m,
+                            PublisherUserId = 2,
+                            Rating = 3.9m,
+                            RecommendedRequirements = "4GB RAM, 2.0GHz Processor",
+                            StatusId = 0,
+                            TrailerPath = "https://www.youtube.com/watch?v=z3_yA4HTJfs"
+                        },
+                        new
+                        {
+                            GameId = 8,
+                            Description = "A mind-bending puzzle-platformer with a dark sense of humor.",
+                            Discount = 0.10m,
+                            GameplayPath = "https://www.youtube.com/watch?v=ts-j0nFf2e0",
+                            ImagePath = "https://cdn2.steamgriddb.com/icon_thumb/0994c8d1d6bc62cc56e9112d2303266b.png",
+                            MinimumRequirements = "2GB RAM, 1.7GHz Processor, DirectX 9 GPU",
+                            Name = "Portal 2",
+                            NumberOfRecentPurchases = 0,
+                            Price = 9.99m,
+                            PublisherUserId = 2,
+                            Rating = 4.2m,
+                            RecommendedRequirements = "4GB RAM, 3.0GHz Processor, GTX 760",
+                            StatusId = 0,
+                            TrailerPath = "https://www.youtube.com/watch?v=tax4e4hBBZc"
+                        },
+                        new
+                        {
+                            GameId = 9,
+                            Description = "An exploration-based game where you unravel cosmic mysteries.",
+                            Discount = 0.15m,
+                            GameplayPath = "https://www.youtube.com/watch?v=huL_TawYrMs",
+                            ImagePath = "https://images.nintendolife.com/62a79995ed766/outer-wilds-echoes-of-the-eye-cover.cover_large.jpg",
+                            MinimumRequirements = "6GB RAM, i5-2300, GTX 560",
+                            Name = "Outer Wilds",
+                            NumberOfRecentPurchases = 0,
+                            Price = 24.99m,
+                            PublisherUserId = 2,
+                            Rating = 4.8m,
+                            RecommendedRequirements = "8GB RAM, i7-6700, GTX 970",
+                            StatusId = 0,
+                            TrailerPath = "https://www.youtube.com/watch?v=d9u6KYVq5kw"
+                        },
+                        new
+                        {
+                            GameId = 10,
+                            Description = "A rogue-like dungeon crawler where you defy the god of the dead.",
+                            Discount = 0.20m,
+                            GameplayPath = "https://www.youtube.com/watch?v=4fVO0qUBe4E",
+                            ImagePath = "https://image.api.playstation.com/vulcan/ap/rnd/202104/0517/9AcM3vy5t77zPiJyKHwRfnNT.png",
+                            MinimumRequirements = "4GB RAM, Dual Core 2.4GHz, Intel HD 5000",
+                            Name = "Hades",
+                            NumberOfRecentPurchases = 0,
+                            Price = 24.99m,
+                            PublisherUserId = 2,
+                            Rating = 4.0m,
+                            RecommendedRequirements = "8GB RAM, Dual Core 3.0GHz, GTX 760",
+                            StatusId = 0,
+                            TrailerPath = "https://www.youtube.com/watch?v=91sW0DMkZzI"
+                        },
+                        new
+                        {
+                            GameId = 11,
+                            Description = "A deck-building rogue-like where strategy is key to survival.",
+                            Discount = 0.25m,
+                            GameplayPath = "https://www.youtube.com/watch?v=JO3EIPtw-4I",
+                            ImagePath = "https://image.api.playstation.com/cdn/EP3717/CUSA15338_00/Sn5xbNutqfQdWYIjbeCIN0bwTJOV7UPG.png",
+                            MinimumRequirements = "2GB RAM, 2.0GHz Processor",
+                            Name = "Slay the Spire",
+                            NumberOfRecentPurchases = 0,
+                            Price = 19.99m,
+                            PublisherUserId = 2,
+                            Rating = 4.0m,
+                            RecommendedRequirements = "4GB RAM, 3.0GHz Processor",
+                            StatusId = 0,
+                            TrailerPath = "https://www.youtube.com/watch?v=75qT5KOs-Ew"
+                        },
+                        new
+                        {
+                            GameId = 12,
+                            Description = "A platformer about climbing a mountain and facing inner demons.",
+                            Discount = 0.30m,
+                            GameplayPath = "https://www.youtube.com/watch?v=FfRjHZWSYqY",
+                            ImagePath = "https://images.nintendolife.com/ef02c2e24c59e/celeste-cover.cover_large.jpg",
+                            MinimumRequirements = "2GB RAM, 2.0GHz Processor",
+                            Name = "Celeste",
+                            NumberOfRecentPurchases = 0,
+                            Price = 19.99m,
+                            PublisherUserId = 2,
+                            Rating = 3.8m,
+                            RecommendedRequirements = "4GB RAM, 2.4GHz Processor",
+                            StatusId = 0,
+                            TrailerPath = "https://www.youtube.com/watch?v=iofYDsP2vhQ"
+                        },
+                        new
+                        {
+                            GameId = 13,
+                            Description = "An action-adventure game set in a beautifully animated underground world.",
+                            Discount = 0.35m,
+                            GameplayPath = "https://www.youtube.com/watch?v=UAO2urG23S4",
+                            ImagePath = "https://image.api.playstation.com/cdn/EP1805/CUSA13285_00/DmwPWlU0468FbsjrtI92FhQz1xBYMoog.png",
+                            MinimumRequirements = "4GB RAM, 2.0GHz Processor",
+                            Name = "Hollow Knight",
+                            NumberOfRecentPurchases = 0,
+                            Price = 14.99m,
+                            PublisherUserId = 2,
+                            Rating = 4.1m,
+                            RecommendedRequirements = "8GB RAM, 3.2GHz Processor",
+                            StatusId = 0,
+                            TrailerPath = "https://www.youtube.com/watch?v=UAO2urG23S4"
+                        },
+                        new
+                        {
+                            GameId = 14,
+                            Description = "A farming simulator RPG where you build a life in the countryside.",
+                            Discount = 0.20m,
+                            GameplayPath = "https://www.youtube.com/watch?v=ot7uXNQskhs",
+                            ImagePath = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHWjybGuWhdyJqjmtziGvtHvCnQf23yY0R6g&s",
+                            MinimumRequirements = "2GB RAM, 2.0GHz Processor",
+                            Name = "Stardew Valley",
+                            NumberOfRecentPurchases = 0,
+                            Price = 14.99m,
+                            PublisherUserId = 2,
+                            Rating = 4.1m,
+                            RecommendedRequirements = "4GB RAM, 3.0GHz Processor",
+                            StatusId = 0,
+                            TrailerPath = "https://www.youtube.com/watch?v=ot7uXNQskhs"
+                        },
+                        new
+                        {
+                            GameId = 15,
+                            Description = "A sandbox game that lets you build and explore infinite worlds.",
+                            Discount = 0.14m,
+                            GameplayPath = "https://www.youtube.com/watch?v=ANgI2o_Jinc",
+                            ImagePath = "https://cdn2.steamgriddb.com/icon/f0b57183da91a7972b2b3c06b0db5542/32/512x512.png",
+                            MinimumRequirements = "4GB RAM, Intel HD 4000",
+                            Name = "Minecraft",
+                            NumberOfRecentPurchases = 1420,
+                            Price = 29.99m,
+                            PublisherUserId = 2,
+                            Rating = 4.8m,
+                            RecommendedRequirements = "8GB RAM, GTX 1060",
+                            StatusId = 1,
+                            TrailerPath = "https://www.youtube.com/watch?v=MmB9b5njVbA"
+                        },
+                        new
+                        {
+                            GameId = 16,
+                            Description = "A survival game in a dark and whimsical world filled with strange creatures.",
+                            Discount = 0.25m,
+                            GameplayPath = "https://www.youtube.com/watch?v=htXgxyLpPMg",
+                            ImagePath = "https://image.api.playstation.com/cdn/EP2107/CUSA00327_00/i5qwqMWJj33IIr2m9TM29GQNnFCi4ZqI.png?w=440",
+                            MinimumRequirements = "1.7GHz Processor, 1GB RAM",
+                            Name = "Don't Starve",
+                            NumberOfRecentPurchases = 0,
+                            Price = 9.99m,
+                            PublisherUserId = 2,
+                            Rating = 3.6m,
+                            RecommendedRequirements = "2.0GHz Processor, 2GB RAM",
+                            StatusId = 0,
+                            TrailerPath = "https://www.youtube.com/watch?v=ochPlhMFk84"
+                        },
+                        new
+                        {
+                            GameId = 17,
+                            Description = "A classic run and gun game with hand-drawn animations and tough bosses.",
+                            Discount = 0.40m,
+                            GameplayPath = "https://www.youtube.com/watch?v=DNIMD8ZpMSQ",
+                            ImagePath = "https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Cuphead_%28artwork%29.png/250px-Cuphead_%28artwork%29.png",
+                            MinimumRequirements = "3GB RAM, Intel Core2 Duo E8400",
+                            Name = "Cuphead",
+                            NumberOfRecentPurchases = 0,
+                            Price = 19.99m,
+                            PublisherUserId = 2,
+                            Rating = 4.8m,
+                            RecommendedRequirements = "4GB RAM, i3-3240",
+                            StatusId = 0,
+                            TrailerPath = "https://www.youtube.com/watch?v=NN-9SQXoi50"
+                        },
+                        new
+                        {
+                            GameId = 18,
+                            Description = "A black-and-white puzzle platformer with a haunting atmosphere.",
+                            Discount = 0.30m,
+                            GameplayPath = "https://www.youtube.com/watch?v=dYeuLZY7fZk",
+                            ImagePath = "https://image.api.playstation.com/cdn/EP2054/CUSA01369_00/W45kellY9yrwSDpmQEL9tFqZQW7N4FEz.png?w=440",
+                            MinimumRequirements = "512MB RAM, 1.5GHz Processor",
+                            Name = "Limbo",
+                            NumberOfRecentPurchases = 0,
+                            Price = 9.99m,
+                            PublisherUserId = 2,
+                            Rating = 4.6m,
+                            RecommendedRequirements = "2GB RAM, 2.0GHz Processor",
+                            StatusId = 0,
+                            TrailerPath = "https://www.youtube.com/watch?v=Y4HSyVXKYz8"
+                        },
+                        new
+                        {
+                            GameId = 19,
+                            Description = "A futuristic open-world RPG where you explore the neon-lit streets of Nightcity.",
+                            Discount = 0.25m,
+                            GameplayPath = "https://www.youtube.com/watch?v=8X2kIfS6fb8",
+                            ImagePath = "https://upload.wikimedia.org/wikipedia/en/9/9f/Cyberpunk_2077_box_art.jpg",
+                            MinimumRequirements = "Intel i5-3570K, 8GB RAM, GTX 780",
+                            Name = "Cyberstrike 2077",
+                            NumberOfRecentPurchases = 950,
+                            Price = 59.99m,
+                            PublisherUserId = 3,
+                            Rating = 4.2m,
+                            RecommendedRequirements = "Intel i7-4790, 12GB RAM, GTX 1060",
+                            StatusId = 1,
+                            TrailerPath = "https://www.youtube.com/watch?v=FknHjl7eQ6o"
+                        },
+                        new
+                        {
+                            GameId = 20,
+                            Description = "Immerse yourself in the Viking age in this brutal and breathtaking action RPG.",
+                            Discount = 0.10m,
+                            GameplayPath = "https://www.youtube.com/watch?v=gncB1_e9n8E",
+                            ImagePath = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDtZKyDW9Jrnh8ix-Y38qG5fddbUgYEW7yxA&s",
+                            MinimumRequirements = "Intel i5-4460, 8GB RAM, GTX 960",
+                            Name = "Shadow of Valhalla",
+                            NumberOfRecentPurchases = 780,
+                            Price = 44.99m,
+                            PublisherUserId = 3,
+                            Rating = 4.5m,
+                            RecommendedRequirements = "Intel i7-6700K, 16GB RAM, GTX 1080",
+                            StatusId = 1,
+                            TrailerPath = "https://www.youtube.com/watch?v=ssrNcwxALS4"
+                        });
+                });
+
             modelBuilder.Entity("SteamHub.Api.Entities.GameStatus", b =>
                 {
                     b.Property<int>("Id")
@@ -296,6 +701,8 @@ namespace SteamHub.Api.Migrations
                         .HasColumnType("real");
 
                     b.HasKey("ItemId");
+
+                    b.HasIndex("CorrespondingGameId");
 
                     b.ToTable("Items");
 
@@ -478,6 +885,8 @@ namespace SteamHub.Api.Migrations
                     b.HasKey("TradeId");
 
                     b.HasIndex("DestinationUserId");
+
+                    b.HasIndex("GameOfTradeId");
 
                     b.HasIndex("SourceUserId");
 
@@ -733,6 +1142,8 @@ namespace SteamHub.Api.Migrations
 
                     b.HasKey("StoreTransactionId");
 
+                    b.HasIndex("GameId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("StoreTransactions");
@@ -923,10 +1334,10 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 1,
-                            CreatedAt = new DateTime(2025, 5, 26, 19, 41, 51, 933, DateTimeKind.Local).AddTicks(5037),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "gabe.newell@valvestudio.com",
                             IsDeveloper = false,
-                            LastLogin = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(1912),
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "secret",
                             PointsBalance = 6000f,
                             ProfilePicture = new byte[0],
@@ -937,10 +1348,10 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 2,
-                            CreatedAt = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(3555),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mathias.new@cdprojektred.com",
                             IsDeveloper = false,
-                            LastLogin = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(3577),
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "secret",
                             PointsBalance = 5000f,
                             ProfilePicture = new byte[0],
@@ -951,10 +1362,10 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 3,
-                            CreatedAt = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(3584),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "john.chen@thatgamecompany.com",
                             IsDeveloper = false,
-                            LastLogin = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(3587),
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "secret",
                             PointsBalance = 5000f,
                             ProfilePicture = new byte[0],
@@ -965,10 +1376,10 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 4,
-                            CreatedAt = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(3591),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "alice.johnson@example.com",
                             IsDeveloper = false,
-                            LastLogin = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(3594),
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "secret",
                             PointsBalance = 6000f,
                             ProfilePicture = new byte[0],
@@ -979,10 +1390,10 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 5,
-                            CreatedAt = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(3600),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "liam.garcia@example.com",
                             IsDeveloper = false,
-                            LastLogin = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(3603),
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "secret",
                             PointsBalance = 7000f,
                             ProfilePicture = new byte[0],
@@ -993,10 +1404,10 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 6,
-                            CreatedAt = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(3668),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "sophie.williams@example.com",
                             IsDeveloper = false,
-                            LastLogin = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(3671),
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "secret",
                             PointsBalance = 6000f,
                             ProfilePicture = new byte[0],
@@ -1007,10 +1418,10 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 7,
-                            CreatedAt = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(3677),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "noah.smith@example.com",
                             IsDeveloper = false,
-                            LastLogin = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(3679),
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "secret",
                             PointsBalance = 4000f,
                             ProfilePicture = new byte[0],
@@ -1021,10 +1432,10 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 8,
-                            CreatedAt = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(3684),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "emily.brown@example.com",
                             IsDeveloper = false,
-                            LastLogin = new DateTime(2025, 5, 26, 19, 41, 51, 940, DateTimeKind.Local).AddTicks(3687),
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "secret",
                             PointsBalance = 5000f,
                             ProfilePicture = new byte[0],
@@ -1052,6 +1463,8 @@ namespace SteamHub.Api.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("UserId", "ItemId", "GameId");
+
+                    b.HasIndex("GameId");
 
                     b.HasIndex("ItemId");
 
@@ -1215,6 +1628,8 @@ namespace SteamHub.Api.Migrations
 
                     b.HasKey("UserId", "GameId");
 
+                    b.HasIndex("GameId");
+
                     b.ToTable("UsersGames");
 
                     b.HasData(
@@ -1335,632 +1750,35 @@ namespace SteamHub.Api.Migrations
                     b.HasKey("AchievementId");
 
                     b.ToTable("Achievements", (string)null);
-                });
 
-            modelBuilder.Entity("SteamHub.ApiContract.Models.ChatConversation", b =>
-                {
-                    b.Property<int>("ConversationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("conversation_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ConversationId"));
-
-                    b.Property<int>("User1Id")
-                        .HasColumnType("int")
-                        .HasColumnName("user1_id");
-
-                    b.Property<int>("User2Id")
-                        .HasColumnType("int")
-                        .HasColumnName("user2_id");
-
-                    b.HasKey("ConversationId");
-
-                    b.ToTable("ChatConversations", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.ChatMessage", b =>
-                {
-                    b.Property<int>("MessageId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("message_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageId"));
-
-                    b.Property<int>("ConversationId")
-                        .HasColumnType("int")
-                        .HasColumnName("conversation_id");
-
-                    b.Property<string>("MessageContent")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("message_content");
-
-                    b.Property<string>("MessageFormat")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("message_format");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int")
-                        .HasColumnName("sender_id");
-
-                    b.Property<long>("Timestamp")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("timestamp")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.HasKey("MessageId");
-
-                    b.ToTable("ChatMessages", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.Collections.Collection", b =>
-                {
-                    b.Property<int>("CollectionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("collection_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CollectionId"));
-
-                    b.Property<string>("CollectionName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("name");
-
-                    b.Property<string>("CoverPicture")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("cover_picture");
-
-                    b.Property<DateOnly>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("CAST(GETDATE() AS DATE)");
-
-                    b.Property<bool>("IsPublic")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true)
-                        .HasColumnName("is_public");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("CollectionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Collections", null, t =>
+                    b.HasData(
+                        new
                         {
-                            t.HasTrigger("SomeTrigger");
-                        });
-
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.Comment", b =>
-                {
-                    b.Property<int>("CommentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("cid");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"));
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int")
-                        .HasColumnName("authorId");
-
-                    b.Property<DateTime>("CommentDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("uploadDate");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("content");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int")
-                        .HasColumnName("postId");
-
-                    b.HasKey("CommentId");
-
-                    b.ToTable("NewsComments", "dbo");
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.Feature", b =>
-                {
-                    b.Property<int>("FeatureId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("feature_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeatureId"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("description");
-
-                    b.Property<bool>("Equipped")
-                        .HasColumnType("bit")
-                        .HasColumnName("equipped");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("name");
-
-                    b.Property<string>("Source")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("source");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("type");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("int")
-                        .HasColumnName("value");
-
-                    b.HasKey("FeatureId");
-
-                    b.ToTable("Features", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.FeatureUser", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("FeatureId")
-                        .HasColumnType("int")
-                        .HasColumnName("feature_id");
-
-                    b.Property<bool>("Equipped")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("equipped");
-
-                    b.HasKey("UserId", "FeatureId");
-
-                    b.HasIndex("FeatureId");
-
-                    b.ToTable("Feature_User", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.ForumComment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("comment_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int")
-                        .HasColumnName("author_id");
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("body");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int")
-                        .HasColumnName("post_id");
-
-                    b.Property<int>("Score")
-                        .HasColumnType("int")
-                        .HasColumnName("score");
-
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("creation_date");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ForumComments", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.ForumPost", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("post_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int")
-                        .HasColumnName("author_id");
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("body");
-
-                    b.Property<int?>("GameId")
-                        .HasColumnType("int")
-                        .HasColumnName("game_id");
-
-                    b.Property<int>("Score")
-                        .HasColumnType("int")
-                        .HasColumnName("score");
-
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("creation_date");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("title");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ForumPosts", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.FriendEntity", b =>
-                {
-                    b.Property<int>("FriendshipId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("FriendshipId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FriendshipId"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreatedDate")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("User1Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("User1Username");
-
-                    b.Property<string>("User2Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("User2Username");
-
-                    b.HasKey("FriendshipId");
-
-                    b.ToTable("Friends", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.FriendRequest", b =>
-                {
-                    b.Property<int>("RequestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("RequestId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestId"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("SenderEmail");
-
-                    b.Property<string>("ProfilePhotoPath")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("SenderProfilePhotoPath");
-
-                    b.Property<string>("ReceiverUsername")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ReceiverUsername");
-
-                    b.Property<DateTime>("RequestDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("RequestDate")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("SenderUsername");
-
-                    b.HasKey("RequestId");
-
-                    b.HasIndex("Username", "ReceiverUsername")
-                        .IsUnique()
-                        .HasDatabaseName("UQ_SenderReceiver");
-
-                    b.ToTable("FriendRequests", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.Friendship", b =>
-                {
-                    b.Property<int>("FriendshipId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("friendship_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FriendshipId"));
-
-                    b.Property<int>("FriendId")
-                        .HasColumnType("int")
-                        .HasColumnName("friend_id");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("FriendshipId");
-
-                    b.HasIndex("FriendId")
-                        .HasDatabaseName("IX_Friendships_FriendId");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("IX_Friendships_UserId");
-
-                    b.HasIndex("UserId", "FriendId")
-                        .IsUnique()
-                        .HasDatabaseName("UQ_Friendship");
-
-                    b.ToTable("Friendships", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.Game.CollectionGame", b =>
-                {
-                    b.Property<int>("CollectionId")
-                        .HasColumnType("int")
-                        .HasColumnName("collection_id");
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("int")
-                        .HasColumnName("game_id");
-
-                    b.HasKey("CollectionId", "GameId");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("OwnedGames_Collection", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.Game.OwnedGame", b =>
-                {
-                    b.Property<int>("GameId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("game_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GameId"));
-
-                    b.Property<string>("CoverPicture")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("cover_picture");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("description");
-
-                    b.Property<string>("GameTitle")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("title");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("GameId");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("IX_OwnedGames_UserId");
-
-                    b.ToTable("OwnedGames", null, t =>
+                            AchievementId = 1,
+                            AchievementName = "First Steps",
+                            AchievementType = "",
+                            Description = "Complete the tutorial level.",
+                            Icon = "https://example.com/icons/first_steps.png",
+                            Points = 10
+                        },
+                        new
                         {
-                            t.HasTrigger("SomeTrigger")
-                                .HasDatabaseName("SomeTrigger1");
+                            AchievementId = 2,
+                            AchievementName = "Master Explorer",
+                            AchievementType = "",
+                            Description = "Discover all hidden areas in the game.",
+                            Icon = "https://example.com/icons/master_explorer.png",
+                            Points = 20
+                        },
+                        new
+                        {
+                            AchievementId = 3,
+                            AchievementName = "Speed Runner",
+                            AchievementType = "",
+                            Description = "Complete the game in under 5 hours.",
+                            Icon = "https://example.com/icons/speed_runner.png",
+                            Points = 30
                         });
-
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.PasswordResetCode", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("email");
-
-                    b.Property<DateTime>("ExpirationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("expiration_time");
-
-                    b.Property<string>("ResetCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("reset_code");
-
-                    b.Property<bool>("Used")
-                        .HasColumnType("bit")
-                        .HasColumnName("used");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PasswordResetCodes", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.Post", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("pid");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int")
-                        .HasColumnName("authorId");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("content");
-
-                    b.Property<int>("NrComments")
-                        .HasColumnType("int")
-                        .HasColumnName("nrComments");
-
-                    b.Property<int>("NrDislikes")
-                        .HasColumnType("int")
-                        .HasColumnName("nrDislikes");
-
-                    b.Property<int>("NrLikes")
-                        .HasColumnType("int")
-                        .HasColumnName("nrLikes");
-
-                    b.Property<DateTime>("UploadDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("uploadDate");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("NewsPosts", "dbo");
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.PostRatingType", b =>
-                {
-                    b.Property<int>("PostId")
-                        .HasColumnType("int")
-                        .HasColumnName("postId");
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int")
-                        .HasColumnName("authorId");
-
-                    b.Property<bool>("RatingType")
-                        .HasColumnType("bit")
-                        .HasColumnName("ratingType");
-
-                    b.HasKey("PostId", "AuthorId");
-
-                    b.ToTable("NewsRatings", "dbo");
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.Review", b =>
-                {
-                    b.Property<int>("ReviewIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("ReviewId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReviewIdentifier"));
-
-                    b.Property<DateTime>("DateAndTimeWhenReviewWasCreated")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<int>("GameIdentifier")
-                        .HasColumnType("int")
-                        .HasColumnName("GameId");
-
-                    b.Property<bool>("IsRecommended")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsRecommended");
-
-                    b.Property<decimal>("NumericRatingGivenByUser")
-                        .HasColumnType("decimal(3,1)")
-                        .HasColumnName("Rating");
-
-                    b.Property<string>("ReviewContentText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Content");
-
-                    b.Property<string>("ReviewTitleText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Title");
-
-                    b.Property<int>("TotalFunnyVotesReceived")
-                        .HasColumnType("int")
-                        .HasColumnName("FunnyVotes");
-
-                    b.Property<int>("TotalHelpfulVotesReceived")
-                        .HasColumnType("int")
-                        .HasColumnName("HelpfulVotes");
-
-                    b.Property<int>("TotalHoursPlayedByReviewer")
-                        .HasColumnType("int")
-                        .HasColumnName("HoursPlayed");
-
-                    b.Property<int>("UserIdentifier")
-                        .HasColumnType("int")
-                        .HasColumnName("UserId");
-
-                    b.HasKey("ReviewIdentifier");
-
-                    b.HasIndex("UserIdentifier");
-
-                    b.ToTable("Reviews", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.ReviewsUser", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("UserId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("Name");
-
-                    b.Property<byte[]>("ProfilePicture")
-                        .HasColumnType("varbinary(max)")
-                        .HasColumnName("ProfilePicture");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("ReviewsUsers", (string)null);
                 });
 
             modelBuilder.Entity("SteamHub.ApiContract.Models.Session.SessionDetails", b =>
@@ -1993,28 +1811,24 @@ namespace SteamHub.Api.Migrations
                 {
                     b.Property<int>("SoldGameId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("sold_game_id");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SoldGameId"));
 
                     b.Property<int?>("GameId")
-                        .HasColumnType("int")
-                        .HasColumnName("game_id");
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("SoldDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("sold_date");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
+                        .HasColumnType("int");
 
                     b.HasKey("SoldGameId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SoldGames", (string)null);
+                    b.ToTable("SoldGame");
                 });
 
             modelBuilder.Entity("SteamHub.ApiContract.Models.User.User", b =>
@@ -2049,7 +1863,7 @@ namespace SteamHub.Api.Migrations
                     b.Property<int>("UserRole")
                         .HasColumnType("int");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("Username2")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -2082,131 +1896,59 @@ namespace SteamHub.Api.Migrations
                     b.HasIndex("AchievementId");
 
                     b.ToTable("UserAchievements", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            AchievementId = 1,
+                            UnlockedAt = new DateTime(2024, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
-            modelBuilder.Entity("SteamHub.ApiContract.Models.UserDislikedComment", b =>
+            modelBuilder.Entity("GameTag", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("userId");
+                    b.HasOne("SteamHub.Api.Entities.Game", null)
+                        .WithMany()
+                        .HasForeignKey("GamesGameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("CommentId")
-                        .HasColumnType("int")
-                        .HasColumnName("comment_id");
-
-                    b.HasKey("UserId", "CommentId");
-
-                    b.ToTable("UserDislikedComment", (string)null);
+                    b.HasOne("SteamHub.Api.Entities.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsTagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("SteamHub.ApiContract.Models.UserDislikedPost", b =>
+            modelBuilder.Entity("SteamHub.Api.Entities.Game", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("userId");
+                    b.HasOne("SteamHub.Api.Entities.User", "Publisher")
+                        .WithMany()
+                        .HasForeignKey("PublisherUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("PostId")
-                        .HasColumnType("int")
-                        .HasColumnName("post_id");
+                    b.HasOne("SteamHub.Api.Entities.GameStatus", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasKey("UserId", "PostId");
+                    b.Navigation("Publisher");
 
-                    b.ToTable("UserDislikedPost", (string)null);
+                    b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("SteamHub.ApiContract.Models.UserLikedComment", b =>
+            modelBuilder.Entity("SteamHub.Api.Entities.Item", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("userId");
+                    b.HasOne("SteamHub.Api.Entities.Game", "Game")
+                        .WithMany("Items")
+                        .HasForeignKey("CorrespondingGameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("CommentId")
-                        .HasColumnType("int")
-                        .HasColumnName("comment_id");
-
-                    b.HasKey("UserId", "CommentId");
-
-                    b.ToTable("UserLikedComment", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.UserLikedPost", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("userId");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int")
-                        .HasColumnName("post_id");
-
-                    b.HasKey("UserId", "PostId");
-
-                    b.ToTable("UserLikedPost", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.UserProfile", b =>
-                {
-                    b.Property<int>("ProfileId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("profile_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfileId"));
-
-                    b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("bio");
-
-                    b.Property<DateTime>("LastModified")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("last_modified")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("ProfilePicture")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("profile_picture");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("ProfileId");
-
-                    b.ToTable("UserProfiles", (string)null);
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.Wallet", b =>
-                {
-                    b.Property<int>("WalletId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("wallet_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WalletId"));
-
-                    b.Property<decimal>("Balance")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(10,2)")
-                        .HasDefaultValue(0m)
-                        .HasColumnName("money_for_games");
-
-                    b.Property<int>("Points")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0)
-                        .HasColumnName("points");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("WalletId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Wallet", (string)null);
+                    b.Navigation("Game");
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.ItemTrade", b =>
@@ -2217,6 +1959,12 @@ namespace SteamHub.Api.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("SteamHub.Api.Entities.Game", "GameOfTrade")
+                        .WithMany()
+                        .HasForeignKey("GameOfTradeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SteamHub.Api.Entities.User", "SourceUser")
                         .WithMany()
                         .HasForeignKey("SourceUserId")
@@ -2224,6 +1972,8 @@ namespace SteamHub.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("DestinationUser");
+
+                    b.Navigation("GameOfTrade");
 
                     b.Navigation("SourceUser");
                 });
@@ -2249,11 +1999,19 @@ namespace SteamHub.Api.Migrations
 
             modelBuilder.Entity("SteamHub.Api.Entities.StoreTransaction", b =>
                 {
+                    b.HasOne("SteamHub.Api.Entities.Game", "Game")
+                        .WithMany("StoreTransactions")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SteamHub.Api.Entities.User", "User")
                         .WithMany("StoreTransactions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Game");
 
                     b.Navigation("User");
                 });
@@ -2271,6 +2029,12 @@ namespace SteamHub.Api.Migrations
 
             modelBuilder.Entity("SteamHub.Api.Entities.UserInventory", b =>
                 {
+                    b.HasOne("SteamHub.Api.Entities.Game", "Game")
+                        .WithMany()
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SteamHub.Api.Entities.Item", "Item")
                         .WithMany()
                         .HasForeignKey("ItemId")
@@ -2282,6 +2046,8 @@ namespace SteamHub.Api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Game");
 
                     b.Navigation("Item");
 
@@ -2309,52 +2075,21 @@ namespace SteamHub.Api.Migrations
 
             modelBuilder.Entity("SteamHub.Api.Entities.UsersGames", b =>
                 {
+                    b.HasOne("SteamHub.Api.Entities.Game", "Game")
+                        .WithMany()
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SteamHub.Api.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("Game");
+
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.FeatureUser", b =>
-                {
-                    b.HasOne("SteamHub.ApiContract.Models.Feature", "Feature")
-                        .WithMany()
-                        .HasForeignKey("FeatureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Feature");
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.Game.CollectionGame", b =>
-                {
-                    b.HasOne("SteamHub.ApiContract.Models.Collections.Collection", "Collection")
-                        .WithMany("CollectionGames")
-                        .HasForeignKey("CollectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SteamHub.ApiContract.Models.Game.OwnedGame", "OwnedGame")
-                        .WithMany("CollectionGames")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Collection");
-
-                    b.Navigation("OwnedGame");
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.Review", b =>
-                {
-                    b.HasOne("SteamHub.ApiContract.Models.ReviewsUser", null)
-                        .WithMany("Reviews")
-                        .HasForeignKey("UserIdentifier")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("SteamHub.ApiContract.Models.SoldGame", b =>
@@ -2387,6 +2122,13 @@ namespace SteamHub.Api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SteamHub.Api.Entities.Game", b =>
+                {
+                    b.Navigation("Items");
+
+                    b.Navigation("StoreTransactions");
+                });
+
             modelBuilder.Entity("SteamHub.Api.Entities.Item", b =>
                 {
                     b.Navigation("ItemTradeDetails");
@@ -2412,21 +2154,6 @@ namespace SteamHub.Api.Migrations
             modelBuilder.Entity("SteamHub.ApiContract.Models.Achievement", b =>
                 {
                     b.Navigation("UserAchievements");
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.Collections.Collection", b =>
-                {
-                    b.Navigation("CollectionGames");
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.Game.OwnedGame", b =>
-                {
-                    b.Navigation("CollectionGames");
-                });
-
-            modelBuilder.Entity("SteamHub.ApiContract.Models.ReviewsUser", b =>
-                {
-                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("SteamHub.ApiContract.Models.User.User", b =>

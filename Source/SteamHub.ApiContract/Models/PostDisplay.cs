@@ -18,7 +18,7 @@ namespace SteamHub.ApiContract.Models
         public int AuthorId => (int)Post.AuthorId;
         public int? GameId => Post.GameId;
         // User properties
-        public string Username => Author.Username;
+        public string Username => Author.Username2;
         public string ProfilePicturePath => Author.ProfilePicturePath;
         // Indicates if the post belongs to the current user (for delete button visibility)
         public bool IsCurrentUser => AuthorId == CurrentUserId;

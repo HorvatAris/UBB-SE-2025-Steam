@@ -60,7 +60,7 @@ namespace SteamHub.ApiContract.Models.User
         public byte[] ProfilePicture;
     
         // Only one Username/UserName
-        public string Username { get; set; }
+        public string Username2 { get; set; }
         public bool IsDeveloper => UserRole == UserRole.Developer;
         public DateTime CreatedAt { get; set; }
 
@@ -90,7 +90,7 @@ namespace SteamHub.ApiContract.Models.User
             return new User
             {
                 UserId = userId,
-                Username = $"User_{userId}",
+                Username2 = $"User_{userId}",
                 ProfilePicturePath = "ms-appx:///Assets/DefaultUser.png"
             };
         }
@@ -99,14 +99,14 @@ namespace SteamHub.ApiContract.Models.User
         {
             LoadProfilePicture();
             this.UserId = id;
-            this.Username = username;
+            this.Username2 = username;
             //this.IsDeveloper = isDeveloper;
         }
 
         public User(int id, string userName, string ipAddress)
         {
             this.UserId = id;
-            this.Username = userName;
+            this.Username2 = userName;
             this.IpAddress = ipAddress;
         }
 
@@ -114,7 +114,7 @@ namespace SteamHub.ApiContract.Models.User
         {
             LoadProfilePicture();
             this.UserId = 0;
-            this.Username = "test";
+            this.Username2 = "test";
             //this.IsDeveloper = false;
         }
 

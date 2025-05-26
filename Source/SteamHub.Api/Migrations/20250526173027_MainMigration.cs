@@ -14,6 +14,23 @@ namespace SteamHub.Api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Achievements",
+                columns: table => new
+                {
+                    achievement_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    achievement_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    achievement_type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    points = table.Column<int>(type: "int", nullable: false),
+                    icon_url = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Achievements", x => x.achievement_id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GameStatus",
                 columns: table => new
                 {
@@ -68,6 +85,41 @@ namespace SteamHub.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Username2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastLogin = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WalletBalance = table.Column<float>(type: "real", nullable: false),
+                    PointsBalance = table.Column<float>(type: "real", nullable: false),
+                    UserRole = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserSessions",
+                columns: table => new
+                {
+                    session_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    user_id = table.Column<int>(type: "int", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    expires_at = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserSessions", x => x.session_id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -75,9 +127,14 @@ namespace SteamHub.Api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDeveloper = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastLogin = table.Column<DateTime>(type: "datetime2", nullable: true),
                     WalletBalance = table.Column<float>(type: "real", nullable: false),
                     PointsBalance = table.Column<float>(type: "real", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false)
+                    RoleId = table.Column<int>(type: "int", nullable: false),
+                    ProfilePicture = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,6 +144,52 @@ namespace SteamHub.Api.Migrations
                         column: x => x.RoleId,
                         principalTable: "Role",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SoldGame",
+                columns: table => new
+                {
+                    SoldGameId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    GameId = table.Column<int>(type: "int", nullable: true),
+                    SoldDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SoldGame", x => x.SoldGameId);
+                    table.ForeignKey(
+                        name: "FK_SoldGame_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserAchievements",
+                columns: table => new
+                {
+                    user_id = table.Column<int>(type: "int", nullable: false),
+                    achievement_id = table.Column<int>(type: "int", nullable: false),
+                    unlocked_at = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserAchievements", x => new { x.user_id, x.achievement_id });
+                    table.ForeignKey(
+                        name: "FK_UserAchievements_Achievements_achievement_id",
+                        column: x => x.achievement_id,
+                        principalTable: "Achievements",
+                        principalColumn: "achievement_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserAchievements_User_user_id",
+                        column: x => x.user_id,
+                        principalTable: "User",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -353,6 +456,16 @@ namespace SteamHub.Api.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Achievements",
+                columns: new[] { "achievement_id", "achievement_name", "achievement_type", "description", "icon_url", "points" },
+                values: new object[,]
+                {
+                    { 1, "First Steps", "", "Complete the tutorial level.", "https://example.com/icons/first_steps.png", 10 },
+                    { 2, "Master Explorer", "", "Discover all hidden areas in the game.", "https://example.com/icons/master_explorer.png", 20 },
+                    { 3, "Speed Runner", "", "Complete the game in under 5 hours.", "https://example.com/icons/speed_runner.png", 30 }
+                });
+
+            migrationBuilder.InsertData(
                 table: "GameStatus",
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
@@ -413,18 +526,23 @@ namespace SteamHub.Api.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "UserAchievements",
+                columns: new[] { "achievement_id", "user_id", "unlocked_at" },
+                values: new object[] { 1, 1, new DateTime(2024, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+
+            migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "Email", "PointsBalance", "RoleId", "UserName", "WalletBalance" },
+                columns: new[] { "UserId", "CreatedAt", "Email", "IsDeveloper", "LastLogin", "Password", "PointsBalance", "ProfilePicture", "RoleId", "UserName", "WalletBalance" },
                 values: new object[,]
                 {
-                    { 1, "gabe.newell@valvestudio.com", 6000f, 1, "GabeN", 500f },
-                    { 2, "mathias.new@cdprojektred.com", 5000f, 1, "MattN", 420f },
-                    { 3, "john.chen@thatgamecompany.com", 5000f, 1, "JohnC", 390f },
-                    { 4, "alice.johnson@example.com", 6000f, 0, "AliceJ", 780f },
-                    { 5, "liam.garcia@example.com", 7000f, 0, "LiamG", 5500f },
-                    { 6, "sophie.williams@example.com", 6000f, 0, "SophieW", 950f },
-                    { 7, "noah.smith@example.com", 4000f, 0, "NoahS", 3300f },
-                    { 8, "emily.brown@example.com", 5000f, 0, "EmilyB", 1100f }
+                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "gabe.newell@valvestudio.com", false, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 6000f, new byte[0], 1, "GabeN", 500f },
+                    { 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mathias.new@cdprojektred.com", false, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 5000f, new byte[0], 1, "MattN", 420f },
+                    { 3, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.chen@thatgamecompany.com", false, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 5000f, new byte[0], 1, "JohnC", 390f },
+                    { 4, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "alice.johnson@example.com", false, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 6000f, new byte[0], 0, "AliceJ", 780f },
+                    { 5, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "liam.garcia@example.com", false, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 7000f, new byte[0], 0, "LiamG", 5500f },
+                    { 6, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "sophie.williams@example.com", false, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 6000f, new byte[0], 0, "SophieW", 950f },
+                    { 7, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "noah.smith@example.com", false, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 4000f, new byte[0], 0, "NoahS", 3300f },
+                    { 8, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "emily.brown@example.com", false, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 5000f, new byte[0], 0, "EmilyB", 1100f }
                 });
 
             migrationBuilder.InsertData(
@@ -638,6 +756,11 @@ namespace SteamHub.Api.Migrations
                 column: "SourceUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SoldGame_UserId",
+                table: "SoldGame",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StoreTransactions_GameId",
                 table: "StoreTransactions",
                 column: "GameId");
@@ -646,6 +769,11 @@ namespace SteamHub.Api.Migrations
                 name: "IX_StoreTransactions_UserId",
                 table: "StoreTransactions",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAchievements_achievement_id",
+                table: "UserAchievements",
+                column: "achievement_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserInventories_GameId",
@@ -683,13 +811,22 @@ namespace SteamHub.Api.Migrations
                 name: "ItemTradeDetails");
 
             migrationBuilder.DropTable(
+                name: "SoldGame");
+
+            migrationBuilder.DropTable(
                 name: "StoreTransactions");
+
+            migrationBuilder.DropTable(
+                name: "UserAchievements");
 
             migrationBuilder.DropTable(
                 name: "UserInventories");
 
             migrationBuilder.DropTable(
                 name: "UserPointShopInventories");
+
+            migrationBuilder.DropTable(
+                name: "UserSessions");
 
             migrationBuilder.DropTable(
                 name: "UsersGames");
@@ -699,6 +836,12 @@ namespace SteamHub.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "ItemTrades");
+
+            migrationBuilder.DropTable(
+                name: "Achievements");
+
+            migrationBuilder.DropTable(
+                name: "User");
 
             migrationBuilder.DropTable(
                 name: "Items");
