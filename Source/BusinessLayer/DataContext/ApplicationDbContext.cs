@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BusinessLayer.Models;
 using Google;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BusinessLayer.DataContext
 {
@@ -518,7 +519,7 @@ namespace BusinessLayer.DataContext
                 entity.HasKey(a => a.AchievementId);
                 entity.Property(a => a.AchievementId)
                     .HasColumnName("achievement_id")
-                   .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd();
                 entity.Property(a => a.AchievementName)
                     .HasColumnName("achievement_name")
                     .IsRequired();
@@ -748,19 +749,19 @@ namespace BusinessLayer.DataContext
             // Users seed data
             var usersSeed = new List<object>
             {
-                new { user_id = 1, email = "alice@example.com", username = "AliceGamer", hashed_password = "hashed_password_1", developer = true, created_at = DateTime.Parse("2025-03-20 14:25:00"), last_login = DateTime.Parse("2025-03-20 14:25:00") },
-                new { user_id = 2, email = "bob@example.com", username = "BobTheBuilder", hashed_password = "hashed_password_2", developer = false, created_at = DateTime.Parse("2025-03-21 10:12:00"), last_login = DateTime.Parse("2025-03-21 10:12:00") },
-                new { user_id = 3, email = "charlie@example.com", username = "CharlieX", hashed_password = "hashed_password_3", developer = false, created_at = DateTime.Parse("2025-03-22 18:45:00"), last_login = DateTime.Parse("2025-03-22 18:45:00") },
-                new { user_id = 4, email = "diana@example.com", username = "DianaRocks", hashed_password = "hashed_password_4", developer = false, created_at = DateTime.Parse("2025-03-19 22:30:00"), last_login = DateTime.Parse("2025-03-19 22:30:00") },
-                new { user_id = 5, email = "eve@example.com", username = "Eve99", hashed_password = "hashed_password_5", developer = true, created_at = DateTime.Parse("2025-03-23 08:05:00"), last_login = DateTime.Parse("2025-03-23 08:05:00") },
-                new { user_id = 6, email = "frank@example.com", username = "FrankTheTank", hashed_password = "hashed_password_6", developer = false, created_at = DateTime.Parse("2025-03-24 16:20:00"), last_login = DateTime.Parse("2025-03-24 16:20:00") },
-                new { user_id = 7, email = "grace@example.com", username = "GraceSpeed", hashed_password = "hashed_password_7", developer = false, created_at = DateTime.Parse("2025-03-25 11:40:00"), last_login = DateTime.Parse("2025-03-25 11:40:00") },
-                new { user_id = 8, email = "harry@example.com", username = "HarryWizard", hashed_password = "hashed_password_8", developer = false, created_at = DateTime.Parse("2025-03-20 20:15:00"), last_login = DateTime.Parse("2025-03-20 20:15:00") },
-                new { user_id = 9, email = "ivy@example.com", username = "IvyNinja", hashed_password = "hashed_password_9", developer = false, created_at = DateTime.Parse("2025-03-22 09:30:00"), last_login = DateTime.Parse("2025-03-22 09:30:00") },
-                new { user_id = 10, email = "jack@example.com", username = "JackHacks", hashed_password = "hashed_password_10", developer = true, created_at = DateTime.Parse("2025-03-24 23:55:00"), last_login = DateTime.Parse("2025-03-24 23:55:00") },
-                new { user_id = 11, email = "user11@example.com", username = "UserEleven", hashed_password = "hashed_password_11", developer = false, created_at = DateTime.Now, last_login = DateTime.Now },
-                new { user_id = 12, email = "user12@example.com", username = "UserTwelve", hashed_password = "hashed_password_12", developer = false, created_at = DateTime.Now, last_login = DateTime.Now },
-                new { user_id = 13, email = "user13@example.com", username = "UserThirteen", hashed_password = "hashed_password_13", developer = false, created_at = DateTime.Now, last_login = DateTime.Now }
+                new { UserId = 1, Email = "alice@example.com", Username = "AliceGamer", Password = "hashed_password_1", IsDeveloper = true, CreatedAt = DateTime.Parse("2025-03-20 14:25:00"), LastLogin = DateTime.Parse("2025-03-20 14:25:00") },
+                new { UserId = 2, Email = "bob@example.com", Username = "BobTheBuilder", Password = "hashed_password_2", IsDeveloper = false, CreatedAt = DateTime.Parse("2025-03-21 10:12:00"), LastLogin = DateTime.Parse("2025-03-21 10:12:00") },
+                new { UserId = 3, Email = "charlie@example.com", Username = "CharlieX", Password = "hashed_password_3", IsDeveloper = false, CreatedAt = DateTime.Parse("2025-03-22 18:45:00"), LastLogin = DateTime.Parse("2025-03-22 18:45:00") },
+                new { UserId = 4, Email = "diana@example.com", Username = "DianaRocks", Password = "hashed_password_4", IsDeveloper = false, CreatedAt = DateTime.Parse("2025-03-19 22:30:00"), LastLogin = DateTime.Parse("2025-03-19 22:30:00") },
+                new { UserId = 5, Email = "eve@example.com", Username = "Eve99", Password = "hashed_password_5", IsDeveloper = true, CreatedAt = DateTime.Parse("2025-03-23 08:05:00"), LastLogin = DateTime.Parse("2025-03-23 08:05:00") },
+                new { UserId = 6, Email = "frank@example.com", Username = "FrankTheTank", Password = "hashed_password_6", IsDeveloper = false, CreatedAt = DateTime.Parse("2025-03-24 16:20:00"), LastLogin = DateTime.Parse("2025-03-24 16:20:00") },
+                new { UserId = 7, Email = "grace@example.com", Username = "GraceSpeed", Password = "hashed_password_7", IsDeveloper = false, CreatedAt = DateTime.Parse("2025-03-25 11:40:00"), LastLogin = DateTime.Parse("2025-03-25 11:40:00") },
+                new { UserId = 8, Email = "harry@example.com", Username = "HarryWizard", Password = "hashed_password_8", IsDeveloper = false, CreatedAt = DateTime.Parse("2025-03-20 20:15:00"), LastLogin = DateTime.Parse("2025-03-20 20:15:00") },
+                new { UserId = 9, Email = "ivy@example.com", Username = "IvyNinja", Password = "hashed_password_9", IsDeveloper = false, CreatedAt = DateTime.Parse("2025-03-22 09:30:00"), LastLogin = DateTime.Parse("2025-03-22 09:30:00") },
+                new { UserId = 10, Email = "jack@example.com", Username = "JackHacks", Password = "hashed_password_10", IsDeveloper = true, CreatedAt = DateTime.Parse("2025-03-24 23:55:00"), LastLogin = DateTime.Parse("2025-03-24 23:55:00") },
+                new { UserId = 11, Email = "user11@example.com", Username = "UserEleven", Password = "hashed_password_11", IsDeveloper = false, CreatedAt = DateTime.Now, LastLogin = DateTime.Now },
+                new { UserId = 12, Email = "user12@example.com", Username = "UserTwelve", Password = "hashed_password_12", IsDeveloper = false, CreatedAt = DateTime.Now, LastLogin = DateTime.Now },
+                new { UserId = 13, Email = "user13@example.com", Username = "UserThirteen", Password = "hashed_password_13", IsDeveloper = false, CreatedAt = DateTime.Now, LastLogin = DateTime.Now }
             };
 
             modelBuilder.Entity<User>().HasData(usersSeed);
@@ -768,41 +769,32 @@ namespace BusinessLayer.DataContext
             // UserProfiles seed data
             var userProfilesSeed = new List<object>
             {
-                new { profile_id = 1, user_id = 1, profile_picture = "ms-appx:///Assets/Collections/image.jpg", bio = "Gaming enthusiast and software developer", last_modified = DateTime.Now },
-                new { profile_id = 2, user_id = 2, profile_picture = "ms-appx:///Assets/download.jpg", bio = "Game developer and tech lover", last_modified = DateTime.Now },
-                new { profile_id = 3, user_id = 3, profile_picture = "ms-appx:///Assets/download.jpg", bio = "Casual gamer and streamer", last_modified = DateTime.Now },
-                new { profile_id = 4, user_id = 4, profile_picture = "ms-appx:///Assets/Collections/image.jpg", bio = "Casual gamer and streamer", last_modified = DateTime.Now },
-                new { profile_id = 5, user_id = 5, profile_picture = "ms-appx:///Assets/download.jpg", bio = "Casual gamer and streamer", last_modified = DateTime.Now },
-                new { profile_id = 6, user_id = 6, profile_picture = "ms-appx:///Assets/default_picture.jpg", bio = "Casual gamer and streamer", last_modified = DateTime.Now },
-                new { profile_id = 7, user_id = 7, profile_picture = "ms-appx:///Assets/default_picture.jpg", bio = "Casual gamer and streamer", last_modified = DateTime.Now },
-                new { profile_id = 8, user_id = 8, profile_picture = "ms-appx:///Assets/default_picture.jpg", bio = "Casual gamer and streamer", last_modified = DateTime.Now },
-                new { profile_id = 9, user_id = 9, profile_picture = "ms-appx:///Assets/default_picture.jpg", bio = "Casual gamer and streamer", last_modified = DateTime.Now },
-                new { profile_id = 10, user_id = 10, profile_picture = "ms-appx:///Assets/default_picture.jpg", bio = "Casual gamer and streamer", last_modified = DateTime.Now },
-                new { profile_id = 11, user_id = 11, profile_picture = "ms-appx:///Assets/default_picture.jpg", bio = "Welcome new user!", last_modified = DateTime.Now },
-                new { profile_id = 12, user_id = 12, profile_picture = "ms-appx:///Assets/default_picture.jpg", bio = "Welcome new user!", last_modified = DateTime.Now },
-                new { profile_id = 13, user_id = 13, profile_picture = "ms-appx:///Assets/default_picture.jpg", bio = "Welcome new user!", last_modified = DateTime.Now }
+                new { ProfileId = 1, UserId = 1, ProfilePicture = "ms-appx:///Assets/Collections/image.jpg", Bio = "Gaming enthusiast and software developer", LastModified = DateTime.Now },
+                new { ProfileId = 2, UserId = 2, ProfilePicture = "ms-appx:///Assets/download.jpg", Bio = "Game developer and tech lover", LastModified = DateTime.Now },
+                new { ProfileId = 3, UserId = 3, ProfilePicture = "ms-appx:///Assets/download.jpg", Bio = "Casual gamer and streamer", LastModified = DateTime.Now },
+                new { ProfileId = 4, UserId = 4, ProfilePicture = "ms-appx:///Assets/Collections/image.jpg", Bio = "Casual gamer and streamer", LastModified = DateTime.Now },
+                new { ProfileId = 5, UserId = 5, ProfilePicture = "ms-appx:///Assets/download.jpg", Bio = "Casual gamer and streamer", LastModified = DateTime.Now },
+                new { ProfileId = 6, UserId = 6, ProfilePicture = "ms-appx:///Assets/default_picture.jpg", Bio = "Casual gamer and streamer", LastModified = DateTime.Now },
+                new { ProfileId = 7, UserId = 7, ProfilePicture = "ms-appx:///Assets/default_picture.jpg", Bio = "Casual gamer and streamer", LastModified = DateTime.Now },
+                new { ProfileId = 8, UserId = 8, ProfilePicture = "ms-appx:///Assets/default_picture.jpg", Bio = "Casual gamer and streamer", LastModified = DateTime.Now },
+                new { ProfileId = 9, UserId = 9, ProfilePicture = "ms-appx:///Assets/default_picture.jpg", Bio = "Casual gamer and streamer", LastModified = DateTime.Now },
+                new { ProfileId = 10, UserId = 10, ProfilePicture = "ms-appx:///Assets/default_picture.jpg", Bio = "Casual gamer and streamer", LastModified = DateTime.Now },
+                new { ProfileId = 11, UserId = 11, ProfilePicture = "ms-appx:///Assets/default_picture.jpg", Bio = "Welcome new user!", LastModified = DateTime.Now },
+                new { ProfileId = 12, UserId = 12, ProfilePicture = "ms-appx:///Assets/default_picture.jpg", Bio = "Welcome new user!", LastModified = DateTime.Now },
+                new { ProfileId = 13, UserId = 13, ProfilePicture = "ms-appx:///Assets/default_picture.jpg", Bio = "Welcome new user!", LastModified = DateTime.Now }
             };
 
             modelBuilder.Entity<UserProfile>().HasData(userProfilesSeed);
 
-            // ReviewsUsers seed data
-            var reviewsUsersSeed = new List<object>
-            {
-                new { UserId = 2, Name = "Sam Carter", ProfilePicture = (byte[])null },
-                new { UserId = 3, Name = "Taylor Kim", ProfilePicture = (byte[])null }
-            };
-
-            modelBuilder.Entity<ReviewsUser>().HasData(reviewsUsersSeed);
-
             // Features seed data
             var featuresSeed = new List<object>
             {
-                new { feature_id = 1, name = "Black Hat", value = 2000, description = "An elegant hat", type = "hat", source = "Assets/Features/Hats/black-hat.png", equipped = false },
-                new { feature_id = 2, name = "Pufu", value = 10, description = "Cute doggo", type = "pet", source = "Assets/Features/Pets/dog.png", equipped = false },
-                new { feature_id = 3, name = "Kitty", value = 8, description = "Cute cat", type = "pet", source = "Assets/Features/Pets/cat.png", equipped = false },
-                new { feature_id = 4, name = "Frame", value = 5, description = "Violet frame", type = "frame", source = "Assets/Features/Frames/frame1.png", equipped = false },
-                new { feature_id = 5, name = "Love Emoji", value = 7, description = "lalal", type = "emoji", source = "Assets/Features/Emojis/love.png", equipped = false },
-                new { feature_id = 6, name = "Violet Background", value = 7, description = "Violet Background", type = "background", source = "Assets/Features/Backgrounds/violet.jpg", equipped = false }
+                new { FeatureId = 1, Name = "Black Hat", Value = 2000, Description = "An elegant hat", Type = "hat", Source = "Assets/Features/Hats/black-hat.png", Equipped = false },
+                new { FeatureId = 2, Name = "Pufu", Value = 10, Description = "Cute doggo", Type = "pet", Source = "Assets/Features/Pets/dog.png", Equipped = false },
+                new { FeatureId = 3, Name = "Kitty", Value = 8, Description = "Cute cat", Type = "pet", Source = "Assets/Features/Pets/cat.png", Equipped = false },
+                new { FeatureId = 4, Name = "Frame", Value = 5, Description = "Violet frame", Type = "frame", Source = "Assets/Features/Frames/frame1.png", Equipped = false },
+                new { FeatureId = 5, Name = "Love Emoji", Value = 7, Description = "lalal", Type = "emoji", Source = "Assets/Features/Emojis/love.png", Equipped = false },
+                new { FeatureId = 6, Name = "Violet Background", Value = 7, Description = "Violet Background", Type = "background", Source = "Assets/Features/Backgrounds/violet.jpg", Equipped = false }
             };
 
             modelBuilder.Entity<Feature>().HasData(featuresSeed);
@@ -810,19 +802,19 @@ namespace BusinessLayer.DataContext
             // Wallets seed data
             var walletsSeed = new List<object>
             {
-                new { wallet_id = 1, user_id = 1, points = 10, money_for_games = 200m },
-                new { wallet_id = 2, user_id = 2, points = 10, money_for_games = 200m },
-                new { wallet_id = 3, user_id = 3, points = 10, money_for_games = 200m },
-                new { wallet_id = 4, user_id = 4, points = 10, money_for_games = 200m },
-                new { wallet_id = 5, user_id = 5, points = 10, money_for_games = 200m },
-                new { wallet_id = 6, user_id = 6, points = 10, money_for_games = 200m },
-                new { wallet_id = 7, user_id = 7, points = 10, money_for_games = 200m },
-                new { wallet_id = 8, user_id = 8, points = 10, money_for_games = 200m },
-                new { wallet_id = 9, user_id = 9, points = 10, money_for_games = 200m },
-                new { wallet_id = 10, user_id = 10, points = 10, money_for_games = 200m },
-                new { wallet_id = 11, user_id = 11, points = 10, money_for_games = 200m },
-                new { wallet_id = 12, user_id = 12, points = 10, money_for_games = 200m },
-                new { wallet_id = 13, user_id = 13, points = 10, money_for_games = 200m }
+                new { WalletId = 1, UserId = 1, Points = 10, Balance = 200m },
+                new { WalletId = 2, UserId = 2, Points = 10, Balance = 200m },
+                new { WalletId = 3, UserId = 3, Points = 10, Balance = 200m },
+                new { WalletId = 4, UserId = 4, Points = 10, Balance = 200m },
+                new { WalletId = 5, UserId = 5, Points = 10, Balance = 200m },
+                new { WalletId = 6, UserId = 6, Points = 10, Balance = 200m },
+                new { WalletId = 7, UserId = 7, Points = 10, Balance = 200m },
+                new { WalletId = 8, UserId = 8, Points = 10, Balance = 200m },
+                new { WalletId = 9, UserId = 9, Points = 10, Balance = 200m },
+                new { WalletId = 10, UserId = 10, Points = 10, Balance = 200m },
+                new { WalletId = 11, UserId = 11, Points = 10, Balance = 200m },
+                new { WalletId = 12, UserId = 12, Points = 10, Balance = 200m },
+                new { WalletId = 13, UserId = 13, Points = 10, Balance = 200m }
             };
 
             modelBuilder.Entity<Wallet>().HasData(walletsSeed);
@@ -830,18 +822,18 @@ namespace BusinessLayer.DataContext
             // Collections seed data
             var collectionsSeed = new List<object>
             {
-                new { collection_id = 1, user_id = 1, name = "All Owned Games", cover_picture = "/Assets/Collections/allgames.jpg", is_public = true, created_at = DateOnly.Parse("2022-02-21") },
-                new { collection_id = 2, user_id = 1, name = "Sports", cover_picture = "/Assets/Collections/sports.jpg", is_public = true, created_at = DateOnly.Parse("2023-03-21") },
-                new { collection_id = 3, user_id = 1, name = "Chill Games", cover_picture = "/Assets/Collections/chill.jpg", is_public = true, created_at = DateOnly.Parse("2024-03-21") },
-                new { collection_id = 4, user_id = 1, name = "X-Mas", cover_picture = "/Assets/Collections/xmas.jpg", is_public = false, created_at = DateOnly.Parse("2025-02-21") },
-                new { collection_id = 5, user_id = 2, name = "Shooters", cover_picture = "/Assets/Collections/shooters.jpg", is_public = true, created_at = DateOnly.Parse("2025-03-21") },
-                new { collection_id = 6, user_id = 2, name = "Pets", cover_picture = "/Assets/Collections/pets.jpg", is_public = false, created_at = DateOnly.Parse("2025-01-21") },
-                new { collection_id = 7, user_id = 11, name = "All Owned Games", cover_picture = "/Assets/Collections/allgames.jpg", is_public = true, created_at = DateOnly.Parse("2022-02-21") },
-                new { collection_id = 8, user_id = 11, name = "Shooters", cover_picture = "/Assets/Collections/shooters.jpg", is_public = true, created_at = DateOnly.Parse("2025-03-21") },
-                new { collection_id = 9, user_id = 11, name = "Sports", cover_picture = "/Assets/Collections/sports.jpg", is_public = true, created_at = DateOnly.Parse("2023-03-21") },
-                new { collection_id = 10, user_id = 11, name = "Chill Games", cover_picture = "/Assets/Collections/chill.jpg", is_public = true, created_at = DateOnly.Parse("2024-03-21") },
-                new { collection_id = 11, user_id = 11, name = "Pets", cover_picture = "/Assets/Collections/pets.jpg", is_public = false, created_at = DateOnly.Parse("2025-01-21") },
-                new { collection_id = 12, user_id = 11, name = "X-Mas", cover_picture = "/Assets/Collections/xmas.jpg", is_public = false, created_at = DateOnly.Parse("2025-02-21") }
+                new { CollectionId = 1, UserId = 1, CollectionName = "All Owned Games", CoverPicture = "/Assets/Collections/allgames.jpg", IsPublic = true, CreatedAt = DateOnly.Parse("2022-02-21") },
+                new { CollectionId = 2, UserId = 1, CollectionName = "Sports", CoverPicture = "/Assets/Collections/sports.jpg", IsPublic = true, CreatedAt = DateOnly.Parse("2023-03-21") },
+                new { CollectionId = 3, UserId = 1, CollectionName = "Chill Games", CoverPicture = "/Assets/Collections/chill.jpg", IsPublic = true, CreatedAt = DateOnly.Parse("2024-03-21") },
+                new { CollectionId = 4, UserId = 1, CollectionName = "X-Mas", CoverPicture = "/Assets/Collections/xmas.jpg", IsPublic = false, CreatedAt = DateOnly.Parse("2025-02-21") },
+                new { CollectionId = 5, UserId = 2, CollectionName = "Shooters", CoverPicture = "/Assets/Collections/shooters.jpg", IsPublic = true, CreatedAt = DateOnly.Parse("2025-03-21") },
+                new { CollectionId = 6, UserId = 2, CollectionName = "Pets", CoverPicture = "/Assets/Collections/pets.jpg", IsPublic = false, CreatedAt = DateOnly.Parse("2025-01-21") },
+                new { CollectionId = 7, UserId = 11, CollectionName = "All Owned Games", CoverPicture = "/Assets/Collections/allgames.jpg", IsPublic = true, CreatedAt = DateOnly.Parse("2022-02-21") },
+                new { CollectionId = 8, UserId = 11, CollectionName = "Shooters", CoverPicture = "/Assets/Collections/shooters.jpg", IsPublic = true, CreatedAt = DateOnly.Parse("2025-03-21") },
+                new { CollectionId = 9, UserId = 11, CollectionName = "Sports", CoverPicture = "/Assets/Collections/sports.jpg", IsPublic = true, CreatedAt = DateOnly.Parse("2023-03-21") },
+                new { CollectionId = 10, UserId = 11, CollectionName = "Chill Games", CoverPicture = "/Assets/Collections/chill.jpg", IsPublic = true, CreatedAt = DateOnly.Parse("2024-03-21") },
+                new { CollectionId = 11, UserId = 11, CollectionName = "Pets", CoverPicture = "/Assets/Collections/pets.jpg", IsPublic = false, CreatedAt = DateOnly.Parse("2025-01-21") },
+                new { CollectionId = 12, UserId = 11, CollectionName = "X-Mas", CoverPicture = "/Assets/Collections/xmas.jpg", IsPublic = false, CreatedAt = DateOnly.Parse("2025-02-21") }
             };
 
             modelBuilder.Entity<Collection>().HasData(collectionsSeed);
@@ -849,17 +841,17 @@ namespace BusinessLayer.DataContext
             // OwnedGames seed data
             var ownedGamesSeed = new List<object>
             {
-                new { game_id = 1, user_id = 11, title = "Call of Duty: MWIII", description = "First?person military shooter", cover_picture = "/Assets/Games/codmw3.png" },
-                new { game_id = 2, user_id = 11, title = "Overwatch2", description = "Team?based hero shooter", cover_picture = "/Assets/Games/overwatch2.png" },
-                new { game_id = 3, user_id = 11, title = "Counter?Strike2", description = "Tactical shooter", cover_picture = "/Assets/Games/cs2.png" },
-                new { game_id = 4, user_id = 11, title = "FIFA25", description = "Football simulation", cover_picture = "/Assets/Games/fifa25.png" },
-                new { game_id = 5, user_id = 11, title = "NBA2K25", description = "Basketball simulation", cover_picture = "/Assets/Games/nba2k25.png" },
-                new { game_id = 6, user_id = 11, title = "Tony Hawk Pro Skater", description = "Skateboarding sports game", cover_picture = "/Assets/Games/thps.png" },
-                new { game_id = 7, user_id = 11, title = "Stardew Valley", description = "Relaxing farming game", cover_picture = "/Assets/Games/stardewvalley.png" },
-                new { game_id = 8, user_id = 11, title = "The Sims4: Cats & Dogs", description = "Life sim with pets", cover_picture = "/Assets/Games/sims4pets.png" },
-                new { game_id = 9, user_id = 11, title = "Nintendogs", description = "Pet care simulation", cover_picture = "/Assets/Games/nintendogs.png" },
-                new { game_id = 10, user_id = 11, title = "Pet Hotel", description = "Manage a hotel for pets", cover_picture = "/Assets/Games/pethotel.png" },
-                new { game_id = 11, user_id = 11, title = "Christmas Wonderland", description = "Festive hidden object game", cover_picture = "/Assets/Games/xmas.png" }
+                new { GameId = 1, UserId = 11, GameTitle = "Call of Duty: MWIII", Description = "First?person military shooter", CoverPicture = "/Assets/Games/codmw3.png" },
+                new { GameId = 2, UserId = 11, GameTitle = "Overwatch2", Description = "Team?based hero shooter", CoverPicture = "/Assets/Games/overwatch2.png" },
+                new { GameId = 3, UserId = 11, GameTitle = "Counter?Strike2", Description = "Tactical shooter", CoverPicture = "/Assets/Games/cs2.png" },
+                new { GameId = 4, UserId = 11, GameTitle = "FIFA25", Description = "Football simulation", CoverPicture = "/Assets/Games/fifa25.png" },
+                new { GameId = 5, UserId = 11, GameTitle = "NBA2K25", Description = "Basketball simulation", CoverPicture = "/Assets/Games/nba2k25.png" },
+                new { GameId = 6, UserId = 11, GameTitle = "Tony Hawk Pro Skater", Description = "Skateboarding sports game", CoverPicture = "/Assets/Games/thps.png" },
+                new { GameId = 7, UserId = 11, GameTitle = "Stardew Valley", Description = "Relaxing farming game", CoverPicture = "/Assets/Games/stardewvalley.png" },
+                new { GameId = 8, UserId = 11, GameTitle = "The Sims4: Cats & Dogs", Description = "Life sim with pets", CoverPicture = "/Assets/Games/sims4pets.png" },
+                new { GameId = 9, UserId = 11, GameTitle = "Nintendogs", Description = "Pet care simulation", CoverPicture = "/Assets/Games/nintendogs.png" },
+                new { GameId = 10, UserId = 11, GameTitle = "Pet Hotel", Description = "Manage a hotel for pets", CoverPicture = "/Assets/Games/pethotel.png" },
+                new { GameId = 11, UserId = 11, GameTitle = "Christmas Wonderland", Description = "Festive hidden object game", CoverPicture = "/Assets/Games/xmas.png" }
             };
 
             modelBuilder.Entity<OwnedGame>().HasData(ownedGamesSeed);
@@ -867,36 +859,36 @@ namespace BusinessLayer.DataContext
             // Achievements seed data
             var achievementsSeed = new List<object>
             {
-                new { achievement_id = 1, achievement_name = "FRIENDSHIP1", description = "You made a friend, you get a point", achievement_type = "Friendships", points = 1, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 2, achievement_name = "FRIENDSHIP2", description = "You made 5 friends, you get 3 points", achievement_type = "Friendships", points = 3, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 3, achievement_name = "FRIENDSHIP3", description = "You made 10 friends, you get 5 points", achievement_type = "Friendships", points = 5, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 4, achievement_name = "FRIENDSHIP4", description = "You made 50 friends, you get 10 points", achievement_type = "Friendships", points = 10, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 5, achievement_name = "FRIENDSHIP5", description = "You made 100 friends, you get 15 points", achievement_type = "Friendships", points = 15, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 6, achievement_name = "OWNEDGAMES1", description = "You own 1 game, you get 1 point", achievement_type = "Owned Games", points = 1, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 7, achievement_name = "OWNEDGAMES2", description = "You own 5 games, you get 3 points", achievement_type = "Owned Games", points = 3, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 8, achievement_name = "OWNEDGAMES3", description = "You own 10 games, you get 5 points", achievement_type = "Owned Games", points = 5, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 9, achievement_name = "OWNEDGAMES4", description = "You own 50 games, you get 10 points", achievement_type = "Owned Games", points = 10, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 10, achievement_name = "SOLDGAMES1", description = "You sold 1 game, you get 1 point", achievement_type = "Sold Games", points = 1, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 11, achievement_name = "SOLDGAMES2", description = "You sold 5 games, you get 3 points", achievement_type = "Sold Games", points = 3, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 12, achievement_name = "SOLDGAMES3", description = "You sold 10 games, you get 5 points", achievement_type = "Sold Games", points = 5, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 13, achievement_name = "SOLDGAMES4", description = "You sold 50 games, you get 10 points", achievement_type = "Sold Games", points = 10, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 14, achievement_name = "REVIEW1", description = "You gave 1 review, you get 1 point", achievement_type = "Number of Reviews Given", points = 1, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 15, achievement_name = "REVIEW2", description = "You gave 5 reviews, you get 3 points", achievement_type = "Number of Reviews Given", points = 3, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 16, achievement_name = "REVIEW3", description = "You gave 10 reviews, you get 5 points", achievement_type = "Number of Reviews Given", points = 5, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 17, achievement_name = "REVIEW4", description = "You gave 50 reviews, you get 10 points", achievement_type = "Number of Reviews Given", points = 10, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 18, achievement_name = "REVIEWR1", description = "You got 1 review, you get 1 point", achievement_type = "Number of Reviews Received", points = 1, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 19, achievement_name = "REVIEWR2", description = "You got 5 reviews, you get 3 points", achievement_type = "Number of Reviews Received", points = 3, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 20, achievement_name = "REVIEWR3", description = "You got 10 reviews, you get 5 points", achievement_type = "Number of Reviews Received", points = 5, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 21, achievement_name = "REVIEWR4", description = "You got 50 reviews, you get 10 points", achievement_type = "Number of Reviews Received", points = 10, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 22, achievement_name = "DEVELOPER", description = "You are a developer, you get 10 points", achievement_type = "Developer", points = 10, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 23, achievement_name = "ACTIVITY1", description = "You have been active for 1 year, you get 1 point", achievement_type = "Years of Activity", points = 1, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 24, achievement_name = "ACTIVITY2", description = "You have been active for 2 years, you get 3 points", achievement_type = "Years of Activity", points = 3, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 25, achievement_name = "ACTIVITY3", description = "You have been active for 3 years, you get 5 points", achievement_type = "Years of Activity", points = 5, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 26, achievement_name = "ACTIVITY4", description = "You have been active for 4 years, you get 10 points", achievement_type = "Years of Activity", points = 10, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 27, achievement_name = "POSTS1", description = "You have made 1 post, you get 1 point", achievement_type = "Number of Posts", points = 1, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 28, achievement_name = "POSTS2", description = "You have made 5 posts, you get 3 points", achievement_type = "Number of Posts", points = 3, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 29, achievement_name = "POSTS3", description = "You have made 10 posts, you get 5 points", achievement_type = "Number of Posts", points = 5, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new { achievement_id = 30, achievement_name = "POSTS4", description = "You have made 50 posts, you get 10 points", achievement_type = "Number of Posts", points = 10, icon_url = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" }
+                new { AchievementId = 1, AchievementName = "FRIENDSHIP1", Description = "You made a friend, you get a point", AchievementType = "Friendships", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 2, AchievementName = "FRIENDSHIP2", Description = "You made 5 friends, you get 3 points", AchievementType = "Friendships", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 3, AchievementName = "FRIENDSHIP3", Description = "You made 10 friends, you get 5 points", AchievementType = "Friendships", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 4, AchievementName = "FRIENDSHIP4", Description = "You made 50 friends, you get 10 points", AchievementType = "Friendships", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 5, AchievementName = "FRIENDSHIP5", Description = "You made 100 friends, you get 15 points", AchievementType = "Friendships", Points = 15, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 6, AchievementName = "OWNEDGAMES1", Description = "You own 1 game, you get 1 point", AchievementType = "Owned Games", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 7, AchievementName = "OWNEDGAMES2", Description = "You own 5 games, you get 3 points", AchievementType = "Owned Games", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 8, AchievementName = "OWNEDGAMES3", Description = "You own 10 games, you get 5 points", AchievementType = "Owned Games", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 9, AchievementName = "OWNEDGAMES4", Description = "You own 50 games, you get 10 points", AchievementType = "Owned Games", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 10, AchievementName = "SOLDGAMES1", Description = "You sold 1 game, you get 1 point", AchievementType = "Sold Games", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 11, AchievementName = "SOLDGAMES2", Description = "You sold 5 games, you get 3 points", AchievementType = "Sold Games", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 12, AchievementName = "SOLDGAMES3", Description = "You sold 10 games, you get 5 points", AchievementType = "Sold Games", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 13, AchievementName = "SOLDGAMES4", Description = "You sold 50 games, you get 10 points", AchievementType = "Sold Games", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 14, AchievementName = "REVIEW1", Description = "You gave 1 review, you get 1 point", AchievementType = "Number of Reviews Given", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 15, AchievementName = "REVIEW2", Description = "You gave 5 reviews, you get 3 points", AchievementType = "Number of Reviews Given", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 16, AchievementName = "REVIEW3", Description = "You gave 10 reviews, you get 5 points", AchievementType = "Number of Reviews Given", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 17, AchievementName = "REVIEW4", Description = "You gave 50 reviews, you get 10 points", AchievementType = "Number of Reviews Given", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 18, AchievementName = "REVIEWR1", Description = "You got 1 review, you get 1 point", AchievementType = "Number of Reviews Received", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 19, AchievementName = "REVIEWR2", Description = "You got 5 reviews, you get 3 points", AchievementType = "Number of Reviews Received", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 20, AchievementName = "REVIEWR3", Description = "You got 10 reviews, you get 5 points", AchievementType = "Number of Reviews Received", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 21, AchievementName = "REVIEWR4", Description = "You got 50 reviews, you get 10 points", AchievementType = "Number of Reviews Received", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 22, AchievementName = "DEVELOPER", Description = "You are a developer, you get 10 points", AchievementType = "Developer", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 23, AchievementName = "ACTIVITY1", Description = "You have been active for 1 year, you get 1 point", AchievementType = "Years of Activity", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 24, AchievementName = "ACTIVITY2", Description = "You have been active for 2 years, you get 3 points", AchievementType = "Years of Activity", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 25, AchievementName = "ACTIVITY3", Description = "You have been active for 3 years, you get 5 points", AchievementType = "Years of Activity", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 26, AchievementName = "ACTIVITY4", Description = "You have been active for 4 years, you get 10 points", AchievementType = "Years of Activity", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 27, AchievementName = "POSTS1", Description = "You have made 1 post, you get 1 point", AchievementType = "Number of Posts", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 28, AchievementName = "POSTS2", Description = "You have made 5 posts, you get 3 points", AchievementType = "Number of Posts", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 29, AchievementName = "POSTS3", Description = "You have made 10 posts, you get 5 points", AchievementType = "Number of Posts", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new { AchievementId = 30, AchievementName = "POSTS4", Description = "You have made 50 posts, you get 10 points", AchievementType = "Number of Posts", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" }
             };
 
             modelBuilder.Entity<Achievement>().HasData(achievementsSeed);
