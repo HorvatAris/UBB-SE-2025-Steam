@@ -10,6 +10,17 @@ public class Game
 {
     public const decimal NOTCOMPUTED = -111111;
 
+    // Added from business layer
+    public int GameIdentifier { get; set; }
+    public string TitleOfGame { get; set; }
+    public string DescriptionOfGame { get; set; }
+    public string CoverImagePathOrUrl { get; set; }
+    public DateTime DateWhenGameWasReleased { get; set; }
+
+    // optianal display helpers
+    public int RetrieveGameId() => GameIdentifier;
+    public string RetrieveGameTitle() => TitleOfGame;
+
     public Game()
     {
     }

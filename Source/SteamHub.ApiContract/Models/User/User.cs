@@ -1,4 +1,6 @@
-﻿namespace SteamHub.ApiContract.Models.User
+﻿using System.Reflection;
+
+namespace SteamHub.ApiContract.Models.User
 {
     /// <summary>
     /// Data Transfer Object (DTO) representing user details.
@@ -8,9 +10,9 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="User"/> class.
         /// </summary>
-        public User()
-        {
-        }
+        //public User()
+        //{
+        //}
 
         /// <summary>
         /// Initializes a new instance with all properties specified.
@@ -54,6 +56,68 @@
             UserRole = userDetails.UserRole;
         }
 
+        //Added from business layer
+        public byte[] ProfilePicture;
+    
+        // Only one Username/UserName
+        public string Username { get; set; }
+        public bool IsDeveloper => UserRole == UserRole.Developer;
+        public DateTime CreatedAt { get; set; }
+
+        public ICollection<UserAchievement> UserAchievements { get; set; }
+        public ICollection<SoldGame> SoldGames { get; set; } = new List<SoldGame>();
+        public DateTime? LastLogin { get; set; }
+        public string IpAddress;
+        public string ProfilePicturePath;
+        public FriendshipStatus FriendshipStatus;
+        private async void LoadProfilePicture()
+        {
+            #if DEBUG
+                try
+                {
+                    string exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    string imagePath = Path.Combine(exePath, "Assets", "default_avatar.png");
+                    ProfilePicture = File.ReadAllBytes(imagePath);
+                }
+                catch
+                {
+                    ProfilePicture = new byte[0];
+                }
+            #endif
+        }
+        public static User GetUserById(int userId)
+        {
+            return new User
+            {
+                UserId = userId,
+                Username = $"User_{userId}",
+                ProfilePicturePath = "ms-appx:///Assets/DefaultUser.png"
+            };
+        }
+
+        public User(int id, string username, bool isDeveloper)
+        {
+            LoadProfilePicture();
+            this.UserId = id;
+            this.Username = username;
+            //this.IsDeveloper = isDeveloper;
+        }
+
+        public User(int id, string userName, string ipAddress)
+        {
+            this.UserId = id;
+            this.Username = userName;
+            this.IpAddress = ipAddress;
+        }
+
+        public User()
+        {
+            LoadProfilePicture();
+            this.UserId = 0;
+            this.Username = "test";
+            //this.IsDeveloper = false;
+        }
+
         /// <summary>
         /// Gets or sets the unique identifier for the user.
         /// </summary>
@@ -88,5 +152,13 @@
         /// Gets or sets the user's role (e.g., Developer or User).
         /// </summary>
         public UserRole UserRole { get; set; }
+    }
+
+    public enum FriendshipStatus
+    {
+        NotFriends,
+        Friends,
+        RequestSent,
+        RequestReceived
     }
 }

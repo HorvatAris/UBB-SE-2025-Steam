@@ -38,7 +38,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         /// Initializes a new instance of the <see cref="ServiceProxy"/> class.
         /// </summary>
         /// <param name="baseUrl">The base URL for API endpoints.</param>
-        public ServiceProxy(string baseUrl = "https://localhost:7262/api/")
+        public ServiceProxy(string baseUrl = "https://localhost:7241/api/")
         {
             BaseUrl = baseUrl ?? throw new ArgumentNullException(nameof(baseUrl));
             SetAuthTokenSafely(_authToken);
