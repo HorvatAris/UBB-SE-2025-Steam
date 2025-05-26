@@ -1,3 +1,5 @@
+using SteamHub.ApiContract.Models;
+
 namespace SteamHub.Api.Entities
 {
     /// <summary>
@@ -69,7 +71,10 @@ namespace SteamHub.Api.Entities
         /// Gets or sets the collection of store transactions made by the user.
         /// </summary>
         public IList<StoreTransaction> StoreTransactions { get; set; }
-        
+
+        public ICollection<UserAchievement> UserAchievements { get; set; }
+
+
         /// <summary>
         /// Gets or sets the user's profile picture binary data.
         /// </summary>
