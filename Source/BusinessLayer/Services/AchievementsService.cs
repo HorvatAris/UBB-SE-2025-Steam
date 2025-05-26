@@ -267,54 +267,6 @@ namespace BusinessLayer.Services
             }
         }
 
-        public void RemoveAchievement(int userId, int achievementId)
-        {
-            try
-            {
-                achievementsRepository.RemoveAchievement(userId, achievementId);
-            }
-            catch (RepositoryException exception)
-            {
-                throw new ServiceException("Error removing achievement.", exception);
-            }
-        }
-
-        public List<Achievement> GetUnlockedAchievementsForUser(int userId)
-        {
-            try
-            {
-                return achievementsRepository.GetUnlockedAchievementsForUser(userId);
-            }
-            catch (RepositoryException exception)
-            {
-                throw new ServiceException("Error retrieving unlocked achievements for user.", exception);
-            }
-        }
-
-        public List<Achievement> GetAllAchievements()
-        {
-            try
-            {
-                return achievementsRepository.GetAllAchievements();
-            }
-            catch (RepositoryException exception)
-            {
-                throw new ServiceException("Error retrieving unlocked achievements for user.", exception);
-            }
-        }
-
-        public AchievementUnlockedData GetUnlockedDataForAchievement(int userId, int achievementId)
-        {
-            try
-            {
-                return achievementsRepository.GetUnlockedDataForAchievement(userId, achievementId);
-            }
-            catch (RepositoryException exception)
-            {
-                throw new ServiceException("Error retrieving unlocked data for achievement.", exception);
-            }
-        }
-
         public List<AchievementWithStatus> GetAchievementsWithStatusForUser(int userId)
         {
             try

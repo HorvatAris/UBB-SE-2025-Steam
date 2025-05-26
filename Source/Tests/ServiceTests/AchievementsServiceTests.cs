@@ -649,64 +649,6 @@ namespace Tests.ServiceTests
         }
 
         [Test]
-        public void RemoveAchievement_CallsRepositoryWithoutException()
-        {
-            // Arrange
-            var fakeRepository = new FakeAchievementsRepository();
-            var service = new AchievementsService(fakeRepository);
-
-            // Act
-            Assert.DoesNotThrow(() => service.RemoveAchievement(1, 123));
-        }
-
-        [Test]
-        public void RemoveAchievement_WhenRepositoryThrows_ThrowsServiceException()
-        {
-            // Arrange
-            var fakeRepository = new FakeAchievementsRepository
-            {
-                ThrowOnRemoveAchievement = true
-            };
-            // Act
-            var service = new AchievementsService(fakeRepository);
-            // Assert
-            Assert.Throws<ServiceException>(() => service.RemoveAchievement(1, 123));
-        }
-
-        [Test]
-        public void GetUnlockedAchievementsForUser_ReturnsCorrectList()
-        {
-            // Arrange
-            var fakeRepository = new FakeAchievementsRepository();
-            var expected = new List<Achievement>
-    {
-        new Achievement { AchievementId = 1, AchievementName = "Test" }
-    };
-            fakeRepository.UnlockedAchievementsToReturn = expected; // you'll add this
-
-            var service = new AchievementsService(fakeRepository);
-            // Act
-            var result = service.GetUnlockedAchievementsForUser(1);
-            // Assert
-            Assert.That(result, Is.EqualTo(expected));
-        }
-
-        [Test]
-        public void GetUnlockedAchievementsForUser_WhenRepositoryThrows_ThrowsServiceException()
-        {
-            // Arrange
-            var fakeRepository = new FakeAchievementsRepository
-            {
-                ThrowOnGetUnlockedAchievements = true
-            };
-            // Act
-            var service = new AchievementsService(fakeRepository);
-
-            // Assert
-            Assert.Throws<ServiceException>(() => service.GetUnlockedAchievementsForUser(1));
-        }
-
-        [Test]
         public void GetAllAchievements_ReturnsAllAchievements()
         {
             // Arrange
