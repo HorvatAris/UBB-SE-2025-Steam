@@ -51,6 +51,7 @@ namespace SteamHub.Api.Context
         public DbSet<OwnedGame> OwnedGames { get; set; }
         public DbSet<SoldGame> SoldGames { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Post> NewsPosts { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
