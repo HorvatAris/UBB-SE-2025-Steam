@@ -8,6 +8,9 @@ using SteamHub.ApiContract.Repositories;
 
 namespace SteamHub.Api.Context.Repositories
 {
+    /// <summary>
+    /// Repository for managing user sessions in the data context.
+    /// </summary>
     public class SessionRepository : ISessionRepository
     {
         private readonly DataContext context;
@@ -17,6 +20,11 @@ namespace SteamHub.Api.Context.Repositories
             this.context = newContext ?? throw new ArgumentNullException(nameof(context));
         }
 
+        /// <summary>
+        /// Creates a new session for the specified user.
+        /// </summary>
+        /// <param name="userId">The ID of the user for whom the session is created.</param>
+        /// <returns>The details of the newly created session.</returns>
         public SessionDetails CreateSession(int userId)
         {
             var old = context.UserSessions.Where(s => s.UserId == userId);
@@ -35,6 +43,10 @@ namespace SteamHub.Api.Context.Repositories
             return session;
         }
 
+        /// <summary>
+        /// Deletes all sessions of a specific user.
+        /// </summary>
+        /// <param name="userId">The ID of the user whose sessions are to be deleted.</param>
         public void DeleteUserSessions(int userId)
         {
             var toDelete = context.UserSessions.Where(s => s.UserId == userId).ToList();
@@ -42,6 +54,10 @@ namespace SteamHub.Api.Context.Repositories
             context.SaveChanges();
         }
 
+        /// <summary>
+        /// Deletes a session by its session ID.
+        /// </summary>
+        /// <param name="sessionId">The ID of the session to delete.</param>
         public void DeleteSession(Guid sessionId)
         {
             var session = context.UserSessions.Find(sessionId);
@@ -52,11 +68,21 @@ namespace SteamHub.Api.Context.Repositories
             }
         }
 
+        /// <summary>
+        /// Retrieves a session by its session ID.
+        /// </summary>
+        /// <param name="sessionId">The ID of the session to retrieve.</param>
+        /// <returns>The session details if found; otherwise, null.</returns>
         public SessionDetails GetSessionById(Guid sessionId)
         {
             return context.UserSessions.Find(sessionId);
         }
 
+        /// <summary>
+        /// Retrieves user details along with session information based on the session ID.
+        /// </summary>
+        /// <param name="sessionId">The ID of the session.</param>
+        /// <returns>User details with session information if the session is valid; otherwise, null.</returns>
         public UserWithSessionDetails? GetUserFromSession(Guid sessionId)
         {
             var session = context.UserSessions.Find(sessionId);
@@ -87,6 +113,10 @@ namespace SteamHub.Api.Context.Repositories
                 };
         }
 
+        /// <summary>
+        /// Retrieves session IDs of expired sessions.
+        /// </summary>
+        /// <returns>List of session IDs that have expired.</returns>
         public List<Guid> GetExpiredSessions()
         {
             return context.UserSessions
@@ -95,6 +125,9 @@ namespace SteamHub.Api.Context.Repositories
                 .ToList();
         }
 
+        /// <summary>
+        /// Cleans up (deletes) expired sessions from the data context.
+        /// </summary>
         public void CleanupExpiredSessions()
         {
             var expired = context.UserSessions
