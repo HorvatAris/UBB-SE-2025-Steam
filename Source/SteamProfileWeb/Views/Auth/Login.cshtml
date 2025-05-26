@@ -1,0 +1,42 @@
+﻿@model SteamProfileWeb.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Welcome Back!";
+    string returnUrl = ViewData["ReturnUrl"] as string ?? Url.Content("~/");
+}
+
+<div class="d-flex justify-content-center align-items-center" style="min-height:80vh;">
+    <div class="card shadow-sm" style="max-width:400px; width:100%; padding:2rem;">
+        <div class="card-body">
+            <h1 class="h3 text-center mb-4">@ViewData["Title"]</h1>
+
+            <form asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@returnUrl" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="UsernameOrEmail" class="form-label">Username or Email</label>
+                    <input asp-for="UsernameOrEmail" class="form-control" placeholder="Username or Email" />
+                    <span asp-validation-for="UsernameOrEmail" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mb-3">Log in</button>
+            </form>
+
+            <div class="text-center mb-2">
+                <a asp-controller="Auth" asp-action="Register">Don't have an account yet? Register now!</a>
+            </div>
+            <div class="text-center">
+                <a asp-controller="Auth" asp-action="ResetPassword">Forgot your password?</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

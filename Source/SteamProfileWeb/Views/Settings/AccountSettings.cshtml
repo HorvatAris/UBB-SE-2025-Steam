@@ -1,0 +1,37 @@
+﻿@model SteamProfileWeb.ViewModels.AccountSettingsViewModel
+
+<div class="container d-flex flex-column align-items-center justify-content-center" style="min-height: 70vh;">
+    <a asp-action="Index" class="btn btn-link mb-3">Go Back</a>
+    <h2 class="mb-4">Account Settings</h2>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success mt-3">@TempData["SuccessMessage"]</div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger mt-3">@Model.ErrorMessage</div>
+    }
+    <form asp-action="AccountSettings" method="post" class="w-100" style="max-width: 400px;">
+        <div class="mb-3 d-flex align-items-center gap-2">
+            <label class="form-label mb-0 flex-shrink-0" style="min-width:90px;">Username</label>
+            <input asp-for="Username" class="form-control rounded-pill" autocomplete="off" />
+            <button type="submit" name="action" value="UpdateUsername" class="btn btn-primary ms-2">Update</button>
+        </div>
+        <div class="mb-3 d-flex align-items-center gap-2">
+            <label class="form-label mb-0 flex-shrink-0" style="min-width:90px;">Email</label>
+            <input asp-for="Email" class="form-control rounded-pill" autocomplete="off" />
+            <button type="submit" name="action" value="UpdateEmail" class="btn btn-primary ms-2">Update</button>
+        </div>
+        <div class="mb-3 d-flex align-items-center gap-2">
+            <label class="form-label mb-0 flex-shrink-0" style="min-width:90px;">Password</label>
+            <input asp-for="Password" type="password" class="form-control rounded-pill" autocomplete="new-password" />
+            <button type="submit" name="action" value="UpdatePassword" class="btn btn-primary ms-2">Update</button>
+        </div>
+        <div class="mb-3">
+            <button type="submit" name="action" value="DeleteAccount" class="btn btn-danger w-100">Delete Account</button>
+        </div>
+    </form>
+    <form class="form-inline mt-3 w-100" asp-controller="Auth" asp-action="Logout" asp-route-returnUrl="@Url.Action("Login", "Auth")" method="post" style="max-width: 400px;">
+        <button type="submit" class="btn btn-secondary w-100">Log out</button>
+    </form>
+</div>

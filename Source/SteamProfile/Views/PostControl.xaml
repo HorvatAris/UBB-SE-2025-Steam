@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="SteamProfile.Views.PostControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="700"
+    d:DesignWidth="600">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<!-- Panel Content -->
+		<Border
+            Background="#FFF0F5"
+            BorderBrush="#D94C8A"
+            BorderThickness="2"
+            CornerRadius="15"
+            Margin="100,20"
+            MaxWidth="1200"
+            VerticalAlignment="Stretch">
+
+			<ScrollViewer VerticalScrollBarVisibility="Auto">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<!-- Header -->
+						<RowDefinition Height="Auto"/>
+						<!-- Post Content -->
+						<RowDefinition Height="Auto"/>
+						<!-- Interaction Buttons -->
+						<RowDefinition Height="Auto"/>
+						<!-- New Comment Input -->
+						<RowDefinition Height="Auto"/>
+						<!-- Comments Section -->
+					</Grid.RowDefinitions>
+
+					<!-- Header with Buttons -->
+					<Grid Grid.Row="0" Margin="32,16,32,0" Background="#FFC2D9" CornerRadius="10">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+
+						<!-- Profile Picture -->
+						<Grid Grid.Column="0" Width="52" Height="40" Margin="0,0,12,0">
+							<Ellipse
+                                Grid.Column="0"
+                                Width="40"
+                                Height="40"
+                                Margin="0,0,12,0">
+								<Ellipse.Fill>
+									<ImageBrush x:Name="ProfilePicture" Stretch="UniformToFill"/>
+								</Ellipse.Fill>
+							</Ellipse>
+						</Grid>
+
+						<!-- Username and Date -->
+						<StackPanel Grid.Column="1">
+							<TextBlock
+                                Name="Username"
+                                FontWeight="SemiBold"
+                                FontSize="18"
+                                Foreground="#D94C8A"/>
+							<TextBlock
+                                Name="UploadDate"
+                                FontSize="14"
+                                Foreground="#333333"/>
+						</StackPanel>
+
+						<!-- Edit Button -->
+						<Button
+                            x:Name="EditButton"
+                            Grid.Column="2"
+                            Content="Edit Post"
+                            Background="#D94C8A"
+                            Foreground="White"
+                            Click="EditButton_Click"
+                            Padding="8,4"
+                            Margin="0,0,8,0"
+                            CornerRadius="20"/>
+
+						<!-- Delete Button -->
+						<Button
+                            x:Name="DeleteButton"
+                            Grid.Column="3"
+                            Content="Delete Post"
+                            Background="#FF4C70"
+                            Foreground="White"
+                            Click="DeleteButton_Click"
+                            Padding="8,4"
+                            CornerRadius="20"/>
+					</Grid>
+
+					<!-- Post Content -->
+					<Grid Grid.Row="1" Margin="32,24" Background="White" CornerRadius="10">
+						<WebView2
+                            x:Name="ContentWebView"
+                            Height="400"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+					</Grid>
+
+					<!-- Interaction Buttons -->
+					<Grid Grid.Row="2" Margin="32,0,32,16" Background="#FFACC7" CornerRadius="10" Padding="16,8">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+
+						<!-- Like Button -->
+						<StackPanel
+                            Grid.Column="0"
+                            Orientation="Horizontal">
+							<Button
+                                x:Name="LikeButton"
+                                Click="LikeButton_Click"
+                                BorderThickness="1"
+                                Background="#FFC2D9"
+                                Padding="12,8"
+                                CornerRadius="15">
+								<StackPanel Orientation="Horizontal">
+									<FontIcon
+                                        Glyph="&#xE8E1;"
+                                        FontSize="16"
+                                        Foreground="#D94C8A"/>
+									<TextBlock
+                                        Name="LikesCount"
+                                        VerticalAlignment="Center"
+                                        Margin="4,0,0,0"
+                                        Foreground="#333333"/>
+								</StackPanel>
+							</Button>
+						</StackPanel>
+
+						<!-- Dislike Button -->
+						<StackPanel
+                            Grid.Column="1"
+                            Orientation="Horizontal"
+                            Margin="12,0,0,0">
+							<Button
+                                x:Name="DislikeButton"
+                                Click="DislikeButton_Click"
+                                BorderThickness="1"
+                                Background="#FFC2D9"
+                                Padding="12,8"
+                                CornerRadius="15">
+								<StackPanel Orientation="Horizontal">
+									<FontIcon
+                                        Glyph="&#xE8E2;"
+                                        FontSize="16"
+                                        Foreground="#D94C8A"/>
+									<TextBlock
+                                        Name="DislikesCount"
+                                        VerticalAlignment="Center"
+                                        Margin="4,0,0,0"
+                                        Foreground="#333333"/>
+								</StackPanel>
+							</Button>
+						</StackPanel>
+
+						<!-- Comment Button -->
+						<StackPanel
+                            Grid.Column="2"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+							<Button
+                                BorderThickness="1"
+                                Background="#FFC2D9"
+                                Padding="12,8"
+                                CornerRadius="15">
+								<StackPanel Orientation="Horizontal">
+									<FontIcon
+                                        Glyph="&#xE8AF;"
+                                        FontSize="16"
+                                        Foreground="#D94C8A"/>
+									<TextBlock
+                                        Name="CommentsCount"
+                                        VerticalAlignment="Center"
+                                        Margin="4,0,0,0"
+                                        Foreground="#333333"/>
+								</StackPanel>
+							</Button>
+						</StackPanel>
+					</Grid>
+
+					<!-- New Comment Input -->
+					<local:CommentInputControl
+                        Grid.Row="3"
+                        x:Name="NewCommentInput"
+                        Margin="32,0,32,16"
+                        CommentPosted="NewCommentInput_CommentPosted"/>
+
+					<!-- Comments Section -->
+					<Grid Grid.Row="4" Margin="32,8,32,16">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<!-- Comments Header -->
+							<RowDefinition Height="Auto"/>
+							<!-- Comments List -->
+						</Grid.RowDefinitions>
+
+						<!-- Comments Header -->
+						<TextBlock
+                            Grid.Row="0"
+                            Text="Comments"
+                            FontWeight="SemiBold"
+                            FontSize="18"
+                            Foreground="#D94C8A"
+                            Margin="0,0,0,12"/>
+
+						<!-- Comments List -->
+						<StackPanel Grid.Row="1" Spacing="12" x:Name="CommentsPanel">
+							<!-- Comments will be added dynamically in code -->
+						</StackPanel>
+					</Grid>
+				</Grid>
+			</ScrollViewer>
+		</Border>
+	</Grid>
+</UserControl>

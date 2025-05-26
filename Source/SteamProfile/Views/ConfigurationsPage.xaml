@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SteamProfile.Views.ConfigurationsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <StackPanel VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" 
+                    Spacing="10"
+                    Padding="40"
+                    MaxWidth="400">
+            
+            <TextBlock Text="Configurations"
+                       Style="{ThemeResource TitleLargeTextBlockStyle}"
+                       HorizontalAlignment="Center"
+                       Padding="0,0,0,20"/>
+
+            <Button Content="Manage Features"
+                    Command="{Binding NavigateToFeaturesCommand}"
+                    Style="{ThemeResource AccentButtonStyle}"
+                    HorizontalAlignment="Center"
+                    Width="200"/>
+            <Button Content="Account Settings"
+                    Command="{Binding NavigateToAccountSettingsCommand}"
+                    HorizontalAlignment="Center" 
+                    Width="200"/>
+            <Button Content="Modify Profile"
+                    Command="{Binding NavigateToProfileSettingsCommand}"
+                    HorizontalAlignment="Center" 
+                    Width="200"/>
+           
+            <Button Content="Back to Profile"
+                    Command="{Binding NavigateToProfileCommand}"
+                    Style="{ThemeResource TextBlockButtonStyle}"/>
+        </StackPanel>
+    </Grid>
+</Page>

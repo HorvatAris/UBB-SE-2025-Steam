@@ -1,0 +1,94 @@
+@model SteamProfileWeb.ViewModels.FeaturesViewModel
+@{
+    ViewData["Title"] = "Features";
+}
+
+@if (TempData["LoginRequired"] != null)
+{
+    <div class="alert alert-warning" role="alert">
+        @TempData["LoginRequired"]
+    </div>
+}
+
+<div class="container">
+    <div class="mb-3 text-end">
+        <a href="@Url.Action("UserFeatures", "Features")" class="btn btn-info">
+            See My Features
+        </a>
+    </div>
+    <h1 class="mb-4">Features Store</h1>
+
+    @foreach (var category in Model.FeaturesByCategories)
+    {
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 class="h4 mb-0">@category.Key</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @foreach (var feature in category.Value)
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">@feature.Name</h5>
+                                    <p class="card-text">@feature.Description</p>
+                                    <p class="card-text">
+                                        <small class="text-muted">Price: @feature.Value points</small>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-primary preview-feature" data-feature-id="@feature.FeatureId">
+                                        Preview
+                                    </button>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <button class="btn btn-success purchase-feature" data-feature-id="@feature.FeatureId">
+                                            Purchase
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.preview-feature').click(function () {
+                var featureId = $(this).data('feature-id');
+                window.location.href = '@Url.Action("PreviewFeature", "Features")' + '?featureId=' + featureId;
+            });
+
+            $('.purchase-feature').click(function () {
+                var button = $(this);
+                var featureId = button.data('feature-id');
+
+                $.ajax({
+                    url: '@Url.Action("PurchaseFeature", "Features")',
+                    type: 'POST',
+                    data: { featureId: featureId },
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Feature purchased successfully!');
+                            window.location.href = '@Url.Action("UserFeatures", "Features")';
+                        } else {
+                            alert(response.message || 'Failed to purchase feature.');
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while processing your request.');
+                    }
+                });
+            });
+        });
+    </script>
+} 

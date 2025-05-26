@@ -1,0 +1,142 @@
+@model SteamProfileWeb.ViewModels.WalletViewModel
+@{
+    ViewData["Title"] = "Your Wallet";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    <div class="row">
+        <!-- Balance Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Current Balance
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title" style="color: #107C10;">@Model.BalanceText</h2>
+                    @* Form for Adding Money with Payment Method Selection *@
+                    <form asp-controller="Wallet" asp-action="AddFunds" method="post" class="mt-3">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="None" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="AmountToAdd" class="form-label">Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input asp-for="AmountToAdd" type="number" class="form-control" placeholder="0" required />
+                            </div>
+                            <span asp-validation-for="AmountToAdd" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="SelectedPaymentMethod" class="form-label">Payment Method</label>
+                            <select asp-for="SelectedPaymentMethod" asp-items="@(new SelectList(Model.PaymentMethods))" class="form-select" id="paymentMethodSelect" required>
+                                <option value="">-- Select Payment Method --</option>
+                            </select>
+                            <span asp-validation-for="SelectedPaymentMethod" class="text-danger"></span>
+                        </div>
+
+                        @* Credit Card Fields *@
+                        <div id="creditCardFields" style="display: none;">
+                            <div class="mb-3">
+                                <label asp-for="CardNumber" class="form-label">Card Number</label>
+                                <input asp-for="CardNumber" type="text" class="form-control" placeholder="Enter card number" />
+                                <span asp-validation-for="CardNumber" class="text-danger"></span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="ExpiryDate" class="form-label">Expiry Date (MM/YY)</label>
+                                    <input asp-for="ExpiryDate" type="text" class="form-control" placeholder="MM/YY" />
+                                    <span asp-validation-for="ExpiryDate" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="CVV" class="form-label">CVV</label>
+                                    <input asp-for="CVV" type="text" class="form-control" placeholder="CVV" />
+                                    <span asp-validation-for="CVV" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* PayPal Fields *@
+                        <div id="payPalFields" style="display: none;">
+                            <div class="mb-3">
+                                <label asp-for="PayPalEmail" class="form-label">PayPal Email</label>
+                                <input asp-for="PayPalEmail" type="email" class="form-control" placeholder="Enter PayPal email" />
+                                <span asp-validation-for="PayPalEmail" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Add Money</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Points Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Available Points
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title" style="color: #5B4DFF;">@Model.PointsText</h2>
+                    <p class="mt-3">Points are awarded automatically when you purchase games.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success mt-3">@TempData["SuccessMessage"]</div>
+    }
+
+    <div class="mt-4">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const paymentMethodSelect = document.getElementById('paymentMethodSelect');
+            const creditCardFields = document.getElementById('creditCardFields');
+            const payPalFields = document.getElementById('payPalFields');
+
+            function togglePaymentFields() {
+                const selectedMethod = paymentMethodSelect.value;
+                creditCardFields.style.display = selectedMethod === 'Credit Card' ? 'block' : 'none';
+                payPalFields.style.display = selectedMethod === 'PayPal' ? 'block' : 'none';
+
+                // Set required attributes dynamically
+                const ccNumber = document.getElementById('CardNumber');
+                const ccExpiry = document.getElementById('ExpiryDate');
+                const ccCvv = document.getElementById('CVV');
+                const ppEmail = document.getElementById('PayPalEmail');
+
+                if (selectedMethod === 'Credit Card') {
+                    ccNumber.required = true;
+                    ccExpiry.required = true;
+                    ccCvv.required = true;
+                    ppEmail.required = false;
+                } else if (selectedMethod === 'PayPal') {
+                    ccNumber.required = false;
+                    ccExpiry.required = false;
+                    ccCvv.required = false;
+                    ppEmail.required = true;
+                } else {
+                    ccNumber.required = false;
+                    ccExpiry.required = false;
+                    ccCvv.required = false;
+                    ppEmail.required = false;
+                }
+            }
+
+            paymentMethodSelect.addEventListener('change', togglePaymentFields);
+            togglePaymentFields();
+        });
+    </script>
+}

@@ -1,0 +1,172 @@
+@model SteamProfileWeb.ViewModels.ReviewsViewModel
+@{
+    ViewData["Title"] = "Reviews";
+}
+
+<div class="container mt-4">
+    <!-- Back button -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <a href="javascript:history.back()" class="btn btn-primary mb-3">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <!-- Game review statistics -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Game Reviews</h2>
+                    <p>Total Reviews: <b>@Model.TotalReviews</b></p>
+                    <p>Positive: <b>@Model.PositiveReviewPercentage</b>%</p>
+                    <p>Avg Rating: <b>@Model.AverageRating</b></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <form method="get" asp-action="Index" class="d-flex gap-2 align-items-center">
+                <input type="hidden" name="gameId" value="@Model.GameId" />
+                <div class="form-group">
+                    <select name="sortOption" class="form-select" onchange="this.form.submit()">
+                        <option value="Newest" selected="@(Model.SortOption == "Newest")">Newest First</option>
+                        <option value="Oldest" selected="@(Model.SortOption == "Oldest")">Oldest First</option>
+                        <option value="Highest" selected="@(Model.SortOption == "Highest")">Highest Rating</option>
+                        <option value="Helpful" selected="@(Model.SortOption == "Helpful")">Most Helpful</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select name="recommendationFilter" class="form-select" onchange="this.form.submit()">
+                        <option value="All" selected="@(Model.RecommendationFilter == "All")">All Reviews</option>
+                        <option value="Positive" selected="@(Model.RecommendationFilter == "Positive")">Positive Only</option>
+                        <option value="Negative" selected="@(Model.RecommendationFilter == "Negative")">Negative Only</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="row mb-3">
+            <div class="col-12">
+                <a asp-action="Create" asp-route-gameId="@Model.GameId" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Write a Review
+                </a>
+            </div>
+        </div>
+    }
+
+    <!-- Reviews List -->
+    <div class="row">
+        <div class="col-md-12">
+            @if (Model.Reviews != null && Model.Reviews.Any())
+            {
+                foreach (var review in Model.Reviews)
+                {
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-1 text-center">
+                                    <img src="/images/default_avatar.png" class="rounded-circle" width="60" height="60" alt="avatar" />
+                                </div>
+                                <div class="col-md-10">
+                                    <h5 class="card-title">@review.ReviewTitleText</h5>
+                                    <p class="card-text">@review.ReviewContentText</p>
+                                    <p class="card-text">
+                                        <small class="text-muted">By @review.UserName on @review.DateAndTimeWhenReviewWasCreated.ToString("yyyy-MM-dd HH:mm")</small>
+                                    </p>
+                                    <p class="card-text">
+                                        <span class="badge bg-info">Rating: @review.NumericRatingGivenByUser</span>
+                                        @if (review.IsRecommended)
+                                        {
+                                            <span class="badge bg-success">Recommended</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Not Recommended</span>
+                                        }
+                                    </p>
+                                </div>
+                                <div class="col-md-1 text-end">
+                                    @if (User.Identity.IsAuthenticated && review.UserIdentifier == Model.CurrentUserId)
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@review.ReviewIdentifier" class="btn btn-sm btn-warning mb-1">Edit</a>
+                                        <form asp-action="Delete" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@review.ReviewIdentifier" />
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this review?')">Delete</button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <button class="btn btn-outline-secondary btn-sm vote-btn" data-review-id="@review.ReviewIdentifier" data-vote-type="Funny">
+                                            😂 Funny (<span id="funny-count-@review.ReviewIdentifier">@review.TotalFunnyVotesReceived</span>)
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm vote-btn" data-review-id="@review.ReviewIdentifier" data-vote-type="Helpful">
+                                            👍 Helpful (<span id="helpful-count-@review.ReviewIdentifier">@review.TotalHelpfulVotesReceived</span>)
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-outline-secondary btn-sm" disabled>
+                                            😂 Funny (@review.TotalFunnyVotesReceived)
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm" disabled>
+                                            👍 Helpful (@review.TotalHelpfulVotesReceived)
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-info">No reviews found.</div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+$(document).ready(function() {
+    $('.vote-btn').click(function() {
+        var reviewId = $(this).data('review-id');
+        var voteType = $(this).data('vote-type');
+        var btn = $(this);
+
+        $.ajax({
+            url: '@Url.Action("Vote")',
+            type: 'POST',
+            headers: {
+                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            },
+            data: { reviewId: reviewId, voteType: voteType },
+            success: function(result) {
+                if (result.success) {
+                    // Update the vote count in the UI
+                    $('#' + voteType.toLowerCase() + '-count-' + reviewId).text(result.count);
+                } else {
+                    alert(result.message || 'Error voting on review');
+                }
+            },
+            error: function() {
+                alert('Failed to submit vote');
+            }
+        });
+    });
+});
+</script>
+} 

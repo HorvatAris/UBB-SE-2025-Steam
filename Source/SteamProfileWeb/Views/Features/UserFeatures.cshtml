@@ -1,0 +1,134 @@
+@model SteamProfileWeb.ViewModels.UserFeaturesViewModel
+@{
+    ViewData["Title"] = "My Features";
+}
+
+<div class="container">
+    <h1 class="mb-4">My Features</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h4 mb-0">Equipped Features</h2>
+                </div>
+                <div class="card-body">
+                    @if (Model.EquippedFeatures.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var feature in Model.EquippedFeatures)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="mb-1">@feature.Name</h5>
+                                            <p class="mb-1">@feature.Description</p>
+                                        </div>
+                                        <button class="btn btn-danger unequip-feature" data-feature-id="@feature.FeatureId">
+                                            Unequip
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No features equipped.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h4 mb-0">Purchased Features</h2>
+                </div>
+                <div class="card-body">
+                    @if (Model.UserFeatures.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var feature in Model.UserFeatures)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="mb-1">@feature.Name</h5>
+                                            <p class="mb-1">@feature.Description</p>
+                                        </div>
+                                        <button class="btn btn-primary equip-feature" data-feature-id="@feature.FeatureId">
+                                            Equip
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No features purchased.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("Index", "Features")" class="btn btn-primary">Browse More Features</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.equip-feature').click(function () {
+                var button = $(this);
+                var featureId = button.data('feature-id');
+
+                $.ajax({
+                    url: '@Url.Action("EquipFeature", "Features")',
+                    type: 'POST',
+                    data: { featureId: featureId },
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert(response.message || 'Failed to equip feature.');
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while processing your request.');
+                    }
+                });
+            });
+
+            $('.unequip-feature').click(function () {
+                var button = $(this);
+                var featureId = button.data('feature-id');
+
+                $.ajax({
+                    url: '@Url.Action("UnequipFeature", "Features")',
+                    type: 'POST',
+                    data: { featureId: featureId },
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert(response.message || 'Failed to unequip feature.');
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while processing your request.');
+                    }
+                });
+            });
+        });
+    </script>
+} 

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SteamProfile.Views.ConfigurationsView.AccountSettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views.ConfigurationsView"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Margin="30" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Width="400" Spacing="15">
+            <TextBlock Text="Account Settings" FontSize="30" FontWeight="Bold" Margin="0,0,0,20"/>
+
+            <!-- Success Message -->
+            <TextBlock Text="{x:Bind ViewModel.SuccessMessage, Mode=OneWay}" 
+                       Foreground="Green" 
+                       Visibility="{x:Bind ViewModel.SuccessMessageVisibility, Mode=OneWay}"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center"
+                       FontWeight="SemiBold"/>
+
+            <!-- Username Section -->
+            <TextBlock Text="Modify Username" FontSize="18" FontWeight="SemiBold"/>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <TextBox Width="250" PlaceholderText="New username"
+                         Text="{x:Bind ViewModel.Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Content="Update" Width="100" 
+                        Command="{x:Bind ViewModel.UpdateUsernameCommand}"
+                        IsEnabled="{x:Bind ViewModel.UpdateUsernameEnabled, Mode=OneWay}"/>
+            </StackPanel>
+            <TextBlock Text="Username must be unique" 
+                       Foreground="Red" 
+                       Visibility="{x:Bind ViewModel.UsernameErrorMessageVisibility, Mode=OneWay}"/>
+
+            <!-- Email Section -->
+            <TextBlock Text="Modify Email" FontSize="18" FontWeight="SemiBold"/>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <TextBox Width="250" PlaceholderText="New email"
+                         Text="{x:Bind ViewModel.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Content="Update" Width="100" 
+                        Command="{x:Bind ViewModel.UpdateEmailCommand}"
+                        IsEnabled="{x:Bind ViewModel.UpdateEmailEnabled, Mode=OneWay}"/>
+            </StackPanel>
+            <TextBlock Text="Please enter a valid email address" 
+                       Foreground="Red" 
+                       Visibility="{x:Bind ViewModel.EmailErrorMessageVisibility, Mode=OneWay}"/>
+
+            <!-- Password Section -->
+            <TextBlock Text="Modify Password" FontSize="18" FontWeight="SemiBold"/>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <PasswordBox Width="250" PlaceholderText="New password"
+                             Password="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Content="Update" Width="100" 
+                        Command="{x:Bind ViewModel.UpdatePasswordCommand}"
+                        IsEnabled="{x:Bind ViewModel.UpdatePasswordEnabled, Mode=OneWay}"/>
+            </StackPanel>
+            <TextBlock Text="Password must be at least 8 characters, include uppercase, lowercase, and special characters" 
+                       TextWrapping="Wrap"
+                       Foreground="Red" 
+                       Visibility="{x:Bind ViewModel.PasswordErrorMessageVisibility, Mode=OneWay}"/>
+
+            <!-- Error Message -->
+            <TextBlock Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}" 
+                       Foreground="Red" 
+                       Visibility="{x:Bind ViewModel.ErrorMessage, Mode=OneWay, Converter={StaticResource StringLengthToVisibilityConverter}}"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center"/>
+
+            <!-- Action Buttons -->
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="20" Margin="0,30,0,0">
+                <Button Content="Delete Account" Width="200" Height="40" 
+                        Background="#E53935" Foreground="White"
+                        Command="{x:Bind ViewModel.DeleteAccountCommand}"/>
+                <Button Content="Log out" Width="200" Height="40"
+                        Command="{x:Bind ViewModel.LogoutCommand}"/>
+                <Button Content="Go Back" Click="GoBack" Width="200"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

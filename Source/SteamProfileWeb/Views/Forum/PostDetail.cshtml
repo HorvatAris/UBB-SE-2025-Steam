@@ -1,0 +1,294 @@
+﻿@model SteamProfileWeb.ViewModels.PostDetailViewModel
+@{
+    ViewData["Title"] = Model.Post.Title;
+}
+
+<div class="container mt-4">
+    <!-- Back button -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <a href="/Forum/Index" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> Back to Forum
+            </a>
+        </div>
+    </div>
+
+    <!-- Post details card -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <h2>@Model.Post.Title</h2>
+                @if (User.Identity.IsAuthenticated && Model.Post.AuthorId == Model.CurrentUserId)
+                {
+                    <form asp-action="DeletePost" method="post" class="ms-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="postId" value="@Model.Post.Id" />
+                        <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Are you sure you want to delete this post?')">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </form>
+                }
+            </div>
+            <div class="text-muted">
+                @{
+                    var authorName = "Unknown"; // Fallback
+                    try
+                    {
+                        // Get the user if possible
+                        var user = BusinessLayer.Models.User.GetUserById(Model.Post.AuthorId);
+                        if (user != null)
+                        {
+                            authorName = user.Username;
+                        }
+                    }
+                    catch { /* Use fallback */ }
+                }
+                Posted by @authorName on @Model.Post.TimeStamp.ToString("MMM d, yyyy HH:mm")
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Voting buttons -->
+                <div class="col-md-1 text-center">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <button class="btn vote-button upvote-button" data-post-id="@Model.Post.Id" data-vote-value="1">
+                            <i class="bi bi-arrow-up-circle fs-2"></i>
+                        </button>
+                        <div class="fs-3 fw-bold my-2 post-score">@Model.Post.Score</div>
+                        <button class="btn vote-button downvote-button" data-post-id="@Model.Post.Id" data-vote-value="-1">
+                            <i class="bi bi-arrow-down-circle fs-2"></i>
+                        </button>
+                    }
+                    else
+                    {
+                        <div class="text-muted">
+                            <i class="bi bi-arrow-up-circle fs-2"></i>
+                        </div>
+                        <div class="fs-3 fw-bold my-2">@Model.Post.Score</div>
+                        <div class="text-muted">
+                            <i class="bi bi-arrow-down-circle fs-2"></i>
+                        </div>
+                    }
+                </div>
+
+                <!-- Post content -->
+                <div class="col-md-11">
+                    <div class="post-content">
+                        @Html.Raw(Model.Post.Body)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Comments (@(Model.Comments?.Count ?? 0))</h3>
+        </div>
+        <div class="card-body">
+            <!-- Add comment form -->
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form asp-action="AddComment" method="post" class="mb-4">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="PostId" value="@Model.Post.Id" />
+                    <div class="form-group mb-3">
+                        <textarea name="Content" class="form-control" rows="3"
+                                  placeholder="Write your comment..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Comment</button>
+                </form>
+            }
+            else
+            {
+                <div class="alert alert-info mb-4">
+                    <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Url.Action("PostDetail", "Forum", new { id = Model.Post.Id })">Log in</a> to add a comment or vote.
+                </div>
+            }
+
+            <!-- Comments list -->
+            @if (Model.Comments != null && Model.Comments.Any())
+            {
+                foreach (var comment in Model.Comments)
+                {
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Voting buttons -->
+                                <div class="col-md-1 text-center">
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <button class="btn btn-sm vote-comment-button upvote-button" data-comment-id="@comment.Id" data-vote-value="1">
+                                            <i class="bi bi-arrow-up-circle"></i>
+                                        </button>
+                                        <div class="fw-bold my-1 comment-score">@comment.Score</div>
+                                        <button class="btn btn-sm vote-comment-button downvote-button" data-comment-id="@comment.Id" data-vote-value="-1">
+                                            <i class="bi bi-arrow-down-circle"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-muted">
+                                            <i class="bi bi-arrow-up-circle"></i>
+                                        </div>
+                                        <div class="fw-bold my-1">@comment.Score</div>
+                                        <div class="text-muted">
+                                            <i class="bi bi-arrow-down-circle"></i>
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- Comment content -->
+                                <div class="col-md-10">
+                                    <p class="card-text">@comment.Body</p>
+                                    <p class="card-text text-muted">
+                                        @{
+                                            var commentAuthorName = "Unknown"; // Fallback
+                                            try
+                                            {
+                                                // Get the user if possible
+                                                var user = BusinessLayer.Models.User.GetUserById(comment.AuthorId);
+                                                if (user != null)
+                                                {
+                                                    commentAuthorName = user.Username;
+                                                }
+                                            }
+                                            catch { /* Use fallback */ }
+                                        }
+                                        Comment by @commentAuthorName on @comment.TimeStamp.ToString("MMM d, yyyy HH:mm")
+                                    </p>
+                                </div>
+
+                                <!-- Delete button (only for current user comments) -->
+                                <div class="col-md-1 text-end">
+                                    @if (User.Identity.IsAuthenticated && comment.AuthorId == Model.CurrentUserId)
+                                    {
+                                        <form asp-action="DeleteComment" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="commentId" value="@comment.Id" />
+                                            <input type="hidden" name="postId" value="@Model.Post.Id" />
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Are you sure you want to delete this comment?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-info">No comments yet. Be the first to comment!</div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Handle voting on posts
+            $('.vote-button').click(function() {
+                const postId = $(this).data('post-id');
+                const voteValue = $(this).data('vote-value');
+                const button = $(this);
+
+                $.ajax({
+                    url: '@Url.Action("VotePost")',
+                    type: 'POST',
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    data: { postId: postId, voteValue: voteValue },
+                    success: function(result) {
+                        if (result.success) {
+                            // Update the score display without reloading
+                            $('.post-score').text(result.score);
+                        } else {
+                            // Show error message if any
+                            alert(result.message || 'Error voting on post');
+                        }
+                    },
+                    error: function() {
+                        // Redirect to login if authentication fails
+                        window.location.href = '@Url.Action("Login", "Auth", new { returnUrl = Url.Action("PostDetail", "Forum", new { id = Model.Post.Id }) })';
+                    }
+                });
+            });
+
+            // Handle voting on comments
+            $('.vote-comment-button').click(function() {
+                const commentId = $(this).data('comment-id');
+                const voteValue = $(this).data('vote-value');
+                const button = $(this);
+
+                $.ajax({
+                    url: '@Url.Action("VoteComment")',
+                    type: 'POST',
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    data: { commentId: commentId, voteValue: voteValue },
+                    success: function(result) {
+                        if (result.success) {
+                            // Update the score display without reloading
+                            button.closest('.card-body').find('.comment-score').text(result.score);
+                        } else {
+                            // Show error message if any
+                            alert(result.message || 'Error voting on comment');
+                        }
+                    },
+                    error: function() {
+                        // Redirect to login if authentication fails
+                        window.location.href = '@Url.Action("Login", "Auth", new { returnUrl = Url.Action("PostDetail", "Forum", new { id = Model.Post.Id }) })';
+                    }
+                });
+            });
+        });
+    </script>
+    @Html.AntiForgeryToken()
+}
+
+<style>
+    /* Voting button styles */
+    .upvote-button {
+        color: white;
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+        .upvote-button:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+            color: white;
+        }
+
+    .downvote-button {
+        color: white;
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        .downvote-button:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            color: white;
+        }
+
+    .vote-button, .vote-comment-button {
+        margin-bottom: 5px;
+        margin-top: 5px;
+    }
+
+    .post-content {
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+    }
+</style>

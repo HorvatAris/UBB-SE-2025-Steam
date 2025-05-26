@@ -1,0 +1,51 @@
+@model SteamProfileWeb.ViewModels.AddFriendViewModel
+
+@{
+    ViewData["Title"] = "Add or Remove Friends";
+}
+
+<h2>Add or Remove Friends</h2>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Profile</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model.Users)
+    {
+        <tr>
+            <td><img src="@user.ProfilePhotoPath" alt="Profile Picture" style="width:48px;height:48px;" /></td>
+            <td>@user.Username</td>
+            <td>@user.Email</td>
+            <td>
+                @if (user.IsFriend)
+                {
+                    <form asp-action="RemoveFriend" asp-route-userId="@user.UserId" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-person-dash"></i> Remove Friend
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-action="AddFriend" asp-route-userId="@user.UserId" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-person-plus"></i> Add Friend
+                        </button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table> 

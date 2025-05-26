@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="SteamProfile.Views.CommentControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Margin="0,5,0,5" HorizontalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Voting Controls -->
+        <StackPanel Grid.Column="0" Orientation="Vertical" Margin="0,0,8,0" MinWidth="30">
+            <Button x:Name="UpvoteButton" Content="▲" Click="UpvoteButton_Click" 
+                    FontSize="10" Padding="0" 
+                    HorizontalAlignment="Center"/>
+            <TextBlock x:Name="ScoreTextBlock" Text="0" 
+                    HorizontalAlignment="Center" FontWeight="SemiBold" 
+                    FontSize="11" Margin="0,2,0,2"/>
+            <Button x:Name="DownvoteButton" Content="▼" Click="DownvoteButton_Click" 
+                    FontSize="10" Padding="0"
+                    HorizontalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Comment Author Profile Pic -->
+        <Border Grid.Column="1" Width="30" Height="30" Margin="0,0,10,0" 
+                CornerRadius="15" Background="LightGray">
+            <Image x:Name="ProfileImage" Stretch="UniformToFill"/>
+        </Border>
+
+        <!-- Comment Content -->
+        <StackPanel Grid.Column="2">
+            <TextBlock x:Name="UsernameTextBlock" FontWeight="SemiBold" FontSize="12"/>
+            <WebView2 x:Name="BodyWebView" Height="80" Margin="0,4,0,4"/>
+            <TextBlock x:Name="TimeStampTextBlock" Opacity="0.7" FontSize="10" Margin="0,3,0,0"/>
+        </StackPanel>
+
+        <!-- Delete Button -->
+        <Button Grid.Column="3"
+                x:Name="DeleteButton"
+                Content="🗑️" 
+                Click="DeleteButton_Click"
+                Background="Transparent"
+                BorderThickness="0"
+                Visibility="Collapsed"
+                ToolTipService.ToolTip="Delete comment"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                FontSize="12"/>
+    </Grid>
+</UserControl> 

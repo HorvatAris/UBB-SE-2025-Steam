@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SteamProfile.Views.ConfigurationsView.ModifyProfilePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views.ConfigurationsView"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <Style x:Key="ErrorTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="Red"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,2,0,8"/>
+        </Style>
+        <Style x:Key="SuccessTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="Green"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,2,0,8"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+    </Page.Resources>
+    <Grid Margin="30" HorizontalAlignment="Center" VerticalAlignment="Top">
+        <StackPanel Width="400" Spacing="15">
+            <TextBlock Text="Modify Profile" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+            <!-- Success Message -->
+            <TextBlock Text="{x:Bind ViewModel.SuccessMessage, Mode=OneWay}" 
+                       Style="{StaticResource SuccessTextStyle}"
+                       Visibility="{x:Bind ViewModel.SuccessMessageVisibility, Mode=OneWay}"/>
+
+            <!-- Modify Profile Picture Section -->
+            <TextBlock Text="Modify Picture" FontSize="18" FontWeight="SemiBold"/>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button x:Name="PickAPhotoButton" Content="Open a Picture" 
+                        Command="{x:Bind ViewModel.ChooseNewPhotoCommand}"/>
+                <TextBlock x:Name="PickAPhotoOutputTextBlock" 
+                           Text="{x:Bind ViewModel.SelectedImageName, Mode=OneWay}" 
+                           TextWrapping="Wrap" 
+                           Padding="10,5,0,0" 
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Modify Description Section -->
+            <TextBlock Text="Modify Description" FontSize="18" FontWeight="SemiBold"/>
+            <TextBox PlaceholderText="Enter new description..." 
+                     Height="100" 
+                     TextWrapping="Wrap" 
+                     AcceptsReturn="True"
+                     Text="{x:Bind ViewModel.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <!-- Description Validation Error -->
+            <TextBlock Text="{x:Bind ViewModel.DescriptionErrorMessage, Mode=OneWay}" 
+                     Style="{StaticResource ErrorTextStyle}"
+                     Visibility="{x:Bind ViewModel.DescriptionErrorVisibility, Mode=OneWay}"/>
+
+            <!-- Action Buttons -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20" Margin="20,10,0,0">
+                <Button Content="Save Changes" 
+                        Width="130" 
+                        Height="40" 
+                        Command="{x:Bind ViewModel.SaveChangesCommand}"
+                        IsEnabled="{x:Bind ViewModel.CanSave, Mode=OneWay}"/>
+                <Button Content="Go Back" Width="130" Height="40" Click="GoBack"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="SteamProfile.Views.CreatePostDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Create New Post"
+    PrimaryButtonText="Post"
+    CloseButtonText="Cancel"
+    DefaultButton="Primary">
+
+    <ContentDialog.Resources>
+        <Style TargetType="TextBlock" x:Key="LabelStyle">
+            <Setter Property="Margin" Value="0,0,0,5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+    </ContentDialog.Resources>
+
+    <StackPanel Spacing="10" Width="500">
+        <!-- User info display -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Width="40" Height="40" Margin="0,0,10,0" 
+                    CornerRadius="20" Background="LightGray">
+                <Image x:Name="UserProfileImage" Stretch="UniformToFill"/>
+            </Border>
+
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock x:Name="UserNameTextBlock" FontWeight="SemiBold" 
+                           Text="Username"/>
+                <TextBlock Text="Creating a new post" Opacity="0.7" 
+                           FontSize="12"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Post Title -->
+        <TextBlock Text="Title" Style="{StaticResource LabelStyle}"/>
+        <TextBox x:Name="TitleTextBox" PlaceholderText="Enter a descriptive title" 
+                 MaxLength="100"/>
+        <TextBlock x:Name="TitleErrorText" Foreground="Red" Visibility="Collapsed"
+                  Text="Title is required"/>
+
+        <!-- Post Body -->
+        <TextBlock Text="Content" Style="{StaticResource LabelStyle}"/>
+        <TextBox x:Name="BodyTextBox" PlaceholderText="Write your post content here..." 
+                 TextWrapping="Wrap" MinHeight="150"
+                 AcceptsReturn="True"/>
+        <TextBlock x:Name="BodyErrorText" Foreground="Red" Visibility="Collapsed"
+                  Text="Content is required"/>
+
+        <!-- Game selection (optional) -->
+        <TextBlock Text="Game (optional)" Style="{StaticResource LabelStyle}"/>
+        <ComboBox x:Name="GameComboBox" PlaceholderText="Select a game" Width="300" 
+                  HorizontalAlignment="Left" SelectedIndex="-1">
+            <ComboBoxItem Content="No game" Tag="0"/>
+            <ComboBoxItem Content="Game 1" Tag="1"/>
+            <ComboBoxItem Content="Game 2" Tag="2"/>
+            <ComboBoxItem Content="Game 3" Tag="3"/>
+        </ComboBox>
+        <TextBlock x:Name="GeneralErrorText" Foreground="Red" Visibility="Collapsed" TextWrapping="Wrap"/>
+    </StackPanel>
+</ContentDialog> 

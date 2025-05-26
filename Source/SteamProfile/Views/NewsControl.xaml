@@ -1,0 +1,82 @@
+<UserControl
+    x:Class="SteamProfile.Views.NewsControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="#FFF0F5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top bar -->
+        <Grid Grid.Row="0" Padding="16,8" Background="#FFC2D9">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    Content="Create Post"
+                    Background="#D94C8A"
+                    Foreground="White"
+                    Padding="12,8"
+                    CornerRadius="20"
+                    Visibility="{Binding CreatePostButtonVisibility}"
+                    Command="{Binding ShowCreatePostPanelCommand}" />
+
+            <TextBox Grid.Column="2"
+                     x:Name="News_SearchBox"
+                     PlaceholderText="Search news..."
+                     Width="300"
+                     Margin="0,0,8,0"
+                     KeyDown="SearchBox_KeyDown"
+                     Background="#FFACC7"
+                     Foreground="#333333"
+                     BorderBrush="#FF6B97"
+                     BorderThickness="2"
+                     CornerRadius="20"/>
+        </Grid>
+
+        <!-- Posts Grid -->
+        <ScrollViewer Grid.Row="1"
+                      Name="News_PostsScroller"
+                      ViewChanged="PostsScroller_ViewChanged"
+                      VerticalScrollBarVisibility="Auto"
+                      ZoomMode="Disabled"
+                      Background="#FFF0F5">
+            <Grid x:Name="News_PostsGrid"
+                  Loaded="News_PostsGrid_Loaded"
+                  Padding="32,16"
+                  ColumnSpacing="16"
+                  RowSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Post View Overlay -->
+        <Grid Grid.Row="0" Grid.RowSpan="2"
+              Visibility="{Binding PostOverlayVisibility}">
+            <Rectangle Fill="#E6FFE6F0"
+                       Stretch="Fill"
+                       PointerPressed="OverlayBackground_PointerPressed" />
+            <local:PostControl x:Name="News_PostControl" />
+        </Grid>
+
+        <!-- Post Editor Overlay -->
+        <Grid Grid.Row="0" Grid.RowSpan="2"
+              Visibility="{Binding EditorOverlayVisibility}">
+            <Rectangle Fill="#E6FFE6F0" Stretch="Fill"/>
+            <local:PostEditorControl x:Name="News_PostEditorPanel" />
+        </Grid>
+    </Grid>
+</UserControl>

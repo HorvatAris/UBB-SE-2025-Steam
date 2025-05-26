@@ -1,0 +1,23 @@
+﻿@model SteamProfileWeb.ViewModels.ModifyProfileViewModel
+
+<div class="container d-flex flex-column align-items-center justify-content-center" style="min-height: 70vh;">
+    <a asp-action="Index" class="btn btn-link mb-3 align-self-start">Go Back</a>
+    <h2 class="mb-4">Modify Profile</h2>
+    <form asp-action="ModifyProfile" method="post" enctype="multipart/form-data" class="w-100" style="max-width: 400px;">
+        <div class="mb-3">
+            <label class="form-label">Modify Picture</label>
+            <input type="file" asp-for="ProfilePicture" class="form-control" />
+            @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+            {
+                <div class="mt-2 text-center">
+                    <img src="@Model.ProfilePictureUrl" alt="Profile Picture" class="img-thumbnail" style="width:100px; height:100px; object-fit:cover;" />
+                </div>
+            }
+        </div>
+        <div class="mb-3">
+            <label for="Description" class="form-label">Modify Description</label>
+            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+    </form>
+</div>

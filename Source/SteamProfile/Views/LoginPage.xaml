@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SteamProfile.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" 
+                    Spacing="10"
+                    Padding="40"
+                    MaxWidth="400">
+            
+            <TextBlock Text="Welcome Back!"
+                       Style="{ThemeResource TitleLargeTextBlockStyle}"
+                       HorizontalAlignment="Center"
+                       Padding="0,0,0,20"/>
+
+            <TextBox PlaceholderText="Username or Email"
+                     Text="{Binding Username, Mode=TwoWay}"
+                     Margin="0,0,0,5"/>
+
+            <PasswordBox PlaceholderText="Password"
+                        Password="{Binding Password, Mode=TwoWay}"
+                        Margin="0,0,0,0"/>
+
+            <TextBlock Text="{Binding ErrorMessage}"
+                       Foreground="Red"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center"/>
+
+            <Button Content="Login"
+                    Command="{Binding LoginCommand}"
+                    Style="{ThemeResource AccentButtonStyle}"
+                    HorizontalAlignment="Center"
+                    Width="200"/>
+
+            <Button Content="Don't have an account yet? Register now!"
+                    Command="{Binding NavigateToRegisterCommand}"
+                    Style="{ThemeResource TextBlockButtonStyle}"/>
+
+            <Button Content="Forgot your password?"
+                    Command="{Binding NavigateToForgotPasswordCommand}"
+                    Style="{ThemeResource TextBlockButtonStyle}"/>
+        </StackPanel>
+    </Grid>
+</Page>

@@ -1,0 +1,45 @@
+<Page
+    x:Class="SteamProfile.Views.WalletViews.PaypalPaymentPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views.WalletViews"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Padding="20">
+        <StackPanel Spacing="12">
+            <TextBlock x:Name="AmountTextBlock" 
+                       Text="{x:Bind ViewModel.AmountText, Mode=OneWay}" 
+                       Style="{StaticResource SubtitleTextBlockStyle}" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,20"/>
+
+            <TextBox x:Name="EmailTextBox" 
+                     Header="PayPal Email" 
+                     PlaceholderText="Enter your PayPal email" 
+                     Text="{x:Bind ViewModel.Email, Mode=TwoWay}"
+                     TextChanged="EmailTextBox_TextChanged"/>
+
+            <PasswordBox x:Name="PasswordText" 
+                         Header="PayPal Password" 
+                         PlaceholderText="Enter your PayPal password"
+                         PasswordChanged="PasswordText_PasswordChanged"/>
+
+            <TextBlock x:Name="ErrorMessage" 
+                       Text="Invalid email or password" 
+                       Foreground="Red"
+                       Visibility="{x:Bind ViewModel.ErrorMessageVisibility, Mode=OneWay}" />
+
+            <TextBlock x:Name="SuccessfulPayment" 
+                       Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" 
+                       Foreground="Green"
+                       Visibility="{x:Bind ViewModel.StatusMessageVisibility, Mode=OneWay}" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10" Margin="0,20,0,0">
+                <Button x:Name="AddMoneyButton" Content="Add Money" Click="AddMoneyButton_Click" />
+                <Button x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

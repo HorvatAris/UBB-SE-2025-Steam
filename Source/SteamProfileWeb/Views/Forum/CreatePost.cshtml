@@ -1,0 +1,81 @@
+﻿@model SteamProfileWeb.ViewModels.CreatePostViewModel
+@{
+    ViewData["Title"] = "Create New Post";
+}
+
+<div class="container mt-4">
+    <!-- Back button -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <a href="/Forum/Index" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> Back to Forum
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Create New Post</h2>
+                </div>
+                <div class="card-body">
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <div class="alert alert-warning">
+                            <h4 class="alert-heading">Authentication Required</h4>
+                            <p>You need to be logged in to create a post.</p>
+                            <hr>
+                            <p class="mb-0">
+                                <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="/Forum/CreatePost" class="btn btn-primary">
+                                    Log in
+                                </a>
+                                <a asp-controller="Auth" asp-action="Register" asp-route-returnUrl="/Forum/CreatePost" class="btn btn-secondary">
+                                    Register
+                                </a>
+                            </p>
+                        </div>
+                    }
+                    else
+                    {
+                        <form action="/Forum/CreatePost" method="post">
+                            @Html.AntiForgeryToken()
+                            <div asp-validation-summary="All" class="text-danger"></div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="Title" class="form-label">Title</label>
+                                <input asp-for="Title" class="form-control" required />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="Content" class="form-label">Content</label>
+                                <textarea asp-for="Content" class="form-control" rows="10" required></textarea>
+                                <span asp-validation-for="Content" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="GameId" class="form-label">Game (Optional)</label>
+                                <select asp-for="GameId" class="form-select">
+                                    <option value="">Select a game (optional)</option>
+                                    <!-- Add game options here if needed -->
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success">Create Post</button>
+                                <a href="/Forum/Index" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

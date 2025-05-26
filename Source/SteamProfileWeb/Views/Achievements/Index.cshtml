@@ -1,0 +1,39 @@
+﻿@model SteamProfileWeb.ViewModels.AchievementsViewModel
+@using System.Security.Claims
+
+<div class="container mt-5 text-center">
+    <h1 class="mb-4">ACHIEVEMENTS</h1>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        @foreach (var sectionData in new[] {
+        new { Title = "FRIENDSHIPS", Items = Model.FriendshipsAchievements },
+        new { Title = "OWNED GAMES", Items = Model.OwnedGamesAchievements },
+        new { Title = "SOLD GAMES", Items = Model.SoldGamesAchievements },
+        new { Title = "NUMBER OF POSTS", Items = Model.NumberOfPostsAchievements },
+        new { Title = "NUMBER OF REVIEWS GIVEN", Items = Model.NumberOfReviewsGivenAchievements },
+        new { Title = "NUMBER OF REVIEWS RECEIVED", Items = Model.NumberOfReviewsReceivedAchievements },
+        new { Title = "YEARS OF ACTIVITY", Items = Model.YearsOfActivityAchievements },
+        new { Title = "DEVELOPER", Items = Model.DeveloperAchievements }
+        })
+        {
+            <h3 class="mt-4 mb-3">@sectionData.Title</h3>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                @foreach (var a in sectionData.Items)
+                {
+                    <div style="width: 70px; height: 70px; border-radius: 35px; background-color: lightgray;"
+                         title="@a.Achievement.AchievementName - @a.Achievement.Description - @a.UnlockedDate">
+                        <img src="@a.Achievement.Icon" alt="icon"
+                             style="width:100%; height:100%; opacity:@a.Opacity;" />
+                    </div>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        <div class="mt-5">
+            <p class="lead">You must be <a href="/Account/Login">logged in</a> to view your achievements.</p>
+        </div>
+    }
+</div>

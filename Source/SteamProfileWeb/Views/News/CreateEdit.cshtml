@@ -1,0 +1,256 @@
+﻿@model SteamProfileWeb.ViewModels.CreateNewsPostViewModel
+@{
+    ViewData["Title"] = Model.FormTitle;
+}
+
+<div class="container">
+    <!-- Back button -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <a asp-action="Index" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> Back to News
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card editor-card">
+                <div class="card-header">
+                    <h2 class="mb-0">@Model.FormTitle</h2>
+                </div>
+
+                <div class="card-body">
+                    <form asp-action="@(Model.IsEditMode ? "Edit" : "Create")" method="post">
+                        @Html.AntiForgeryToken()
+
+                        @if (Model.IsEditMode)
+                        {
+                            <input type="hidden" asp-for="PostId" />
+                        }
+
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <div class="nav-wrapper">
+                                    <ul class="nav nav-pills nav-fill" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active" id="editor-tab" data-bs-toggle="tab"
+                                                    data-bs-target="#editor-content" type="button" role="tab"
+                                                    aria-controls="editor-content" aria-selected="true">
+                                                <i class="bi bi-code"></i> Editor
+                                            </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="preview-tab" data-bs-toggle="tab"
+                                                    data-bs-target="#preview-content" type="button" role="tab"
+                                                    aria-controls="preview-content" aria-selected="false">
+                                                <i class="bi bi-eye"></i> Preview
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="tab-content mt-3">
+                                    <div class="tab-pane fade show active" id="editor-content" role="tabpanel"
+                                         aria-labelledby="editor-tab">
+                                        <div class="html-editor-info alert alert-info mb-3">
+                                            <i class="bi bi-info-circle"></i> You can use HTML tags for formatting. Examples:
+                                            <ul class="mb-0 mt-1">
+                                                <li><code>&lt;h1&gt;Heading&lt;/h1&gt;</code> - Large heading</li>
+                                                <li><code>&lt;b&gt;Bold text&lt;/b&gt;</code> - <b>Bold text</b></li>
+                                                <li><code>&lt;i&gt;Italic text&lt;/i&gt;</code> - <i>Italic text</i></li>
+                                                <li><code>&lt;img src="URL"&gt;</code> - Add an image</li>
+                                                <li><code>&lt;spoiler&gt;Hidden text&lt;/spoiler&gt;</code> - Spoiler text</li>
+                                            </ul>
+                                        </div>
+
+                                        <textarea asp-for="Content" class="form-control editor-textarea" id="postEditor"
+                                                  rows="15" placeholder="Write your post content here..."></textarea>
+                                        <span asp-validation-for="Content" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="tab-pane fade" id="preview-content" role="tabpanel"
+                                         aria-labelledby="preview-tab">
+                                        <div id="previewContainer" class="preview-container">
+                                            <div class="text-center py-5">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                <p class="mt-2">Loading preview...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check2"></i> @Model.SubmitButtonText
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Card styling */
+    .editor-card {
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background: linear-gradient(to right, #4568dc, #b06ab3);
+        color: white;
+        padding: 1.25rem;
+        border-bottom: none;
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    /* Tab styling */
+    .nav-pills {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 0.5rem;
+    }
+
+        .nav-pills .nav-link {
+            border-radius: 4px;
+            color: #495057;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.2s;
+        }
+
+            .nav-pills .nav-link.active {
+                background: linear-gradient(to right, #4568dc, #b06ab3);
+                color: white;
+                box-shadow: 0 4px 10px rgba(69, 104, 220, 0.3);
+            }
+
+            .nav-pills .nav-link:not(.active):hover {
+                background-color: #e9ecef;
+                color: #212529;
+            }
+
+    /* Editor styling */
+    .editor-textarea {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        font-size: 1rem;
+        line-height: 1.6;
+        padding: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+        .editor-textarea:focus {
+            border-color: #4568dc;
+            box-shadow: 0 0 0 0.25rem rgba(69, 104, 220, 0.25);
+        }
+
+    /* Preview container */
+    .preview-container {
+        background-color: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        min-height: 300px;
+        padding: 1.5rem;
+    }
+
+    /* Button styling */
+    .btn {
+        border-radius: 6px;
+        font-weight: 500;
+        padding: 0.625rem 1.25rem;
+        transition: all 0.2s;
+    }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+    .btn-primary {
+        background-color: #4568dc;
+        border-color: #4568dc;
+    }
+
+        .btn-primary:hover {
+            background-color: #3f5cc5;
+            border-color: #3f5cc5;
+        }
+
+    .btn-success {
+        background: linear-gradient(to right, #28a745, #20c997);
+        border: none;
+    }
+
+        .btn-success:hover {
+            background: linear-gradient(to right, #218838, #1cb386);
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+
+    /* HTML info styling */
+    .html-editor-info {
+        background-color: rgba(69, 104, 220, 0.1);
+        border-left: 4px solid #4568dc;
+        border-radius: 4px;
+    }
+
+        .html-editor-info code {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+            padding: 2px 4px;
+        }
+</style>
+
+@section Scripts {
+    <script>
+        document.getElementById('preview-tab').addEventListener('click', function() {
+            // Get raw content from editor
+            var content = document.getElementById('postEditor').value;
+
+            // If empty, show message
+            if (!content.trim()) {
+                document.getElementById('previewContainer').innerHTML =
+                    '<div class="alert alert-info">No content to preview</div>';
+                return;
+            }
+
+            // Otherwise, display the content directly
+            document.getElementById('previewContainer').innerHTML = content;
+
+            // Add click handlers for spoilers
+            document.querySelectorAll('#previewContainer .spoiler').forEach(function(spoiler) {
+                spoiler.addEventListener('click', function() {
+                    this.classList.toggle('revealed');
+                });
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

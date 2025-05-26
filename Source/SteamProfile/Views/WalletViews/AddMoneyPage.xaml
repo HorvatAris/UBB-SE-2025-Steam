@@ -1,0 +1,40 @@
+<Page
+    x:Class="SteamProfile.Views.WalletViews.AddMoneyPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views.WalletViews"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Padding="20">
+        <StackPanel Spacing="20">
+            <TextBlock Text="Add Money to Wallet" Style="{StaticResource TitleTextBlockStyle}"/>
+
+            <TextBox x:Name="sumToBeAddedTextBox" 
+                     Header="Amount to add (max 500):" 
+                     PlaceholderText="Enter amount" 
+                     Text="{x:Bind ViewModel.AmountToAdd, Mode=TwoWay}"
+                     TextChanged="SumToBeAddedTextBox_TextChanged"/>
+
+            <TextBlock x:Name="InvalidInput_ErrorMessage" 
+                       Text="Invalid input! Please enter a valid amount (1-500)." 
+                       Foreground="Red"
+                       Visibility="{x:Bind ViewModel.ErrorMessageVisibility, Mode=OneWay}"/>
+
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button x:Name="UseCardButton" 
+                        Content="Use Card" 
+                        Click="UseCardForPayment"
+                        IsEnabled="{x:Bind ViewModel.PaymentButtonsEnabled, Mode=OneWay}"/>
+
+                <Button x:Name="UsePaypalButton" 
+                        Content="Use PayPal" 
+                        Click="UsePaypalForPayment"
+                        IsEnabled="{x:Bind ViewModel.PaymentButtonsEnabled, Mode=OneWay}"/>
+
+                <Button Content="Cancel" Click="Cancel"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

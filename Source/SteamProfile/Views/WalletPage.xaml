@@ -1,0 +1,50 @@
+<Page
+    x:Class="SteamProfile.Views.WalletPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Padding="20">
+        <StackPanel Spacing="20">
+            <TextBlock Text="Your Wallet" Style="{StaticResource TitleTextBlockStyle}"/>
+
+            <Grid RowSpacing="5" ColumnSpacing="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Balance Section -->
+                <StackPanel Grid.Row="0" Grid.Column="0">
+                    <TextBlock Text="Current Balance" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <TextBlock Text="{x:Bind ViewModel.BalanceText, Mode=OneWay}" 
+                               Style="{StaticResource HeaderTextBlockStyle}" 
+                               Foreground="#107C10"/>
+                </StackPanel>
+
+                <Button Grid.Row="1" Grid.Column="0" 
+                        Content="Add Money" 
+                        Click="AddMoneyButton_Click" 
+                        HorizontalAlignment="Stretch"/>
+
+                <!-- Points Section -->
+                <StackPanel Grid.Row="0" Grid.Column="1">
+                    <TextBlock Text="Available Points" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <TextBlock Text="{x:Bind ViewModel.PointsText, Mode=OneWay}" 
+                               Style="{StaticResource HeaderTextBlockStyle}" 
+                               Foreground="#5B4DFF"/>
+                </StackPanel>
+
+            </Grid>
+            <Button Click="GoBack" Content="Back to profile"/>
+            <!-- Transaction History Section could go here -->
+        </StackPanel>
+    </Grid>
+</Page>

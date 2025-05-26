@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SteamProfile.Views.CollectionGamesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:BusinessLayer.Models"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:converters="using:SteamProfile.Converters" xmlns:viewmodels="using:SteamProfile.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:CollectionGamesViewModel}"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid x:Name="RootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.Resources>
+            <converters:GameCountToStringConverter x:Key="GameCountToStringConverter"/>
+            <DataTemplate x:Key="GameItemTemplate" x:DataType="models:OwnedGame">
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        CornerRadius="8"
+                        Padding="12"
+                        Margin="12,12,12,12"
+                        Width="400"
+                        Height="152">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Game Cover Picture -->
+                        <Grid Grid.Column="0" 
+                              Width="120" 
+                              Height="120"
+                              Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                              CornerRadius="8">
+                            <Image Source="{Binding CoverPicture}"
+                                   Stretch="UniformToFill"
+                                   Height="120"
+                                   Width="120"/>
+                        </Grid>
+
+                        <StackPanel Grid.Column="1" 
+                                  Margin="12,0,0,0"
+                                  VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Title}"
+                                     Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                     TextWrapping="NoWrap"
+                                     TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Text="{Binding Description}"
+                                     Style="{ThemeResource CaptionTextBlockStyle}"
+                                     TextWrapping="Wrap"
+                                     MaxLines="2"
+                                     TextTrimming="CharacterEllipsis"
+                                     Opacity="0.8"/>
+                            <!-- Buttons Stack -->
+                            <StackPanel Orientation="Horizontal" 
+                                      Spacing="8"
+                                      Margin="0,8,0,0">
+                                <!-- View Button -->
+                                <Button Content="View"
+                                        Click="ViewGame_Click"
+                                        Tag="{Binding GameId}"
+                                        Style="{StaticResource AccentButtonStyle}"
+                                        MinWidth="100"/>
+
+                                <!-- Remove Button -->
+                                <Button Content="Remove"
+                                        Click="RemoveGame_Click"
+                                        Tag="{Binding GameId}"
+                                        Style="{StaticResource AccentButtonStyle}"
+                                        MinWidth="100"
+                                        Visibility="{Binding DataContext.IsAllOwnedGamesCollection, ElementName=RootGrid, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </Grid.Resources>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Back Button -->
+        <Button Content="Back"
+                Click="BackButton_Click"
+                Style="{StaticResource AccentButtonStyle}"
+                HorizontalAlignment="Left"
+                Margin="20"/>
+
+        <!-- Collection Name -->
+        <StackPanel Grid.Row="1"
+                  Orientation="Vertical" 
+                  Spacing="4"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"
+                  Margin="20">
+            <TextBlock Text="{Binding CollectionName}"
+                      Style="{StaticResource TitleLargeTextBlockStyle}"
+                      TextWrapping="Wrap"
+                      TextTrimming="CharacterEllipsis"
+                      MaxLines="1"/>
+            <TextBlock Text="{Binding Games.Count, Converter={StaticResource GameCountToStringConverter}}"
+                      Style="{StaticResource BodyTextBlockStyle}"/>
+        </StackPanel>
+
+        <!-- Scrollable Content -->
+        <ScrollViewer Grid.Row="2" 
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Orientation="Vertical" 
+                        HorizontalAlignment="Center"
+                        Padding="20">
+                <!-- Add Game Button -->
+                <Button Content="Add Game To Collection"
+                        Click="AddGameToCollection_Click"
+                        Style="{StaticResource AccentButtonStyle}"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,5,20"
+                        Visibility="{Binding IsAllOwnedGamesCollection, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"/>
+
+                <!-- Games Grid -->
+                <ItemsControl ItemsSource="{Binding Games}"
+                            Margin="0,0,0,20">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <controls:WrapPanel Orientation="Horizontal" MaxWidth="680"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate >
+                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                    CornerRadius="8"
+                                    Padding="12"
+                                    Margin="12,12,12,12"
+                                    Width="400"
+                                    Height="152">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Game Cover Picture -->
+                                    <Grid Grid.Column="0" 
+                                          Width="120" 
+                                          Height="120"
+                                          Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                          CornerRadius="8">
+                                        <Image Source="{Binding CoverPicture}"
+                                               Stretch="UniformToFill"
+                                               Height="120"
+                                               Width="120"/>
+                                    </Grid>
+
+                                    <StackPanel Grid.Column="1" 
+                                              Margin="12,0,0,0"
+                                              VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Title}"
+                                                 Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                                 TextWrapping="NoWrap"
+                                                 TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Description}"
+                                                 Style="{ThemeResource CaptionTextBlockStyle}"
+                                                 TextWrapping="Wrap"
+                                                 MaxLines="2"
+                                                 TextTrimming="CharacterEllipsis"
+                                                 Opacity="0.8"/>
+                                        <!-- Buttons Stack -->
+                                        <StackPanel Orientation="Horizontal" 
+                                                  Spacing="8"
+                                                  Margin="0,8,0,0">
+                                            <!-- View Button -->
+                                            <Button Content="View"
+                                                    Click="ViewGame_Click"
+                                                    Tag="{Binding GameId}"
+                                                    Style="{StaticResource AccentButtonStyle}"
+                                                    MinWidth="100"/>
+
+                                            <!-- Remove Button -->
+                                            <Button Content="Remove"
+                                                    Click="RemoveGame_Click"
+                                                    Tag="{Binding GameId}"
+                                                    Style="{StaticResource AccentButtonStyle}"
+                                                    MinWidth="100"
+                                                    Visibility="{Binding DataContext.IsAllOwnedGamesCollection, ElementName=RootGrid, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Loading Indicator -->
+        <ProgressRing Grid.Row="1"
+                      IsActive="{Binding IsLoading}"
+                      Width="50"
+                      Height="50"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"/>
+
+        <!-- Error Message -->
+        <TextBlock Grid.Row="1"
+                   Text="{Binding ErrorMessage}"
+                   Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+    </Grid>
+</Page> 

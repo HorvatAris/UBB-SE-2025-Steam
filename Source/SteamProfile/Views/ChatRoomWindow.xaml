@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="SteamProfile.Views.ChatRoomWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:models="using:BusinessLayer.Models"
+    mc:Ignorable="d"
+    Title="DirectMessages">
+
+    <Grid>
+        <!-- Background Image -->
+        <Grid.Background>
+            <ImageBrush ImageSource="/Assets/ChatRoomBackgroundCute.jpg" Stretch="UniformToFill"/>
+        </Grid.Background>
+
+        <Grid>
+            <Grid.Resources>
+                <SolidColorBrush x:Key="LightPinkBackground" Color="#FFB6C1"/>
+                <SolidColorBrush x:Key="PurpleBackground" Color="#6A1B9A"/>
+                <SolidColorBrush x:Key="WhiteText" Color="White"/>
+                <SolidColorBrush x:Key="SelectionBackground" Color="#30FFFFFF"/>
+
+                <DataTemplate x:Key="MessageViewTemplate" x:DataType="models:ChatMessageUI">
+                    <Grid Margin="4" HorizontalAlignment="{x:Bind Aligment}">
+                        <StackPanel MinHeight="75" Width="350" Padding="10,0,0,10"
+                    Background="{StaticResource LightPinkBackground}"
+                    CornerRadius="{StaticResource ControlCornerRadius}">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                          HorizontalScrollMode="Auto" 
+                          VerticalScrollBarVisibility="Disabled"
+                          Margin="0,10,10,5">
+                                <TextBlock Text="{x:Bind MessageContent}"  
+                           FontSize="20" 
+                           Foreground="{StaticResource WhiteText}"
+                           TextWrapping="NoWrap"
+                           Margin="0,0,0,8"/>
+                                <!-- Added bottom margin to prevent overlap -->
+                            </ScrollViewer>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{x:Bind SenderUsername}" FontSize="12"
+                           Foreground="{StaticResource WhiteText}"/>
+                                <TextBlock Text="{x:Bind Time}" Margin="10,0,0,10" 
+                           FontSize="12" 
+                           Foreground="{StaticResource WhiteText}"/>
+                                <!--
+                                <TextBlock Text="{x:Bind MessageSenderStatus}" Margin="10,0,0,10" 
+                           FontSize="12" 
+                           Foreground="{StaticResource WhiteText}"/>
+                                -->
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </Grid.Resources>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Left Column (Chat Area) -->
+            <!-- Chat Header -->
+            <TextBlock Grid.Column="0" Grid.Row="0"
+                       Text="Chat Room"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Margin="10"
+                       Foreground="{StaticResource PurpleBackground}"/>
+
+            <!-- Messages List with Border -->
+            <Border Grid.Column="0" Grid.Row="1" Margin="10,0,10,5" BorderBrush="LightGray" BorderThickness="1" CornerRadius="4">
+                <ListView x:Name="InvertedListView"
+                         SelectionChanged="OnHighlightedMessageChange"
+                         ItemTemplate="{StaticResource MessageViewTemplate}"
+                         ItemsSource="{x:Bind Messages}">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsStackPanel ItemsUpdatingScrollMode="KeepLastItemInView"
+                                          VerticalAlignment="Bottom"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListViewItem">
+                                        <ListViewItemPresenter
+                                            ContentTransitions="{TemplateBinding ContentTransitions}"
+                                            SelectionCheckMarkVisualEnabled="False"
+                                            CheckBrush="{ThemeResource ListViewItemCheckBrush}"
+                                            CheckBoxBrush="{ThemeResource ListViewItemCheckBoxBrush}"
+                                            DragBackground="{ThemeResource ListViewItemDragBackground}"
+                                            DragForeground="{ThemeResource ListViewItemDragForeground}"
+                                            FocusBorderBrush="{ThemeResource ListViewItemFocusBorderBrush}"
+                                            FocusSecondaryBorderBrush="{ThemeResource ListViewItemFocusSecondaryBorderBrush}"
+                                            PlaceholderBackground="{ThemeResource ListViewItemPlaceholderBackground}"
+                                            PointerOverBackground="Transparent"
+                                            PointerOverForeground="{ThemeResource ListViewItemForeground}"
+                                            SelectedBackground="{StaticResource SelectionBackground}"
+                                            SelectedForeground="{StaticResource WhiteText}"
+                                            SelectedPointerOverBackground="{StaticResource SelectionBackground}"
+                                            PressedBackground="{StaticResource SelectionBackground}"
+                                            SelectedPressedBackground="{StaticResource SelectionBackground}"
+                                            DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
+                                            DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
+                                            ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}"
+                                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                            ContentMargin="{TemplateBinding Padding}"
+                                            CheckMode="Inline"/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </Border>
+
+            <!-- Message Input with Border -->
+            <Border Grid.Column="0" Grid.Row="2" Margin="10,0,10,10" BorderBrush="LightGray" BorderThickness="1" CornerRadius="4">
+                <TextBox x:Name="MessageTextBox"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         IsSpellCheckEnabled="True"
+                         Height="100"
+                         MaxLength="500"
+                         Background="{StaticResource LightPinkBackground}"
+                         Foreground="{StaticResource WhiteText}"
+                         VerticalAlignment="Stretch">
+                    <TextBox.Resources>
+                        <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="#FFB6C1"/>
+                        <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="#FFB6C1"/>
+                        <SolidColorBrush x:Key="TextControlForegroundFocused" Color="White"/>
+                        <SolidColorBrush x:Key="TextControlForegroundPointerOver" Color="White"/>
+                        <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="Transparent"/>
+                        <Thickness x:Key="TextControlBorderThemeThicknessFocused">0</Thickness>
+                    </TextBox.Resources>
+                </TextBox>
+            </Border>
+
+            <!-- Right Column Buttons - Split into Header and Content area -->
+            <!-- Header Area (No Border) - Now Purple -->
+            <TextBlock Grid.Column="1" Grid.Row="0"
+                       Text="Controls"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Margin="10,10,10,0"
+                       HorizontalAlignment="Center"
+                       Foreground="{StaticResource PurpleBackground}"/>
+
+            <!-- Right Column Buttons Content Area (With Border) -->
+            <Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Margin="0,0,10,10" BorderBrush="LightGray" BorderThickness="1" CornerRadius="4">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Action Buttons -->
+                    <StackPanel Grid.Row="0" Margin="5" VerticalAlignment="Top" Width="180">
+                        <Button Content="Clear" Click="Clear_Button_Click"
+                                Margin="0,5" Padding="10,5"
+                                Height="60" VerticalAlignment="Top"
+                                Background="{StaticResource LightPinkBackground}"
+                                Foreground="{StaticResource WhiteText}"
+                                HorizontalAlignment="Stretch">
+                            <Button.Resources>
+                                <ResourceDictionary>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#6A1B9A"/>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#6A1B9A"/>
+                                </ResourceDictionary>
+                            </Button.Resources>
+                        </Button>
+                        <Button Content="Admin" Click="Admin_Button_Click"
+                                Margin="0,5" Padding="10,5"
+                                Height="60" VerticalAlignment="Top"
+                                Background="{StaticResource LightPinkBackground}"
+                                Foreground="{StaticResource WhiteText}"
+                                HorizontalAlignment="Stretch"
+                                x:Name="AdminButton">
+                            <Button.Resources>
+                                <ResourceDictionary>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#6A1B9A"/>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#6A1B9A"/>
+                                </ResourceDictionary>
+                            </Button.Resources>
+                        </Button>
+                        <Button Content="Mute" Click="Mute_Button_Click"
+                                Margin="0,5" Padding="10,5"
+                                Height="60" VerticalAlignment="Top"
+                                Background="{StaticResource LightPinkBackground}"
+                                Foreground="{StaticResource WhiteText}"
+                                HorizontalAlignment="Stretch"
+                                x:Name="MuteButton">
+                            <Button.Resources>
+                                <ResourceDictionary>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#6A1B9A"/>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#6A1B9A"/>
+                                </ResourceDictionary>
+                            </Button.Resources>
+                        </Button>
+                        <Button Content="Kick" Click="Kick_Button_Click"
+                                Margin="0,5" Padding="10,5"
+                                Height="60" VerticalAlignment="Top"
+                                Background="{StaticResource LightPinkBackground}"
+                                Foreground="{StaticResource WhiteText}"
+                                HorizontalAlignment="Stretch"
+                                x:Name="KickButton">
+                            <Button.Resources>
+                                <ResourceDictionary>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#6A1B9A"/>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#6A1B9A"/>
+                                </ResourceDictionary>
+                            </Button.Resources>
+                        </Button>
+                    </StackPanel>
+
+                    <!-- Send Button -->
+                    <Button x:Name="SendButton"
+                            Grid.Row="1"
+                            Content="Send" 
+                            Click="Send_Button_Click"
+                            Margin="5,5,5,10"
+                            Padding="15,5"
+                            Height="60"
+                            Background="{StaticResource LightPinkBackground}"
+                            Foreground="{StaticResource WhiteText}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Bottom">
+                        <Button.Resources>
+                            <ResourceDictionary>
+                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#6A1B9A"/>
+                                <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#6A1B9A"/>
+                            </ResourceDictionary>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="SteamProfile.Views.AddCommentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Add Comment"
+    PrimaryButtonText="Post Comment"
+    CloseButtonText="Cancel"
+    DefaultButton="Primary">
+
+    <StackPanel Spacing="10" Width="400" Margin="0,0,0,10">
+        <!-- User info display -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Width="30" Height="30" Margin="0,0,10,0" 
+                    CornerRadius="15" Background="LightGray">
+                <Image x:Name="UserProfileImage" Stretch="UniformToFill"/>
+            </Border>
+
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock x:Name="UserNameTextBlock" FontWeight="SemiBold" 
+                           Text="Username"/>
+                <TextBlock Text="Adding a comment" Opacity="0.7" 
+                           FontSize="12"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Comment Body -->
+        <TextBlock Text="Comment" FontWeight="SemiBold"/>
+        <TextBox x:Name="CommentTextBox" PlaceholderText="Write your comment here..." 
+                 TextWrapping="Wrap" MinHeight="100" MaxHeight="200"
+                 AcceptsReturn="True"/>
+        <TextBlock x:Name="CommentErrorText" Foreground="Red" Visibility="Collapsed"
+                  Text="Comment cannot be empty"/>
+    </StackPanel>
+</ContentDialog> 

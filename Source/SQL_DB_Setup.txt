@@ -1,0 +1,11 @@
+Last updated on: 2025-05-11 
+
+In order to get the current version of the SQL DB running, do this:
+- in SSMS create a DB named "FinalSteamDB"
+- on that DB run the entire SQL code from the FinalDataInit.sql file from the main folder of this repo
+- change the connection string in appsettings.json(two files - the one in SteamProfile and the one in SteamWebAPI) to your server's name such that it looks like:
+    "LocalDataSource": "YOURSERVERSNAME",
+    "InitialCatalog": "FinalSteamDB",
+    "ConnectionStrings": {
+      "DefaultConnection": "Server=YOURSERVERSNAME;Database=FinalSteamDB;Integrated Security=True;TrustServerCertificate=True;"
+    }

@@ -1,0 +1,56 @@
+﻿@model SteamProfileWeb.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Create an Account";
+    string returnUrl = ViewData["ReturnUrl"] as string ?? Url.Content("~/");
+}
+
+<div class="d-flex justify-content-center align-items-center" style="min-height:80vh;">
+    <div class="card shadow-sm" style="max-width:800px; width:100%; padding:2rem;">
+        <div class="card-body">
+            <h1 class="h3 text-center mb-4">@ViewData["Title"]</h1>
+
+            <form asp-controller="Auth" asp-action="Register" asp-route-returnUrl="@returnUrl" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label"></label>
+                    <input asp-for="Username" class="form-control" placeholder="Username" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" type="email" class="form-control" placeholder="Email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ConfirmPassword" class="form-label"></label>
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input asp-for="IsDeveloper" class="form-check-input" type="checkbox" id="IsDeveloper" />
+                    <label asp-for="IsDeveloper" class="form-check-label">Are you registering as a developer?</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mb-3">Register</button>
+            </form>
+
+            <div class="text-center">
+                Already have an account? <a asp-controller="Auth" asp-action="Login">Login now!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

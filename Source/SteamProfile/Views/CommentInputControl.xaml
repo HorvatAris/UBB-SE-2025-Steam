@@ -1,0 +1,79 @@
+<UserControl
+    x:Class="SteamProfile.Views.CommentInputControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile"
+    xmlns:vm="using:SteamProfile.ViewModels"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.DataContext>
+        <vm:CommentInputViewModel />
+    </UserControl.DataContext>
+
+    <Border BorderBrush="#FFACC7" BorderThickness="1" CornerRadius="12" Padding="12" Background="#FFC2D9" Margin="0,12,0,0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Toggle Buttons -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <Button Content="Raw"
+                        Command="{Binding ToggleRawCommand}"
+                        Padding="8,4"
+                        Background="#D94C8A"
+                        Foreground="White"
+                        CornerRadius="15"/>
+
+                <Button Content="Preview"
+                        Click="PreviewButton_Click"
+                        Padding="8,4"
+                        Margin="8,0,0,0"
+                        Background="#FFACC7"
+                        Foreground="#333333"
+                        CornerRadius="15"/>
+            </StackPanel>
+
+            <!-- Editors -->
+            <TextBox Grid.Row="1"
+                     Text="{Binding RawText, Mode=TwoWay}"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     Height="Auto"
+                     MinHeight="80"
+                     MaxHeight="300"
+                     Margin="0,8,0,0"
+                     BorderThickness="1"
+                     BorderBrush="#FFACC7"
+                     Background="White"
+                     Foreground="#333333"
+                     Visibility="{Binding RawEditorVisibility}"
+                     PlaceholderText="Write a comment..."
+                     CornerRadius="10"/>
+
+            <WebView2 x:Name="HtmlPreview"
+                      Grid.Row="1"
+                      Height="Auto"
+                      MinHeight="80"
+                      Margin="0,8,0,0"
+                      Visibility="{Binding PreviewVisibility}"/>
+
+            <!-- Submit -->
+            <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Margin="0,8,0,0">
+                <Button Content="{Binding PostButtonText}"
+                        Command="{Binding PostCommand}"
+                        Padding="8,4"
+                        Background="#D94C8A"
+                        Foreground="White"
+                        CornerRadius="15"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

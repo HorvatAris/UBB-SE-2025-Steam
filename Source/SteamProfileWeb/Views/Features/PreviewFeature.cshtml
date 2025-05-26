@@ -1,0 +1,87 @@
+@model SteamProfileWeb.ViewModels.FeaturePreviewViewModel
+@{
+    ViewData["Title"] = Model.PreviewedFeature?.Name ?? "Feature Preview";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="h3 mb-0">@(Model.PreviewedFeature?.Name ?? "Feature Preview")</h1>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <img src="~/@Model.PreviewedFeature.Source" alt="Profile Picture" class="img-fluid rounded-circle" style="max-width: 200px;">
+                    </div>
+
+                    <div class="mb-4">
+                        <h4>Bio</h4>
+                        <p class="lead">@(Model.PreviewedFeature?.Description ?? Model.BioText)</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4>Equipped Features</h4>
+                        @if (Model.EquippedFeatures.Any())
+                        {
+                            <div class="list-group">
+                                @foreach (var feature in Model.EquippedFeatures)
+                                {
+                                    <div class="list-group-item">
+                                        <h5 class="mb-1">@feature.Name</h5>
+                                        <p class="mb-1">@feature.Description</p>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No features equipped.</p>
+                        }
+                    </div>
+
+                    <div class="text-center">
+                        <a href="@Url.Action("Index", "Features")" class="btn btn-secondary">Back to Store</a>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <button class="btn btn-success purchase-feature" data-feature-id="@Model.FeatureId">
+                                Purchase Feature
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.purchase-feature').click(function () {
+                var button = $(this);
+                var featureId = button.data('feature-id');
+
+                $.ajax({
+                    url: '@Url.Action("PurchaseFeature", "Features")',
+                    type: 'POST',
+                    data: { featureId: featureId },
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Feature purchased successfully!');
+                            window.location.href = '@Url.Action("UserFeatures", "Features")';
+                        } else {
+                            alert(response.message || 'Failed to purchase feature.');
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while processing your request.');
+                    }
+                });
+            });
+        });
+    </script>
+} 

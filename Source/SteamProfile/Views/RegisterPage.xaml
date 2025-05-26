@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SteamProfile.Views.RegisterPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" 
+                    Spacing="10"
+                    Padding="40"
+                    MaxWidth="800">
+            
+            <TextBlock Text="Create an Account"
+                       Style="{ThemeResource TitleLargeTextBlockStyle}"
+                       HorizontalAlignment="Center"
+                       Padding="0,0,0,20"/>
+
+            <TextBox PlaceholderText="Username"
+                     Text="{Binding Username, Mode=TwoWay}"/>
+
+            <TextBox PlaceholderText="Email"
+                     Text="{Binding Email, Mode=TwoWay}"/>
+
+            <PasswordBox PlaceholderText="Password"
+                        Password="{Binding Password, Mode=TwoWay}"/>
+
+            <PasswordBox PlaceholderText="Confirm Password"
+                        Password="{Binding ConfirmPassword, Mode=TwoWay}"/>
+                        
+            <CheckBox Content="Are you registering as a developer?"
+                IsChecked="{Binding IsDeveloper, Mode=TwoWay}"/>
+
+            <TextBlock Text="{Binding ErrorMessage}"
+                       Foreground="Red"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center"/>
+
+            <Button Content="Register"
+                    Command="{Binding RegisterCommand}"
+                    Style="{ThemeResource AccentButtonStyle}"
+                    HorizontalAlignment="Center"
+                    Width="200"/>
+
+            <Button Content="Already have an account? Login!"
+                    Command="{Binding NavigateToLoginCommand}"
+                    Style="{ThemeResource TextBlockButtonStyle}"
+                    HorizontalAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</Page>

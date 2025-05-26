@@ -1,0 +1,70 @@
+<Page
+    x:Class="SteamProfile.Views.WalletViews.CardPaymentPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamProfile.Views.WalletViews"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Padding="20">
+        <StackPanel Spacing="20">
+            <TextBlock Text="Card Payment" Style="{StaticResource TitleTextBlockStyle}"/>
+
+            <TextBlock x:Name="AmountTextBlock" 
+                       Text="{x:Bind ViewModel.AmountText, Mode=OneWay}" 
+                       Style="{StaticResource SubtitleTextBlockStyle}"/>
+
+            <TextBox x:Name="OwnerNameTextBox" 
+                     Header="Card Owner Name:" 
+                     PlaceholderText="First and Last Name"
+                     TextChanged="ValidName"/>
+
+            <TextBox x:Name="CardNumberTextBox" 
+                     Header="Card Number:" 
+                     PlaceholderText="16-digit card number"
+                     MaxLength="16"
+                     TextChanged="ValidNumber"/>
+
+            <Grid ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="ExpirationDateTextBox" 
+                         Grid.Column="0"
+                         Header="Expiration Date (MM/YY):" 
+                         PlaceholderText="MM/YY"
+                         MaxLength="5"
+                         TextChanged="ValidDate"/>
+
+                <TextBox x:Name="CardVerificationValueTextBox" 
+                         Grid.Column="1"
+                         Header="Card Verification Value:" 
+                         PlaceholderText="3-digit code"
+                         MaxLength="3"
+                         TextChanged="ValidCardVerificationValue"/>
+            </Grid>
+
+            <TextBlock x:Name="ErrorMessage" 
+                       Text="Please ensure all payment details are valid." 
+                       Foreground="Red"
+                       Visibility="{x:Bind ViewModel.ErrorMessageVisibility, Mode=OneWay}"/>
+
+            <TextBlock x:Name="SuccessfullPayment" 
+                       Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
+                       Foreground="Green"
+                       Visibility="{x:Bind ViewModel.StatusMessageVisibility, Mode=OneWay}"/>
+
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button Content="Add Money" 
+                        Click="AddMoneyToAccount"
+                        />
+
+                <Button Content="Cancel" 
+                        Click="CancelPayment"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>
