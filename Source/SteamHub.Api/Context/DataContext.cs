@@ -7,10 +7,13 @@ namespace SteamHub.Api.Context
     using Models;
     using System.Reflection.Emit;
     using SteamHub.ApiContract.Models.Game;
-    using SteamHub.ApiContract.Models;
+  
     using SteamHub.ApiContract.Models.Session;
     using Game = SteamHub.Api.Entities.Game;
-
+    using Achievement = SteamHub.Api.Entities.Achievement;
+    using UserAchievement = SteamHub.Api.Entities.UserAchievement;
+    using OwnedGame = SteamHub.Api.Entities.OwnedGame; 
+    using Microsoft.EntityFrameworkCore.Internal;
 
     public class DataContext : DbContext
     {
@@ -42,6 +45,12 @@ namespace SteamHub.Api.Context
 
         // Added From other team
         public DbSet<SessionDetails> UserSessions { get; set; }
+        public DbSet<Achievement> Achievements { get; set; }
+        public DbSet<UserAchievement> UserAchievements { get; set; }
+        public DbSet<Friendship> Friendships { get; set; }
+        public DbSet<OwnedGame> OwnedGames { get; set; }
+        public DbSet<SoldGame> SoldGames { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -205,101 +214,101 @@ namespace SteamHub.Api.Context
             builder.Entity<Tag>().HasData(tagSeed);
             builder.Entity<User>().HasData(usersSeed);
 
-            //builder.Entity<Achievement>(entity =>
-            //{
-            //    entity.ToTable("Achievements");
-            //    entity.HasKey(a => a.AchievementId);
-            //    entity.Property(a => a.AchievementId)
-            //        .HasColumnName("achievement_id")
-            //       .ValueGeneratedOnAdd();
-            //    entity.Property(a => a.AchievementName)
-            //        .HasColumnName("achievement_name")
-            //        .IsRequired();
-            //    entity.Property(a => a.Description)
-            //        .HasColumnName("description");
-            //    entity.Property(a => a.AchievementType)
-            //        .HasColumnName("achievement_type")
-            //        .IsRequired();
-            //    entity.Property(a => a.Points)
-            //        .HasColumnName("points")
-            //        .IsRequired();
-            //    entity.Property(a => a.Icon)
-            //        .HasColumnName("icon_url");
-            //});
-            //var achievementSeed = new List<Achievement>
-            //{
-            //    new Achievement
-            //    {
-            //        AchievementId = 1,
-            //        AchievementName = "First Steps",
-            //        Description = "Complete the tutorial level.",
-            //        AchievementType ="",
-            //        Points = 10,
-            //        Icon = "https://example.com/icons/first_steps.png"
-            //    },
-            //    new Achievement
-            //    {
-            //        AchievementId = 2,
-            //        AchievementName = "Master Explorer",
-            //        Description = "Discover all hidden areas in the game.",
-            //        AchievementType ="",
-            //        Points = 20,
-            //        Icon = "https://example.com/icons/master_explorer.png"
-            //    },
-            //    new Achievement
-            //    {
-            //        AchievementId = 3,
-            //        AchievementName = "Speed Runner",
-            //        Description = "Complete the game in under 5 hours.",
-            //        AchievementType ="",
-            //        Points = 30,
-            //        Icon = "https://example.com/icons/speed_runner.png"
-            //    }
-            //};
-            //builder.Entity<Achievement>().HasData(achievementSeed);
+            builder.Entity<Achievement>(entity =>
+            {
+                entity.ToTable("Achievements");
+                entity.HasKey(a => a.AchievementId);
+                entity.Property(a => a.AchievementId)
+                    .HasColumnName("achievement_id")
+                   .ValueGeneratedOnAdd();
+                entity.Property(a => a.AchievementName)
+                    .HasColumnName("achievement_name")
+                    .IsRequired();
+                entity.Property(a => a.Description)
+                    .HasColumnName("description");
+                entity.Property(a => a.AchievementType)
+                    .HasColumnName("achievement_type")
+                    .IsRequired();
+                entity.Property(a => a.Points)
+                    .HasColumnName("points")
+                    .IsRequired();
+                entity.Property(a => a.Icon)
+                    .HasColumnName("icon_url");
+            });
+            var achievementSeed = new List<Achievement>
+            {
+                new Achievement
+                {
+                    AchievementId = 1,
+                    AchievementName = "First Steps",
+                    Description = "Complete the tutorial level.",
+                    AchievementType ="",
+                    Points = 10,
+                    Icon = "https://example.com/icons/first_steps.png"
+                },
+                new Achievement
+                {
+                    AchievementId = 2,
+                    AchievementName = "Master Explorer",
+                    Description = "Discover all hidden areas in the game.",
+                    AchievementType ="",
+                    Points = 20,
+                    Icon = "https://example.com/icons/master_explorer.png"
+                },
+                new Achievement
+                {
+                    AchievementId = 3,
+                    AchievementName = "Speed Runner",
+                    Description = "Complete the game in under 5 hours.",
+                    AchievementType ="",
+                    Points = 30,
+                    Icon = "https://example.com/icons/speed_runner.png"
+                }
+            };
+            builder.Entity<Achievement>().HasData(achievementSeed);
 
-            //// -- UserAchievement mapping ----------------------------------------------------
-            //builder.Entity<UserAchievement>(entity =>
-            //{
-            //    entity.ToTable("UserAchievements");
+            // -- UserAchievement mapping ----------------------------------------------------
+            builder.Entity<UserAchievement>(entity =>
+            {
+                entity.ToTable("UserAchievements");
 
-            //    // Composite PK on (UserId, AchievementId)
-            //    entity.HasKey(ua => new { ua.UserId, ua.AchievementId });
+                // Composite PK on (UserId, AchievementId)
+                entity.HasKey(ua => new { ua.UserId, ua.AchievementId });
 
-            //    // Map columns
-            //    entity.Property(ua => ua.UserId)
-            //          .HasColumnName("user_id")
-            //          .IsRequired();
+                // Map columns
+                entity.Property(ua => ua.UserId)
+                      .HasColumnName("user_id")
+                      .IsRequired();
 
-            //    entity.Property(ua => ua.AchievementId)
-            //          .HasColumnName("achievement_id")
-            //          .IsRequired();
+                entity.Property(ua => ua.AchievementId)
+                      .HasColumnName("achievement_id")
+                      .IsRequired();
 
-            //    entity.Property(ua => ua.UnlockedAt)
-            //          .HasColumnName("unlocked_at")
-            //          .HasDefaultValueSql("GETDATE()");
+                entity.Property(ua => ua.UnlockedAt)
+                      .HasColumnName("unlocked_at")
+                      .HasDefaultValueSql("GETDATE()");
 
-            //    // FKs
-            //    entity.HasOne(ua => ua.User)
-            //          .WithMany(u => u.UserAchievements) // you'll need to add this nav prop on User
-            //          .HasForeignKey(ua => ua.UserId)
-            //          .OnDelete(DeleteBehavior.Cascade);
+                // FKs
+                entity.HasOne(ua => ua.User)
+                      .WithMany(u => u.UserAchievements) // you'll need to add this nav prop on User
+                      .HasForeignKey(ua => ua.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
 
-            //    entity.HasOne(ua => ua.Achievement)
-            //          .WithMany(a => a.UserAchievements) // and this nav prop on Achievement
-            //          .HasForeignKey(ua => ua.AchievementId)
-            //          .OnDelete(DeleteBehavior.Cascade);
-            //});
-            //var userAchievementSeed = new List<UserAchievement>
-            //{
-            //    new UserAchievement
-            //    {
-            //        UserId = 2,
-            //        AchievementId = 1,
-            //        UnlockedAt = new DateTime(2024, 1, 2),
-            //    }
-            //};
-            //builder.Entity<UserAchievement>().HasData(userAchievementSeed);
+                entity.HasOne(ua => ua.Achievement)
+                      .WithMany(a => a.UserAchievements) // and this nav prop on Achievement
+                      .HasForeignKey(ua => ua.AchievementId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+            var userAchievementSeed = new List<UserAchievement>
+            {
+                new UserAchievement
+                {
+                    UserId = 2,
+                    AchievementId = 1,
+                    UnlockedAt = new DateTime(2024, 1, 2),
+                }
+            };
+            builder.Entity<UserAchievement>().HasData(userAchievementSeed);
 
 
             builder.Entity<GameStatus>()

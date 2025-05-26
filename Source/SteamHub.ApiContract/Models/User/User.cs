@@ -7,23 +7,6 @@ namespace SteamHub.ApiContract.Models.User
     /// </summary>
     public class User : IUserDetails
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="User"/> class.
-        /// </summary>
-        //public User()
-        //{
-        //}
-
-        /// <summary>
-        /// Initializes a new instance with all properties specified.
-        /// </summary>
-        /// <param name="userIdentifier">Unique identifier for the user.</param>
-        /// <param name="name">Display name of the user.</param>
-        /// <param name="password">Hashed or plain-text password.</param>
-        /// <param name="email">Email address of the user.</param>
-        /// <param name="walletBalance">Current wallet balance.</param>
-        /// <param name="pointsBalance">Current points balance.</param>
-        /// <param name="userRole">Role assigned to the user.</param>
         public User(
             int userIdentifier,
             string name,
@@ -42,10 +25,7 @@ namespace SteamHub.ApiContract.Models.User
             UserRole = userRole;
         }
 
-        /// <summary>
-        /// Initializes a new instance by copying properties from another <see cref="IUserDetails"/> instance.
-        /// </summary>
-        /// <param name="userDetails">The source instance to copy from.</param>
+
         public User(IUserDetails userDetails)
         {
             UserId = userDetails.UserId;
@@ -56,10 +36,7 @@ namespace SteamHub.ApiContract.Models.User
             UserRole = userDetails.UserRole;
         }
 
-        //Added from business layer
         public byte[] ProfilePicture;
-    
-        // Only one Username/UserName
         public string Username2 { get; set; }
         public bool IsDeveloper => UserRole == UserRole.Developer;
         public DateTime CreatedAt { get; set; }
