@@ -1,3 +1,6 @@
+using SteamHub.ApiContract.Models.PasswordReset;
+using SteamHub.ApiContract.Models.Session;
+
 namespace SteamHub.Api.Context
 {
     using Azure;
@@ -39,6 +42,10 @@ namespace SteamHub.Api.Context
         public DbSet<ItemTrade> ItemTrades { get; set; }
         public DbSet<UserInventory> UserInventories { get; set; }
         public DbSet<ItemTradeDetail> ItemTradeDetails { get; set; }
+        
+        public DbSet<SessionDetails> UserSessions { get; set; }
+        
+        public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
 
         // Added From other team
         public DbSet<Wallet> Wallets { get; set; }
