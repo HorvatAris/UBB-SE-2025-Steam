@@ -1,3 +1,4 @@
+using SteamHub.ApiContract.Models.PasswordReset;
 using SteamHub.ApiContract.Models.Session;
 
 namespace SteamHub.Api.Context
@@ -41,6 +42,8 @@ namespace SteamHub.Api.Context
         public DbSet<ItemTradeDetail> ItemTradeDetails { get; set; }
         
         public DbSet<SessionDetails> UserSessions { get; set; }
+        
+        public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

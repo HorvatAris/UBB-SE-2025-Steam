@@ -1,16 +1,13 @@
 using System;
 using System.Threading.Tasks;
-using System.Linq;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls;
 using BusinessLayer.Models;
-using BusinessLayer.Services;
 using SteamProfile.Views;
 using BusinessLayer.Exceptions;
 using BusinessLayer.Validators;
-using Windows.UI.WebUI;
 using BusinessLayer.Repositories.Interfaces;
 using BusinessLayer.Services.Interfaces;
 namespace SteamProfile.ViewModels

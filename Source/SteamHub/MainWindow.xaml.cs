@@ -34,6 +34,7 @@ namespace SteamHub
         private TradeServiceProxy tradeService;
         private UserServiceProxy userService;
         private SessionServiceProxy sessionService;
+        private PasswordResetServiceProxy passwordResetService;
 
         public MainWindow()
         {
@@ -113,6 +114,8 @@ namespace SteamHub
             this.sessionService = new SessionServiceProxy();
 
             this.userService = new UserServiceProxy(httpClientFactory, sessionService);
+            
+            this.passwordResetService = new PasswordResetServiceProxy();
 
             this.marketplaceService = new MarketplaceServiceProxy(httpClientFactory, loggedInUser);
 
@@ -171,6 +174,15 @@ namespace SteamHub
                         break;
                     case "trading":
                         this.ContentFrame.Content = new TradingPage(this.tradeService, this.userService, this.gameService);
+                        break;
+                    case "LoginPage":
+                        this.ContentFrame.Content = new LoginPage(this.userService);
+                        break;
+                    case "RegisterPage":
+                        this.ContentFrame.Content = new LoginPage(this.userService);
+                        break;
+                    case "ForgotPasswordPage":
+                        this.ContentFrame.Content = new ForgotPasswordPage(this.passwordResetService);
                         break;
                 }
             }
