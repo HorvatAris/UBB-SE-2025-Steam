@@ -64,7 +64,7 @@ public class AuthenticationController : ControllerBase
             {
                 SessionId = sessionId,
                 UserId = user.UserId,
-                Username = user.UserName,
+                Username = user.Username,
                 Email = user.Email,
                 Developer = user.UserRole == UserRole.Developer,
                 UserCreatedAt = DateTime.Now,
@@ -108,7 +108,7 @@ public class AuthenticationController : ControllerBase
             {
                 newUser = userService.CreateUser(new User
                 {
-                    UserName = request.Username,
+                    Username = request.Username,
                     Email = request.Email,
                     Password = request.Password,
                     UserRole = request.IsDeveloper ? UserRole.Developer : UserRole.User,
@@ -128,7 +128,7 @@ public class AuthenticationController : ControllerBase
             {
                 SessionId = sessionId,
                 UserId = newUser.UserId,
-                Username = newUser.UserName,
+                Username = newUser.Username,
                 Email = newUser.Email,
                 Developer = newUser.UserRole == UserRole.Developer,
                 UserCreatedAt = DateTime.Now,
@@ -166,7 +166,7 @@ public class AuthenticationController : ControllerBase
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("UserName", user.UserName),
+                new Claim("UserName", user.Username),
                 new Claim("sessionId", sessionId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };

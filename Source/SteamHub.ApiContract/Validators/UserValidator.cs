@@ -36,7 +36,7 @@ namespace SteamHub.ApiContract.Validators
         /// </summary>
         public static void ValidateUser(User user)
         {
-            if (!IsValidUsername(user.UserName))
+            if (!IsValidUsername(user.Username))
                 throw new InvalidOperationException("User UserName is not valid.");
 
             if (!IsPasswordValid(user.Password))

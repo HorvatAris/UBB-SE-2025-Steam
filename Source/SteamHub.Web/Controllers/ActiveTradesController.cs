@@ -35,7 +35,7 @@ namespace SteamHub.Web.Controllers
 				Users = users.Select(user => new SelectListItem
 				{
 					Value = user.UserId.ToString(),
-					Text = user.UserName
+					Text = user.Username
 				}).ToList(),
 				ActiveTrades = activeTrades.Select(trade => trade.ToTradeViewModelDetails()),
 				CanAcceptOrDeclineTrade = true // Simplified assumption
@@ -55,7 +55,7 @@ namespace SteamHub.Web.Controllers
 			model.Users = users.Select(user => new SelectListItem
 			{
 				Value = user.UserId.ToString(),
-				Text = user.UserName
+				Text = user.Username
 			}).ToList();
 
 			model.ActiveTrades = trades.Select(trade => trade.ToTradeViewModelDetails());

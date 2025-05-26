@@ -10,7 +10,6 @@ namespace SteamHub.ApiContract.Models
     public class Achievement
     {
         public int AchievementId { get; set; }
-
         public string AchievementName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string AchievementType { get; set; } = string.Empty;
@@ -19,7 +18,9 @@ namespace SteamHub.ApiContract.Models
 
         public ICollection<UserAchievement> UserAchievements { get; set; }
         public Achievement()
-        { }
+        {
+
+        }
 
         public bool IsValidIcon()
         {

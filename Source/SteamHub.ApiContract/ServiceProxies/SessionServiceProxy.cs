@@ -56,7 +56,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             return new User
             {
                 UserId = CurrentUser.UserId,
-                UserName = CurrentUser.Username,
+                Username = CurrentUser.Username,
                 Email = CurrentUser.Email,
                 UserRole = CurrentUser.Developer ? UserRole.Developer : UserRole.User
             };

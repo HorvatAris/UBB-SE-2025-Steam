@@ -79,7 +79,7 @@ namespace SteamHub.Api.Context.Repositories
                     CreatedAt = session.CreatedAt,
                     ExpiresAt = session.ExpiresAt,
                     UserId = user.UserId,
-                    Username = user.UserName,
+                    Username = user.Username,
                     Email = user.Email,
                     Developer = user.IsDeveloper,
                     UserCreatedAt = user.CreatedAt,

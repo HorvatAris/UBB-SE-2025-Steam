@@ -32,15 +32,18 @@ namespace SteamHub.Api.Context.Repositories
         /// </summary>
         private static SteamHub.ApiContract.Models.User.User MapEntityToUserDto(Entities.User userEntity)
         {
-            return new SteamHub.ApiContract.Models.User.User(
-                userIdentifier: userEntity.UserId,
-                name: userEntity.UserName,
-                password: userEntity.Password,
-                email: userEntity.Email,
-                walletBalance: userEntity.WalletBalance,
-                pointsBalance: userEntity.PointsBalance,
-                userRole: userEntity.UserRole.Id == RoleEnum.Developer ? UserRole.Developer : UserRole.User
-            );
+            var user = new SteamHub.ApiContract.Models.User.User
+            {
+                UserId = userEntity.UserId,
+                Username = userEntity.Username,
+                Password = userEntity.Password,
+                Email = userEntity.Email,
+                WalletBalance = userEntity.WalletBalance,
+                PointsBalance = userEntity.PointsBalance,
+                UserRole = userEntity.UserRole.Id == RoleEnum.Developer ? UserRole.Developer : UserRole.User,
+            };
+
+            return user;
         }
 
         /// <summary>
@@ -48,7 +51,7 @@ namespace SteamHub.Api.Context.Repositories
         /// </summary>
         private static void ApplyUserDtoToEntity(Entities.User userEntity, SteamHub.ApiContract.Models.User.User userDto)
         {
-            userEntity.UserName = userDto.UserName;
+            userEntity.Username = userDto.Username;
             userEntity.Email = userDto.Email;
             userEntity.WalletBalance = userDto.WalletBalance;
             userEntity.PointsBalance = userDto.PointsBalance;
@@ -63,7 +66,7 @@ namespace SteamHub.Api.Context.Repositories
                 .Select(userEntity => new UserResponse
                 {
                     UserId = userEntity.UserId,
-                    UserName = userEntity.UserName,
+                    UserName = userEntity.Username,
                     Email = userEntity.Email,
                     Role = (ApiContract.Models.User.RoleEnum)userEntity.RoleId,
                     WalletBalance = userEntity.WalletBalance,
@@ -83,7 +86,7 @@ namespace SteamHub.Api.Context.Repositories
                 .Select(userEntity => new UserResponse
                 {
                     UserId = userEntity.UserId,
-                    UserName = userEntity.UserName,
+                    UserName = userEntity.Username,
                     Email = userEntity.Email,
                     Role = (ApiContract.Models.User.RoleEnum)userEntity.RoleId,
                     WalletBalance = userEntity.WalletBalance,
@@ -99,7 +102,7 @@ namespace SteamHub.Api.Context.Repositories
         {
             var newUserEntity = new Entities.User
             {
-                UserName = request.UserName,
+                Username = request.UserName,
                 Email = request.Email,
                 RoleId = (Entities.RoleEnum)request.Role,
                 WalletBalance = request.WalletBalance,
@@ -118,7 +121,7 @@ namespace SteamHub.Api.Context.Repositories
             var existingUserEntity = await dataContext.Users.FindAsync(userId)
                 ?? throw new KeyNotFoundException($"User {userId} not found.");
 
-            existingUserEntity.UserName = request.UserName;
+            existingUserEntity.Username = request.UserName;
             existingUserEntity.Email = request.Email;
             existingUserEntity.RoleId = (Entities.RoleEnum)request.Role;
             existingUserEntity.WalletBalance = request.WalletBalance;
@@ -132,7 +135,7 @@ namespace SteamHub.Api.Context.Repositories
         {
             return dataContext.Users
                 .AsNoTracking()
-                .OrderBy(userEntity => userEntity.UserName)
+                .OrderBy(userEntity => userEntity.Username)
                 .Select(MapEntityToUserDto)
                 .ToList();
         }
@@ -183,7 +186,7 @@ namespace SteamHub.Api.Context.Repositories
         public SteamHub.ApiContract.Models.User.User? VerifyCredentials(string emailOrUsername)
         {
             var userEntity = dataContext.Users.SingleOrDefault(
-                user => user.UserName == emailOrUsername || user.Email == emailOrUsername);
+                user => user.Username == emailOrUsername || user.Email == emailOrUsername);
 
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
@@ -198,7 +201,7 @@ namespace SteamHub.Api.Context.Repositories
         /// <inheritdoc />
         public SteamHub.ApiContract.Models.User.User? GetUserByUsername(string username)
         {
-            var userEntity = dataContext.Users.SingleOrDefault(user => user.UserName == username);
+            var userEntity = dataContext.Users.SingleOrDefault(user => user.Username == username);
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
@@ -210,7 +213,7 @@ namespace SteamHub.Api.Context.Repositories
                 return "EMAIL_EXISTS";
             }
 
-            if (dataContext.Users.Any(user => user.UserName == username))
+            if (dataContext.Users.Any(user => user.Username == username))
             {
                 return "USERNAME_EXISTS";
             }
@@ -244,7 +247,7 @@ namespace SteamHub.Api.Context.Repositories
             var userEntity = dataContext.Users.Find(userId)
                 ?? throw new KeyNotFoundException($"User {userId} not found.");
 
-            userEntity.UserName = newUsername;
+            userEntity.Username = newUsername;
             dataContext.SaveChanges();
         }
 

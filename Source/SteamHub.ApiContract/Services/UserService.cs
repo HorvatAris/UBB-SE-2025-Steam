@@ -76,7 +76,7 @@ namespace SteamHub.ApiContract.Services
         /// <param name="user">The user DTO containing new user details.</param>
         public User CreateUser(User user)
         {
-            ValidateUserAndEmail(user.Email, user.UserName);
+            ValidateUserAndEmail(user.Email, user.Username);
             user.Password = PasswordHasher.HashPassword(user.Password);
             return userRepository.CreateUser(user);
         }
@@ -214,14 +214,15 @@ namespace SteamHub.ApiContract.Services
             var result = new List<User>();
             foreach (var u in dto.Users)
             {
-                result.Add(new User(
-                    u.UserId,
-                    u.UserName,
-                    u.Email,
-                    null,
-                    u.WalletBalance,
-                    u.PointsBalance,
-                    u.Role == RoleEnum.Developer ? UserRole.Developer : UserRole.User));
+                result.Add(new User
+                {
+                    UserId = u.UserId,
+                    Username = u.UserName,
+                    Email = u.Email,
+                    WalletBalance = u.WalletBalance,
+                    PointsBalance = u.PointsBalance,
+                    UserRole = u.Role == RoleEnum.Developer ? UserRole.Developer : UserRole.User,
+                });   
             }
             return result;
         }

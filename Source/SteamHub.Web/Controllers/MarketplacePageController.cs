@@ -19,7 +19,7 @@ namespace SteamHub.Web.Controllers
         {
             var allUsers = await _marketplaceService.GetAllUsersAsync();
             var currentUsername = User.Identity?.Name;
-            var currentUser = allUsers.FirstOrDefault(u => u.UserName == currentUsername);
+            var currentUser = allUsers.FirstOrDefault(u => u.Username == currentUsername);
 
             if (currentUser == null)
             {
@@ -47,7 +47,7 @@ namespace SteamHub.Web.Controllers
             {
                 var allUsers = await _marketplaceService.GetAllUsersAsync();
                 var currentUsername = User.Identity?.Name;
-                var currentUser = allUsers.FirstOrDefault(u => u.UserName == currentUsername);
+                var currentUser = allUsers.FirstOrDefault(u => u.Username == currentUsername);
 
                 if (currentUser == null)
                 {
