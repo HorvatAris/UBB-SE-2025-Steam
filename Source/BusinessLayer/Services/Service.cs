@@ -56,7 +56,6 @@ namespace BusinessLayer.Services
             try
             {
                 string newIpAddress = "none";
-                //  BusinessLayer.Services.ChatService.GetLocalIpAddress();
                 this.repository.UpdateUserIpAddress(newIpAddress, userId);
                 return newIpAddress;
             }

@@ -1,93 +1,266 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SteamHub.Api.Entities;
-using SteamHub.ApiContract.Models.User;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using SteamHub.ApiContract.Repositories;
-using User = SteamHub.Api.Entities.User;
+using SteamHub.ApiContract.Utils;
+using SteamHub.ApiContract.Models.User;
+using UserAchievement = SteamHub.ApiContract.Models.UserAchievement;
+using SoldGame = SteamHub.ApiContract.Models.SoldGame;
+using RoleEnum = SteamHub.Api.Entities.RoleEnum;
+using User = SteamHub.ApiContract.Models.User.User;
+using UserDTO = SteamHub.Api.Entities.User;
 
-namespace SteamHub.Api.Context.Repositories;
-
-public class UserRepository : IUserRepository
+namespace SteamHub.Api.Context.Repositories
 {
-    private readonly DataContext _context;
-
-    public UserRepository(DataContext context)
+    public class UserRepository : IUserRepository
     {
-        _context = context;
-    }
-    public async Task<GetUsersResponse?> GetUsersAsync()
-    {
-        var users = await _context.Users
-            .Include(user => user.UserRole)
-            .Select(user => new UserResponse
-            {
-                UserId = user.UserId,
-                UserName = user.UserName,
-                Email = user.Email,
-                Role = (ApiContract.Models.User.RoleEnum)user.RoleId,
-                WalletBalance = user.WalletBalance,
-                PointsBalance = user.PointsBalance
-            })
-            .ToListAsync();
+        private readonly DataContext dataContext;
 
-        return new GetUsersResponse
+        public UserRepository(DataContext dataContext)
         {
-            Users = users
-        };
-    }
-
-    public async Task<UserResponse?> GetUserByIdAsync(int id)
-    {
-        var result = await _context.Users
-            .Where(user => user.UserId == id)
-            .Select(user => new UserResponse
-            {
-                UserId = user.UserId,
-                UserName = user.UserName,
-                Email = user.Email,
-                Role = (ApiContract.Models.User.RoleEnum)user.RoleId,
-                WalletBalance = user.WalletBalance,
-                PointsBalance = user.PointsBalance
-            })
-            .SingleOrDefaultAsync();
-
-        return result;
-    }
-
-    public async Task UpdateUserAsync(int userId, UpdateUserRequest request)
-    {
-        var existingUser = await _context.Users.FindAsync(userId);
-        if (existingUser == null)
-        {
-            throw new Exception("User not found");
+            this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
         }
 
-        existingUser.UserName = request.UserName;
-        existingUser.Email = request.Email;
-        existingUser.RoleId = (Entities.RoleEnum)request.Role;
-        existingUser.WalletBalance = request.WalletBalance;
-        existingUser.PointsBalance = request.PointsBalance;
-
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request)
-    {
-        User newUser = new User
+        private static User MapEntityToUserDto(UserDTO userEntity)
         {
-            UserName = request.UserName,
-            Email = request.Email,
-            RoleId = (Entities.RoleEnum)request.Role,
-            WalletBalance = request.WalletBalance,
-            PointsBalance = request.PointsBalance
-        };
+            var user = new User
+            {
+                UserId = userEntity.UserId,
+                Username = userEntity.Username,
+                Password = userEntity.Password,
+                Email = userEntity.Email,
+                WalletBalance = userEntity.WalletBalance,
+                PointsBalance = userEntity.PointsBalance,
+                UserRole = userEntity.RoleId == RoleEnum.Developer ? UserRole.Developer : UserRole.User,
+                CreatedAt = userEntity.CreatedAt,
+                LastLogin = userEntity.LastLogin,
+                ProfilePicture = userEntity.ProfilePicture,
+                
+                // This for later
+                //UserAchievements = userEntity.UserAchievements.Select(ua => new UserAchievement
+                //{
+                //    UserId = ua.UserId,
+                //    AchievementId = ua.AchievementId,
+                //    UnlockedAt = ua.UnlockedAt
+                //}).ToList(),
+                //SoldGames = userEntity.SoldGames.Select(sg => new SoldGame
+                //{
+                //    SoldGameId = sg.SoldGameId,
+                //    GameId = sg.GameId,
+                //    UserId = sg.UserId,
+                //    SoldDate = sg.SoldDate,
+                //}).ToList()
+            };
 
-        await _context.Users.AddAsync(newUser);
+            return user;
+        }
 
-        await _context.SaveChangesAsync();
-
-        return new CreateUserResponse
+        private static void ApplyUserDtoToEntity(UserDTO userEntity, User userDto)
         {
-            UserId = newUser.UserId
-        };
+            userEntity.Username = userDto.Username;
+            userEntity.Email = userDto.Email;
+            userEntity.WalletBalance = userDto.WalletBalance;
+            userEntity.PointsBalance = userDto.PointsBalance;
+            userEntity.RoleId = (RoleEnum)userDto.UserRole;
+        }
+
+        public async Task<GetUsersResponse?> GetUsersAsync()
+        {
+            var userResponses = await dataContext.Users
+                .AsNoTracking()
+                .Select(userEntity => new UserResponse
+                {
+                    UserId = userEntity.UserId,
+                    UserName = userEntity.Username,
+                    Password = userEntity.Password,
+                    Email = userEntity.Email,
+                    Role = (ApiContract.Models.User.RoleEnum)userEntity.RoleId,
+                    WalletBalance = userEntity.WalletBalance,
+                    PointsBalance = userEntity.PointsBalance,
+                    CreatedAt = userEntity.CreatedAt,
+                    LastLogin = userEntity.LastLogin,
+                    ProfilePicture = userEntity.ProfilePicture
+                })
+                .ToListAsync();
+
+            return new GetUsersResponse { Users = userResponses };
+        }
+
+        public async Task<UserResponse?> GetUserByIdAsync(int userId)
+        {
+            var userResponse = await dataContext.Users
+                .AsNoTracking()
+                .Where(userEntity => userEntity.UserId == userId)
+                .Select(userEntity => new UserResponse
+                {
+                    UserId = userEntity.UserId,
+                    UserName = userEntity.Username,
+                    Password = userEntity.Password,
+                    Email = userEntity.Email,
+                    Role = (ApiContract.Models.User.RoleEnum)userEntity.RoleId,
+                    WalletBalance = userEntity.WalletBalance,
+                    PointsBalance = userEntity.PointsBalance,
+                    CreatedAt = userEntity.CreatedAt,
+                    LastLogin = userEntity.LastLogin,
+                    ProfilePicture = userEntity.ProfilePicture
+                })
+                .SingleOrDefaultAsync();
+
+            return userResponse;
+        }
+
+        public async Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request)
+        {
+            var newUserEntity = new UserDTO
+            {
+                Username = request.UserName,
+                Email = request.Email,
+                Password = PasswordHasher.HashPassword(request.Password),
+                RoleId = (Entities.RoleEnum)request.Role,
+                WalletBalance = request.WalletBalance,
+                PointsBalance = request.PointsBalance,
+                ProfilePicture = request.ProfilePicture,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await dataContext.Users.AddAsync(newUserEntity);
+            await dataContext.SaveChangesAsync();
+
+            return new CreateUserResponse { UserId = newUserEntity.UserId };
+        }
+
+        public async Task UpdateUserAsync(int userId, UpdateUserRequest request)
+        {
+            var existingUserEntity = await dataContext.Users.FindAsync(userId)
+                ?? throw new KeyNotFoundException($"User {userId} not found.");
+
+            existingUserEntity.Username = request.UserName;
+            existingUserEntity.Email = request.Email;
+            existingUserEntity.RoleId = (Entities.RoleEnum)request.Role;
+            existingUserEntity.WalletBalance = request.WalletBalance;
+            existingUserEntity.PointsBalance = request.PointsBalance;
+
+            await dataContext.SaveChangesAsync();
+        }
+
+        public List<User> GetAllUsers()
+        {
+            return dataContext.Users
+                .AsNoTracking()
+                .OrderBy(userEntity => userEntity.Username)
+                .Select(MapEntityToUserDto)
+                .ToList();
+        }
+
+        public User? GetUserById(int userId)
+        {
+            var userEntity = dataContext.Users.Find(userId);
+            return userEntity == null ? null : MapEntityToUserDto(userEntity);
+        }
+
+        public User UpdateUser(User userDto)
+        {
+            var existingUserEntity = dataContext.Users.Find(userDto.UserId)
+                ?? throw new KeyNotFoundException($"User {userDto.UserId} not found.");
+
+            ApplyUserDtoToEntity(existingUserEntity, userDto);
+            dataContext.SaveChanges();
+
+            return MapEntityToUserDto(existingUserEntity);
+        }
+
+        public User CreateUser(User userDto)
+        {
+            var newUserEntity = new UserDTO();
+            ApplyUserDtoToEntity(newUserEntity, userDto);
+
+            dataContext.Users.Add(newUserEntity);
+            dataContext.SaveChanges();
+
+            return MapEntityToUserDto(newUserEntity);
+        }
+
+        public void DeleteUser(int userId)
+        {
+            var userEntity = dataContext.Users.Find(userId);
+            if (userEntity != null)
+            {
+                dataContext.Users.Remove(userEntity);
+                dataContext.SaveChanges();
+            }
+        }
+
+        public User? VerifyCredentials(string emailOrUsername)
+        {
+            var userEntity = dataContext.Users.SingleOrDefault(
+                user => user.Username == emailOrUsername || user.Email == emailOrUsername);
+
+            return userEntity == null ? null : MapEntityToUserDto(userEntity);
+        }
+
+        public User? GetUserByEmail(string email)
+        {
+            var userEntity = dataContext.Users.SingleOrDefault(user => user.Email == email);
+            return userEntity == null ? null : MapEntityToUserDto(userEntity);
+        }
+
+        public User? GetUserByUsername(string username)
+        {
+            var userEntity = dataContext.Users.SingleOrDefault(user => user.Username == username);
+            return userEntity == null ? null : MapEntityToUserDto(userEntity);
+        }
+
+        public string CheckUserExists(string email, string username)
+        {
+            if (dataContext.Users.Any(user => user.Email == email))
+            {
+                return "EMAIL_EXISTS";
+            }
+
+            if (dataContext.Users.Any(user => user.Username == username))
+            {
+                return "USERNAME_EXISTS";
+            }
+
+            return null;
+        }
+
+        public void ChangeEmail(int userId, string newEmail)
+        {
+            var userEntity = dataContext.Users.Find(userId)
+                ?? throw new KeyNotFoundException($"User {userId} not found.");
+
+            userEntity.Email = newEmail;
+            dataContext.SaveChanges();
+        }
+
+        public void ChangePassword(int userId, string newPassword)
+        {
+            var userEntity = dataContext.Users.Find(userId)
+                ?? throw new KeyNotFoundException($"User {userId} not found.");
+
+            userEntity.Password = PasswordHasher.HashPassword(newPassword);
+            dataContext.SaveChanges();
+        }
+
+        public void ChangeUsername(int userId, string newUsername)
+        {
+            var userEntity = dataContext.Users.Find(userId)
+                ?? throw new KeyNotFoundException($"User {userId} not found.");
+
+            userEntity.Username = newUsername;
+            dataContext.SaveChanges();
+        }
+
+        public void UpdateLastLogin(int userId)
+        {
+            var userEntity = dataContext.Users.Find(userId)
+                ?? throw new KeyNotFoundException($"User {userId} not found.");
+
+            userEntity.LastLogin = DateTime.UtcNow;
+            dataContext.SaveChanges();
+        }
     }
 }

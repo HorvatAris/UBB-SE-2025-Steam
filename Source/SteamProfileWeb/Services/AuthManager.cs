@@ -1,11 +1,7 @@
-﻿using System.Globalization;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using BusinessLayer.Models.Login;
 using BusinessLayer.Services.Interfaces;
-using BusinessLayer.Models;
-using BusinessLayer.Services;
+using BusinessLayer.Services.Proxies;
 
 namespace SteamProfileWeb.Services;
 

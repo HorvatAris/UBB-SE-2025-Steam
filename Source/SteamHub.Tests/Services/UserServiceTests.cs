@@ -1,4 +1,6 @@
-﻿namespace SteamHub.Tests.Services
+﻿using SteamHub.ApiContract.Services.Interfaces;
+
+namespace SteamHub.Tests.Services
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -12,11 +14,13 @@
     {
         private readonly UserService userService;
         private readonly Mock<IUserRepository> userRepositoryMock;
+        private readonly Mock<ISessionService> sessionServiceMock;
 
         public UserServiceTests()
         {
             this.userRepositoryMock = new Mock<IUserRepository>();
-            this.userService = new UserService(this.userRepositoryMock.Object);
+            this.sessionServiceMock = new Mock<ISessionService>();
+            this.userService = new UserService(this.userRepositoryMock.Object, this.sessionServiceMock.Object);
         }
 
         [Fact]

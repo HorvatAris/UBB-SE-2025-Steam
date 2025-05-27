@@ -188,7 +188,7 @@ namespace SteamHub.ApiContract.Services
                     var user = new User
                     {
                         UserId = currentUser.UserId,
-                        UserName = currentUser.UserName,
+                        Username = currentUser.UserName,
                         Email = currentUser.Email,
                         UserRole = (UserRole)currentUser.Role,
                         WalletBalance = currentUser.WalletBalance,
@@ -278,7 +278,7 @@ namespace SteamHub.ApiContract.Services
 
             foreach (var tradeFromHistory in result)
             {
-                System.Diagnostics.Debug.WriteLine($"Trade ID: {tradeFromHistory.TradeId}, Source User: {tradeFromHistory.SourceUser.UserName}, Destination User: {tradeFromHistory.DestinationUser.UserName}, Game: {tradeFromHistory.GameOfTrade}");
+                System.Diagnostics.Debug.WriteLine($"Trade ID: {tradeFromHistory.TradeId}, Source User: {tradeFromHistory.SourceUser.Username}, Destination User: {tradeFromHistory.DestinationUser.Username}, Game: {tradeFromHistory.GameOfTrade}");
                 System.Diagnostics.Debug.WriteLine(tradeFromHistory.SourceUserItems);
                 System.Diagnostics.Debug.WriteLine(tradeFromHistory.DestinationUserItems);
             }
@@ -303,7 +303,7 @@ namespace SteamHub.ApiContract.Services
                     var user = new User
                     {
                         UserId = tradeUser.UserId,
-                        UserName = tradeUser.UserName,
+                        Username = tradeUser.UserName,
                         Email = tradeUser.Email,
                         UserRole = (UserRole)tradeUser.Role,
                         WalletBalance = tradeUser.WalletBalance,
@@ -395,7 +395,7 @@ namespace SteamHub.ApiContract.Services
 
             foreach (var activeTrade in result)
             {
-                System.Diagnostics.Debug.WriteLine($"Trade ID: {activeTrade.TradeId}, Source User: {activeTrade.SourceUser.UserName}, Destination User: {activeTrade.DestinationUser.UserName}, Game: {activeTrade.GameOfTrade}");
+                System.Diagnostics.Debug.WriteLine($"Trade ID: {activeTrade.TradeId}, Source User: {activeTrade.SourceUser.Username}, Destination User: {activeTrade.DestinationUser.Username}, Game: {activeTrade.GameOfTrade}");
                 System.Diagnostics.Debug.WriteLine(activeTrade.SourceUserItems);
                 System.Diagnostics.Debug.WriteLine(activeTrade.DestinationUserItems);
             }

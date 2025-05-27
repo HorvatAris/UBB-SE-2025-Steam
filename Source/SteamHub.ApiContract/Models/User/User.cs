@@ -1,38 +1,46 @@
-﻿// <copyright file="User.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
+﻿using System.Reflection;
 
 namespace SteamHub.ApiContract.Models.User
 {
-    public partial class User : IUserDetails
+    /// <summary>
+    /// Data Transfer Object (DTO) representing user details.
+    /// </summary>
+    public class User : IUserDetails
     {
         public User()
         {
+
         }
 
-        public User(int userIdentifier, string name, string email, float walletBalance, float pointsBalance, UserRole userRole)
-        {
-            UserId = userIdentifier;
-            UserName = name;
-            Email = email;
-            WalletBalance = walletBalance;
-            PointsBalance = pointsBalance;
-            UserRole = userRole;
-        } 
-        
         public User(IUserDetails userDetails)
         {
             UserId = userDetails.UserId;
-            UserName = userDetails.UserName;
+            Username = userDetails.Username;
             Email = userDetails.Email;
             WalletBalance = userDetails.WalletBalance;
             PointsBalance = userDetails.PointsBalance;
             UserRole = userDetails.UserRole;
         }
+        
+        public static User GetUserById(int userId)
+        {
+            return new User
+            {
+                UserId = userId,
+                Username = $"User_{userId}",
+                ProfilePicture = "ms-appx:///Assets/DefaultUser.png"
+            };
+        }
+
+        public DateTime? LastLogin { get; set; }
+        public string IpAddress;
+        public FriendshipStatus FriendshipStatus;
 
         public int UserId { get; set; }
 
-        public string UserName { get; set; }
+        public string Username { get; set; }
+
+        public string Password { get; set; }
 
         public string Email { get; set; }
 
@@ -41,5 +49,23 @@ namespace SteamHub.ApiContract.Models.User
         public float PointsBalance { get; set; }
 
         public UserRole UserRole { get; set; }
+
+        public string ProfilePicture { get; set; }
+
+        public bool IsDeveloper => UserRole == UserRole.Developer;
+
+        public DateTime CreatedAt { get; set; }
+
+        public ICollection<UserAchievement> UserAchievements { get; set; } = new List<UserAchievement>();
+
+        public ICollection<SoldGame> SoldGames { get; set; } = new List<SoldGame>();
+    }
+
+    public enum FriendshipStatus
+    {
+        NotFriends,
+        Friends,
+        RequestSent,
+        RequestReceived
     }
 }

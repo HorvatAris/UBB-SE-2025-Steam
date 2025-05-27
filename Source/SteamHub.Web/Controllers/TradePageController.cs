@@ -35,9 +35,9 @@ namespace SteamHub.Web.Controllers
 			var viewModel = new TradeViewModel
 			{
 				CurrentUserId = currentUser.UserId,
-				Users = allUsers.Select(user => new SelectListItem { Value = user.UserId.ToString(), Text = user.UserName }).ToList(),
+				Users = allUsers.Select(user => new SelectListItem { Value = user.UserId.ToString(), Text = user.Username }).ToList(),
 				AvailableUsers = allUsers.Where(user => user.UserId != currentUser.UserId)
-										 .Select(user => new SelectListItem { Value = user.UserId.ToString(), Text = user.UserName }).ToList(),
+										 .Select(user => new SelectListItem { Value = user.UserId.ToString(), Text = user.Username }).ToList(),
 				Games = games.Select(game => new SelectListItem { Value = game.GameId.ToString(), Text = game.GameTitle }).ToList(),
 				SourceUserItems = await _tradeService.GetUserInventoryAsync(currentUser.UserId),
 			};
@@ -75,7 +75,7 @@ namespace SteamHub.Web.Controllers
 			var sourceUser = new User
 			{
 				UserId = currentUser.UserId,
-				UserName = currentUser.UserName,
+				Username = currentUser.Username,
 				Email = currentUser.Email,
 				UserRole = currentUser.UserRole,
 				PointsBalance = currentUser.PointsBalance,
@@ -147,9 +147,9 @@ namespace SteamHub.Web.Controllers
 				TradeDescription = model.TradeDescription,
 				SelectedSourceItemIds = model.SelectedSourceItemIds ?? new(),
 				SelectedDestinationItemIds = model.SelectedDestinationItemIds ?? new(),
-				Users = allUsers.Select(user => new SelectListItem { Value = user.UserId.ToString(), Text = user.UserName }).ToList(),
+				Users = allUsers.Select(user => new SelectListItem { Value = user.UserId.ToString(), Text = user.Username }).ToList(),
 				AvailableUsers = allUsers.Where(user => user.UserId != currentUser.UserId)
-										 .Select(user => new SelectListItem { Value = user.UserId.ToString(), Text = user.UserName }).ToList(),
+										 .Select(user => new SelectListItem { Value = user.UserId.ToString(), Text = user.Username }).ToList(),
 				Games = games.Select(game => new SelectListItem { Value = game.GameId.ToString(), Text = game.GameTitle }).ToList(),
 				SourceUserItems = sourceInventory,
 				DestinationUserItems = destinationInventory,

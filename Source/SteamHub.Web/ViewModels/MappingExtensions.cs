@@ -13,12 +13,12 @@ namespace SteamHub.Web.ViewModels
 				TradeStatus = trade.TradeStatus,
 				SourceUser = new ActiveTradesUserViewModel
 				{
-					UserName = trade.SourceUser?.UserName,
+					UserName = trade.SourceUser?.Username,
 					UserId = trade.SourceUser.UserId
 				},
 				DestinationUser = new ActiveTradesUserViewModel
 				{
-					UserName = trade.DestinationUser?.UserName,
+					UserName = trade.DestinationUser?.Username,
 					UserId = trade.DestinationUser.UserId
 				},
 				SourceUserItems = trade.SourceUserItems?
@@ -42,11 +42,11 @@ namespace SteamHub.Web.ViewModels
 				TradeStatus = trade.TradeStatus,
 				SourceUser = new TradeHistoryUserViewModel
 				{
-					UserName = trade.SourceUser?.UserName
+					UserName = trade.SourceUser?.Username
 				},
 				DestinationUser = new TradeHistoryUserViewModel
 				{
-					UserName = trade.DestinationUser?.UserName
+					UserName = trade.DestinationUser?.Username
 				},
 				SourceUserItems = trade.SourceUserItems?
 					.Select(item => new TradeHistoryItemViewModel

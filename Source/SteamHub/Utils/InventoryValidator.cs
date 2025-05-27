@@ -65,7 +65,7 @@ namespace SteamHub.Utils
                 throw new ArgumentNullException(nameof(user), "User cannot be null.");
             }
 
-            if (string.IsNullOrWhiteSpace(user.UserName))
+            if (string.IsNullOrWhiteSpace(user.Username))
             {
                 throw new ArgumentException("User username cannot be null or empty.", nameof(user));
             }
