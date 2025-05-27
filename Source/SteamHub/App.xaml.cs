@@ -6,6 +6,8 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using SteamHub.ApiContract.Repositories;
+using SteamHub.ApiContract.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -44,5 +46,18 @@ namespace SteamHub
                 e.Handled = true; // Prevents app from crashing
             };
         }
+        /*
+         * TEMPORARY: This is a placeholder for getting the Services from APP,
+         * until we think of a solution I will keep them here. Sorry if it's a bother
+         * 
+        */
+
+        public static IFriendsService FriendsService { get; private set; }
+        public static ICollectionsRepository CollectionsRepository { get; private set; }
+        public static IUserService UserService { get; private set; }
+        public static IFeaturesService FeaturesService { get; private set; }
+        public static IAchievementsService AchievementsService { get; private set; }
+
     }
-}
+
+    }
