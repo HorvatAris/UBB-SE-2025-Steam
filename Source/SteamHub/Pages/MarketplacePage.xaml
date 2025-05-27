@@ -35,7 +35,7 @@
                  Width="200"
                  ItemsSource="{Binding AvailableUsers}"
                  SelectedItem="{Binding SelectedUser, Mode=TwoWay}"
-                 DisplayMemberPath="UserName"/>
+                 DisplayMemberPath="Username"/>
         </StackPanel>
 
         <StackPanel Grid.Row="2" 
