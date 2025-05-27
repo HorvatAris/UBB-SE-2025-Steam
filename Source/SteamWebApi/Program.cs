@@ -102,7 +102,6 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IFriendService, FriendService>();
 builder.Services.AddScoped<IFriendsService, FriendsService>();
 builder.Services.AddScoped<IAchievementsService, AchievementsService>();
-builder.Services.AddScoped<IOwnedGamesService, OwnedGamesService>();
 builder.Services.AddScoped<INewsService, NewsService>();
 builder.Services.AddScoped<IForumService, ForumService>();
 
@@ -121,7 +120,6 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IFriendRepository, FriendRepository>();
 builder.Services.AddScoped<IFriendshipsRepository, FriendshipsRepository>();
 builder.Services.AddScoped<IAchievementsRepository, AchievementsRepository>();
-builder.Services.AddScoped<IOwnedGamesRepository, OwnedGamesRepository>();
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<IUserProfilesRepository, UserProfilesRepository>();
 builder.Services.AddScoped<IForumRepository, ForumRepository>();

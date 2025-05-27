@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SteamHub.ApiContract.Models.User;
+using SteamHub.ApiContract.Models.Common;
 using SteamHub.ApiContract.Proxies;
 using SteamHub.ApiContract.Services;
 using SteamHub.ApiContract.ServiceProxies;

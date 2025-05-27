@@ -50,7 +50,7 @@ namespace SteamHub.ApiContract.Services
                         Email = user.Email,
                         WalletBalance = user.WalletBalance,
                         PointsBalance = user.PointsBalance,
-                        UserRole = (user.Role == RoleEnum.User) ? UserRole.User : UserRole.Developer,
+                        UserRole = user.UserRole,
                     });
             }
 
@@ -182,7 +182,7 @@ namespace SteamHub.ApiContract.Services
                     Email = currentUser.Email,
                     WalletBalance = currentUser.WalletBalance - item.Price,
                     PointsBalance = currentUser.PointsBalance,
-                    Role = currentUser.Role,
+                    UserRole = currentUser.UserRole,
                 });
 
             return true;

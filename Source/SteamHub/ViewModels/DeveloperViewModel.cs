@@ -17,6 +17,7 @@ using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ApiContract.Models.Game;
 using SteamHub.ApiContract.Models.Tag;
 using SteamHub.ApiContract.Models.User;
+using SteamHub.ApiContract.Models.Common;
 using Windows.Gaming.Input;
 
 public class DeveloperViewModel : INotifyPropertyChanged

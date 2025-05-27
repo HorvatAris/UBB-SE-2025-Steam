@@ -59,7 +59,7 @@ namespace SteamProfile.ViewModels
         public void LoadComment(Comment comment)
         {
             CommentData = comment;
-            var user = users.FirstOrDefault(user => user.UserId == comment.AuthorId);
+            var user = users.FirstOrDefault(author => author.UserId == comment.AuthorId);
 
             Username = user?.Username ?? "Unknown";
             CommentDate = comment.CommentDate.ToString("MMM d, yyyy");

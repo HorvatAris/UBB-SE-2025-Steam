@@ -16,7 +16,7 @@ namespace BusinessLayer.Services
         private static readonly object Lock = new object();
         private static IForumService instance;
 
-        public static IForumService GetForumServiceInstance
+        private static IForumService GetForumServiceInstance
         {
             get
             {
@@ -26,7 +26,7 @@ namespace BusinessLayer.Services
                 }
                 return instance;
             }
-            private set
+            set
             {
                 instance = value;
             }

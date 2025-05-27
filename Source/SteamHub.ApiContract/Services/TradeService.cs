@@ -190,7 +190,7 @@ namespace SteamHub.ApiContract.Services
                         UserId = currentUser.UserId,
                         Username = currentUser.UserName,
                         Email = currentUser.Email,
-                        UserRole = (UserRole)currentUser.Role,
+                        UserRole = currentUser.UserRole,
                         WalletBalance = currentUser.WalletBalance,
                         PointsBalance = currentUser.PointsBalance,
                     };
@@ -305,7 +305,7 @@ namespace SteamHub.ApiContract.Services
                         UserId = tradeUser.UserId,
                         Username = tradeUser.UserName,
                         Email = tradeUser.Email,
-                        UserRole = (UserRole)tradeUser.Role,
+                        UserRole = tradeUser.UserRole,
                         WalletBalance = tradeUser.WalletBalance,
                         PointsBalance = tradeUser.PointsBalance,
                     };

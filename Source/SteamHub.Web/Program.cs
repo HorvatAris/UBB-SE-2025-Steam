@@ -35,14 +35,6 @@ builder.Services.AddScoped<IMarketplaceService, MarketplaceServiceProxy>();
 
 var apiBaseUri = new Uri(builder.Configuration["ApiSettings:BaseUrl"]!);
 
-builder.Services.AddHttpClient("AuthApi", client =>
-{
-    client.BaseAddress = apiBaseUri;
-    client.DefaultRequestHeaders.Add("Accept", "application/json");
-    
-}).ConfigurePrimaryHttpMessageHandler(() => new NoSslCertificateValidationHandler());
-
-
 builder.Services.AddHttpClient("SteamHubApi", client =>
 {
     client.BaseAddress = apiBaseUri;
@@ -54,8 +46,8 @@ builder.Services.AddHttpClient("SteamHubApi", client =>
 builder.Services.AddAuthentication("SteamHubAuth")
     .AddCookie("SteamHubAuth", options =>
     {
-        options.LoginPath = "/Authentication/Login";
-        options.AccessDeniedPath = "/Authentication/AccessDenied";
+        options.LoginPath = "/Auth/Login";
+        options.AccessDeniedPath = "/Auth/AccessDenied";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Lax;
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;

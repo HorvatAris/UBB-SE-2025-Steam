@@ -93,9 +93,6 @@ namespace SteamProfile
             var walletRepository = new WalletRepository(dataContext);
             Services[typeof(IWalletRepository)] = walletRepository;
 
-            var ownedGamesRepository = new OwnedGamesRepository(dataContext);
-            Services[typeof(IOwnedGamesRepository)] = ownedGamesRepository;
-
             var reviewRepository = new ReviewRepository(dataContext);
             Services[typeof(IReviewRepository)] = reviewRepository;
 
@@ -219,7 +216,6 @@ namespace SteamProfile
             Services[typeof(IFeaturesService)] = ServiceFactory.CreateFeaturesService();
             Services[typeof(IFriendsService)] = ServiceFactory.CreateFriendsService();
             Services[typeof(IAchievementsService)] = ServiceFactory.CreateAchievementsService();
-            Services[typeof(IOwnedGamesService)] = ServiceFactory.CreateOwnedGamesService();
             Services[typeof(IReviewService)] = ServiceFactory.CreateReviewService();
             Services[typeof(INewsService)] = ServiceFactory.CreateNewsService();
             Services[typeof(IForumService)] = ServiceFactory.CreateForumService();
@@ -246,7 +242,6 @@ namespace SteamProfile
         public static IWalletService WalletService { get; private set; }
         public static IUserService UserService { get; private set; }
         public static IFriendsService FriendsService { get; private set; }
-        public static IOwnedGamesService OwnedGamesService { get; private set; }
         public static AuthenticationService AuthenticationService { get; private set; }
         public static IForumService ForumService { get; private set; }
 
@@ -303,7 +298,6 @@ namespace SteamProfile
             CollectionsService = GetService<ICollectionsService>();
             AuthenticationService = new AuthenticationService(UserRepository);
             FriendsService = new FriendsService(GetService<IFriendshipsRepository>(), UserService);
-            OwnedGamesService = new OwnedGamesService(GetService<IOwnedGamesRepository>());
             PasswordResetService = new PasswordResetService(PasswordResetRepository, UserService);
             FeaturesService = (FeaturesService)GetService<IFeaturesService>();
             WalletService = new WalletService(GetService<IWalletRepository>(), UserService);
@@ -361,15 +355,6 @@ namespace SteamProfile
             try
             {
                 FriendsService = GetService<IFriendsService>();
-            }
-            catch
-            {
-                // ignore
-            }
-
-            try
-            {
-                OwnedGamesService = GetService<IOwnedGamesService>();
             }
             catch
             {

@@ -2,6 +2,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using SteamHub.ApiContract.Models.Session;
 using SteamHub.ApiContract.Models.User;
+using SteamHub.ApiContract.Models.Common;
 using SteamHub.Api.Entities;
 using SteamHub.ApiContract.Repositories;
 using SessionDetails = SteamHub.ApiContract.Models.Session.SessionDetails;
@@ -124,7 +125,7 @@ namespace SteamHub.Api.Context.Repositories
                     UserId = user.UserId,
                     Username = user.Username,
                     Email = user.Email,
-                    Developer = user.IsDeveloper,
+                    Developer = user.UserRole == UserRole.Developer ? true : false,
                     UserCreatedAt = user.CreatedAt,
                     LastLogin = user.LastLogin
                 };
