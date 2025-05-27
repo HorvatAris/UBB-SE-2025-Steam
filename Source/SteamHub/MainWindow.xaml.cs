@@ -112,9 +112,9 @@ namespace SteamHub
 
             this.tradeService = new TradeServiceProxy(httpClientFactory, loggedInUser);
 
-            this.sessionService = new SessionServiceProxy();
+            this.sessionService = new SessionServiceProxy(httpClientFactory);
 
-            this.userService = new UserServiceProxy(httpClientFactory, sessionService);
+            this.userService = new UserServiceProxy(httpClientFactory);
             
             this.passwordResetService = new PasswordResetServiceProxy();
 

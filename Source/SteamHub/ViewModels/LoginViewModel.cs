@@ -62,7 +62,7 @@ public partial class LoginViewModel : ObservableObject
                 return;
             }
 
-            var user = userService.Login(Username, Password);
+            var user = await userService.LoginAsync(Username, Password);
             if (user != null)
             {
                 // TODO: Navigate to profile page after successful login
