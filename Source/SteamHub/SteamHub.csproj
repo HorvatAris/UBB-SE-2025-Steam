@@ -19,6 +19,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Pages\AchievementsPage.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -59,6 +63,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SteamHub.ApiContract\SteamHub.ApiContract.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\AchievementsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <!--

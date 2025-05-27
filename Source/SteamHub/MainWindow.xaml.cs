@@ -35,6 +35,7 @@ namespace SteamHub
         private UserServiceProxy userService;
         private SessionServiceProxy sessionService;
         private PasswordResetServiceProxy passwordResetService;
+        private AchievementsServiceProxy achievementsService;
 
         public MainWindow()
         {
@@ -112,6 +113,7 @@ namespace SteamHub
             this.tradeService = new TradeServiceProxy(httpClientFactory, loggedInUser);
 
             this.sessionService = new SessionServiceProxy();
+            this.achievementsService = new AchievementsServiceProxy(httpClientFactory);
 
             this.userService = new UserServiceProxy(httpClientFactory, sessionService);
             
@@ -138,6 +140,7 @@ namespace SteamHub
 
             this.ContentFrame.Content = new LoginPage(this.userService);
         }
+
 
         public void ResetToHomePage()
         {
@@ -183,6 +186,9 @@ namespace SteamHub
                         break;
                     case "ForgotPasswordPage":
                         this.ContentFrame.Content = new ForgotPasswordPage(this.passwordResetService);
+                        break;
+                    case "AchievementsPage":
+                        this.ContentFrame.Content = new AchievementsPage(this.userService, this.achievementsService);
                         break;
                 }
             }

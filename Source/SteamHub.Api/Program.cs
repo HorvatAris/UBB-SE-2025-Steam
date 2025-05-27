@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using BusinessLayer.Repositories;
 using SteamHub.Api.Context;
 using SteamHub.Api.Context.Repositories;
 using SteamHub.ApiContract.Context.Repositories;
@@ -30,6 +31,9 @@ builder.Services.AddScoped<IItemTradeRepository, ItemTradeRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IUserInventoryRepository, UserInventoryRepository>();
 builder.Services.AddScoped<IItemTradeDetailRepository, ItemTradeDetailRepository>();
+
+builder.Services.AddScoped<IAchievementsRepository, AchievementsRepository>();
+builder.Services.AddScoped<IAchievementsService, AchievementsService>();
 
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IUserService, UserService>();
