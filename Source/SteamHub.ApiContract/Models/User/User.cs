@@ -36,7 +36,6 @@ namespace SteamHub.ApiContract.Models.User
         public string IpAddress;
         public FriendshipStatus FriendshipStatus;
 
-
         public int UserId { get; set; }
 
         public string Username { get; set; }
@@ -52,8 +51,6 @@ namespace SteamHub.ApiContract.Models.User
         public UserRole UserRole { get; set; }
 
         public string ProfilePicture { get; set; }
-
-        public string Username2 { get; set; }
 
         public bool IsDeveloper => UserRole == UserRole.Developer;
 

@@ -1,8 +1,9 @@
-﻿using SteamHub.ApiContract.Models.PasswordReset;
-using SteamHub.ApiContract.Repositories;
+﻿using SteamHub.ApiContract.Repositories;
 
 namespace SteamHub.Api.Context.Repositories
 {
+    using SteamHub.Api.Entities;
+
     /// <summary>
     /// Repository responsible for managing password reset operations such as storing,
     /// validating, and cleaning up reset codes.

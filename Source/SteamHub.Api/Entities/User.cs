@@ -35,6 +35,15 @@ namespace SteamHub.Api.Entities
 
         public ICollection<UserAchievement> UserAchievements { get; set; }
 
+        public ICollection<SoldGame> SoldGames { get; set; }
+
         public string ProfilePicture { get; set; }
+
+        public ICollection<Review> Reviews { get; set; }
+
+        // News-related navigation properties
+        public ICollection<Post> NewsPosts { get; set; }
+        public ICollection<Comment> NewsComments { get; set; }
+        public ICollection<PostRatingType> PostRatings { get; set; }
     }
 }

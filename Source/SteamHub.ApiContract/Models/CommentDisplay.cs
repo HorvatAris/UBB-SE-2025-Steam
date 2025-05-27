@@ -22,7 +22,7 @@ namespace SteamHub.ApiContract.Models
         public int AuthorId => Comment.AuthorId;
         // User properties
         public string Username => Author.Username;
-        public string ProfilePicturePath => Author.ProfilePicturePath;
+        public string ProfilePicturePath => Author.ProfilePicture;
         // Indicates if the comment belongs to the current user (for delete button visibility)
         public bool IsCurrentUser => AuthorId == currentUserId;
         // Create a CommentDisplay from a ForumComment

@@ -1,10 +1,11 @@
 using System.Data;
 using Microsoft.Data.SqlClient;
-using SteamHub.ApiContract.Models;
+using SteamHub.ApiContract.Models.Session;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.Api.Entities;
-using SteamHub.ApiContract.Models.Session;
 using SteamHub.ApiContract.Repositories;
+using SessionDetails = SteamHub.ApiContract.Models.Session.SessionDetails;
+using SessionDetailsDTO = SteamHub.Api.Entities.SessionDetails;
 
 namespace SteamHub.Api.Context.Repositories
 {
@@ -30,7 +31,7 @@ namespace SteamHub.Api.Context.Repositories
             var old = context.UserSessions.Where(s => s.UserId == userId);
             context.UserSessions.RemoveRange(old);
 
-            var session = new SessionDetails
+            var session = new SessionDetailsDTO
             {
                 UserId = userId,
                 SessionId = Guid.NewGuid(),
@@ -40,7 +41,13 @@ namespace SteamHub.Api.Context.Repositories
 
             context.UserSessions.Add(session);
             context.SaveChanges();
-            return session;
+            return new SessionDetails
+            {
+                SessionId = session.SessionId,
+                UserId = session.UserId,
+                CreatedAt = session.CreatedAt,
+                ExpiresAt = session.ExpiresAt
+            };
         }
 
         /// <summary>
@@ -75,7 +82,17 @@ namespace SteamHub.Api.Context.Repositories
         /// <returns>The session details if found; otherwise, null.</returns>
         public SessionDetails GetSessionById(Guid sessionId)
         {
-            return context.UserSessions.Find(sessionId);
+            var session = context.UserSessions.Find(sessionId);
+            if (session == null)
+                return null;
+
+            return new SessionDetails
+            {
+                SessionId = session.SessionId,
+                UserId = session.UserId,
+                CreatedAt = session.CreatedAt,
+                ExpiresAt = session.ExpiresAt
+            };
         }
 
         /// <summary>

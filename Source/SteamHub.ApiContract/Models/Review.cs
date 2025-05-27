@@ -91,7 +91,7 @@ namespace SteamHub.ApiContract.Models
             set => SetProperty(ref gameIdentifier, value);
         }
 
-        public string UserName
+        public string Username
         {
             get => userName;
             set => SetProperty(ref userName, value);

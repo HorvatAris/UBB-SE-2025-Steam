@@ -3,36 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SteamHub.Api.Entities;
-using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Utils;
+using SteamHub.ApiContract.Models.User;
 using RoleEnum = SteamHub.Api.Entities.RoleEnum;
+using User = SteamHub.ApiContract.Models.User.User;
+using UserDTO = SteamHub.Api.Entities.User;
 
 namespace SteamHub.Api.Context.Repositories
 {
-    /// <summary>
-    /// Repository implementation for managing <see cref="SteamHub.ApiContract.Models.User.User"/> entities and mapping to DTOs.
-    /// </summary>
     public class UserRepository : IUserRepository
     {
         private readonly DataContext dataContext;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UserRepository"/> class.
-        /// </summary>
-        /// <param name="dataContext">The EF Core data context.</param>
         public UserRepository(DataContext dataContext)
         {
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
         }
 
-        /// <summary>
-        /// Maps a <see cref="Entities.User"/> entity to a <see cref="SteamHub.ApiContract.Models.User.User"/> DTO.
-        /// </summary>
-        private static SteamHub.ApiContract.Models.User.User MapEntityToUserDto(Entities.User userEntity)
+        private static User MapEntityToUserDto(UserDTO userEntity)
         {
-            var user = new SteamHub.ApiContract.Models.User.User
+            var user = new User
             {
                 UserId = userEntity.UserId,
                 Username = userEntity.Username,
@@ -46,10 +37,7 @@ namespace SteamHub.Api.Context.Repositories
             return user;
         }
 
-        /// <summary>
-        /// Applies values from a <see cref="SteamHub.ApiContract.Models.User.User"/> DTO to an <see cref="Entities.User"/> entity.
-        /// </summary>
-        private static void ApplyUserDtoToEntity(Entities.User userEntity, SteamHub.ApiContract.Models.User.User userDto)
+        private static void ApplyUserDtoToEntity(UserDTO userEntity, User userDto)
         {
             userEntity.Username = userDto.Username;
             userEntity.Email = userDto.Email;
@@ -58,7 +46,6 @@ namespace SteamHub.Api.Context.Repositories
             userEntity.RoleId = (RoleEnum)userDto.UserRole;
         }
 
-        /// <inheritdoc />
         public async Task<GetUsersResponse?> GetUsersAsync()
         {
             var userResponses = await dataContext.Users
@@ -77,7 +64,6 @@ namespace SteamHub.Api.Context.Repositories
             return new GetUsersResponse { Users = userResponses };
         }
 
-        /// <inheritdoc />
         public async Task<UserResponse?> GetUserByIdAsync(int userId)
         {
             var userResponse = await dataContext.Users
@@ -97,10 +83,9 @@ namespace SteamHub.Api.Context.Repositories
             return userResponse;
         }
 
-        /// <inheritdoc />
         public async Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request)
         {
-            var newUserEntity = new Entities.User
+            var newUserEntity = new UserDTO
             {
                 Username = request.UserName,
                 Email = request.Email,
@@ -115,7 +100,6 @@ namespace SteamHub.Api.Context.Repositories
             return new CreateUserResponse { UserId = newUserEntity.UserId };
         }
 
-        /// <inheritdoc />
         public async Task UpdateUserAsync(int userId, UpdateUserRequest request)
         {
             var existingUserEntity = await dataContext.Users.FindAsync(userId)
@@ -130,8 +114,7 @@ namespace SteamHub.Api.Context.Repositories
             await dataContext.SaveChangesAsync();
         }
 
-        /// <inheritdoc />
-        public List<SteamHub.ApiContract.Models.User.User> GetAllUsers()
+        public List<User> GetAllUsers()
         {
             return dataContext.Users
                 .AsNoTracking()
@@ -140,15 +123,13 @@ namespace SteamHub.Api.Context.Repositories
                 .ToList();
         }
 
-        /// <inheritdoc />
-        public SteamHub.ApiContract.Models.User.User? GetUserById(int userId)
+        public User? GetUserById(int userId)
         {
             var userEntity = dataContext.Users.Find(userId);
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
-        /// <inheritdoc />
-        public SteamHub.ApiContract.Models.User.User UpdateUser(SteamHub.ApiContract.Models.User.User userDto)
+        public User UpdateUser(User userDto)
         {
             var existingUserEntity = dataContext.Users.Find(userDto.UserId)
                 ?? throw new KeyNotFoundException($"User {userDto.UserId} not found.");
@@ -159,10 +140,9 @@ namespace SteamHub.Api.Context.Repositories
             return MapEntityToUserDto(existingUserEntity);
         }
 
-        /// <inheritdoc />
-        public SteamHub.ApiContract.Models.User.User CreateUser(SteamHub.ApiContract.Models.User.User userDto)
+        public User CreateUser(User userDto)
         {
-            var newUserEntity = new Entities.User();
+            var newUserEntity = new UserDTO();
             ApplyUserDtoToEntity(newUserEntity, userDto);
 
             dataContext.Users.Add(newUserEntity);
@@ -171,7 +151,6 @@ namespace SteamHub.Api.Context.Repositories
             return MapEntityToUserDto(newUserEntity);
         }
 
-        /// <inheritdoc />
         public void DeleteUser(int userId)
         {
             var userEntity = dataContext.Users.Find(userId);
@@ -182,8 +161,7 @@ namespace SteamHub.Api.Context.Repositories
             }
         }
 
-        /// <inheritdoc />
-        public SteamHub.ApiContract.Models.User.User? VerifyCredentials(string emailOrUsername)
+        public User? VerifyCredentials(string emailOrUsername)
         {
             var userEntity = dataContext.Users.SingleOrDefault(
                 user => user.Username == emailOrUsername || user.Email == emailOrUsername);
@@ -191,21 +169,18 @@ namespace SteamHub.Api.Context.Repositories
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
-        /// <inheritdoc />
-        public SteamHub.ApiContract.Models.User.User? GetUserByEmail(string email)
+        public User? GetUserByEmail(string email)
         {
             var userEntity = dataContext.Users.SingleOrDefault(user => user.Email == email);
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
-        /// <inheritdoc />
-        public SteamHub.ApiContract.Models.User.User? GetUserByUsername(string username)
+        public User? GetUserByUsername(string username)
         {
             var userEntity = dataContext.Users.SingleOrDefault(user => user.Username == username);
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
-        /// <inheritdoc />
         public string CheckUserExists(string email, string username)
         {
             if (dataContext.Users.Any(user => user.Email == email))
@@ -221,7 +196,6 @@ namespace SteamHub.Api.Context.Repositories
             return null;
         }
 
-        /// <inheritdoc />
         public void ChangeEmail(int userId, string newEmail)
         {
             var userEntity = dataContext.Users.Find(userId)
@@ -231,7 +205,6 @@ namespace SteamHub.Api.Context.Repositories
             dataContext.SaveChanges();
         }
 
-        /// <inheritdoc />
         public void ChangePassword(int userId, string newPassword)
         {
             var userEntity = dataContext.Users.Find(userId)
@@ -241,7 +214,6 @@ namespace SteamHub.Api.Context.Repositories
             dataContext.SaveChanges();
         }
 
-        /// <inheritdoc />
         public void ChangeUsername(int userId, string newUsername)
         {
             var userEntity = dataContext.Users.Find(userId)
@@ -251,7 +223,6 @@ namespace SteamHub.Api.Context.Repositories
             dataContext.SaveChanges();
         }
 
-        /// <inheritdoc />
         public void UpdateLastLogin(int userId)
         {
             var userEntity = dataContext.Users.Find(userId)

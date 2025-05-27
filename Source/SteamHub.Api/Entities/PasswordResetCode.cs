@@ -1,4 +1,4 @@
-﻿namespace SteamHub.ApiContract.Models.PasswordReset
+﻿namespace SteamHub.Api.Entities
 {
     public class PasswordResetCode
     {
@@ -13,5 +13,7 @@
         public bool Used { get; set; }
 
         public string? Email { get; set; }
+
+        public User User { get; set; }
     }
 }

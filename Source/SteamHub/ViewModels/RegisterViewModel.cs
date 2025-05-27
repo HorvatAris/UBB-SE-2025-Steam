@@ -110,7 +110,7 @@ public partial class RegisterViewModel : ObservableObject
 
             var user = new User
             {
-                UserName = Username,
+                Username = Username,
                 Email = Email,
                 Password = Password,
                 UserRole = IsDeveloper ? UserRole.Developer : UserRole.User

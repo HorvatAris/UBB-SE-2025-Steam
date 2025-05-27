@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SteamHub.ApiContract.Models.Login;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
-using SteamHub.ApiContract.Models.Register;
+using SteamHub.Api.Models;
 using SteamHub.ApiContract.Models.Session;
+using SteamHub.ApiContract.Models.Login;
+using SteamHub.ApiContract.Models.Register;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Services.Interfaces;
 
