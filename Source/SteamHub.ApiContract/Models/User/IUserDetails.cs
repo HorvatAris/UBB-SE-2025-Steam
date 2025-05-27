@@ -1,4 +1,5 @@
 ﻿namespace SteamHub.ApiContract.Models.User;
+using SteamHub.ApiContract.Models.Common;
 
 public interface IUserDetails
 {

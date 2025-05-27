@@ -109,7 +109,7 @@ namespace SteamHub.Web.Controllers
         public async Task<IActionResult> Logout()
         {
             await authManager.LogoutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Auth");
         }
 
         /// <summary>

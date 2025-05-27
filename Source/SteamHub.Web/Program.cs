@@ -35,14 +35,6 @@ builder.Services.AddScoped<IMarketplaceService, MarketplaceServiceProxy>();
 
 var apiBaseUri = new Uri(builder.Configuration["ApiSettings:BaseUrl"]!);
 
-builder.Services.AddHttpClient("AuthApi", client =>
-{
-    client.BaseAddress = apiBaseUri;
-    client.DefaultRequestHeaders.Add("Accept", "application/json");
-    
-}).ConfigurePrimaryHttpMessageHandler(() => new NoSslCertificateValidationHandler());
-
-
 builder.Services.AddHttpClient("SteamHubApi", client =>
 {
     client.BaseAddress = apiBaseUri;

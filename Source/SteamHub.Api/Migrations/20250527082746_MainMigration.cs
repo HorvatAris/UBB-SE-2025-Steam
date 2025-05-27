@@ -78,18 +78,6 @@ namespace SteamHub.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Role",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Role", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Tags",
                 columns: table => new
                 {
@@ -111,23 +99,16 @@ namespace SteamHub.Api.Migrations
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsDeveloper = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    UserRole = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     LastLogin = table.Column<DateTime>(type: "datetime2", nullable: true),
                     WalletBalance = table.Column<float>(type: "real", nullable: false),
                     PointsBalance = table.Column<float>(type: "real", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false),
                     ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.UserId);
-                    table.ForeignKey(
-                        name: "FK_Users_Role_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Role",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1093,15 +1074,6 @@ namespace SteamHub.Api.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Role",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 0, "User" },
-                    { 1, "Developer" }
-                });
-
-            migrationBuilder.InsertData(
                 table: "Tags",
                 columns: new[] { "TagId", "TagName" },
                 values: new object[,]
@@ -1127,19 +1099,12 @@ namespace SteamHub.Api.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "CreatedAt", "Email", "IsDeveloper", "LastLogin", "Password", "PointsBalance", "ProfilePicture", "RoleId", "Username", "WalletBalance" },
+                columns: new[] { "UserId", "CreatedAt", "Email", "LastLogin", "Password", "PointsBalance", "ProfilePicture", "UserRole", "Username", "WalletBalance" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "gabe.newell@valvestudio.com", true, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 6000f, "", 1, "GabeN", 500f },
-                    { 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mathias.new@cdprojektred.com", true, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG", 5000f, "", 1, "MattN", 420f },
-                    { 3, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.chen@thatgamecompany.com", true, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq", 5000f, "", 1, "JohnC", 390f }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "UserId", "CreatedAt", "Email", "LastLogin", "Password", "PointsBalance", "ProfilePicture", "RoleId", "Username", "WalletBalance" },
-                values: new object[,]
-                {
+                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "gabe.newell@valvestudio.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 6000f, "", 1, "GabeN", 500f },
+                    { 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mathias.new@cdprojektred.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG", 5000f, "", 1, "MattN", 420f },
+                    { 3, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.chen@thatgamecompany.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq", 5000f, "", 1, "JohnC", 390f },
                     { 4, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "alice.johnson@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6", 6000f, "", 0, "AliceJ", 780f },
                     { 5, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "liam.garcia@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a", 7000f, "", 0, "LiamG", 5500f },
                     { 6, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "sophie.williams@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y", 6000f, "", 0, "SophieW", 950f },
@@ -1649,11 +1614,6 @@ namespace SteamHub.Api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_RoleId",
-                table: "Users",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserSessions_UserId",
                 table: "UserSessions",
                 column: "UserId");
@@ -1792,9 +1752,6 @@ namespace SteamHub.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Role");
         }
     }
 }

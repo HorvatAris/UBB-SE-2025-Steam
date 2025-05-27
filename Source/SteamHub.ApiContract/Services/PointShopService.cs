@@ -129,7 +129,7 @@ namespace SteamHub.ApiContract.Services
                     Email = user.Email,
                     WalletBalance = user.WalletBalance,
                     PointsBalance = user.PointsBalance,
-                    Role = (RoleEnum)user.Role,
+                    UserRole = user.UserRole,
                 };
 
                 await this.UserRepository.UpdateUserAsync(user.UserId, updateUserRequest);

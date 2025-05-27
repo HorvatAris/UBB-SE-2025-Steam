@@ -1,4 +1,6 @@
-﻿namespace SteamHub.ApiContract.Models.User
+﻿using SteamHub.ApiContract.Models.Common;
+
+namespace SteamHub.ApiContract.Models.User
 {
     public class CreateUserRequest
     {
@@ -12,7 +14,7 @@
 
         public float PointsBalance { get; set; }
 
-        public RoleEnum Role { get; set; }
+        public UserRole UserRole { get; set; }
 
         public string ProfilePicture { get; set; }
     }

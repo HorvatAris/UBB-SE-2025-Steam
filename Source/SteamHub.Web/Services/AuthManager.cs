@@ -22,7 +22,7 @@ namespace SteamHub.Web.Services
         /// </summary>
         public AuthManager(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor, ISessionService sessionService)
         {
-            this.httpClient = httpClientFactory.CreateClient("AuthApi");
+            this.httpClient = httpClientFactory.CreateClient("SteamHubApi");
             this.httpContextAccessor = httpContextAccessor;
             _sessionService = sessionService;
         }
@@ -31,7 +31,7 @@ namespace SteamHub.Web.Services
         public async Task<bool> LoginAsync(string emailOrUsername, string password)
         {
             var loginModel = new { EmailOrUsername = emailOrUsername, Password = password };
-            var response = await httpClient.PostAsJsonAsync("Authentication/Login", loginModel);
+            var response = await httpClient.PostAsJsonAsync("api/Authentication/Login", loginModel);
             if (!response.IsSuccessStatusCode)
                 return false;
 
@@ -48,18 +48,20 @@ namespace SteamHub.Web.Services
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Hash, user.Password),
+                new Claim(ClaimTypes.Role, user.UserRole.ToString()),
                 new Claim("AccessToken", content.Token),
                 new Claim("SessionId", sessionId.ToString())
             };
 
-            var identity = new ClaimsIdentity(claims, "SteamWebApi");
+            var identity = new ClaimsIdentity(claims, "SteamHubAuth");
             var principal = new ClaimsPrincipal(identity);
 
             var httpContext = httpContextAccessor.HttpContext;
             if (httpContext == null)
                 throw new InvalidOperationException("HttpContext is null. Ensure the IHttpContextAccessor is properly configured.");
 
-            await httpContext.SignInAsync("SteamWebApi", principal);
+            await httpContext.SignInAsync("SteamHubAuth", principal);
             return true;
         }
 
@@ -73,7 +75,7 @@ namespace SteamHub.Web.Services
                 Password = password,
                 IsDeveloper = isDeveloper
             };
-            var response = await httpClient.PostAsJsonAsync("Authentication/Register", registerModel);
+            var response = await httpClient.PostAsJsonAsync("api/Authentication/Register", registerModel);
             return response.IsSuccessStatusCode;
         }
 
@@ -84,7 +86,7 @@ namespace SteamHub.Web.Services
             if (httpContext == null)
                 throw new InvalidOperationException("HttpContext is null. Ensure the IHttpContextAccessor is properly configured.");
 
-            await httpContext.SignOutAsync("SteamWebApi");
+            await httpContext.SignOutAsync("SteamHubAuth");
         }
     }
 }

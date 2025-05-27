@@ -1,5 +1,6 @@
 ﻿using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Services.Interfaces;
+using SteamHub.ApiContract.Models.Common;
 
 namespace SteamHub.ApiContract.ServiceProxies
 {
@@ -58,7 +59,7 @@ namespace SteamHub.ApiContract.ServiceProxies
                 UserId = CurrentUser.UserId,
                 Username = CurrentUser.Username,
                 Email = CurrentUser.Email,
-                UserRole = CurrentUser.Developer ? UserRole.Developer : UserRole.User
+                UserRole = CurrentUser.Developer ? UserRole.Developer : UserRole.User,
             };
         }
 

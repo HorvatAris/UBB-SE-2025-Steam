@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using SteamHub.ApiContract.Models.Common;
 
 namespace SteamHub.ApiContract.Models.User
 {
@@ -9,7 +10,6 @@ namespace SteamHub.ApiContract.Models.User
     {
         public User()
         {
-
         }
 
         public User(IUserDetails userDetails)
