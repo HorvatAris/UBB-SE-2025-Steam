@@ -1,4 +1,5 @@
 ﻿namespace SteamHub.ApiContract.Models.User;
+using SteamHub.ApiContract.Models.Common;
 
 public class UserResponse
 {
@@ -14,7 +15,7 @@ public class UserResponse
 
     public float PointsBalance { get; set; }
 
-    public RoleEnum Role { get; set; }
+    public UserRole UserRole { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
@@ -22,5 +23,5 @@ public class UserResponse
 
     public string ProfilePicture { get; set; }
 
-    public bool IsDeveloper => Role == RoleEnum.Developer;
+    public bool IsDeveloper => UserRole == UserRole.Developer;
 }

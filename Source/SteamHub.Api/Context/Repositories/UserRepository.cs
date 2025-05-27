@@ -8,7 +8,6 @@ using SteamHub.ApiContract.Utils;
 using SteamHub.ApiContract.Models.User;
 using UserAchievement = SteamHub.ApiContract.Models.UserAchievement;
 using SoldGame = SteamHub.ApiContract.Models.SoldGame;
-using RoleEnum = SteamHub.Api.Entities.RoleEnum;
 using User = SteamHub.ApiContract.Models.User.User;
 using UserDTO = SteamHub.Api.Entities.User;
 
@@ -33,7 +32,7 @@ namespace SteamHub.Api.Context.Repositories
                 Email = userEntity.Email,
                 WalletBalance = userEntity.WalletBalance,
                 PointsBalance = userEntity.PointsBalance,
-                UserRole = userEntity.RoleId == RoleEnum.Developer ? UserRole.Developer : UserRole.User,
+                UserRole = userEntity.UserRole,
                 CreatedAt = userEntity.CreatedAt,
                 LastLogin = userEntity.LastLogin,
                 ProfilePicture = userEntity.ProfilePicture,
@@ -63,7 +62,7 @@ namespace SteamHub.Api.Context.Repositories
             userEntity.Email = userDto.Email;
             userEntity.WalletBalance = userDto.WalletBalance;
             userEntity.PointsBalance = userDto.PointsBalance;
-            userEntity.RoleId = (RoleEnum)userDto.UserRole;
+            userEntity.UserRole = userDto.UserRole;
         }
 
         public async Task<GetUsersResponse?> GetUsersAsync()
@@ -76,7 +75,7 @@ namespace SteamHub.Api.Context.Repositories
                     UserName = userEntity.Username,
                     Password = userEntity.Password,
                     Email = userEntity.Email,
-                    Role = (ApiContract.Models.User.RoleEnum)userEntity.RoleId,
+                    UserRole = userEntity.UserRole,
                     WalletBalance = userEntity.WalletBalance,
                     PointsBalance = userEntity.PointsBalance,
                     CreatedAt = userEntity.CreatedAt,
@@ -99,7 +98,7 @@ namespace SteamHub.Api.Context.Repositories
                     UserName = userEntity.Username,
                     Password = userEntity.Password,
                     Email = userEntity.Email,
-                    Role = (ApiContract.Models.User.RoleEnum)userEntity.RoleId,
+                    UserRole = userEntity.UserRole,
                     WalletBalance = userEntity.WalletBalance,
                     PointsBalance = userEntity.PointsBalance,
                     CreatedAt = userEntity.CreatedAt,
@@ -118,7 +117,7 @@ namespace SteamHub.Api.Context.Repositories
                 Username = request.UserName,
                 Email = request.Email,
                 Password = PasswordHasher.HashPassword(request.Password),
-                RoleId = (Entities.RoleEnum)request.Role,
+                UserRole = request.UserRole,
                 WalletBalance = request.WalletBalance,
                 PointsBalance = request.PointsBalance,
                 ProfilePicture = request.ProfilePicture,
@@ -138,7 +137,7 @@ namespace SteamHub.Api.Context.Repositories
 
             existingUserEntity.Username = request.UserName;
             existingUserEntity.Email = request.Email;
-            existingUserEntity.RoleId = (Entities.RoleEnum)request.Role;
+            existingUserEntity.UserRole = request.UserRole;
             existingUserEntity.WalletBalance = request.WalletBalance;
             existingUserEntity.PointsBalance = request.PointsBalance;
 

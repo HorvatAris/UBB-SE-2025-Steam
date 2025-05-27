@@ -8,7 +8,7 @@
             <span class="nav-link text-dark">Hello @User.Identity?.Name!</span>
         </li>
         <li class="nav-item">
-            <form class="form-inline" asp-controller="Authentication" asp-action="Logout" asp-route-returnUrl="@Url.Action("Login", "Authentication", new { area = "" })">
+            <form class="form-inline" asp-controller="Auth" asp-action="Logout" asp-route-returnUrl="@Url.Action("Login", "Auth", new { area = "" })">
                 <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
             </form>
         </li>
@@ -16,7 +16,7 @@
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Authentication" asp-action="Login">Login</a>
+            <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Login</a>
         </li>
     }
 </ul>

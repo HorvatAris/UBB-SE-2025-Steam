@@ -1,4 +1,5 @@
 using SteamHub.ApiContract.Models;
+using SteamHub.ApiContract.Models.Common;
 
 namespace SteamHub.Api.Entities
 {
@@ -15,7 +16,7 @@ namespace SteamHub.Api.Entities
         
         public string Password { get; set; }
         
-        public bool IsDeveloper { get; set; }
+        public UserRole UserRole { get; set; }
         
         public DateTime CreatedAt { get; set; }
         
@@ -25,9 +26,7 @@ namespace SteamHub.Api.Entities
 
         public float PointsBalance { get; set; }
 
-        public RoleEnum RoleId { get; set; }
-
-        public Role UserRole { get; set; }
+        public string ProfilePicture { get; set; }
 
         public IList<UserPointShopItemInventory> UserPointShopItemsInventory { get; set; }
 
@@ -36,8 +35,6 @@ namespace SteamHub.Api.Entities
         public ICollection<UserAchievement> UserAchievements { get; set; }
 
         public ICollection<SoldGame> SoldGames { get; set; }
-
-        public string ProfilePicture { get; set; }
 
         public ICollection<Review> Reviews { get; set; }
 

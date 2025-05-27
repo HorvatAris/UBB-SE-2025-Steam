@@ -9,6 +9,7 @@ using SteamHub.ApiContract.Models.Session;
 using SteamHub.ApiContract.Models.Login;
 using SteamHub.ApiContract.Models.Register;
 using SteamHub.ApiContract.Models.User;
+using SteamHub.ApiContract.Models.Common;
 using SteamHub.ApiContract.Services.Interfaces;
 
 namespace SteamHub.Api.Controllers;

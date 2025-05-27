@@ -7,6 +7,7 @@ namespace SteamHub.Api.Context
     using Models;
     using System.Reflection.Emit;
     using SteamHub.ApiContract.Models.Game;
+    using SteamHub.ApiContract.Models.Common;
     using Game = SteamHub.Api.Entities.Game;
     using OwnedGame = SteamHub.Api.Entities.OwnedGame;
     using CollectionGame = SteamHub.Api.Entities.CollectionGame;
@@ -88,18 +89,7 @@ namespace SteamHub.Api.Context
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-           builder.Entity<Role>()
-                .Property(role => role.Id).ValueGeneratedNever();
-
-            builder.Entity<Role>().HasData(Enum.GetValues(typeof(RoleEnum))
-                .Cast<RoleEnum>()
-                .Select(role => new Role
-                {
-                    Id = role,
-                    Name = role.ToString()
-                }));
-
-            var tagSeed = new List<Tag>
+           var tagSeed = new List<Tag>
             {
                 new Tag { TagId = 1, TagName = "Rogue-Like" },
                 new Tag { TagId = 2, TagName = "Third-Person Shooter" },
@@ -140,11 +130,10 @@ namespace SteamHub.Api.Context
                     Email = "gabe.newell@valvestudio.com",
                     PointsBalance = 6000,
                     Username = "GabeN",
-                    RoleId = RoleEnum.Developer,
+                    UserRole = UserRole.Developer,
                     WalletBalance = 500,
                     Password = passwords[0],
                     CreatedAt = new DateTime(2024, 1, 1),
-                    IsDeveloper = true,
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = ""
                 },
@@ -154,11 +143,10 @@ namespace SteamHub.Api.Context
                     Email = "mathias.new@cdprojektred.com",
                     PointsBalance = 5000,
                     Username = "MattN",
-                    RoleId = RoleEnum.Developer,
+                    UserRole = UserRole.Developer,
                     WalletBalance = 420,
                     Password = passwords[1],
                     CreatedAt = new DateTime(2024, 1, 1),
-                    IsDeveloper = true,
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = ""
                 },
@@ -168,11 +156,10 @@ namespace SteamHub.Api.Context
                     Email = "john.chen@thatgamecompany.com",
                     PointsBalance = 5000,
                     Username = "JohnC",
-                    RoleId = RoleEnum.Developer,
+                    UserRole = UserRole.Developer,
                     WalletBalance = 390,
                     Password = passwords[2],
                     CreatedAt = new DateTime(2024, 1, 1),
-                    IsDeveloper = true,
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = ""
                 },
@@ -182,11 +169,10 @@ namespace SteamHub.Api.Context
                     Email = "alice.johnson@example.com",
                     PointsBalance = 6000,
                     Username = "AliceJ",
-                    RoleId = RoleEnum.User,
+                    UserRole = UserRole.User,
                     WalletBalance = 780,
                     Password = passwords[3],
                     CreatedAt = new DateTime(2024, 1, 1),
-                    IsDeveloper = false,
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = ""
                 },
@@ -196,11 +182,10 @@ namespace SteamHub.Api.Context
                     Email = "liam.garcia@example.com",
                     PointsBalance = 7000,
                     Username = "LiamG",
-                    RoleId = RoleEnum.User,
+                    UserRole = UserRole.User,
                     WalletBalance = 5500,
                     Password = passwords[4],
                     CreatedAt = new DateTime(2024, 1, 1),
-                    IsDeveloper = false,
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = ""
                 },
@@ -210,11 +195,10 @@ namespace SteamHub.Api.Context
                     Email = "sophie.williams@example.com",
                     PointsBalance = 6000,
                     Username = "SophieW",
-                    RoleId = RoleEnum.User,
+                    UserRole = UserRole.User,
                     WalletBalance = 950,
                     Password = passwords[5],
                     CreatedAt = new DateTime(2024, 1, 1),
-                    IsDeveloper = false,
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = ""
                 },
@@ -224,11 +208,10 @@ namespace SteamHub.Api.Context
                     Email = "noah.smith@example.com",
                     PointsBalance = 4000,
                     Username = "NoahS",
-                    RoleId = RoleEnum.User,
+                    UserRole = UserRole.User,
                     WalletBalance = 3300,
                     Password = passwords[6],
                     CreatedAt = new DateTime(2024, 1, 1),
-                    IsDeveloper = false,
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = ""
                 },
@@ -238,11 +221,10 @@ namespace SteamHub.Api.Context
                     Email = "emily.brown@example.com",
                     PointsBalance = 5000,
                     Username = "EmilyB",
-                    RoleId = RoleEnum.User,
+                    UserRole = UserRole.User,
                     WalletBalance = 1100,
                     Password = passwords[7],
                     CreatedAt = new DateTime(2024, 1, 1),
-                    IsDeveloper = false,
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = ""
                 }
@@ -1863,8 +1845,6 @@ namespace SteamHub.Api.Context
                     .IsRequired();
                 entity.Property(u => u.Password)
                     .IsRequired();
-                entity.Property(u => u.IsDeveloper)
-                    .HasDefaultValue(false);
                 entity.Property(u => u.CreatedAt)
                     .HasDefaultValueSql("GETDATE()");
                 entity.Property(u => u.LastLogin);
