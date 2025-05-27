@@ -7,6 +7,8 @@ using SteamHub.Web.ViewModels;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SteamHub.Web.Controllers
 {
@@ -23,38 +25,74 @@ namespace SteamHub.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int? selectedUserId, int? selectedGameId, string searchText)
         {
-            var user = await inventoryService.GetAllUsersAsync();
-            var users = new List<IUserDetails> { user };
-            var currentUserId = selectedUserId ?? users.FirstOrDefault()?.UserId ?? 0;
+            var model = new InventoryViewModel();
 
-            var allItems = await inventoryService.GetUserInventoryAsync(currentUserId);
-            var availableGames = await inventoryService.GetAvailableGamesAsync(allItems,this.inventoryService.GetAllUsers().UserId);
-
-            Game selectedGame = null;
-            if (selectedGameId.HasValue)
+            try
             {
-                selectedGame = availableGames.FirstOrDefault(g => g.GameId == selectedGameId.Value);
+                // Get all users
+                var currentUser = await inventoryService.GetAllUsersAsync();
+                if (currentUser == null)
+                {
+                    model.StatusMessage = "No users found.";
+                    return View(model);
+                }
+
+                // Get current user or default to first user
+                var currentUserId = selectedUserId ?? currentUser?.UserId ?? 0;
+
+                // Get inventory items
+                var allItems = await inventoryService.GetUserInventoryAsync(currentUserId);
+                
+                // Get available games
+                var availableGames = await inventoryService.GetAvailableGamesAsync(allItems, currentUserId);
+                if (availableGames == null || !availableGames.Any())
+                {
+                    availableGames = new List<Game> { new Game { GameId = 0, GameTitle = "All Games" } };
+                }
+
+                // Ensure we have at least one user
+                var availableUsers = new List<IUserDetails> { currentUser };
+                if (availableUsers == null || !availableUsers.Any())
+                {
+                    model.StatusMessage = "No users available.";
+                    return View(model);
+                }
+
+                // Get selected game if any
+                Game selectedGame = null;
+                if (selectedGameId.HasValue && selectedGameId.Value > 0)
+                {
+                    selectedGame = availableGames.FirstOrDefault(g => g.GameId == selectedGameId.Value);
+                }
+
+                // Get filtered items
+                var filteredItems = await inventoryService.GetUserFilteredInventoryAsync(
+                    currentUserId,
+                    selectedGame,
+                    searchText
+                );
+
+                // Update model with retrieved data
+                model.SelectedUserId = currentUserId;
+                model.SelectedGameId = selectedGameId ?? 0;
+                model.SearchText = searchText ?? string.Empty;
+                model.InventoryItems = filteredItems ?? new List<Item>();
+                model.AvailableGames = availableGames;
+                model.AvailableUsers = availableUsers;
+            }
+            catch (Exception ex)
+            {
+                model.StatusMessage = $"An error occurred: {ex.Message}";
             }
 
-            var filteredItems = await inventoryService.GetUserFilteredInventoryAsync(
-                currentUserId,
-                selectedGame,
-                searchText
-            );
-
-            var model = new InventoryViewModel
+            // Set status message from TempData if it exists
+            if (TempData["StatusMessage"] != null)
             {
-                SelectedUserId = currentUserId,
-                SelectedGameId = selectedGameId,
-                SearchText = searchText,
-                InventoryItems = filteredItems,
-                AvailableGames = availableGames,
-                AvailableUsers = users
-            };
+                model.StatusMessage = TempData["StatusMessage"].ToString();
+            }
 
-            return View("~/Views/InventoryPage/Index.cshtml", model);
+            return View(model);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -66,17 +104,19 @@ namespace SteamHub.Web.Controllers
                     .FirstOrDefault(i => i.ItemId == itemId);
 
                 if (item != null && !item.IsListed)
+                {
                     await inventoryService.SellItemAsync(item, selectedUserId);
-
-                TempData["StatusMessage"] = item != null
-                    ? $"Item '{item.ItemName}' was successfully listed for sale."
-                    : "Item could not be found or is already listed.";
+                    TempData["StatusMessage"] = $"Item '{item.ItemName}' was successfully listed for sale.";
+                }
+                else
+                {
+                    TempData["StatusMessage"] = "Item could not be found or is already listed.";
+                }
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                TempData["StatusMessage"] = "An error occurred while trying to sell the item:" + exception.ToString();
+                TempData["StatusMessage"] = $"An error occurred while trying to sell the item: {ex.Message}";
             }
-                
 
             return RedirectToAction(nameof(Index), new { selectedUserId, selectedGameId, searchText });
         }

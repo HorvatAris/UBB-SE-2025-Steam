@@ -1,8 +1,7 @@
-﻿using System;
-using SteamHub.ApiContract.Exceptions;
-using SteamHub.ApiContract.Models;
+﻿using SteamHub.ApiContract.Models;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Services.Interfaces;
+using System;
 
 namespace SteamHub.ApiContract.Services
 {
@@ -52,15 +51,15 @@ namespace SteamHub.ApiContract.Services
         private const int MilestoneLevel50 = 50;
         private const int MilestoneLevel100 = 100;
 
-        public GroupedAchievementsResult GetGroupedAchievementsForUser(int userId)
+        public async Task<GroupedAchievementsResult> GetGroupedAchievementsForUser(int userId)
         {
             try
             {
                 // Unlock logic (business rules)
-                UnlockAchievementForUser(userId);
+                await UnlockAchievementForUser(userId);
 
                 // Get all achievements with status
-                var achievements = achievementsRepository.GetAchievementsWithStatusForUser(userId);
+                var achievements = await achievementsRepository.GetAchievementsWithStatusForUser(userId);
 
                 // Group by category
                 return new GroupedAchievementsResult
@@ -76,9 +75,9 @@ namespace SteamHub.ApiContract.Services
                     Developer = FilterByCategory(achievements, Categories.Developer)
                 };
             }
-            catch (RepositoryException exception)
+            catch (Exception exception)
             {
-                throw new ServiceException("Error grouping achievements for user.", exception);
+                throw new Exception("Error grouping achievements for user.", exception);
             }
         }
 
@@ -105,12 +104,12 @@ namespace SteamHub.ApiContract.Services
             this.achievementsRepository = achievementsRepository;
         }
 
-        public void InitializeAchievements()
+        public async Task InitializeAchievements()
         {
             try
             {
                 System.Diagnostics.Debug.WriteLine("Checking if achievements table is empty...");
-                if (achievementsRepository.IsAchievementsTableEmpty())
+                if (await achievementsRepository.IsAchievementsTableEmpty())
                 {
                     System.Diagnostics.Debug.WriteLine("Achievements table is empty. Inserting achievements...");
                     achievementsRepository.InsertAchievements();
@@ -118,7 +117,7 @@ namespace SteamHub.ApiContract.Services
                     UpdateAchievementIconUrls();
                 }
             }
-            catch (RepositoryException exception)
+            catch (Exception exception)
             {
                 System.Diagnostics.Debug.WriteLine($"Error initializing achievements: {exception.Message}");
             }
@@ -144,25 +143,25 @@ namespace SteamHub.ApiContract.Services
 
                 System.Diagnostics.Debug.WriteLine("Achievement icon URLs updated successfully.");
             }
-            catch (RepositoryException exception)
+            catch (Exception exception)
             {
                 System.Diagnostics.Debug.WriteLine($"Error updating achievement icon URLs: {exception.Message}");
             }
         }
 
-        public List<Achievement> GetAchievementsForUser(int userId)
+        public async Task<List<Achievement>> GetAchievementsForUser(int userId)
         {
             try
             {
-                return achievementsRepository.GetAllAchievements();
+                return  await achievementsRepository.GetAllAchievements();
             }
-            catch (RepositoryException exception)
+            catch (Exception exception)
             {
-                throw new ServiceException("Error retrieving achievements for user.", exception);
+                throw new Exception("Error retrieving achievements for user.", exception);
             }
         }
 
-        public void UnlockAchievementForUser(int userId)
+        public async Task UnlockAchievementForUser(int userId)
         {
             try
             {
@@ -179,10 +178,10 @@ namespace SteamHub.ApiContract.Services
                 {
                     int? achievementId = GetAchievementIdByTypeAndCount(Categories.Friendships, numberOfFriends);
                     System.Diagnostics.Debug.WriteLine($"Achievement ID for friendships with count {numberOfFriends}: {achievementId}");
-                    if (achievementId.HasValue && !achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
+                    if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         System.Diagnostics.Debug.WriteLine($"Unlocking achievement ID {achievementId.Value} for user {userId}");
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                        await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
 
@@ -190,10 +189,10 @@ namespace SteamHub.ApiContract.Services
                 {
                     int? achievementId = GetAchievementIdByTypeAndCount(Categories.OwnedGames, numberOfOwnedGames);
                     System.Diagnostics.Debug.WriteLine($"Achievement ID for owned games with count {numberOfOwnedGames}: {achievementId}");
-                    if (achievementId.HasValue && !achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
+                    if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         System.Diagnostics.Debug.WriteLine($"Unlocking achievement ID {achievementId.Value} for user {userId}");
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                       await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
 
@@ -201,10 +200,10 @@ namespace SteamHub.ApiContract.Services
                 {
                     int? achievementId = GetAchievementIdByTypeAndCount(Categories.SoldGames, numberOfSoldGames);
                     System.Diagnostics.Debug.WriteLine($"Achievement ID for sold games with count {numberOfSoldGames}: {achievementId}");
-                    if (achievementId.HasValue && !achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
+                    if (achievementId.HasValue && !await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         System.Diagnostics.Debug.WriteLine($"Unlocking achievement ID {achievementId.Value} for user {userId}");
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                        await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
 
@@ -212,10 +211,10 @@ namespace SteamHub.ApiContract.Services
                 {
                     int? achievementId = GetAchievementIdByTypeAndCount(Categories.NumberOfReviewsGiven, numberOfReviewsGiven);
                     System.Diagnostics.Debug.WriteLine($"Achievement ID for reviews given with count {numberOfReviewsGiven}: {achievementId}");
-                    if (achievementId.HasValue && !achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
+                    if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         System.Diagnostics.Debug.WriteLine($"Unlocking achievement ID {achievementId.Value} for user {userId}");
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                        await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
 
@@ -223,10 +222,10 @@ namespace SteamHub.ApiContract.Services
                 {
                     int? achievementId = GetAchievementIdByTypeAndCount(Categories.NumberOfReviewsReceived, numberOfReviewsReceived);
                     System.Diagnostics.Debug.WriteLine($"Achievement ID for reviews received with count {numberOfReviewsReceived}: {achievementId}");
-                    if (achievementId.HasValue && !achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
+                    if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         System.Diagnostics.Debug.WriteLine($"Unlocking achievement ID {achievementId.Value} for user {userId}");
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                        await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
 
@@ -234,47 +233,59 @@ namespace SteamHub.ApiContract.Services
                 {
                     int? achievementId = GetAchievementIdByTypeAndCount(Categories.NumberOfPosts, numberOfPosts);
                     System.Diagnostics.Debug.WriteLine($"Achievement ID for posts with count {numberOfPosts}: {achievementId}");
-                    if (achievementId.HasValue && !achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
+                    if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         System.Diagnostics.Debug.WriteLine($"Unlocking achievement ID {achievementId.Value} for user {userId}");
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                        await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
                 if (yearsOfActivity == MilestoneLevel1 || yearsOfActivity == MilestoneLevel2 || yearsOfActivity == MilestoneLevel3 || yearsOfActivity == MilestoneLevel4)
                 {
                     int? achievementId = GetAchievementIdByTypeAndCount(Categories.YearsOfActivity, yearsOfActivity);
                     System.Diagnostics.Debug.WriteLine($"Achievement ID for years of activity with count {yearsOfActivity}: {achievementId}");
-                    if (achievementId.HasValue && !achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
+                    if (achievementId.HasValue && !await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         System.Diagnostics.Debug.WriteLine($"Unlocking achievement ID {achievementId.Value} for user {userId}");
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                        await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
 
                 if (isDeveloper)
                 {
                     int? achievementId = GetAchievementIdByTypeAndCount(Categories.Developer, MilestoneLevel1);
-                    if (achievementId.HasValue && !achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
+                    if (achievementId.HasValue && !await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                        await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
             }
-            catch (RepositoryException exception)
+            catch (Exception exception)
             {
                 System.Diagnostics.Debug.WriteLine($"Error: {exception.Message}");
             }
         }
 
-        public List<AchievementWithStatus> GetAchievementsWithStatusForUser(int userId)
+        public async Task<List<Achievement>> GetAllAchievements()
         {
             try
             {
-                return achievementsRepository.GetAchievementsWithStatusForUser(userId);
+                return await achievementsRepository.GetAllAchievements();
             }
-            catch (RepositoryException exception)
+            catch (Exception exception)
             {
-                throw new ServiceException("Error retrieving achievements with status for user.", exception);
+                throw new Exception("Error retrieving unlocked achievements for user.", exception);
+            }
+        }
+
+        public async Task <List<AchievementWithStatus>> GetAchievementsWithStatusForUser(int userId)
+        {
+            try
+            {
+                return await achievementsRepository.GetAchievementsWithStatusForUser(userId);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception("Error retrieving achievements with status for user.", exception);
             }
         }
 
@@ -428,13 +439,13 @@ namespace SteamHub.ApiContract.Services
             return null;
         }
 
-        public int GetPointsForUnlockedAchievement(int userId, int achievementId)
+        public async Task<int> GetPointsForUnlockedAchievement(int userId, int achievementId)
         {
             try
             {
-                if (achievementsRepository.IsAchievementUnlocked(userId, achievementId))
+                if (await achievementsRepository.IsAchievementUnlocked(userId, achievementId))
                 {
-                    List<Achievement> achievements = achievementsRepository.GetAllAchievements();
+                    List<Achievement> achievements = await achievementsRepository.GetAllAchievements();
                     Achievement foundAchievement = null;
 
                     foreach (var achievement in achievements)
@@ -452,11 +463,11 @@ namespace SteamHub.ApiContract.Services
                     }
                 }
 
-                throw new ServiceException("Achievement is not unlocked or does not exist.");
+                throw new Exception("Achievement is not unlocked or does not exist.");
             }
-            catch (RepositoryException exception)
+            catch (Exception exception)
             {
-                throw new ServiceException("Error retrieving points for unlocked achievement.", exception);
+                throw new Exception("Error retrieving points for unlocked achievement.", exception);
             }
         }
 

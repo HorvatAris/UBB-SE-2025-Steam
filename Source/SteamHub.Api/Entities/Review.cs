@@ -22,12 +22,5 @@ namespace SteamHub.Api.Entities
         // Navigation properties
         public User User { get; set; }
         public Game Game { get; set; }
-
-        // Not mapped properties
-        public string Username { get; set; } = string.Empty;
-        public string TitleOfGame { get; set; } = string.Empty;
-        public byte[]? ProfilePictureBlob { get; set; }
-        public bool HasVotedHelpful { get; set; }
-        public bool HasVotedFunny { get; set; }
     }
 }

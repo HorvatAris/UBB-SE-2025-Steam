@@ -148,8 +148,8 @@ namespace SteamHub.ApiContract.ServiceProxies
         /// </summary>
         protected async Task<T> GetAsync<T>(string endpoint)
         {
-            var response = await StaticHttpClient.GetAsync(BaseUrl + endpoint).ConfigureAwait(false);
-            return await HandleResponseAsync<T>(response).ConfigureAwait(false);
+            var response = await StaticHttpClient.GetAsync(BaseUrl + endpoint);
+            return await HandleResponseAsync<T>(response);
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             if (!response.IsSuccessStatusCode)
             {
-                var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var content = await response.Content.ReadAsStringAsync();
                 switch (response.StatusCode)
                 {
                     case System.Net.HttpStatusCode.Unauthorized:
@@ -258,8 +258,8 @@ namespace SteamHub.ApiContract.ServiceProxies
         /// </summary>
         private async Task<T> HandleResponseAsync<T>(HttpResponseMessage response)
         {
-            await EnsureSuccessStatusCodeAsync(response).ConfigureAwait(false);
-            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            await EnsureSuccessStatusCodeAsync(response);
+            var json = await response.Content.ReadAsStringAsync();
             Debug.WriteLine($"Response JSON: {json}");
             return JsonSerializer.Deserialize<T>(json, _jsonOptions);
         }
