@@ -123,5 +123,19 @@ namespace SteamHub.ApiContract.Repositories
         /// </summary>
         /// <param name="userId">The user ID.</param>
         void UpdateLastLogin(int userId);
+
+        /// <summary>
+        /// Updates the bio of the user.
+        /// </summary>
+        /// <param name="bio">Bio to update.</param>
+        /// <param name="userId"> The user ID.</param>
+        void UpdateProfileBioAsync(int userId, string bio);
+
+        /// <summary>
+        /// Updates the profile picture of the user.
+        /// </summary>
+        /// <param name="userId"> The user ID.</param>
+        /// <param name="localImagePath"> The local path to the image file.</param>
+        Task UpdateProfilePictureAsync(int userId, string localImagePath);
     }
 }

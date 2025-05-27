@@ -27,6 +27,9 @@ namespace SteamHub.Api.Entities
         public float PointsBalance { get; set; }
 
         public string ProfilePicture { get; set; }
+        public string ProfilePicturePath;
+        public string? Bio { get; set; }
+        public DateTime LastModified { get; set; }
 
         public IList<UserPointShopItemInventory> UserPointShopItemsInventory { get; set; }
 

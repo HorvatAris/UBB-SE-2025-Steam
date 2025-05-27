@@ -1,22 +1,19 @@
 ﻿using System.Data;
-using BusinessLayer.Data;
-using BusinessLayer.Models;
-using BusinessLayer.Utils;
+using SteamHub.Api.Entities;
 using Microsoft.Data.SqlClient;
-using BusinessLayer.Repositories.Interfaces;
-using BusinessLayer.Exceptions;
-using BusinessLayer.DataContext;
+using SteamHub.ApiContract.Repositories;
+using SteamHub.ApiContract.Utils;
 
-namespace BusinessLayer.Repositories
+namespace SteamHub.Api.Context.Repositories
 {
-    public sealed class UsersRepository : IUsersRepository
+    public sealed class UsersRepository : IUserRepository
     {
-        private readonly ApplicationDbContext context;
+        private readonly DataContext context;
 
         private readonly string email_exists = "EMAIL_EXISTS";
         private readonly string username_exists = "USERNAME_EXISTS";
 
-        public UsersRepository(ApplicationDbContext newContext)
+        public UsersRepository(DataContext newContext)
         {
             this.context = newContext ?? throw new ArgumentNullException(nameof(newContext));
         }
@@ -26,7 +23,7 @@ namespace BusinessLayer.Repositories
             return context.Users.OrderBy(u => u.Username).ToList();
         }
 
-        public User? GetUserById(int userId)
+        public User? GetUserByIdAsync(int userId)
         {
             return context.Users.Find(userId);
         }
@@ -34,7 +31,7 @@ namespace BusinessLayer.Repositories
         public void UpdateProfileBio(int userId, string bio)
         {
             var existing = context.Users.SingleOrDefault(user => user.UserId == userId)
-                ?? throw new RepositoryException($"Profile with user ID {userId} not found.");
+                ?? throw new Exception($"Profile with user ID {userId} not found.");
             existing.Bio = bio;
             existing.LastModified = DateTime.UtcNow;
             context.SaveChanges();
@@ -43,11 +40,11 @@ namespace BusinessLayer.Repositories
         public User UpdateUser(User user)
         {
             var existing = context.Users.Find(user.UserId)
-                ?? throw new RepositoryException($"User with ID {user.UserId} not found.");
+                ?? throw new Exception($"User with ID {user.UserId} not found.");
 
             existing.Email = user.Email;
             existing.Username = user.Username;
-            existing.IsDeveloper = user.IsDeveloper;
+            // existing.IsDeveloper = user.IsDeveloper; was IsDeveloper removed?
             context.SaveChanges();
             return existing;
         }
@@ -56,7 +53,7 @@ namespace BusinessLayer.Repositories
         {
             string imgurClientId = "bbf48913b385d7b";
             var existing = context.UserProfiles.SingleOrDefault(up => up.UserId == userId)
-                ?? throw new RepositoryException($"Profile with user ID {userId} not found.");
+                ?? throw new Exception($"Profile with user ID {userId} not found.");
 
             string imageUrl = await UploadImageToImgurAsync(localImagePath, imgurClientId);
 
@@ -81,14 +78,14 @@ namespace BusinessLayer.Repositories
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new RepositoryException("Imgur upload failed: " + json);
+                throw new Exception("Imgur upload failed: " + json);
             }
 
             var link = System.Text.Json.JsonDocument.Parse(json)
                         .RootElement.GetProperty("data")
                         .GetProperty("link").GetString();
 
-            return link ?? throw new RepositoryException("Imgur returned null link.");
+            return link ?? throw new Exception("Imgur returned null link.");
         }
 
         public User CreateUser(User user)
@@ -139,7 +136,7 @@ namespace BusinessLayer.Repositories
         public void ChangeEmail(int userId, string newEmail)
         {
             var user = context.Users.Find(userId)
-                ?? throw new RepositoryException($"User with ID {userId} not found.");
+                ?? throw new Exception($"User with ID {userId} not found.");
             user.Email = newEmail;
             context.SaveChanges();
         }
@@ -147,7 +144,7 @@ namespace BusinessLayer.Repositories
         public void ChangePassword(int userId, string newPassword)
         {
             var user = context.Users.Find(userId)
-                ?? throw new RepositoryException($"User with ID {userId} not found.");
+                ?? throw new Exception($"User with ID {userId} not found.");
             user.Password = PasswordHasher.HashPassword(newPassword);
             context.SaveChanges();
         }
@@ -155,7 +152,7 @@ namespace BusinessLayer.Repositories
         public void ChangeUsername(int userId, string newUsername)
         {
             var user = context.Users.Find(userId)
-                ?? throw new RepositoryException($"User with ID {userId} not found.");
+                ?? throw new Exception($"User with ID {userId} not found.");
             user.Username = newUsername;
             context.SaveChanges();
         }
@@ -163,7 +160,7 @@ namespace BusinessLayer.Repositories
         public void UpdateLastLogin(int userId)
         {
             var user = context.Users.Find(userId)
-                ?? throw new RepositoryException($"User with ID {userId} not found.");
+                ?? throw new Exception($"User with ID {userId} not found.");
             user.LastLogin = DateTime.UtcNow;
             context.SaveChanges();
         }
@@ -181,7 +178,7 @@ namespace BusinessLayer.Repositories
                 UserId = Convert.ToInt32(row["user_id"]),
                 Username = row["username"].ToString(),
                 Email = row["email"].ToString(),
-                IsDeveloper = row["developer"] != DBNull.Value ? Convert.ToBoolean(row["developer"]) : false,
+                // IsDeveloper = row["developer"] != DBNull.Value ? Convert.ToBoolean(row["developer"]) : false,
                 CreatedAt = row["created_at"] != DBNull.Value ? Convert.ToDateTime(row["created_at"]) : DateTime.MinValue,
                 LastLogin = row["last_login"] != DBNull.Value ? row["last_login"] as DateTime? : null
             };
@@ -199,7 +196,7 @@ namespace BusinessLayer.Repositories
                 UserId = Convert.ToInt32(row["user_id"]),
                 Email = row["email"].ToString(),
                 Username = row["username"].ToString(),
-                IsDeveloper = row["developer"] != DBNull.Value ? Convert.ToBoolean(row["developer"]) : false,
+                // IsDeveloper = row["developer"] != DBNull.Value ? Convert.ToBoolean(row["developer"]) : false,
                 CreatedAt = row["created_at"] != DBNull.Value ? Convert.ToDateTime(row["created_at"]) : DateTime.MinValue,
                 LastLogin = row["last_login"] != DBNull.Value ? row["last_login"] as DateTime? : null,
                 Password = row["hashed_password"].ToString()

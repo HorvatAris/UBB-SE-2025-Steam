@@ -120,7 +120,6 @@ namespace SteamWebApi.Controllers
                     IsDeveloper = request.IsDeveloper
                 });
                 walletService.CreateWallet(newUser.UserId);
-                profilesRepo.CreateProfile(newUser.UserId);
             }
             catch (Exception ex)
             {

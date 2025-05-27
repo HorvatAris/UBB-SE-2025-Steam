@@ -97,7 +97,6 @@ namespace SteamProfile.ViewModels
                 if (createdUser != null)
                 {
                     // Navigate to login page on successful registration
-                    UserProfilesRepository.CreateProfile(createdUser.UserId);
                     WalletService.CreateWallet(createdUser.UserId);
                     frame.Navigate(typeof(LoginPage));
                 }

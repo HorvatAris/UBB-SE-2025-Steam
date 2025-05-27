@@ -15,14 +15,12 @@ namespace BusinessLayer.Services
     {
         private readonly IFeaturesRepository featuresRepository;
         private readonly IUserService userService;
-        private readonly IUserProfilesRepository userProfilesRepository;
         private readonly IWalletService walletService;
 
-        public FeaturesService(IFeaturesRepository featuresRepository, IUserService userService, IUserProfilesRepository userProfilesRepository, IWalletService walletService)
+        public FeaturesService(IFeaturesRepository featuresRepository, IUserService userService, IWalletService walletService)
         {
             this.featuresRepository = featuresRepository;
             this.userService = userService;
-            this.userProfilesRepository = userProfilesRepository;
             this.walletService = walletService;
         }
 
@@ -160,21 +158,21 @@ namespace BusinessLayer.Services
             try
             {
                 // Replace the problematic line with the properly injected repository
-                var userProfile = userProfilesRepository.GetUserProfileByUserId(userId);
+                var user = userService.GetUserByIdentifier(userId);
 
-                if (userProfile != null)
+                if (user != null)
                 {
-                    if (!string.IsNullOrEmpty(userProfile.ProfilePicture))
+                    if (!string.IsNullOrEmpty(user.ProfilePicture))
                     {
-                        profilePicturePath = userProfile.ProfilePicture;
+                        profilePicturePath = user.ProfilePicture;
                         if (!profilePicturePath.StartsWith("ms-appx:///"))
                         {
                             profilePicturePath = $"ms-appx:///{profilePicturePath}";
                         }
                     }
-                    if (!string.IsNullOrEmpty(userProfile.Bio))
+                    if (!string.IsNullOrEmpty(user.Bio))
                     {
-                        bioText = userProfile.Bio;
+                        bioText = user.Bio;
                     }
                 }
             }

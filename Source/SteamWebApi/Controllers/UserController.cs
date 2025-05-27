@@ -89,7 +89,6 @@ namespace SteamWebApi.Controllers
                     }
 
                     walletService.CreateWallet(createdUser.UserId);
-                    profilesRepo.CreateProfile(createdUser.UserId);
 
                     transaction.Commit();
                     return Ok(createdUser);
