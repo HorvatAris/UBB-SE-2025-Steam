@@ -51,7 +51,7 @@ namespace SteamHub.Api.Context.Repositories
                     .ThenInclude(cg => cg.OwnedGame)
                 .FirstOrDefault(col => col.CollectionId == collectionIdentifier && col.UserId == userIdentifier);
 
-            return c == null ? null : new ModelCollection(c.UserId, c.CollectionName, c.CreatedAt, c.CoverPicture, c.IsPublic))
+            return c == null ? null : new ModelCollection(c.UserId, c.CollectionName, c.CreatedAt, c.CoverPicture, c.IsPublic);
         }
 
         public List<ModelOwnedGame> GetGamesInCollection(int collectionIdentifier)
