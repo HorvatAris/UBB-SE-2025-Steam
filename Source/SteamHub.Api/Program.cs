@@ -18,7 +18,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>();
 
 builder.Services.AddScoped<ISessionRepository, SessionRepository>();
-
 builder.Services.AddScoped<IPointShopItemRepository, PointShopItemRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
@@ -30,6 +29,8 @@ builder.Services.AddScoped<IItemTradeRepository, ItemTradeRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IUserInventoryRepository, UserInventoryRepository>();
 builder.Services.AddScoped<IItemTradeDetailRepository, ItemTradeDetailRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+
 
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -41,6 +42,8 @@ builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<IPointShopService, PointShopService>();
 builder.Services.AddScoped<ITradeService, TradeService>();
 builder.Services.AddScoped<IMarketplaceService, MarketplaceService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+
 
 
 builder.Services.AddControllersWithViews()
@@ -49,13 +52,8 @@ builder.Services.AddControllersWithViews()
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthorization();
 
