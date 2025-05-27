@@ -27,14 +27,14 @@ namespace SteamHub.ViewModels
     {
         private static ProfileViewModel profileViewModelInstance;
         private User user;
-        private readonly FriendRequestViewModel friendRequestViewModel;
+        // private readonly FriendRequestViewModel friendRequestViewModel;
         private readonly IUserService userService;
         private readonly IFriendsService friendsService;
         private readonly DispatcherQueue dispatcherQueue;
         private readonly IFeaturesService featuresService;
         private readonly IAchievementsService achievementsService;
 
-        public ProfileViewModel(FriendRequestViewModel friendRequestViewModel)
+        public ProfileViewModel()
         {
             // Initialize userProfile to prevent null reference exceptions
             user = new User();
@@ -42,12 +42,12 @@ namespace SteamHub.ViewModels
             // Get the FriendRequestViewModel from the service container
             try
             {
-                this.friendRequestViewModel = friendRequestViewModel;
+                // this.friendRequestViewModel = friendRequestViewModel;
             }
             catch
             {
                 // Fall back to sample data if service container isn't set up yet
-                friendRequestViewModel = null;
+                // friendRequestViewModel = null;
             }
         }
 
