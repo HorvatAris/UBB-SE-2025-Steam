@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.Pages;
+using SteamHub.ApiContract.Models.User;
 
 namespace SteamHub.ViewModels;
 
@@ -15,6 +16,7 @@ public partial class LoginViewModel : ObservableObject
 {
     private readonly IUserService userService;
     private readonly Frame loginViewFrame;
+    private readonly Action<User> onLoginSuccess;
 
     /// <summary>
     /// Gets or sets the username entered by the user.
@@ -39,10 +41,12 @@ public partial class LoginViewModel : ObservableObject
     /// </summary>
     /// <param name="frame">The frame used for navigation.</param>
     /// <param name="userService">Service for authenticating users.</param>
-    public LoginViewModel(Frame frame, IUserService userService)
+    /// <param name="onLoginSuccess">Action to invoke on successful login.</param>
+    public LoginViewModel(Frame frame, IUserService userService, Action<User> onLoginSuccess)
     {
         this.userService = userService;
-        loginViewFrame = frame;
+        this.loginViewFrame = frame;
+        this.onLoginSuccess = onLoginSuccess;
     }
 
     /// <summary>
@@ -65,9 +69,7 @@ public partial class LoginViewModel : ObservableObject
             var user = await userService.LoginAsync(Username, Password);
             if (user != null)
             {
-                // TODO: Navigate to profile page after successful login
-                // loginViewFrame.Navigate(typeof(ProfilePage), user.UserId);
-                ErrorMessage = "Logged In Succesfully";
+                onLoginSuccess?.Invoke(user);
             }
             else
             {
