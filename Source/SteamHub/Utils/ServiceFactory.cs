@@ -47,7 +47,8 @@ namespace SteamProfile.Services
         // Create session service instance
         public static ISessionService CreateSessionService()
         {
-            return new SessionServiceProxy(apiBaseUrl);
+            //???
+            return new SessionServiceProxy(null);
         }
 
         // Create user service instance

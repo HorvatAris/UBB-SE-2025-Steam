@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls;
 using SteamHub.ApiContract.Models;
+using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Services.Interfaces;
 
 
@@ -17,6 +18,7 @@ namespace SteamHub.ViewModels
         private static AchievementsViewModel achievementsViewModelInstance;
         private readonly IAchievementsService achievementsService;
         private readonly IUserService userService;
+        private readonly IUserDetails currentUser;
        
         [ObservableProperty]
         private ObservableCollection<AchievementWithStatus> allAchievements = new ObservableCollection<AchievementWithStatus>();
@@ -64,6 +66,7 @@ namespace SteamHub.ViewModels
         {
             this.achievementsService = achievementsService ?? throw new ArgumentNullException(nameof(achievementsService));
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            this.currentUser = this.userService.GetCurrentUser();
             BackToProfileCommand = new RelayCommand(BackToProfile);
         }
         [RelayCommand]
@@ -72,7 +75,7 @@ namespace SteamHub.ViewModels
             try
             {
                 System.Diagnostics.Debug.WriteLine("Starting LoadAchievementsAsync in ViewModel");
-                var userId = userService.GetCurrentUser().UserId;
+                var userId = this.currentUser.UserId;
                 System.Diagnostics.Debug.WriteLine($"Current UserId: {userId}");
 
                 // Get grouped achievements (no logic in ViewModel)
@@ -128,7 +131,7 @@ namespace SteamHub.ViewModels
 
         private void BackToProfile()
         {
-            int currentUserId = userService.GetCurrentUser().UserId;
+            int currentUserId = this.currentUser.UserId;
             //NavigationService.Instance.Navigate(typeof(ProfilePage), currentUserId);
         }
     }
