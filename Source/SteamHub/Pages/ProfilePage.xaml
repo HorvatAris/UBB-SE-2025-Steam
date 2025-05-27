@@ -70,7 +70,7 @@
                         Margin="0,5,0,5">
 
                         <!-- Friends Count Button -->
-                        <Button Style="{StaticResource TransparentButton}"
+                        <!--<Button Style="{StaticResource TransparentButton}"
                             Padding="0"
                             Command="{x:Bind ViewModel.ShowFriendsCommand, Mode=OneWay}"
                             HorizontalAlignment="Center"
@@ -85,7 +85,7 @@
                                         FontSize="12"/>
                                 </StackPanel>
                             </Border>
-                        </Button>
+                        </Button> -->
 
                         <!-- Friend Button (Only visible on the friends page) -->
                         <Button Content="{x:Bind ViewModel.FriendButtonText, Mode=OneWay}"
@@ -135,6 +135,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- Header with Show All button -->
+                <!--
                 <Grid Grid.Row="0" Margin="0,10,0,5">
                     <TextBlock Text="Achievements" 
                              Foreground="White" 
@@ -145,7 +146,7 @@
                             Foreground="White"
                             Command="{x:Bind ViewModel.ShowAllAchievementsCommand}"
                             HorizontalAlignment="Right"/>
-                </Grid>
+                </Grid> -->
 
                 <!-- Achievement Icons Grid -->
                 <Grid Grid.Row="1" Margin="0,10">
@@ -315,6 +316,7 @@
                       HorizontalAlignment="Right"
                       Margin="0,20,20,20">
                 <!-- Review button -->
+                <!-- 
                 <Button Style="{StaticResource TransparentButton}"
                         Margin="0,0,10,0"
                         Padding="0"
@@ -327,8 +329,9 @@
                                  FontSize="14"/>
                     </Border>
                 </Button>
+                -->
 
-                <!-- Forum button -->
+                <!-- Forum button 
                 <Button Style="{StaticResource TransparentButton}"
                         Margin="0,0,10,0"
                         Padding="0"
@@ -341,8 +344,9 @@
                                  FontSize="14"/>
                     </Border>
                 </Button>
+                -->
 
-                <!-- News button -->
+                <!-- News button 
                 <Button Style="{StaticResource TransparentButton}"
                         Margin="0,0,10,0"
                         Padding="0"
@@ -355,6 +359,7 @@
                                  FontSize="14"/>
                     </Border>
                 </Button>
+                -->
 
 
                 <!-- Shop button -->
@@ -377,7 +382,7 @@
                 -->
 
 
-                <!-- Community button -->
+                <!-- Community button 
                 <Button Style="{StaticResource TransparentButton}"
                         Margin="0,0,10,0"
                         Padding="0"
@@ -390,8 +395,10 @@
                                  FontSize="14"/>
                     </Border>
                 </Button>
+                -->
 
-                <!-- Money display -->
+                <!-- Money display
+                
                 <Button Style="{StaticResource TransparentButton}"
                         Margin="0,0,10,0"
                         Padding="0"
@@ -404,8 +411,9 @@
                                  FontSize="14"/>
                     </Border>
                 </Button>
+                -->
 
-                <!-- Points display -->
+                <!-- Points display 
                 <Button Style="{StaticResource TransparentButton}"
                         Margin="0,0,10,0"
                         Padding="0"
@@ -418,6 +426,7 @@
                                  FontSize="14"/>
                     </Border>
                 </Button>
+                -->
 
                 <!-- Settings button -->
                 <Button Style="{StaticResource TransparentButton}"
@@ -440,7 +449,7 @@
             <Grid Grid.Row="3">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <!-- Add Collection Button -->
-                    <Border Background="#E6D5B8" 
+                    <!--<Border Background="#E6D5B8" 
                             Width="200" Height="150"
                             Margin="10"
                             Visibility="{x:Bind ViewModel.IsProfileOwner, Mode=OneWay}">
@@ -453,7 +462,7 @@
                                       HorizontalAlignment="Center" 
                                       VerticalAlignment="Center"/>
                         </Button>
-                    </Border>
+                    </Border> -->
                     <!-- Collections Grid -->
                     <ItemsControl ItemsSource="{x:Bind ViewModel.GameCollections, Mode=OneWay}">
                         <ItemsControl.ItemsPanel>
