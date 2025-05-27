@@ -34,7 +34,7 @@ namespace SteamHub.Pages
     public sealed partial class TradingPage : Page
     {
         // Constants (avoid magic strings)
-        private const string DisplayMemberUsername = "UserName";
+        private const string DisplayMemberUsername = "Username";
 
         private const string GameDisplayMemberPath = "GameTitle";
         private const string CurrentUserNullMessage = "Current user is null. Cannot load active trades.";
