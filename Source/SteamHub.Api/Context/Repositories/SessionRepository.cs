@@ -40,7 +40,7 @@ namespace SteamHub.Api.Context.Repositories
             await context.SaveChangesAsync();
 
             // Update the current session
-            _userSession.UpdateSession(
+            await _userSession.UpdateSessionAsync(
                 session.SessionId,
                 session.UserId,
                 session.CreatedAt,
@@ -64,7 +64,7 @@ namespace SteamHub.Api.Context.Repositories
             // Clear the current session if it belongs to this user
             if (_userSession.UserId == userId)
             {
-                _userSession.ClearSession();
+                await _userSession.ClearSessionAsync();
             }
         }
 
@@ -79,12 +79,12 @@ namespace SteamHub.Api.Context.Repositories
                 // Clear the current session if it matches
                 if (_userSession.CurrentSessionId == sessionId)
                 {
-                    _userSession.ClearSession();
+                    await _userSession.ClearSessionAsync();
                 }
             }
         }
 
-        public async Task<SessionDetails> GetSessionById(Guid sessionId)
+        public async Task<SessionDetails?> GetSessionById(Guid sessionId)
         {
             var session = await context.UserSessions.FindAsync(sessionId);
             if (session == null)
@@ -119,7 +119,7 @@ namespace SteamHub.Api.Context.Repositories
             // Update the current session if it matches
             if (_userSession.CurrentSessionId == sessionId)
             {
-                _userSession.UpdateSession(
+                await _userSession.UpdateSessionAsync(
                     session.SessionId,
                     session.UserId,
                     session.CreatedAt,
@@ -162,7 +162,7 @@ namespace SteamHub.Api.Context.Repositories
                 var session = await GetSessionById(_userSession.CurrentSessionId.Value);
                 if (session == null || session.ExpiresAt <= DateTime.UtcNow)
                 {
-                    _userSession.ClearSession();
+                    await _userSession.ClearSessionAsync();
                 }
             }
         }

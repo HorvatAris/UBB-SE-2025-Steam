@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Models.Common;
 using SteamHub.ApiContract.Services;
@@ -38,7 +39,9 @@ namespace SteamHub
         private PasswordResetServiceProxy passwordResetService;
         private FriendServiceProxy friendsService;
         private FeaturesServiceProxy featuresService;
+        private WalletServiceProxy walletService;
         private AchievementsServiceProxy achievementsService;
+        
         private readonly IHttpClientFactory _httpClientFactory;
 
         public MainWindow()
@@ -67,11 +70,6 @@ namespace SteamHub
             this.sessionService = new SessionServiceProxy(_httpClientFactory);
             this.passwordResetService = new PasswordResetServiceProxy();
 
-            if (this.ContentFrame == null)
-            {
-                throw new Exception("ContentFrame is not initialized.");
-            }
-
             // Start with login page
             ShowLoginPage();
         }
@@ -79,7 +77,79 @@ namespace SteamHub
         private void ShowLoginPage()
         {
             var loginPage = new LoginPage(this.userService, OnLoginSuccess);
-            this.ContentFrame.Content = loginPage;
+            LoginFrame.Content = loginPage;
+            LoginOverlay.Visibility = Visibility.Visible;
+            NavView.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowRegisterPage()
+        {
+            var registerPage = new RegisterPage(this.userService);
+            LoginFrame.Content = registerPage;
+        }
+
+        private void LoginFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            if (e.SourcePageType == typeof(RegisterPage))
+            {
+                ShowRegisterPage();
+            }
+            else if (e.SourcePageType == typeof(LoginPage))
+            {
+                ShowLoginPage();
+            }
+        }
+
+        private async void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Show confirmation dialog
+                var dialog = new ContentDialog
+                {
+                    Title = "Logout",
+                    Content = "Are you sure you want to logout?",
+                    PrimaryButtonText = "Yes",
+                    SecondaryButtonText = "No",
+                    DefaultButton = ContentDialogButton.Secondary,
+                    XamlRoot = this.Content.XamlRoot
+                };
+
+                var result = await dialog.ShowAsync();
+
+                if (result == ContentDialogResult.Primary)
+                {
+                    // Call logout on the user service
+                    await this.userService.LogoutAsync();
+
+                    // Clear user data
+                    this.user = null;
+
+                    // Reset services that require user context
+                    this.tradeService = null;
+                    this.marketplaceService = null;
+                    this.pointShopService = null;
+                    this.inventoryService = null;
+                    this.cartService = null;
+                    this.userGameService = null;
+                    this.developerService = null;
+
+                    // Show login page
+                    ShowLoginPage();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Show error dialog
+                var errorDialog = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = $"An error occurred during logout: {ex.Message}",
+                    CloseButtonText = "OK",
+                    XamlRoot = this.Content.XamlRoot
+                };
+                await errorDialog.ShowAsync();
+            }
         }
 
         private void OnLoginSuccess(User loggedInUser)
@@ -87,6 +157,7 @@ namespace SteamHub
             this.user = loggedInUser;
 
             // Initialize services that require the logged-in user
+            this.achievementsService = new AchievementsServiceProxy(_httpClientFactory);
             this.tradeService = new TradeServiceProxy(_httpClientFactory, loggedInUser);
             this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory, loggedInUser);
             this.pointShopService = new PointShopServiceProxy(_httpClientFactory, loggedInUser);
@@ -95,14 +166,18 @@ namespace SteamHub
             this.cartService = new CartServiceProxy(_httpClientFactory, loggedInUser);
             this.userGameService = new UserGameServiceProxy(_httpClientFactory, loggedInUser);
             this.developerService = new DeveloperServiceProxy(_httpClientFactory, loggedInUser);
-            this.userService = new UserServiceProxy(_httpClientFactory);
             this.friendsService = new FriendServiceProxy();
             this.featuresService = new FeaturesServiceProxy(this.userService);
-            this.achievementsService = new AchievementsServiceProxy();
+            this.walletService = new WalletServiceProxy(_httpClientFactory, loggedInUser);
+
+            // Hide login overlay and show main content
+            LoginOverlay.Visibility = Visibility.Collapsed;
+            NavView.Visibility = Visibility.Visible;
 
             // Navigate to home page
             this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
         }
+
 
         public void ResetToHomePage()
         {
@@ -144,13 +219,19 @@ namespace SteamHub
                         ShowLoginPage();
                         break;
                     case "RegisterPage":
-                        ShowLoginPage();
+                        ShowRegisterPage();
                         break;
                     case "profile":
                         this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService, achievementsService, this.user);
                         break;
                     case "ForgotPasswordPage":
-                        this.ContentFrame.Content = new ForgotPasswordPage(this.passwordResetService);
+                        ShowLoginPage();
+                        break;
+                    case "AchievementsPage":
+                        this.ContentFrame.Content = new AchievementsPage(this.userService, this.achievementsService);
+                        break;
+                    case "Wallet":
+                        this.ContentFrame.Navigate(typeof(WalletPage), this.walletService);
                         break;
                 }
             }

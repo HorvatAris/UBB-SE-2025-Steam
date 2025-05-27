@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Services;
 using BusinessLayer.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using SteamHub.Web.ViewModels;
 using SteamProfileWeb.ViewModels;
 using System.Security.Claims;
 namespace SteamProfileWeb.Controllers
