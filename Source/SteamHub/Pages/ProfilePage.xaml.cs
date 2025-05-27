@@ -18,6 +18,7 @@ using SteamHub.ApiContract.Models;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Microsoft.UI;
+using SteamHub.ApiContract.Services.Interfaces;
 
 namespace SteamHub.Pages
 {
@@ -29,8 +30,12 @@ namespace SteamHub.Pages
         public ProfileViewModel ViewModel { get; private set; }
         private int userIdentifier;
         private bool isNavigatingAway = false;
+        private IUserService userService;
+        private IFriendsService friendsService;
+        private IFeaturesService featureService;
+        private IAchievementsService achievementsService;
 
-        public ProfilePage()
+        public ProfilePage(IUserService userService, IFriendsService friendsService, IFeaturesService featureService, IAchievementsService achievementsService)
         {
             try
             {
@@ -48,17 +53,19 @@ namespace SteamHub.Pages
                     // Initialize the ViewModel with the UI thread's dispatcher
                     Debug.WriteLine("DataLink instance obtained.");
 
-                    var friendsService = App.FriendsService;
                     Debug.WriteLine("FriendshipsRepository and FriendsService initialized.");
+                    this.achievementsService = achievementsService ?? throw new ArgumentNullException(nameof(achievementsService));
+                    this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
+                    this.friendsService = friendsService ?? throw new ArgumentNullException(nameof(friendsService));
+                    this.featureService = featureService ?? throw new ArgumentNullException(nameof(featureService));
 
                     // Add the UserProfileRepository parameter
                     ProfileViewModel.Initialize(
-                        App.UserService,
+                        userService,
                         friendsService,
                         Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread(),
-                        App.CollectionsRepository,
-                        App.FeaturesService,
-                        App.AchievementsService);
+                        featureService,
+                        achievementsService);
 
                     Debug.WriteLine("ProfileViewModel initialized with services.");
                     ViewModel = ProfileViewModel.Instance;
@@ -105,17 +112,13 @@ namespace SteamHub.Pages
             {
                 Debug.WriteLine("Initializing ProfileViewModel...");
 
-                var friendsService = App.FriendsService;
-                Debug.WriteLine("FriendsService obtained.");
-
                 // Initialize ProfileViewModel with all required services
                 ProfileViewModel.Initialize(
-                    App.UserService,
-                    friendsService,
+                    this.userService,
+                    this.friendsService,
                     Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread(),
-                    App.CollectionsRepository,
-                    App.FeaturesService,
-                    App.AchievementsService);
+                    this.featureService,
+                    this.achievementsService);
                 Debug.WriteLine("ProfileViewModel initialized with services.");
             }
 

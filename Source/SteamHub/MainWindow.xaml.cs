@@ -11,7 +11,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Models.Common;
-using SteamHub.ApiContract.Proxies;
 using SteamHub.ApiContract.Services;
 using SteamHub.ApiContract.ServiceProxies;
 using SteamHub.Pages;
@@ -37,6 +36,9 @@ namespace SteamHub
         private UserServiceProxy userService;
         private SessionServiceProxy sessionService;
         private PasswordResetServiceProxy passwordResetService;
+        private FriendServiceProxy friendsService;
+        private FeaturesServiceProxy featuresService;
+        private AchievementsServiceProxy achievementsService;
         private readonly IHttpClientFactory _httpClientFactory;
 
         public MainWindow()
@@ -93,6 +95,10 @@ namespace SteamHub
             this.cartService = new CartServiceProxy(_httpClientFactory, loggedInUser);
             this.userGameService = new UserGameServiceProxy(_httpClientFactory, loggedInUser);
             this.developerService = new DeveloperServiceProxy(_httpClientFactory, loggedInUser);
+            this.userService = new UserServiceProxy(_httpClientFactory);
+            this.friendsService = new FriendServiceProxy();
+            this.featuresService = new FeaturesServiceProxy(this.userService);
+            this.achievementsService = new AchievementsServiceProxy();
 
             // Navigate to home page
             this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
@@ -141,7 +147,7 @@ namespace SteamHub
                         ShowLoginPage();
                         break;
                     case "profile":
-                        this.ContentFrame.Content = new ProfilePage();
+                        this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService, achievementsService);
                         break;
                     case "ForgotPasswordPage":
                         this.ContentFrame.Content = new ForgotPasswordPage(this.passwordResetService);

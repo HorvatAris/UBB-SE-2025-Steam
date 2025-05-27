@@ -249,7 +249,6 @@ namespace SteamHub.ViewModels
             IUserService userService,
             IFriendsService friendsService,
             DispatcherQueue dispatcherQueue,
-            ICollectionsRepository gameCollectionsRepository,
             IFeaturesService featuresService,
             IAchievementsService achievementsService)
         {
@@ -258,14 +257,13 @@ namespace SteamHub.ViewModels
                 throw new InvalidOperationException("ProfileViewModel is already initialized");
             }
 
-            profileViewModelInstance = new ProfileViewModel(userService, friendsService, dispatcherQueue, gameCollectionsRepository, featuresService, achievementsService);
+            profileViewModelInstance = new ProfileViewModel(userService, friendsService, dispatcherQueue, featuresService, achievementsService);
         }
 
         public ProfileViewModel(
             IUserService userService,
             IFriendsService friendsService,
             DispatcherQueue dispatcherQueue,
-            ICollectionsRepository gameCollectionsRepository,
             IFeaturesService featuresService,
             IAchievementsService achievementsService)
         {
@@ -275,7 +273,7 @@ namespace SteamHub.ViewModels
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.friendsService = friendsService ?? throw new ArgumentNullException(nameof(friendsService));
             this.dispatcherQueue = dispatcherQueue ?? throw new ArgumentNullException(nameof(dispatcherQueue));
-            ProfileViewModel.gameCollectionsService = (ICollectionsService)(gameCollectionsService ?? throw new ArgumentNullException(nameof(gameCollectionsService)));
+            // ProfileViewModel.gameCollectionsService = (ICollectionsService)(gameCollectionsService ?? throw new ArgumentNullException(nameof(gameCollectionsService)));
             this.featuresService = featuresService ?? throw new ArgumentNullException(nameof(featuresService));
             this.achievementsService = achievementsService ?? throw new ArgumentNullException(nameof(achievementsService));
 
