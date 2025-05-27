@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BusinessLayer.Models;
+using SteamHub.ApiContract.Models;
 
 namespace SteamHub.ApiContract.Services.Interfaces
 {

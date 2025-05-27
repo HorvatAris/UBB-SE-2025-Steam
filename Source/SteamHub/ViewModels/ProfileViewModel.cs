@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Imaging;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Models.Collections;
+using Collection = SteamHub.ApiContract.Models.Collections.Collection;
 
 
 
@@ -194,7 +195,7 @@ namespace SteamHub.ViewModels
         [ObservableProperty]
         private BitmapImage profilePhoto;
 
-        private static CollectionsRepository gameCollectionsRepository;
+        private static ICollectionsService gameCollectionsService;
 
         [ObservableProperty]
         private bool isFriend = false;
@@ -274,7 +275,7 @@ namespace SteamHub.ViewModels
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.friendsService = friendsService ?? throw new ArgumentNullException(nameof(friendsService));
             this.dispatcherQueue = dispatcherQueue ?? throw new ArgumentNullException(nameof(dispatcherQueue));
-            ProfileViewModel.gameCollectionsRepository = (CollectionsRepository)(gameCollectionsRepository ?? throw new ArgumentNullException(nameof(gameCollectionsRepository)));
+            ProfileViewModel.gameCollectionsService = (ICollectionsService)(gameCollectionsService ?? throw new ArgumentNullException(nameof(gameCollectionsService)));
             this.featuresService = featuresService ?? throw new ArgumentNullException(nameof(featuresService));
             this.achievementsService = achievementsService ?? throw new ArgumentNullException(nameof(achievementsService));
 
@@ -453,7 +454,7 @@ namespace SteamHub.ViewModels
 
                             try
                             {
-                                var lastThreeCollections = gameCollectionsRepository.GetLastThreeCollectionsForUser(user_id);
+                                var lastThreeCollections = gameCollectionsService.GetLastThreeCollectionsForUser(user_id);
                                 gameCollections.Clear();
                                 foreach (var collection in lastThreeCollections)
                                 {
@@ -738,44 +739,12 @@ namespace SteamHub.ViewModels
             }
         }
 
+
+
         [RelayCommand]
         private void Configuration()
         {
-            NavigationService.Instance.Navigate(typeof(Views.ConfigurationsPage));
-        }
-
-        [RelayCommand]
-        private void ShowMoney()
-        {
-            // Navigate to Wallet/Money page
-            NavigationService.Instance.Navigate(typeof(Views.WalletPage));
-        }
-
-        [RelayCommand]
-        private void ShowPoints()
-        {
-            // Navigate to Points page
-            NavigationService.Instance.Navigate(typeof(Views.WalletPage));
-        }
-
-        [RelayCommand]
-        private void AddCollection()
-        {
-            // Navigate to Collections page
-            NavigationService.Instance.Navigate(typeof(Views.CollectionsPage));
-        }
-
-        [RelayCommand]
-        private void ShowAllAchievements()
-        {
-            // Navigate to Achievements page
-            NavigationService.Instance.Navigate(typeof(Views.AchievementsPage));
-        }
-
-        [RelayCommand]
-        private void ShowFriends()
-        {
-            NavigationService.Instance.Navigate(typeof(Views.FriendsPage), userIdentifier);
+            NavigationService.Instance.Navigate(typeof(Pages.ConfigurationsPage));
         }
 
         [RelayCommand]
@@ -809,104 +778,6 @@ namespace SteamHub.ViewModels
             {
                 Debug.WriteLine($"Error refreshing equipped features: {exception.Message}");
             }
-        }
-
-        /// <summary>
-        /// Navigates to the Chat Room window.
-        /// </summary>
-        [RelayCommand]
-        private void NavigateToChatRoom()
-        {
-            try
-            {
-                NavigationService.Instance.Navigate(typeof(Views.ChatRoomWindow));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error navigating to chat: {ex.Message}");
-                this.ErrorMessage = "Failed to open chat room.";
-            }
-        }
-
-        /// <summary>
-        /// Navigates to the Shop page.
-        /// </summary>
-        [RelayCommand]
-        private void NavigateToShop()
-        {
-            try
-            {
-                NavigationService.Instance.Navigate(typeof(Views.ShopPage));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error navigating to shop: {ex.Message}");
-                this.ErrorMessage = "Failed to open shop.";
-            }
-        }
-
-        /// <summary>
-        /// Navigates to the News page.
-        /// </summary>
-        [RelayCommand]
-        private void NavigateToNews()
-        {
-            try
-            {
-                NavigationService.Instance.Navigate(typeof(Views.NewsPage));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error navigating to news: {ex.Message}");
-                this.ErrorMessage = "Failed to open news.";
-            }
-        }
-
-        /// <summary>
-        /// Navigates to the Forum page.
-        /// </summary>
-        [RelayCommand]
-        private void NavigateToForum()
-        {
-            try
-            {
-                NavigationService.Instance.Navigate(typeof(Views.ForumPage));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error navigating to forum: {ex.Message}");
-                this.ErrorMessage = "Failed to open forum.";
-            }
-        }
-
-        /// <summary>
-        /// Navigates to the Forum Control page.
-        /// </summary>
-
-        /// <summary>
-        /// Navigates to the Reviews page.
-        /// </summary>
-        [RelayCommand]
-        private void NavigateToReviews()
-        {
-            try
-            {
-                NavigationService.Instance.Navigate(typeof(Views.ReviewsPage));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error navigating to reviews: {ex.Message}");
-                this.ErrorMessage = "Failed to open reviews.";
-            }
-        }
-
-        /// <summary>
-        /// Navigates to the Community window (ChatRoomWindow).
-        /// </summary>
-        [RelayCommand]
-        private void NavigateToAddFriend()
-        {
-            NavigationService.Instance.Navigate(typeof(Views.AddFriendsPage), userIdentifier);
         }
     }
 

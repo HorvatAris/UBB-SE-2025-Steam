@@ -122,7 +122,7 @@ namespace SteamHub.ApiContract.Services
             var session = sessionRepository.GetSessionById(sessionId.Value).Result;
             return session != null && session.ExpiresAt > DateTime.UtcNow;
         }
-        
+
         public bool UpdateUserUsername(string username, string currentPassword)
         {
             if (!VerifyUserPassword(currentPassword)) return false;
@@ -169,9 +169,13 @@ namespace SteamHub.ApiContract.Services
                     CreatedAt = u.CreatedAt,
                     LastLogin = u.LastLogin,
                     ProfilePicture = u.ProfilePicture,
-                });   
+                });
             }
             return result;
         }
+
+        public void UpdateProfilePicture(int userId, string profilePicturePath) => userRepository.UpdateProfilePictureAsync(userId, profilePicturePath).Wait();
+        public void UpdateProfileBio(int userId, string profileBio) => userRepository.UpdateProfileBioAsync(userId, profileBio);
+
     }
 }

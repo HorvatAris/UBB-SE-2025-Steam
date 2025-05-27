@@ -7,7 +7,8 @@ using Microsoft.Data.SqlClient;
 using BusinessLayer.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SteamHub.ApiContract.Repositories;
-using SteamHub.Api.Entities;
+using SteamHub.ApiContract.Models.Item;
+using Collection = SteamHub.Api.Entities.Collection;
 
 namespace SteamHub.Api.Context.Repositories
 {

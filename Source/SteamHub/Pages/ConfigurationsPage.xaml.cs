@@ -10,9 +10,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using BusinessLayer.Services;
-using SteamProfile.ViewModels;
-using SteamProfile.Views.ConfigurationsView;
+using SteamHub.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -29,7 +27,7 @@ namespace SteamHub.Pages
 
         private void ConfigurationsPage_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel = new ConfigurationsViewModel(this.Frame, SteamHub.App.UserService);
+            ViewModel = new ConfigurationsViewModel(this.Frame, App.UserService);
             this.DataContext = ViewModel;
         }
     }

@@ -52,5 +52,8 @@ namespace SteamHub.ApiContract.Services.Interfaces
         bool VerifyUserPassword(string password);
 
         Task<List<User>> GetAllUsersAsync();
+
+        void UpdateProfilePicture(int userId, string profilePicturePath);
+        void UpdateProfileBio(int userId, string profileBio);
     }
 }

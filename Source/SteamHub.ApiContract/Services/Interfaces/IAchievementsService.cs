@@ -1,12 +1,12 @@
 ﻿using BusinessLayer.Models;
-using static BusinessLayer.Services.AchievementsService;
+using SteamHub.ApiContract.Models;
 
 namespace SteamHub.ApiContract.Services.Interfaces
 {
     public interface IAchievementsService
     {
         void InitializeAchievements();
-        GroupedAchievementsResult GetGroupedAchievementsForUser(int userIdentifier);
+        // GroupedAchievementsResult GetGroupedAchievementsForUser(int userIdentifier);
         List<Achievement> GetAchievementsForUser(int userIdentifier);
         void UnlockAchievementForUser(int userIdentifier);
         List<AchievementWithStatus> GetAchievementsWithStatusForUser(int userIdentifier);

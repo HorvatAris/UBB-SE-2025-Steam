@@ -346,5 +346,15 @@ namespace SteamHub.ApiContract.ServiceProxies
                 return false;
             }
         }
+
+        public void UpdateProfilePicture(int userId, string profilePicturePath)
+        {
+            // IMPLEMENT
+        }
+
+        public void UpdateProfileBio(int userId, string profileBio)
+        {
+            // IMPLEMENT
+        }
     }
 }

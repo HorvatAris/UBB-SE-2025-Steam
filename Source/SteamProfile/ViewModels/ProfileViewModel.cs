@@ -738,7 +738,7 @@ namespace SteamProfile.ViewModels
         [RelayCommand]
         private void Configuration()
         {
-            NavigationService.Instance.Navigate(typeof(Views.ConfigurationsPage));
+            NavigationService.Instance.Navigate(typeof(SteamHub.Pages.ConfigurationsPage));
         }
 
         [RelayCommand]
