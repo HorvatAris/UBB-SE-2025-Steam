@@ -1,14 +1,18 @@
 ﻿using System;
-using System.Data;
-using System.Linq;
 using System.Collections.Generic;
-using BusinessLayer.Models;
-using Microsoft.Data.SqlClient;
-using BusinessLayer.Repositories.Interfaces;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using SteamHub.Api.Entities;
+using SteamHub.ApiContract.Models.Collections;
+using SteamHub.ApiContract.Models.Game;
 using SteamHub.ApiContract.Repositories;
-using SteamHub.ApiContract.Models.Item;
-using Collection = SteamHub.Api.Entities.Collection;
+
+// Type aliases to resolve ambiguity
+using EntityCollection = SteamHub.Api.Entities.Collection;
+using ModelCollection = SteamHub.ApiContract.Models.Collections.Collection;
+using ModelOwnedGame = SteamHub.ApiContract.Models.Game.OwnedGame;
+using EntityCollectionGame = SteamHub.Api.Entities.CollectionGame;
+
 
 namespace SteamHub.Api.Context.Repositories
 {
@@ -21,43 +25,66 @@ namespace SteamHub.Api.Context.Repositories
             this.context = newContext ?? throw new ArgumentNullException(nameof(newContext));
         }
 
-        public List<Collection> GetAllCollections(int userIdentifier)
+        public List<ModelCollection> GetAllCollections(int userIdentifier)
         {
             return context.Collections
-                      .Where(c => c.UserId == userIdentifier)
-                      .OrderBy(c => c.CreatedAt)
-                      .ToList();
+                .Where(c => c.UserId == userIdentifier)
+                .OrderBy(c => c.CreatedAt)
+                .Select(c => new ModelCollection(c.UserId, c.CollectionName, c.CreatedAt, c.CoverPicture, c.IsPublic))
+                .ToList();
         }
 
-        public List<Collection> GetLastThreeCollectionsForUser(int userIdentifier)
-        {
-            return GetAllCollections(userIdentifier)
-                   .OrderByDescending(c => c.CreatedAt)
-                   .Take(3)
-                   .ToList();
-        }
-
-        public Collection? GetCollectionById(int collectionIdentifier, int userIdentifier)
+        public List<ModelCollection> GetLastThreeCollectionsForUser(int userIdentifier)
         {
             return context.Collections
-                      .Include(c => c.CollectionGames)
-                        .ThenInclude(cg => cg.OwnedGame)
-                      .FirstOrDefault(c => c.CollectionId == collectionIdentifier
-                                        && c.UserId == userIdentifier);
+                .Where(c => c.UserId == userIdentifier)
+                .OrderByDescending(c => c.CreatedAt)
+                .Take(3)
+                .Select(c => new ModelCollection(c.UserId, c.CollectionName, c.CreatedAt, c.CoverPicture, c.IsPublic))
+                .ToList();
         }
 
-        public List<OwnedGame> GetGamesInCollection(int collectionIdentifier)
+        public ModelCollection? GetCollectionById(int collectionIdentifier, int userIdentifier)
+        {
+            var c = context.Collections
+                .Include(col => col.CollectionGames)
+                    .ThenInclude(cg => cg.OwnedGame)
+                .FirstOrDefault(col => col.CollectionId == collectionIdentifier && col.UserId == userIdentifier);
+
+            return c == null ? null : new ModelCollection(c.UserId, c.CollectionName, c.CreatedAt, c.CoverPicture, c.IsPublic);
+        }
+
+        public List<ModelOwnedGame> GetGamesInCollection(int collectionIdentifier)
         {
             return context.CollectionGames
-                      .Where(cg => cg.CollectionId == collectionIdentifier)
-                      .Select(cg => cg.OwnedGame)
-                      .ToList();
+                .Where(cg => cg.CollectionId == collectionIdentifier)
+                .Select(cg => new ModelOwnedGame
+                {
+                    GameId = cg.OwnedGame.GameId,
+                    UserId = cg.OwnedGame.UserId,
+                    GameTitle = cg.OwnedGame.GameTitle
+                    // Add other properties as needed
+                })
+                .ToList();
+        }
+
+        public List<ModelOwnedGame> GetGamesInCollection(int collectionId, int userId)
+        {
+            return context.CollectionGames
+                .Where(cg => cg.CollectionId == collectionId && cg.OwnedGame.UserId == userId)
+                .Select(cg => new ModelOwnedGame
+                {
+                    GameId = cg.OwnedGame.GameId,
+                    UserId = cg.OwnedGame.UserId,
+                    GameTitle = cg.OwnedGame.GameTitle
+                    // Add other properties as needed
+                })
+                .ToList();
         }
 
         public void AddGameToCollection(int collectionIdentifier, int gameIdentifier, int userIdentifier)
         {
-            // Optional: validate existence of both entities first
-            context.CollectionGames.Add(new CollectionGame
+            context.CollectionGames.Add(new EntityCollectionGame
             {
                 CollectionId = collectionIdentifier,
                 GameId = gameIdentifier
@@ -77,12 +104,14 @@ namespace SteamHub.Api.Context.Repositories
 
         public void CreateCollection(int userIdentifier, string collectionName, string? coverPicture, bool isPublic, DateOnly createdAt)
         {
-            var collection = new Collection();
-            collection.UserId = userIdentifier; // Ensure the user ID is set correctly
-            collection.CollectionName = collectionName;
-            collection.CreatedAt = createdAt;
-            collection.CoverPicture = coverPicture;
-            collection.IsPublic = isPublic;
+            var collection = new EntityCollection
+            {
+                UserId = userIdentifier,
+                CollectionName = collectionName,
+                CreatedAt = createdAt,
+                CoverPicture = coverPicture,
+                IsPublic = isPublic
+            };
             context.Collections.Add(collection);
             context.SaveChanges();
         }
@@ -103,39 +132,41 @@ namespace SteamHub.Api.Context.Repositories
         public void DeleteCollection(int collectionIdentifier, int userIdentifier)
         {
             var collection = context.Collections
-                                .FirstOrDefault(c => c.CollectionId == collectionIdentifier
-                                            && c.UserId == userIdentifier);
+                .FirstOrDefault(c => c.CollectionId == collectionIdentifier && c.UserId == userIdentifier);
             if (collection != null)
             {
-                // remove all links first
                 context.Collections.Remove(collection);
                 context.SaveChanges();
             }
         }
 
-        public List<Collection> GetPublicCollectionsForUser(int userIdentifier)
+        public List<ModelCollection> GetPublicCollectionsForUser(int userIdentifier)
         {
             return context.Collections
-                      .Where(c => c.UserId == userIdentifier && c.IsPublic)
-                      .OrderBy(c => c.CollectionName)
-                      .ToList();
+                .Where(c => c.UserId == userIdentifier && c.IsPublic)
+                .OrderBy(c => c.CollectionName)
+      
+                .Select(c => new ModelCollection(c.UserId, c.CollectionName, c.CreatedAt, c.CoverPicture, c.IsPublic))
+                .ToList();
         }
 
-        public List<OwnedGame> GetGamesNotInCollection(int collectionIdentifier, int userIdentifier)
+        public List<ModelOwnedGame> GetGamesNotInCollection(int collectionIdentifier, int userIdentifier)
         {
             var inCollection = context.CollectionGames
-                                  .Where(cg => cg.CollectionId == collectionIdentifier)
-                                  .Select(cg => cg.GameId);
+                .Where(cg => cg.CollectionId == collectionIdentifier)
+                .Select(cg => cg.GameId);
 
             return context.OwnedGames
-                      .Where(g => g.UserId == userIdentifier && !inCollection.Contains(g.GameId))
-                      .OrderBy(g => g.GameTitle)
-                      .ToList();
-        }
-
-        public List<OwnedGame> GetGamesInCollection(int collectionId, int userId)
-        {
-            throw new NotImplementedException();
+                .Where(g => g.UserId == userIdentifier && !inCollection.Contains(g.GameId))
+                .OrderBy(g => g.GameTitle)
+                .Select(g => new ModelOwnedGame
+                {
+                    GameId = g.GameId,
+                    UserId = g.UserId,
+                    GameTitle = g.GameTitle
+                    // Add other properties as needed
+                })
+                .ToList();
         }
 
         public void MakeCollectionPrivateForUser(string userId, string collectionId)
@@ -153,42 +184,9 @@ namespace SteamHub.Api.Context.Repositories
             throw new NotImplementedException();
         }
 
-        public void SaveCollection(string userId, Collection collection)
+        public void SaveCollection(string userId, ModelCollection collection)
         {
             throw new NotImplementedException();
         }
-
-        /* // Used for old tests
-        private static List<Collection> MapDataTableToCollections(DataTable dataTable)
-        {
-            var collectionList = dataTable.AsEnumerable().Select(row =>
-            {
-                var collection = new Collection(
-                    userId: Convert.ToInt32(row[ColumnUserIdentifier]),
-                    collectionName: row[ColumnName].ToString(),
-                    createdAt: DateOnly.FromDateTime(Convert.ToDateTime(row[ColumnCreatedAt])),
-                    coverPicture: row[ColumnCoverPicture]?.ToString(),
-                    isPublic: Convert.ToBoolean(row[ColumnIsPublic]));
-
-                collection.CollectionId = Convert.ToInt32(row[ColumnCollectionId]);
-                return collection;
-            }).ToList();
-
-            return collectionList;
-        }
-
-        private static Collection MapDataRowToCollection(DataRow dataRow)
-        {
-            var collection = new Collection(
-                userId: Convert.ToInt32(dataRow[ColumnUserIdentifier]),
-                collectionName: dataRow[ColumnName].ToString(),
-                createdAt: DateOnly.FromDateTime(Convert.ToDateTime(dataRow[ColumnCreatedAt])),
-                coverPicture: dataRow[ColumnCoverPicture]?.ToString(),
-                isPublic: Convert.ToBoolean(dataRow[ColumnIsPublic]));
-
-            collection.CollectionId = Convert.ToInt32(dataRow[ColumnCollectionId]);
-            return collection;
-        }
-        */
     }
 }

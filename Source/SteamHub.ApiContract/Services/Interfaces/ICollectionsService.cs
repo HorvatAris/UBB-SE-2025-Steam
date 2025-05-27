@@ -1,5 +1,10 @@
-﻿using BusinessLayer.Models;
-using SteamHub.ApiContract.Models;
+﻿using SteamHub.ApiContract.Models.Collections;
+using SteamHub.ApiContract.Models.Game;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SteamHub.ApiContract.Services.Interfaces
 {
