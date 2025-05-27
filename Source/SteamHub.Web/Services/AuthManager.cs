@@ -31,7 +31,7 @@ namespace SteamHub.Web.Services
         public async Task<bool> LoginAsync(string emailOrUsername, string password)
         {
             var loginModel = new { EmailOrUsername = emailOrUsername, Password = password };
-            var response = await httpClient.PostAsJsonAsync("Auth/Login", loginModel);
+            var response = await httpClient.PostAsJsonAsync("Authentication/Login", loginModel);
             if (!response.IsSuccessStatusCode)
                 return false;
 
@@ -73,7 +73,7 @@ namespace SteamHub.Web.Services
                 Password = password,
                 IsDeveloper = isDeveloper
             };
-            var response = await httpClient.PostAsJsonAsync("Auth/Register", registerModel);
+            var response = await httpClient.PostAsJsonAsync("Authentication/Register", registerModel);
             return response.IsSuccessStatusCode;
         }
 

@@ -48,7 +48,7 @@
                     </p>
                     <div class="mt-3">
                         <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Go to Home</a>
-                        <form asp-controller="Authentication" asp-action="Logout" method="post" class="d-inline ms-2">
+                        <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline ms-2">
                             <button type="submit" class="btn btn-outline-secondary">Sign out</button>
                         </form>
                     </div>
@@ -63,9 +63,9 @@
                         You are not signed in. This page requires authentication with specific permissions.
                     </p>
                     <div class="mt-3">
-                        <a asp-controller="Authentication" asp-action="Login" asp-route-returnUrl="@requestedUrl" 
+                        <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@requestedUrl" 
                            class="btn btn-primary">Log In</a>
-                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary ms-2">Go to Home</a>
+                        <a asp-controller="HomePage" asp-action="Index" class="btn btn-outline-secondary ms-2">Go to Home</a>
                     </div>
                 }
             </div>

@@ -54,8 +54,8 @@ builder.Services.AddHttpClient("SteamHubApi", client =>
 builder.Services.AddAuthentication("SteamHubAuth")
     .AddCookie("SteamHubAuth", options =>
     {
-        options.LoginPath = "/Authentication/Login";
-        options.AccessDeniedPath = "/Authentication/AccessDenied";
+        options.LoginPath = "/Auth/Login";
+        options.AccessDeniedPath = "/Auth/AccessDenied";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Lax;
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
