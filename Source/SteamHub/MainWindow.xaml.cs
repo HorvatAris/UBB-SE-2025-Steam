@@ -147,7 +147,7 @@ namespace SteamHub
                         ShowLoginPage();
                         break;
                     case "profile":
-                        this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService, achievementsService);
+                        this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService, achievementsService, this.user);
                         break;
                     case "ForgotPasswordPage":
                         this.ContentFrame.Content = new ForgotPasswordPage(this.passwordResetService);
