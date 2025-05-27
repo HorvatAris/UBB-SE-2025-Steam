@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Models.Common;
 using SteamHub.ApiContract.Proxies;
@@ -16,6 +17,7 @@ using SteamHub.ApiContract.Services;
 using SteamHub.ApiContract.ServiceProxies;
 using SteamHub.Pages;
 using SteamHub.Web;
+using SteamHub.ViewModels;
 
 namespace SteamHub
 {
@@ -37,61 +39,12 @@ namespace SteamHub
         private SessionServiceProxy sessionService;
         private PasswordResetServiceProxy passwordResetService;
         private AchievementsServiceProxy achievementsService;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public MainWindow()
         {
             this.InitializeComponent();
 
-            // initiate the user
-            // this will need to be changed when we conenct with a database query to get the user
-
-            var users = new List<User>
-            {
-                new User
-                {
-                    UserId = 3,
-                    Email = "john.chen@thatgamecompany.com",
-                    PointsBalance = 5000,
-                    Username = "JohnC",
-                    UserRole = UserRole.Developer,
-                    WalletBalance = 390,
-                },
-
-                new User
-                {
-                    UserId = 4,
-                    Email = "alice.johnson@example.com",
-                    PointsBalance = 6000,
-                    Username = "AliceJ",
-                    UserRole = UserRole.User,
-                    WalletBalance = 78,
-                },
-
-                new User
-                {
-                    UserId = 5,
-                    Email = "liam.garcia@example.com",
-                    PointsBalance = 7000,
-                    Username = "LiamG",
-                    UserRole = UserRole.User,
-                    WalletBalance = 55,
-                },
-
-                new User
-                {
-                    UserId = 7,
-                    Email = "noah.smith@example.com",
-                    PointsBalance = 4000,
-                    Username = "NoahS",
-                    UserRole = UserRole.User,
-                    WalletBalance = 33,
-                },
-            };
-
-            User loggedInUser = users[1];
-
-            // Assign to the class field so it can be used in navigation
-            this.user = loggedInUser;
             var handler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true,
@@ -105,41 +58,118 @@ namespace SteamHub
             {
                 client.BaseAddress = new Uri(configuration["ApiSettings:BaseUrl"]);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
-    
             }).ConfigurePrimaryHttpMessageHandler(() => new NoSslCertificateValidationHandler());
             var provider = services.BuildServiceProvider();
 
-            var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
+            _httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
 
-            this.tradeService = new TradeServiceProxy(httpClientFactory, loggedInUser);
-
-            this.sessionService = new SessionServiceProxy();
-            this.achievementsService = new AchievementsServiceProxy(httpClientFactory);
-
-            this.userService = new UserServiceProxy(httpClientFactory, sessionService);
-            
+            this.userService = new UserServiceProxy(_httpClientFactory);
+            this.sessionService = new SessionServiceProxy(_httpClientFactory);
             this.passwordResetService = new PasswordResetServiceProxy();
 
-            this.marketplaceService = new MarketplaceServiceProxy(httpClientFactory, loggedInUser);
+            // Start with login page
+            ShowLoginPage();
+        }
 
-            this.pointShopService = new PointShopServiceProxy(httpClientFactory, loggedInUser);
+        private void ShowLoginPage()
+        {
+            var loginPage = new LoginPage(this.userService, OnLoginSuccess);
+            LoginFrame.Content = loginPage;
+            LoginOverlay.Visibility = Visibility.Visible;
+            NavView.Visibility = Visibility.Collapsed;
+        }
 
-            this.inventoryService = new InventoryServiceProxy(httpClientFactory,loggedInUser);
+        private void ShowRegisterPage()
+        {
+            var registerPage = new RegisterPage(this.userService);
+            LoginFrame.Content = registerPage;
+        }
 
-            this.gameService = new GameServiceProxy(httpClientFactory);
-
-            this.cartService = new CartServiceProxy(httpClientFactory, loggedInUser);
-
-            this.userGameService = new UserGameServiceProxy(httpClientFactory, loggedInUser);
-
-            this.developerService = new DeveloperServiceProxy(httpClientFactory, loggedInUser);
-
-            if (this.ContentFrame == null)
+        private void LoginFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            if (e.SourcePageType == typeof(RegisterPage))
             {
-                throw new Exception("ContentFrame is not initialized.");
+                ShowRegisterPage();
             }
+            else if (e.SourcePageType == typeof(LoginPage))
+            {
+                ShowLoginPage();
+            }
+        }
 
-            this.ContentFrame.Content = new LoginPage(this.userService);
+        private async void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Show confirmation dialog
+                var dialog = new ContentDialog
+                {
+                    Title = "Logout",
+                    Content = "Are you sure you want to logout?",
+                    PrimaryButtonText = "Yes",
+                    SecondaryButtonText = "No",
+                    DefaultButton = ContentDialogButton.Secondary,
+                    XamlRoot = this.Content.XamlRoot
+                };
+
+                var result = await dialog.ShowAsync();
+
+                if (result == ContentDialogResult.Primary)
+                {
+                    // Call logout on the user service
+                    await this.userService.LogoutAsync();
+
+                    // Clear user data
+                    this.user = null;
+
+                    // Reset services that require user context
+                    this.tradeService = null;
+                    this.marketplaceService = null;
+                    this.pointShopService = null;
+                    this.inventoryService = null;
+                    this.cartService = null;
+                    this.userGameService = null;
+                    this.developerService = null;
+
+                    // Show login page
+                    ShowLoginPage();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Show error dialog
+                var errorDialog = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = $"An error occurred during logout: {ex.Message}",
+                    CloseButtonText = "OK",
+                    XamlRoot = this.Content.XamlRoot
+                };
+                await errorDialog.ShowAsync();
+            }
+        }
+
+        private void OnLoginSuccess(User loggedInUser)
+        {
+            this.user = loggedInUser;
+
+            // Initialize services that require the logged-in user
+            this.achievementsService = new AchievementsServiceProxy(httpClientFactory);
+            this.tradeService = new TradeServiceProxy(_httpClientFactory, loggedInUser);
+            this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory, loggedInUser);
+            this.pointShopService = new PointShopServiceProxy(_httpClientFactory, loggedInUser);
+            this.inventoryService = new InventoryServiceProxy(_httpClientFactory, loggedInUser);
+            this.gameService = new GameServiceProxy(_httpClientFactory);
+            this.cartService = new CartServiceProxy(_httpClientFactory, loggedInUser);
+            this.userGameService = new UserGameServiceProxy(_httpClientFactory, loggedInUser);
+            this.developerService = new DeveloperServiceProxy(_httpClientFactory, loggedInUser);
+
+            // Hide login overlay and show main content
+            LoginOverlay.Visibility = Visibility.Collapsed;
+            NavView.Visibility = Visibility.Visible;
+
+            // Navigate to home page
+            this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
         }
 
 
@@ -180,13 +210,13 @@ namespace SteamHub
                         this.ContentFrame.Content = new TradingPage(this.tradeService, this.userService, this.gameService);
                         break;
                     case "LoginPage":
-                        this.ContentFrame.Content = new LoginPage(this.userService);
+                        ShowLoginPage();
                         break;
                     case "RegisterPage":
-                        this.ContentFrame.Content = new LoginPage(this.userService);
+                        ShowRegisterPage();
                         break;
                     case "ForgotPasswordPage":
-                        this.ContentFrame.Content = new ForgotPasswordPage(this.passwordResetService);
+                        ShowLoginPage();
                         break;
                     case "AchievementsPage":
                         this.ContentFrame.Content = new AchievementsPage(this.userService, this.achievementsService);
@@ -196,7 +226,6 @@ namespace SteamHub
 
             if (this.NavView != null)
             {
-                // Deselect the NavigationViewItem when moving to a non-menu page
                 this.NavView.SelectedItem = null;
             }
         }

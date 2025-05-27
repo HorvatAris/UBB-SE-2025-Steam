@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using System.Net.Http.Json;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Models.Login;
+using SteamHub.ApiContract.Models.Session;
 using SteamHub.ApiContract.Services.Interfaces;
 using System.Diagnostics;
 
@@ -14,23 +15,16 @@ namespace SteamHub.ApiContract.ServiceProxies
     public class UserServiceProxy : ServiceProxy, IUserService
     {
         private readonly HttpClient _httpClient;
-        private readonly ISessionService _sessionService;
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UserServiceProxy"/> class.
-        /// </summary>
-        /// <param name="httpClientFactory">Factory to create configured <see cref="HttpClient"/> instances.</param>
-        /// <param name="sessionService">Service for managing session state.</param>
-        public UserServiceProxy(IHttpClientFactory httpClientFactory, ISessionService sessionService)
+        public UserServiceProxy(IHttpClientFactory httpClientFactory)
             : base()
         {
             _httpClient = httpClientFactory.CreateClient("SteamHubApi");
-            _sessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
         }
 
         /// <inheritdoc/>
@@ -203,7 +197,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public User Login(string emailOrUsername, string password)
+        public async Task<User?> LoginAsync(string emailOrUsername, string password)
         {
             try
             {
@@ -211,7 +205,7 @@ namespace SteamHub.ApiContract.ServiceProxies
                 var loginRequest = new { EmailOrUsername = emailOrUsername, Password = password };
                 
                 Debug.WriteLine("Sending login request...");
-                var response = PostAsync<LoginResponse>("Authentication/Login", loginRequest).GetAwaiter().GetResult();
+                var response = await PostAsync<LoginResponse>("Authentication/Login", loginRequest);
                 Debug.WriteLine($"Response received: {response != null}");
                 
                 if (response == null)
@@ -250,16 +244,53 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public void Logout()
-            => _sessionService.EndSession();
+        public async Task LogoutAsync()
+        {
+            try
+            {
+                await _httpClient.PostAsync("/api/Session/Logout", null);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Logout failed: {ex.Message}");
+            }
+        }
 
         /// <inheritdoc/>
-        public User GetCurrentUser()
-            => _sessionService.GetCurrentUser();
+        public User? GetCurrentUser()
+        {
+            try
+            {
+                var response = _httpClient.GetAsync("/api/Session/CurrentUser").GetAwaiter().GetResult();
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                return response.Content.ReadFromJsonAsync<User>(_jsonOptions).GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to get current user: {ex.Message}");
+                return null;
+            }
+        }
 
         /// <inheritdoc/>
         public bool IsUserLoggedIn()
-            => _sessionService.IsUserLoggedIn();
+        {
+            try
+            {
+                var response = _httpClient.GetAsync("/api/Session/IsLoggedIn").GetAwaiter().GetResult();
+                if (!response.IsSuccessStatusCode)
+                    return false;
+
+                return response.Content.ReadFromJsonAsync<bool>(_jsonOptions).GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to check login status: {ex.Message}");
+                return false;
+            }
+        }
 
         /// <inheritdoc/>
         public bool UpdateUserUsername(string username, string currentPassword)
