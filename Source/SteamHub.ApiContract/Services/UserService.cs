@@ -218,10 +218,14 @@ namespace SteamHub.ApiContract.Services
                 {
                     UserId = u.UserId,
                     Username = u.UserName,
+                    Password = u.Password,
                     Email = u.Email,
                     WalletBalance = u.WalletBalance,
                     PointsBalance = u.PointsBalance,
                     UserRole = u.Role == RoleEnum.Developer ? UserRole.Developer : UserRole.User,
+                    CreatedAt = u.CreatedAt,
+                    LastLogin = u.LastLogin,
+                    ProfilePicture = u.ProfilePicture,
                 });   
             }
             return result;

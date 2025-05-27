@@ -14,6 +14,5 @@ public class Collection
     public ICollection<CollectionGame> CollectionGames { get; set; }
 
     // Not mapped properties
-    public List<OwnedGame> Games { get; set; } = new();
     public bool IsAllOwnedGamesCollection { get; }
 }

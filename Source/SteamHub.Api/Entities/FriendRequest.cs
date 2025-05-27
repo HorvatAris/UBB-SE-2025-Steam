@@ -9,10 +9,10 @@ namespace SteamHub.Api.Entities
     public class FriendRequest
     {
         public int RequestId { get; set; }
-        public string Username { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string ReceiverUsername { get; set; } = string.Empty;
-        public DateTime RequestDate { get; set; } = DateTime.Now;
+        public int SenderUserId { get; set; }
+        public int ReceiverUserId { get; set; }
+        public DateTime RequestDate { get; set; }
+        public FriendRequestStatus Status { get; set; }
 
         // Navigation properties
         public User Sender { get; set; }
@@ -20,5 +20,12 @@ namespace SteamHub.Api.Entities
 
         // Not mapped property
         public string ProfilePhotoPath { get; set; } = "ms-appx:///Assets/default_avatar.png";
+    }
+
+    public enum FriendRequestStatus
+    {
+        Pending,
+        Accepted,
+        Rejected
     }
 }

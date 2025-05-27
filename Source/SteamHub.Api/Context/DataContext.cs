@@ -120,6 +120,18 @@ namespace SteamHub.Api.Context
                 new Tag { TagId = 17, TagName = "Battle Royale" },
             };
 
+            var passwords = new List<string>
+            {
+                "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", // secret
+                "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG", // matto
+                "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq", // cena22
+                "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6", // aliceJ
+                "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a", // secret
+                "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y", // secret
+                "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu", // secret
+                "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC"  // secret
+            };
+
             var usersSeed = new List<User>
             {
                 new User
@@ -130,7 +142,7 @@ namespace SteamHub.Api.Context
                     Username = "GabeN",
                     RoleId = RoleEnum.Developer,
                     WalletBalance = 500,
-                    Password = "secret",
+                    Password = passwords[0],
                     CreatedAt = new DateTime(2024, 1, 1),
                     IsDeveloper = true,
                     LastLogin = new DateTime(2024, 1, 1),
@@ -144,7 +156,7 @@ namespace SteamHub.Api.Context
                     Username = "MattN",
                     RoleId = RoleEnum.Developer,
                     WalletBalance = 420,
-                    Password = "secret",
+                    Password = passwords[1],
                     CreatedAt = new DateTime(2024, 1, 1),
                     IsDeveloper = true,
                     LastLogin = new DateTime(2024, 1, 1),
@@ -158,7 +170,7 @@ namespace SteamHub.Api.Context
                     Username = "JohnC",
                     RoleId = RoleEnum.Developer,
                     WalletBalance = 390,
-                    Password = "secret",
+                    Password = passwords[2],
                     CreatedAt = new DateTime(2024, 1, 1),
                     IsDeveloper = true,
                     LastLogin = new DateTime(2024, 1, 1),
@@ -172,7 +184,7 @@ namespace SteamHub.Api.Context
                     Username = "AliceJ",
                     RoleId = RoleEnum.User,
                     WalletBalance = 780,
-                    Password = "secret",
+                    Password = passwords[3],
                     CreatedAt = new DateTime(2024, 1, 1),
                     IsDeveloper = false,
                     LastLogin = new DateTime(2024, 1, 1),
@@ -186,7 +198,7 @@ namespace SteamHub.Api.Context
                     Username = "LiamG",
                     RoleId = RoleEnum.User,
                     WalletBalance = 5500,
-                    Password = "secret",
+                    Password = passwords[4],
                     CreatedAt = new DateTime(2024, 1, 1),
                     IsDeveloper = false,
                     LastLogin = new DateTime(2024, 1, 1),
@@ -200,7 +212,7 @@ namespace SteamHub.Api.Context
                     Username = "SophieW",
                     RoleId = RoleEnum.User,
                     WalletBalance = 950,
-                    Password = "secret",
+                    Password = passwords[5],
                     CreatedAt = new DateTime(2024, 1, 1),
                     IsDeveloper = false,
                     LastLogin = new DateTime(2024, 1, 1),
@@ -214,7 +226,7 @@ namespace SteamHub.Api.Context
                     Username = "NoahS",
                     RoleId = RoleEnum.User,
                     WalletBalance = 3300,
-                    Password = "secret",
+                    Password = passwords[6],
                     CreatedAt = new DateTime(2024, 1, 1),
                     IsDeveloper = false,
                     LastLogin = new DateTime(2024, 1, 1),
@@ -228,7 +240,7 @@ namespace SteamHub.Api.Context
                     Username = "EmilyB",
                     RoleId = RoleEnum.User,
                     WalletBalance = 1100,
-                    Password = "secret",
+                    Password = passwords[7],
                     CreatedAt = new DateTime(2024, 1, 1),
                     IsDeveloper = false,
                     LastLogin = new DateTime(2024, 1, 1),
@@ -1363,11 +1375,13 @@ namespace SteamHub.Api.Context
 
                 entity.HasOne(cg => cg.Collection)
                       .WithMany(c => c.CollectionGames)
-                      .HasForeignKey(cg => cg.CollectionId);
+                      .HasForeignKey(cg => cg.CollectionId)
+                      .OnDelete(DeleteBehavior.NoAction);
 
                 entity.HasOne(cg => cg.OwnedGame)
                       .WithMany(og => og.CollectionGames)
-                      .HasForeignKey(cg => cg.GameId);
+                      .HasForeignKey(cg => cg.GameId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             // -- Feature mapping -------------------------------------------------------
@@ -1446,12 +1460,14 @@ namespace SteamHub.Api.Context
                 entity.Property(e => e.PostId);
 
                 entity.HasOne(fc => fc.Author)
-                      .WithMany()
-                      .HasForeignKey(fc => fc.AuthorId);
+                      .WithMany(u => u.ForumComments)
+                      .HasForeignKey(fc => fc.AuthorId)
+                      .OnDelete(DeleteBehavior.NoAction);
 
                 entity.HasOne(fc => fc.Post)
                       .WithMany(fp => fp.Comments)
-                      .HasForeignKey(fc => fc.PostId);
+                      .HasForeignKey(fc => fc.PostId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             // -- UserLikedPost mapping ------------------------------------------------------
@@ -1547,25 +1563,29 @@ namespace SteamHub.Api.Context
                 entity.Property(fr => fr.RequestId)
                       .ValueGeneratedOnAdd();
 
-                entity.Property(fr => fr.Username)
-                      .HasMaxLength(50)
+                entity.Property(fr => fr.SenderUserId)
                       .IsRequired();
 
-                entity.Property(fr => fr.Email)
-                      .HasMaxLength(100)
-                      .IsRequired();
-
-                entity.Property(fr => fr.ProfilePhotoPath)
-                      .HasMaxLength(255);
-
-                entity.Property(fr => fr.ReceiverUsername)
-                      .HasMaxLength(50)
+                entity.Property(fr => fr.ReceiverUserId)
                       .IsRequired();
 
                 entity.Property(fr => fr.RequestDate)
                       .HasDefaultValueSql("GETDATE()");
 
-                entity.HasIndex(fr => new { fr.Username, fr.ReceiverUsername })
+                entity.Property(fr => fr.Status)
+                      .IsRequired();
+
+                entity.HasOne(fr => fr.Sender)
+                      .WithMany()
+                      .HasForeignKey(fr => fr.SenderUserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(fr => fr.Receiver)
+                      .WithMany()
+                      .HasForeignKey(fr => fr.ReceiverUserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(fr => new { fr.SenderUserId, fr.ReceiverUserId })
                       .IsUnique();
             });
 
@@ -1718,6 +1738,16 @@ namespace SteamHub.Api.Context
                 entity.HasIndex(f => new { f.UserId, f.FriendId })
                     .IsUnique();
 
+                entity.HasOne(f => f.User)
+                    .WithMany(u => u.Friendships)
+                    .HasForeignKey(f => f.UserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(f => f.Friend)
+                    .WithMany(u => u.FriendOf)
+                    .HasForeignKey(f => f.FriendId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
                 entity.Ignore(f => f.FriendUsername);
                 entity.Ignore(f => f.FriendProfilePicture);
             });
@@ -1857,6 +1887,48 @@ namespace SteamHub.Api.Context
                 entity.HasMany(u => u.PostRatings)
                     .WithOne(r => r.Author)
                     .HasForeignKey(r => r.AuthorId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.SentFriendRequests)
+                    .WithOne(fr => fr.Sender)
+                    .HasForeignKey(fr => fr.SenderUserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.ReceivedFriendRequests)
+                    .WithOne(fr => fr.Receiver)
+                    .HasForeignKey(fr => fr.ReceiverUserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                // Chat-related relationships
+                entity.HasMany(u => u.ConversationsAsUser1)
+                    .WithOne(c => c.User1)
+                    .HasForeignKey(c => c.User1Id)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.ConversationsAsUser2)
+                    .WithOne(c => c.User2)
+                    .HasForeignKey(c => c.User2Id)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.SentMessages)
+                    .WithOne(m => m.Sender)
+                    .HasForeignKey(m => m.SenderId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                // Forum-related relationships
+                entity.HasMany(u => u.ForumComments)
+                    .WithOne(fc => fc.Author)
+                    .HasForeignKey(fc => fc.AuthorId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.LikedComments)
+                    .WithOne(lc => lc.User)
+                    .HasForeignKey(lc => lc.UserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.DislikedComments)
+                    .WithOne(dc => dc.User)
+                    .HasForeignKey(dc => dc.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
 

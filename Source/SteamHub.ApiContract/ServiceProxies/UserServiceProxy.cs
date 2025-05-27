@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Models.Login;
 using SteamHub.ApiContract.Services.Interfaces;
+using System.Diagnostics;
 
 namespace SteamHub.ApiContract.ServiceProxies
 {
@@ -206,20 +207,44 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var loginResponse = PostAsync<LoginResponse>("Auth/Login", new { EmailOrUsername = emailOrUsername, Password = password })
-                    .GetAwaiter().GetResult();
-
-                if (loginResponse?.User != null)
+                Debug.WriteLine($"Attempting login for user: {emailOrUsername}");
+                var loginRequest = new { EmailOrUsername = emailOrUsername, Password = password };
+                
+                Debug.WriteLine("Sending login request...");
+                var response = PostAsync<LoginResponse>("Authentication/Login", loginRequest).GetAwaiter().GetResult();
+                Debug.WriteLine($"Response received: {response != null}");
+                
+                if (response == null)
                 {
-                    SetAuthToken(loginResponse.Token);
-                    SetCurrentUser(loginResponse.UserWithSessionDetails);
-                    return loginResponse.User;
+                    Debug.WriteLine("Login response is null");
+                    return null;
                 }
 
+                Debug.WriteLine($"Response details - Token: {!string.IsNullOrEmpty(response.Token)}, User: {response.User != null}, SessionDetails: {response.UserWithSessionDetails != null}");
+                
+                if (response.User != null)
+                {
+                    Debug.WriteLine($"Login successful for user: {response.User.Username}");
+                    Debug.WriteLine("Setting auth token...");
+                    SetAuthToken(response.Token);
+                    Debug.WriteLine("Setting current user...");
+                    SetCurrentUser(response.UserWithSessionDetails);
+                    Debug.WriteLine("Login process completed successfully");
+                    return response.User;
+                }
+
+                Debug.WriteLine("Login response User is null");
                 return null;
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine($"Login failed with error: {ex.Message}");
+                Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                    Debug.WriteLine($"Inner exception stack trace: {ex.InnerException.StackTrace}");
+                }
                 return null;
             }
         }

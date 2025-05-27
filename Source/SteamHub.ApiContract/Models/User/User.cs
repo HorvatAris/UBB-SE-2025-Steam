@@ -56,7 +56,7 @@ namespace SteamHub.ApiContract.Models.User
 
         public DateTime CreatedAt { get; set; }
 
-        public ICollection<UserAchievement> UserAchievements { get; set; }
+        public ICollection<UserAchievement> UserAchievements { get; set; } = new List<UserAchievement>();
 
         public ICollection<SoldGame> SoldGames { get; set; } = new List<SoldGame>();
     }

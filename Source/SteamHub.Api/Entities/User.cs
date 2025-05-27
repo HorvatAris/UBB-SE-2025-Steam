@@ -45,5 +45,23 @@ namespace SteamHub.Api.Entities
         public ICollection<Post> NewsPosts { get; set; }
         public ICollection<Comment> NewsComments { get; set; }
         public ICollection<PostRatingType> PostRatings { get; set; }
+
+        // Friend request navigation properties
+        public ICollection<FriendRequest> SentFriendRequests { get; set; }
+        public ICollection<FriendRequest> ReceivedFriendRequests { get; set; }
+
+        // Friendship navigation properties
+        public ICollection<Friendship> Friendships { get; set; }
+        public ICollection<Friendship> FriendOf { get; set; }
+
+        // Chat-related navigation properties
+        public ICollection<ChatConversation> ConversationsAsUser1 { get; set; }
+        public ICollection<ChatConversation> ConversationsAsUser2 { get; set; }
+        public ICollection<ChatMessage> SentMessages { get; set; }
+
+        // Forum-related navigation properties
+        public ICollection<ForumComment> ForumComments { get; set; }
+        public ICollection<UserLikedComment> LikedComments { get; set; }
+        public ICollection<UserDislikedComment> DislikedComments { get; set; }
     }
 }

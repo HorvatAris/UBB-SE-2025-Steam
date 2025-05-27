@@ -8,7 +8,6 @@ public class CollectionGame
 
     public int GameId { get; set; }
 
-    // Navigation properties
     public Collection Collection { get; set; }
     public OwnedGame OwnedGame { get; set; }
 }

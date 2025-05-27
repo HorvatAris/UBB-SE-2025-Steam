@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using SteamHub.ApiContract.Models.User;
 
 namespace SteamHub.ApiContract.ServiceProxies
@@ -13,6 +14,12 @@ namespace SteamHub.ApiContract.ServiceProxies
     {
         private static readonly HttpClient StaticHttpClient;
         private static string _authToken;
+
+        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+        };
 
         /// <summary>
         /// Gets or sets the current user session details.
@@ -220,8 +227,8 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             EnsureSuccessStatusCodeSync(response);
             var json = Task.Run(() => response.Content.ReadAsStringAsync()).GetAwaiter().GetResult();
-            Debug.WriteLine($"Response: {json}");
-            return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            Debug.WriteLine($"Response JSON: {json}");
+            return JsonSerializer.Deserialize<T>(json, _jsonOptions);
         }
 
         /// <summary>
@@ -253,7 +260,8 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             await EnsureSuccessStatusCodeAsync(response).ConfigureAwait(false);
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            Debug.WriteLine($"Response JSON: {json}");
+            return JsonSerializer.Deserialize<T>(json, _jsonOptions);
         }
 
         #endregion

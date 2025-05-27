@@ -326,11 +326,21 @@ namespace SteamHub.Api.Migrations
                     b.Property<int>("User2Id")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId1")
+                        .HasColumnType("int");
+
                     b.HasKey("ConversationId");
 
                     b.HasIndex("User1Id");
 
                     b.HasIndex("User2Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("ChatConversations");
                 });
@@ -362,11 +372,16 @@ namespace SteamHub.Api.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("MessageId");
 
                     b.HasIndex("ConversationId");
 
                     b.HasIndex("SenderId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("ChatMessages");
                 });
@@ -730,23 +745,12 @@ namespace SteamHub.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestId"));
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("ProfilePhotoPath")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ReceiverUserId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ReceiverUsername")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("RequestDate")
                         .ValueGeneratedOnAdd()
@@ -756,23 +760,19 @@ namespace SteamHub.Api.Migrations
                     b.Property<int>("SenderUserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserProfileProfileId")
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int?>("UserProfileProfileId")
+                        .HasColumnType("int");
 
                     b.HasKey("RequestId");
 
                     b.HasIndex("ReceiverUserId");
 
-                    b.HasIndex("SenderUserId");
-
                     b.HasIndex("UserProfileProfileId");
 
-                    b.HasIndex("Username", "ReceiverUsername")
+                    b.HasIndex("SenderUserId", "ReceiverUserId")
                         .IsUnique();
 
                     b.ToTable("FriendRequests");
@@ -1549,9 +1549,6 @@ namespace SteamHub.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GameId"));
 
-                    b.Property<int?>("CollectionId")
-                        .HasColumnType("int");
-
                     b.Property<string>("CoverPicture")
                         .HasColumnType("nvarchar(max)");
 
@@ -1567,8 +1564,6 @@ namespace SteamHub.Api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("GameId");
-
-                    b.HasIndex("CollectionId");
 
                     b.HasIndex("UserId");
 
@@ -2180,7 +2175,7 @@ namespace SteamHub.Api.Migrations
                             Email = "gabe.newell@valvestudio.com",
                             IsDeveloper = true,
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "secret",
+                            Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                             PointsBalance = 6000f,
                             ProfilePicture = "",
                             RoleId = 1,
@@ -2194,7 +2189,7 @@ namespace SteamHub.Api.Migrations
                             Email = "mathias.new@cdprojektred.com",
                             IsDeveloper = true,
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "secret",
+                            Password = "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG",
                             PointsBalance = 5000f,
                             ProfilePicture = "",
                             RoleId = 1,
@@ -2208,7 +2203,7 @@ namespace SteamHub.Api.Migrations
                             Email = "john.chen@thatgamecompany.com",
                             IsDeveloper = true,
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "secret",
+                            Password = "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq",
                             PointsBalance = 5000f,
                             ProfilePicture = "",
                             RoleId = 1,
@@ -2222,7 +2217,7 @@ namespace SteamHub.Api.Migrations
                             Email = "alice.johnson@example.com",
                             IsDeveloper = false,
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "secret",
+                            Password = "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6",
                             PointsBalance = 6000f,
                             ProfilePicture = "",
                             RoleId = 0,
@@ -2236,7 +2231,7 @@ namespace SteamHub.Api.Migrations
                             Email = "liam.garcia@example.com",
                             IsDeveloper = false,
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "secret",
+                            Password = "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a",
                             PointsBalance = 7000f,
                             ProfilePicture = "",
                             RoleId = 0,
@@ -2250,7 +2245,7 @@ namespace SteamHub.Api.Migrations
                             Email = "sophie.williams@example.com",
                             IsDeveloper = false,
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "secret",
+                            Password = "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y",
                             PointsBalance = 6000f,
                             ProfilePicture = "",
                             RoleId = 0,
@@ -2264,7 +2259,7 @@ namespace SteamHub.Api.Migrations
                             Email = "noah.smith@example.com",
                             IsDeveloper = false,
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "secret",
+                            Password = "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu",
                             PointsBalance = 4000f,
                             ProfilePicture = "",
                             RoleId = 0,
@@ -2278,7 +2273,7 @@ namespace SteamHub.Api.Migrations
                             Email = "emily.brown@example.com",
                             IsDeveloper = false,
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "secret",
+                            Password = "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC",
                             PointsBalance = 5000f,
                             ProfilePicture = "",
                             RoleId = 0,
@@ -2838,6 +2833,14 @@ namespace SteamHub.Api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("SteamHub.Api.Entities.User", null)
+                        .WithMany("ConversationsAsUser1")
+                        .HasForeignKey("UserId");
+
+                    b.HasOne("SteamHub.Api.Entities.User", null)
+                        .WithMany("ConversationsAsUser2")
+                        .HasForeignKey("UserId1");
+
                     b.Navigation("User1");
 
                     b.Navigation("User2");
@@ -2856,6 +2859,10 @@ namespace SteamHub.Api.Migrations
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", null)
+                        .WithMany("SentMessages")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Conversation");
 
@@ -2878,7 +2885,7 @@ namespace SteamHub.Api.Migrations
                     b.HasOne("SteamHub.Api.Entities.Collection", "Collection")
                         .WithMany("CollectionGames")
                         .HasForeignKey("CollectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("SteamHub.Api.Entities.OwnedGame", "OwnedGame")
@@ -2933,9 +2940,9 @@ namespace SteamHub.Api.Migrations
             modelBuilder.Entity("SteamHub.Api.Entities.ForumComment", b =>
                 {
                     b.HasOne("SteamHub.Api.Entities.User", "Author")
-                        .WithMany()
+                        .WithMany("ForumComments")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("SteamHub.Api.Entities.ForumPost", "Post")
@@ -2988,15 +2995,15 @@ namespace SteamHub.Api.Migrations
             modelBuilder.Entity("SteamHub.Api.Entities.FriendRequest", b =>
                 {
                     b.HasOne("SteamHub.Api.Entities.User", "Receiver")
-                        .WithMany()
+                        .WithMany("ReceivedFriendRequests")
                         .HasForeignKey("ReceiverUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("SteamHub.Api.Entities.User", "Sender")
-                        .WithMany()
+                        .WithMany("SentFriendRequests")
                         .HasForeignKey("SenderUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("SteamHub.Api.Entities.UserProfile", null)
@@ -3011,15 +3018,15 @@ namespace SteamHub.Api.Migrations
             modelBuilder.Entity("SteamHub.Api.Entities.Friendship", b =>
                 {
                     b.HasOne("SteamHub.Api.Entities.User", "Friend")
-                        .WithMany()
+                        .WithMany("FriendOf")
                         .HasForeignKey("FriendId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("SteamHub.Api.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Friendships")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("SteamHub.Api.Entities.UserProfile", null)
@@ -3109,10 +3116,6 @@ namespace SteamHub.Api.Migrations
 
             modelBuilder.Entity("SteamHub.Api.Entities.OwnedGame", b =>
                 {
-                    b.HasOne("SteamHub.Api.Entities.Collection", null)
-                        .WithMany("Games")
-                        .HasForeignKey("CollectionId");
-
                     b.HasOne("SteamHub.Api.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -3268,9 +3271,9 @@ namespace SteamHub.Api.Migrations
                         .IsRequired();
 
                     b.HasOne("SteamHub.Api.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("DislikedComments")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Comment");
@@ -3333,9 +3336,9 @@ namespace SteamHub.Api.Migrations
                         .IsRequired();
 
                     b.HasOne("SteamHub.Api.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("LikedComments")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Comment");
@@ -3435,8 +3438,6 @@ namespace SteamHub.Api.Migrations
             modelBuilder.Entity("SteamHub.Api.Entities.Collection", b =>
                 {
                     b.Navigation("CollectionGames");
-
-                    b.Navigation("Games");
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.Feature", b =>
@@ -3483,13 +3484,33 @@ namespace SteamHub.Api.Migrations
 
             modelBuilder.Entity("SteamHub.Api.Entities.User", b =>
                 {
+                    b.Navigation("ConversationsAsUser1");
+
+                    b.Navigation("ConversationsAsUser2");
+
+                    b.Navigation("DislikedComments");
+
+                    b.Navigation("ForumComments");
+
+                    b.Navigation("FriendOf");
+
+                    b.Navigation("Friendships");
+
+                    b.Navigation("LikedComments");
+
                     b.Navigation("NewsComments");
 
                     b.Navigation("NewsPosts");
 
                     b.Navigation("PostRatings");
 
+                    b.Navigation("ReceivedFriendRequests");
+
                     b.Navigation("Reviews");
+
+                    b.Navigation("SentFriendRequests");
+
+                    b.Navigation("SentMessages");
 
                     b.Navigation("SoldGames");
 

@@ -136,7 +136,7 @@ namespace SteamHub
                 throw new Exception("ContentFrame is not initialized.");
             }
 
-            this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
+            this.ContentFrame.Content = new LoginPage(this.userService);
         }
 
         public void ResetToHomePage()

@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Utils;
 using SteamHub.ApiContract.Models.User;
+using UserAchievement = SteamHub.ApiContract.Models.UserAchievement;
+using SoldGame = SteamHub.ApiContract.Models.SoldGame;
 using RoleEnum = SteamHub.Api.Entities.RoleEnum;
 using User = SteamHub.ApiContract.Models.User.User;
 using UserDTO = SteamHub.Api.Entities.User;
@@ -31,7 +33,25 @@ namespace SteamHub.Api.Context.Repositories
                 Email = userEntity.Email,
                 WalletBalance = userEntity.WalletBalance,
                 PointsBalance = userEntity.PointsBalance,
-                UserRole = userEntity.UserRole.Id == RoleEnum.Developer ? UserRole.Developer : UserRole.User,
+                UserRole = userEntity.RoleId == RoleEnum.Developer ? UserRole.Developer : UserRole.User,
+                CreatedAt = userEntity.CreatedAt,
+                LastLogin = userEntity.LastLogin,
+                ProfilePicture = userEntity.ProfilePicture,
+                
+                // This for later
+                //UserAchievements = userEntity.UserAchievements.Select(ua => new UserAchievement
+                //{
+                //    UserId = ua.UserId,
+                //    AchievementId = ua.AchievementId,
+                //    UnlockedAt = ua.UnlockedAt
+                //}).ToList(),
+                //SoldGames = userEntity.SoldGames.Select(sg => new SoldGame
+                //{
+                //    SoldGameId = sg.SoldGameId,
+                //    GameId = sg.GameId,
+                //    UserId = sg.UserId,
+                //    SoldDate = sg.SoldDate,
+                //}).ToList()
             };
 
             return user;
@@ -54,10 +74,14 @@ namespace SteamHub.Api.Context.Repositories
                 {
                     UserId = userEntity.UserId,
                     UserName = userEntity.Username,
+                    Password = userEntity.Password,
                     Email = userEntity.Email,
                     Role = (ApiContract.Models.User.RoleEnum)userEntity.RoleId,
                     WalletBalance = userEntity.WalletBalance,
-                    PointsBalance = userEntity.PointsBalance
+                    PointsBalance = userEntity.PointsBalance,
+                    CreatedAt = userEntity.CreatedAt,
+                    LastLogin = userEntity.LastLogin,
+                    ProfilePicture = userEntity.ProfilePicture
                 })
                 .ToListAsync();
 
@@ -73,10 +97,14 @@ namespace SteamHub.Api.Context.Repositories
                 {
                     UserId = userEntity.UserId,
                     UserName = userEntity.Username,
+                    Password = userEntity.Password,
                     Email = userEntity.Email,
                     Role = (ApiContract.Models.User.RoleEnum)userEntity.RoleId,
                     WalletBalance = userEntity.WalletBalance,
-                    PointsBalance = userEntity.PointsBalance
+                    PointsBalance = userEntity.PointsBalance,
+                    CreatedAt = userEntity.CreatedAt,
+                    LastLogin = userEntity.LastLogin,
+                    ProfilePicture = userEntity.ProfilePicture
                 })
                 .SingleOrDefaultAsync();
 
@@ -89,9 +117,12 @@ namespace SteamHub.Api.Context.Repositories
             {
                 Username = request.UserName,
                 Email = request.Email,
+                Password = PasswordHasher.HashPassword(request.Password),
                 RoleId = (Entities.RoleEnum)request.Role,
                 WalletBalance = request.WalletBalance,
-                PointsBalance = request.PointsBalance
+                PointsBalance = request.PointsBalance,
+                ProfilePicture = request.ProfilePicture,
+                CreatedAt = DateTime.UtcNow
             };
 
             await dataContext.Users.AddAsync(newUserEntity);

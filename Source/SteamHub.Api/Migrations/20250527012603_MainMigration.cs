@@ -137,7 +137,9 @@ namespace SteamHub.Api.Migrations
                     ConversationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     User1Id = table.Column<int>(type: "int", nullable: false),
-                    User2Id = table.Column<int>(type: "int", nullable: false)
+                    User2Id = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: true),
+                    UserId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -154,6 +156,16 @@ namespace SteamHub.Api.Migrations
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ChatConversations_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId");
+                    table.ForeignKey(
+                        name: "FK_ChatConversations_Users_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "Users",
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -290,6 +302,28 @@ namespace SteamHub.Api.Migrations
                         column: x => x.AuthorId,
                         principalTable: "Users",
                         principalColumn: "UserId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OwnedGames",
+                columns: table => new
+                {
+                    GameId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    GameTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CoverPicture = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OwnedGames", x => x.GameId);
+                    table.ForeignKey(
+                        name: "FK_OwnedGames_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -438,7 +472,8 @@ namespace SteamHub.Api.Migrations
                     SenderId = table.Column<int>(type: "int", nullable: false),
                     MessageContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MessageFormat = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -455,34 +490,11 @@ namespace SteamHub.Api.Migrations
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OwnedGames",
-                columns: table => new
-                {
-                    GameId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    GameTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CoverPicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CollectionId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OwnedGames", x => x.GameId);
                     table.ForeignKey(
-                        name: "FK_OwnedGames_Collections_CollectionId",
-                        column: x => x.CollectionId,
-                        principalTable: "Collections",
-                        principalColumn: "CollectionId");
-                    table.ForeignKey(
-                        name: "FK_OwnedGames_Users_UserId",
+                        name: "FK_ChatMessages_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -811,18 +823,39 @@ namespace SteamHub.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CollectionGames",
+                columns: table => new
+                {
+                    CollectionId = table.Column<int>(type: "int", nullable: false),
+                    GameId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CollectionGames", x => new { x.CollectionId, x.GameId });
+                    table.ForeignKey(
+                        name: "FK_CollectionGames_Collections_CollectionId",
+                        column: x => x.CollectionId,
+                        principalTable: "Collections",
+                        principalColumn: "CollectionId");
+                    table.ForeignKey(
+                        name: "FK_CollectionGames_OwnedGames_GameId",
+                        column: x => x.GameId,
+                        principalTable: "OwnedGames",
+                        principalColumn: "GameId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FriendRequests",
                 columns: table => new
                 {
                     RequestId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ReceiverUsername = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     SenderUserId = table.Column<int>(type: "int", nullable: false),
                     ReceiverUserId = table.Column<int>(type: "int", nullable: false),
-                    ProfilePhotoPath = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    ProfilePhotoPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserProfileProfileId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -837,14 +870,12 @@ namespace SteamHub.Api.Migrations
                         name: "FK_FriendRequests_Users_ReceiverUserId",
                         column: x => x.ReceiverUserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                     table.ForeignKey(
                         name: "FK_FriendRequests_Users_SenderUserId",
                         column: x => x.SenderUserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -869,38 +900,12 @@ namespace SteamHub.Api.Migrations
                         name: "FK_Friendships_Users_FriendId",
                         column: x => x.FriendId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                     table.ForeignKey(
                         name: "FK_Friendships_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CollectionGames",
-                columns: table => new
-                {
-                    CollectionId = table.Column<int>(type: "int", nullable: false),
-                    GameId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CollectionGames", x => new { x.CollectionId, x.GameId });
-                    table.ForeignKey(
-                        name: "FK_CollectionGames_Collections_CollectionId",
-                        column: x => x.CollectionId,
-                        principalTable: "Collections",
-                        principalColumn: "CollectionId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CollectionGames_OwnedGames_GameId",
-                        column: x => x.GameId,
-                        principalTable: "OwnedGames",
-                        principalColumn: "GameId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -928,8 +933,7 @@ namespace SteamHub.Api.Migrations
                         name: "FK_ForumComments_Users_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -1010,8 +1014,7 @@ namespace SteamHub.Api.Migrations
                         name: "FK_UserDislikedComments_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -1034,8 +1037,7 @@ namespace SteamHub.Api.Migrations
                         name: "FK_UserLikedComments_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.InsertData(
@@ -1128,9 +1130,9 @@ namespace SteamHub.Api.Migrations
                 columns: new[] { "UserId", "CreatedAt", "Email", "IsDeveloper", "LastLogin", "Password", "PointsBalance", "ProfilePicture", "RoleId", "Username", "WalletBalance" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "gabe.newell@valvestudio.com", true, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 6000f, "", 1, "GabeN", 500f },
-                    { 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mathias.new@cdprojektred.com", true, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 5000f, "", 1, "MattN", 420f },
-                    { 3, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.chen@thatgamecompany.com", true, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 5000f, "", 1, "JohnC", 390f }
+                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "gabe.newell@valvestudio.com", true, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 6000f, "", 1, "GabeN", 500f },
+                    { 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mathias.new@cdprojektred.com", true, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG", 5000f, "", 1, "MattN", 420f },
+                    { 3, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.chen@thatgamecompany.com", true, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq", 5000f, "", 1, "JohnC", 390f }
                 });
 
             migrationBuilder.InsertData(
@@ -1138,11 +1140,11 @@ namespace SteamHub.Api.Migrations
                 columns: new[] { "UserId", "CreatedAt", "Email", "LastLogin", "Password", "PointsBalance", "ProfilePicture", "RoleId", "Username", "WalletBalance" },
                 values: new object[,]
                 {
-                    { 4, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "alice.johnson@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 6000f, "", 0, "AliceJ", 780f },
-                    { 5, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "liam.garcia@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 7000f, "", 0, "LiamG", 5500f },
-                    { 6, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "sophie.williams@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 6000f, "", 0, "SophieW", 950f },
-                    { 7, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "noah.smith@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 4000f, "", 0, "NoahS", 3300f },
-                    { 8, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "emily.brown@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "secret", 5000f, "", 0, "EmilyB", 1100f }
+                    { 4, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "alice.johnson@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6", 6000f, "", 0, "AliceJ", 780f },
+                    { 5, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "liam.garcia@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a", 7000f, "", 0, "LiamG", 5500f },
+                    { 6, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "sophie.williams@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y", 6000f, "", 0, "SophieW", 950f },
+                    { 7, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "noah.smith@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu", 4000f, "", 0, "NoahS", 3300f },
+                    { 8, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "emily.brown@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC", 5000f, "", 0, "EmilyB", 1100f }
                 });
 
             migrationBuilder.InsertData(
@@ -1199,15 +1201,15 @@ namespace SteamHub.Api.Migrations
 
             migrationBuilder.InsertData(
                 table: "OwnedGames",
-                columns: new[] { "GameId", "CollectionId", "CoverPicture", "Description", "GameTitle", "UserId" },
+                columns: new[] { "GameId", "CoverPicture", "Description", "GameTitle", "UserId" },
                 values: new object[,]
                 {
-                    { 1, null, "/Assets/Games/codmw3.png", "First-person military shooter", "Call of Duty: MWIII", 1 },
-                    { 2, null, "/Assets/Games/overwatch2.png", "Team-based hero shooter", "Overwatch2", 1 },
-                    { 3, null, "/Assets/Games/cs2.png", "Tactical shooter", "Counter-Strike2", 1 },
-                    { 4, null, "/Assets/Games/fifa25.png", "Football simulation", "FIFA25", 2 },
-                    { 5, null, "/Assets/Games/nba2k25.png", "Basketball simulation", "NBA2K25", 2 },
-                    { 6, null, "/Assets/Games/thps.png", "Skateboarding sports game", "Tony Hawk Pro Skater", 2 }
+                    { 1, "/Assets/Games/codmw3.png", "First-person military shooter", "Call of Duty: MWIII", 1 },
+                    { 2, "/Assets/Games/overwatch2.png", "Team-based hero shooter", "Overwatch2", 1 },
+                    { 3, "/Assets/Games/cs2.png", "Tactical shooter", "Counter-Strike2", 1 },
+                    { 4, "/Assets/Games/fifa25.png", "Football simulation", "FIFA25", 2 },
+                    { 5, "/Assets/Games/nba2k25.png", "Basketball simulation", "NBA2K25", 2 },
+                    { 6, "/Assets/Games/thps.png", "Skateboarding sports game", "Tony Hawk Pro Skater", 2 }
                 });
 
             migrationBuilder.InsertData(
@@ -1394,6 +1396,16 @@ namespace SteamHub.Api.Migrations
                 column: "User2Id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ChatConversations_UserId",
+                table: "ChatConversations",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ChatConversations_UserId1",
+                table: "ChatConversations",
+                column: "UserId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ChatMessages_ConversationId",
                 table: "ChatMessages",
                 column: "ConversationId");
@@ -1402,6 +1414,11 @@ namespace SteamHub.Api.Migrations
                 name: "IX_ChatMessages_SenderId",
                 table: "ChatMessages",
                 column: "SenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ChatMessages_UserId",
+                table: "ChatMessages",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CollectionGames_GameId",
@@ -1444,14 +1461,9 @@ namespace SteamHub.Api.Migrations
                 column: "ReceiverUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FriendRequests_SenderUserId",
+                name: "IX_FriendRequests_SenderUserId_ReceiverUserId",
                 table: "FriendRequests",
-                column: "SenderUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FriendRequests_Username_ReceiverUsername",
-                table: "FriendRequests",
-                columns: new[] { "Username", "ReceiverUsername" },
+                columns: new[] { "SenderUserId", "ReceiverUserId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -1549,11 +1561,6 @@ namespace SteamHub.Api.Migrations
                 name: "IX_NewsPosts_AuthorId",
                 table: "NewsPosts",
                 column: "AuthorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OwnedGames_CollectionId",
-                table: "OwnedGames",
-                column: "CollectionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OwnedGames_UserId",
@@ -1742,6 +1749,9 @@ namespace SteamHub.Api.Migrations
                 name: "ChatConversations");
 
             migrationBuilder.DropTable(
+                name: "Collections");
+
+            migrationBuilder.DropTable(
                 name: "OwnedGames");
 
             migrationBuilder.DropTable(
@@ -1770,9 +1780,6 @@ namespace SteamHub.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "PointShopItems");
-
-            migrationBuilder.DropTable(
-                name: "Collections");
 
             migrationBuilder.DropTable(
                 name: "Games");

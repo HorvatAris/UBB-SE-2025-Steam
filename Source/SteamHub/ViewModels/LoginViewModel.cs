@@ -67,6 +67,7 @@ public partial class LoginViewModel : ObservableObject
             {
                 // TODO: Navigate to profile page after successful login
                 // loginViewFrame.Navigate(typeof(ProfilePage), user.UserId);
+                ErrorMessage = "Logged In Succesfully";
             }
             else
             {
