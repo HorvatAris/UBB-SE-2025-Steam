@@ -11,7 +11,7 @@ namespace SteamHub.ApiContract.Services.Interfaces
     public interface ICollectionsService
     {
         List<Collection> GetAllCollections(int userIdentifier);
-        List<SteamHub.ApiContract.Models.Collections.Collection> GetLastThreeCollectionsForUser(int userIdentifier)
+        List<SteamHub.ApiContract.Models.Collections.Collection> GetLastThreeCollectionsForUser(int userIdentifier);
         Collection GetCollectionByIdentifier(int collectionIdentifier, int userIdentifier);
         List<OwnedGame> GetGamesInCollection(int collectionIdentifier);
         void AddGameToCollection(int collectionIdentifier, int gameIdentifier, int userIdentifier);

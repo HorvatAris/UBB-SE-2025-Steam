@@ -5,7 +5,9 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BusinessLayer.Models;
+using BusinessLayer.Services;
 using BusinessLayer.Services.Interfaces;
+using SteamHub.ApiContract.Models;
 using SteamProfile.ViewModels.Commands;
 
 namespace SteamHub.ViewModels
