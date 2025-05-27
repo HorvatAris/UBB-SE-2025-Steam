@@ -10,7 +10,7 @@ namespace SteamHub.ApiContract.Repositories
         void UpdateAchievementIconUrl(int points, string iconUrl);
         Task<List<Achievement>> GetAllAchievements();
         List<Achievement> GetUnlockedAchievementsForUser(int userId);
-        void UnlockAchievement(int userId, int achievementId);
+        Task UnlockAchievement(int userId, int achievementId);
         void RemoveAchievement(int userId, int achievementId);
         AchievementUnlockedData GetUnlockedDataForAchievement(int userId, int achievementId);
         Task<bool> IsAchievementUnlocked(int userId, int achievementId);

@@ -97,29 +97,6 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public void RemoveAchievement(int userIdentifier, int achievementIdentifier)
-        {
-            try
-            {
-                DeleteAsync<object>($"Achievements/{userIdentifier}/{achievementIdentifier}").GetAwaiter().GetResult();
-            }
-            catch (Exception ex)
-            {
-                throw new   Exception("Error removing achievement", ex);
-            }
-        }
-
-        public List<Achievement> GetUnlockedAchievementsForUser(int userIdentifier)
-        {
-            try
-            {
-                return GetAsync<List<Achievement>>($"Achievements/{userIdentifier}/unlocked").GetAwaiter().GetResult();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error retrieving unlocked achievements for user", ex);
-            }
-        }
 
         public async Task<List<Achievement>> GetAllAchievements()
         {
@@ -138,23 +115,16 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public AchievementUnlockedData GetUnlockedDataForAchievement(int userIdentifier, int achievementIdentifier)
-        {
-            try
-            {
-                return GetAsync<AchievementUnlockedData>($"Achievements/{userIdentifier}/{achievementIdentifier}/data").GetAwaiter().GetResult();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error retrieving unlocked data for achievement", ex);
-            }
-        }
 
         public async Task<List<AchievementWithStatus>> GetAchievementsWithStatusForUser(int userIdentifier)
         {
             try
             {
-                return await GetAsync<List<AchievementWithStatus>>($"Achievements/{userIdentifier}/status");
+                var response = await _httpClient.GetAsync($"Achievements/{userIdentifier}/status");
+                response.EnsureSuccessStatusCode();
+                var result = await response.Content.ReadFromJsonAsync<List<AchievementWithStatus>>(_options);
+                return result;
+                //return await GetAsync<List<AchievementWithStatus>>($"Achievements/{userIdentifier}/status");
             }
             catch (Exception ex)
             {
@@ -166,16 +136,16 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                return GetAsync<int>($"Achievements/{userIdentifier}/{achievementIdentifier}/points").GetAwaiter().GetResult();
+                var response = await _httpClient.GetAsync($"Achievements/{userIdentifier}/{achievementIdentifier}/points");
+                response.EnsureSuccessStatusCode();
+                var result = await response.Content.ReadFromJsonAsync<int>(_options);
+                return result;
+                
             }
             catch (Exception ex)
             {
                 throw new Exception("Error retrieving points for unlocked achievement", ex);
             }
-        }
-        public class ApiResponse<T>
-        {
-            public T Result { get; set; }
         }
 
     }

@@ -12,10 +12,7 @@ namespace SteamHub.ApiContract.Services.Interfaces
         Task<GroupedAchievementsResult> GetGroupedAchievementsForUser(int userIdentifier);
         Task<List<Achievement>> GetAchievementsForUser(int userIdentifier);
         Task UnlockAchievementForUser(int userIdentifier);
-        void RemoveAchievement(int userIdentifier, int achievementIdentifier);
-        List<Achievement> GetUnlockedAchievementsForUser(int userIdentifier);
         Task<List<Achievement>> GetAllAchievements();
-        AchievementUnlockedData GetUnlockedDataForAchievement(int userIdentifier, int achievementIdentifier);
         Task<List<AchievementWithStatus>> GetAchievementsWithStatusForUser(int userIdentifier);
         Task<int> GetPointsForUnlockedAchievement(int userIdentifier, int achievementIdentifier);
     }
