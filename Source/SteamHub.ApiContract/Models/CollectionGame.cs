@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SteamHub.ApiContract.Models.Game;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

@@ -76,6 +76,11 @@ namespace SteamHub.ApiContract.Services
             }
         }
 
+        public List<SteamHub.ApiContract.Models.Collections.Collection> GetLastThreeCollectionsForUser(int userIdentifier)
+        {
+            return collectionsRepository.GetLastThreeCollectionsForUser(userIdentifier);
+        }
+
         public List<OwnedGame> GetGamesInCollection(int collectionId)
         {
             try
