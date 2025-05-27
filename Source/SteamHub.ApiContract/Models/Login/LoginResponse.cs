@@ -1,18 +1,25 @@
-﻿// <copyright file="LoginResponse.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
+﻿using SteamHub.ApiContract.Models.User;
 
-namespace SteamHub.ApiContract.Models.Login;
-
-public class LoginResponse
+namespace SteamHub.ApiContract.Models.Login
 {
-    public int UserId { get; set; }
+    /// <summary>
+    /// Represents the response payload for a successful login operation.
+    /// </summary>
+    public class LoginResponse
+    {
+        /// <summary>
+        /// Gets or sets the authenticated user's basic details.
+        /// </summary>
+        public User.User User { get; set; }
 
-    public string Username { get; set; }
+        /// <summary>
+        /// Gets or sets the JWT or bearer token for subsequent requests.
+        /// </summary>
+        public string Token { get; set; }
 
-    public string Email { get; set; }
-
-    public string UserRole { get; set; }
-    public float PointsBalance { get; set; }
-    public float WalletBalance { get; set; }
+        /// <summary>
+        /// Gets or sets additional session details including expiration.
+        /// </summary>
+        public UserWithSessionDetails UserWithSessionDetails { get; set; }
+    }
 }

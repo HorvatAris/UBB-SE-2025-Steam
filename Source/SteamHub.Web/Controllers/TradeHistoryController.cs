@@ -34,7 +34,7 @@ namespace SteamHub.Web.Controllers
 				Users = allUsers.Select(user => new SelectListItem
 				{
 					Value = user.UserId.ToString(),
-					Text = user.UserName
+					Text = user.Username
 				}).ToList(),
 				TradeHistory = history.Select(tradeHistory => tradeHistory.ToTradeHistoryViewModelDetails()).ToList()
 			};
@@ -54,7 +54,7 @@ namespace SteamHub.Web.Controllers
 			model.Users = allUsers.Select(user => new SelectListItem
 			{
 				Value = user.UserId.ToString(),
-				Text = user.UserName
+				Text = user.Username
 			}).ToList();
 
 			model.TradeHistory = history.Select(tradeHistory => tradeHistory.ToTradeHistoryViewModelDetails()).ToList();

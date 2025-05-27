@@ -46,7 +46,7 @@ namespace SteamHub.ApiContract.Services
                     new User
                     {
                         UserId = user.UserId,
-                        UserName = user.UserName,
+                        Username = user.UserName,
                         Email = user.Email,
                         WalletBalance = user.WalletBalance,
                         PointsBalance = user.PointsBalance,

@@ -8,6 +8,10 @@ namespace SteamHub.Api.Context
     using System.Reflection.Emit;
     using SteamHub.ApiContract.Models.Game;
     using Game = SteamHub.Api.Entities.Game;
+    using OwnedGame = SteamHub.Api.Entities.OwnedGame;
+    using CollectionGame = SteamHub.Api.Entities.CollectionGame;
+    using Collection = SteamHub.Api.Entities.Collection;
+    using User = SteamHub.Api.Entities.User;
 
 
     public class DataContext : DbContext
@@ -38,6 +42,42 @@ namespace SteamHub.Api.Context
         public DbSet<UserInventory> UserInventories { get; set; }
         public DbSet<ItemTradeDetail> ItemTradeDetails { get; set; }
 
+
+        // Added From other team
+        public DbSet<SessionDetails> UserSessions { get; set; }
+        
+        public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
+
+        public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<Achievement> Achievements { get; set; }
+        public DbSet<ChatConversation> ChatConversations { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
+
+        public DbSet<UserAchievement> UserAchievements { get; set; }
+        public DbSet<Collection> Collections { get; set; }
+        public DbSet<Friendship> Friendships { get; set; }
+        public DbSet<OwnedGame> OwnedGames { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Post> NewsPosts { get; set; }
+        public DbSet<Comment> NewsComments { get; set; }
+        public DbSet<PostRatingType> NewsPostRatingTypes { get; set; }
+        public DbSet<FriendRequest> FriendRequests { get; set; }
+        public DbSet<FriendEntity> FriendsTable { get; set; } // Delete this once the relationship functionalities are sorted out
+        public DbSet<ForumPost> ForumPosts { get; set; }
+        public DbSet<ForumComment> ForumComments { get; set; }
+        internal DbSet<UserLikedPost> UserLikedPosts { get; set; }
+        internal DbSet<UserDislikedPost> UserDislikedPosts { get; set; }
+        internal DbSet<UserLikedComment> UserLikedComments { get; set; }
+        internal DbSet<UserDislikedComment> UserDislikedComments { get; set; }
+        public DbSet<Feature> Features { get; set; }
+        public DbSet<FeatureUser> FeatureUsers { get; set; }
+
+        public DbSet<CollectionGame> CollectionGames { get; set; }
+
+        public DbSet<SoldGame> SoldGames { get; set; }
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -48,7 +88,7 @@ namespace SteamHub.Api.Context
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Role>()
+           builder.Entity<Role>()
                 .Property(role => role.Id).ValueGeneratedNever();
 
             builder.Entity<Role>().HasData(Enum.GetValues(typeof(RoleEnum))
@@ -80,6 +120,18 @@ namespace SteamHub.Api.Context
                 new Tag { TagId = 17, TagName = "Battle Royale" },
             };
 
+            var passwords = new List<string>
+            {
+                "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", // secret
+                "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG", // matto
+                "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq", // cena22
+                "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6", // aliceJ
+                "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a", // secret
+                "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y", // secret
+                "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu", // secret
+                "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC"  // secret
+            };
+
             var usersSeed = new List<User>
             {
                 new User
@@ -87,77 +139,120 @@ namespace SteamHub.Api.Context
                     UserId = 1,
                     Email = "gabe.newell@valvestudio.com",
                     PointsBalance = 6000,
-                    UserName = "GabeN",
+                    Username = "GabeN",
                     RoleId = RoleEnum.Developer,
-                    WalletBalance = 500
+                    WalletBalance = 500,
+                    Password = passwords[0],
+                    CreatedAt = new DateTime(2024, 1, 1),
+                    IsDeveloper = true,
+                    LastLogin = new DateTime(2024, 1, 1),
+                    ProfilePicture = ""
                 },
                 new User
                 {
                     UserId = 2,
                     Email = "mathias.new@cdprojektred.com",
                     PointsBalance = 5000,
-                    UserName = "MattN",
+                    Username = "MattN",
                     RoleId = RoleEnum.Developer,
-                    WalletBalance = 420
+                    WalletBalance = 420,
+                    Password = passwords[1],
+                    CreatedAt = new DateTime(2024, 1, 1),
+                    IsDeveloper = true,
+                    LastLogin = new DateTime(2024, 1, 1),
+                    ProfilePicture = ""
                 },
                 new User
                 {
                     UserId = 3,
                     Email = "john.chen@thatgamecompany.com",
                     PointsBalance = 5000,
-                    UserName = "JohnC",
+                    Username = "JohnC",
                     RoleId = RoleEnum.Developer,
-                    WalletBalance = 390
+                    WalletBalance = 390,
+                    Password = passwords[2],
+                    CreatedAt = new DateTime(2024, 1, 1),
+                    IsDeveloper = true,
+                    LastLogin = new DateTime(2024, 1, 1),
+                    ProfilePicture = ""
                 },
                 new User
                 {
                     UserId = 4,
                     Email = "alice.johnson@example.com",
                     PointsBalance = 6000,
-                    UserName = "AliceJ",
+                    Username = "AliceJ",
                     RoleId = RoleEnum.User,
-                    WalletBalance = 780
+                    WalletBalance = 780,
+                    Password = passwords[3],
+                    CreatedAt = new DateTime(2024, 1, 1),
+                    IsDeveloper = false,
+                    LastLogin = new DateTime(2024, 1, 1),
+                    ProfilePicture = ""
                 },
                 new User
                 {
                     UserId = 5,
                     Email = "liam.garcia@example.com",
                     PointsBalance = 7000,
-                    UserName = "LiamG",
+                    Username = "LiamG",
                     RoleId = RoleEnum.User,
-                    WalletBalance = 5500
+                    WalletBalance = 5500,
+                    Password = passwords[4],
+                    CreatedAt = new DateTime(2024, 1, 1),
+                    IsDeveloper = false,
+                    LastLogin = new DateTime(2024, 1, 1),
+                    ProfilePicture = ""
                 },
                 new User
                 {
                     UserId = 6,
                     Email = "sophie.williams@example.com",
                     PointsBalance = 6000,
-                    UserName = "SophieW",
+                    Username = "SophieW",
                     RoleId = RoleEnum.User,
-                    WalletBalance = 950
+                    WalletBalance = 950,
+                    Password = passwords[5],
+                    CreatedAt = new DateTime(2024, 1, 1),
+                    IsDeveloper = false,
+                    LastLogin = new DateTime(2024, 1, 1),
+                    ProfilePicture = ""
                 },
                 new User
                 {
                     UserId = 7,
                     Email = "noah.smith@example.com",
                     PointsBalance = 4000,
-                    UserName = "NoahS",
+                    Username = "NoahS",
                     RoleId = RoleEnum.User,
-                    WalletBalance = 3300
+                    WalletBalance = 3300,
+                    Password = passwords[6],
+                    CreatedAt = new DateTime(2024, 1, 1),
+                    IsDeveloper = false,
+                    LastLogin = new DateTime(2024, 1, 1),
+                    ProfilePicture = ""
                 },
                 new User
                 {
                     UserId = 8,
                     Email = "emily.brown@example.com",
                     PointsBalance = 5000,
-                    UserName = "EmilyB",
+                    Username = "EmilyB",
                     RoleId = RoleEnum.User,
-                    WalletBalance = 1100
+                    WalletBalance = 1100,
+                    Password = passwords[7],
+                    CreatedAt = new DateTime(2024, 1, 1),
+                    IsDeveloper = false,
+                    LastLogin = new DateTime(2024, 1, 1),
+                    ProfilePicture = ""
                 }
             };
 
             builder.Entity<Tag>().HasData(tagSeed);
             builder.Entity<User>().HasData(usersSeed);
+
+
+
 
             builder.Entity<GameStatus>()
                 .Property(gameStatus => gameStatus.Id).ValueGeneratedNever();
@@ -878,49 +973,49 @@ namespace SteamHub.Api.Context
                 {
                     UserId = 4,
                     PointShopItemId = 1,
-                    PurchaseDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    PurchaseDate = new DateTime(2024, 1, 1),
                     IsActive = false
                 },
                 new UserPointShopItemInventory
                 {
                     UserId = 4,
                     PointShopItemId = 2,
-                    PurchaseDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    PurchaseDate = new DateTime(2024, 1, 1),
                     IsActive = true
                 },
                 new UserPointShopItemInventory
                 {
                     UserId = 4,
                     PointShopItemId = 5,
-                    PurchaseDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    PurchaseDate = new DateTime(2024, 1, 1),
                     IsActive = false
                 },
                 new UserPointShopItemInventory
                 {
                     UserId = 5,
                     PointShopItemId = 2,
-                    PurchaseDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    PurchaseDate = new DateTime(2024, 1, 1),
                     IsActive = true
                 },
                 new UserPointShopItemInventory
                 {
                     UserId = 5,
                     PointShopItemId = 6,
-                    PurchaseDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    PurchaseDate = new DateTime(2024, 1, 1),
                     IsActive = false
                 },
                 new UserPointShopItemInventory
                 {
                     UserId = 6,
                     PointShopItemId = 3,
-                    PurchaseDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    PurchaseDate = new DateTime(2024, 1, 1),
                     IsActive = false
                 },
                 new UserPointShopItemInventory
                 {
                     UserId = 7,
                     PointShopItemId = 4,
-                    PurchaseDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    PurchaseDate = new DateTime(2024, 1, 1),
                     IsActive = true
                 }
             };
@@ -1044,7 +1139,7 @@ namespace SteamHub.Api.Context
                     StoreTransactionId = 1,
                     UserId = 4,
                     GameId = 5,
-                    Date = new DateTime(2025, 4, 27, 14, 30, 0),
+                    Date = new DateTime(2024, 1, 1),
                     Amount = (float)14.99,
                     WithMoney = true
                 },
@@ -1053,7 +1148,7 @@ namespace SteamHub.Api.Context
                     StoreTransactionId = 2,
                     UserId = 7,
                     GameId = 20,
-                    Date = new DateTime(2025, 4, 27, 14, 30, 0),
+                    Date = new DateTime(2024, 1, 1),
                     Amount = (float)34.99,
                     WithMoney = false
                 },
@@ -1062,7 +1157,7 @@ namespace SteamHub.Api.Context
                     StoreTransactionId = 3,
                     UserId = 4,
                     GameId = 15,
-                    Date = new DateTime(2025, 4, 27, 14, 30, 0),
+                    Date = new DateTime(2024, 1, 1),
                     Amount = (float)29.99,
                     WithMoney = true
                 },
@@ -1097,7 +1192,7 @@ namespace SteamHub.Api.Context
                     DestinationUserId = 8,
                     GameOfTradeId = 6,
                     TradeDescription = "Trade 1: AliceJ offers Legend of Zelda to EmilyB",
-                    TradeDate = new DateTime(2025, 4, 28),
+                    TradeDate = new DateTime(2024, 1, 1),
                     TradeStatus = TradeStatus.Pending,
                     AcceptedBySourceUser = false,
                     AcceptedByDestinationUser = false
@@ -1109,7 +1204,7 @@ namespace SteamHub.Api.Context
                     DestinationUserId = 4,
                     GameOfTradeId = 19,
                     TradeDescription = "Trade 2: LiamG offers Cyberstrike 2077 to AliceJ",
-                    TradeDate = new DateTime(2025, 4, 28),
+                    TradeDate = new DateTime(2024, 1, 1),
                     TradeStatus = TradeStatus.Pending,
                     AcceptedBySourceUser = true,
                     AcceptedByDestinationUser = false
@@ -1121,7 +1216,7 @@ namespace SteamHub.Api.Context
                     DestinationUserId = 6,
                     GameOfTradeId = 20,
                     TradeDescription = "Trade 3: NoahS offers Shadow of Valhalla to SophieW",
-                    TradeDate = new DateTime(2025, 4, 28),
+                    TradeDate = new DateTime(2024, 1, 1),
                     TradeStatus = TradeStatus.Completed,
                     AcceptedBySourceUser = true,
                     AcceptedByDestinationUser = true
@@ -1137,7 +1232,7 @@ namespace SteamHub.Api.Context
                     UserId = 4,
                     ItemId = 5,
                     GameId = 5,
-                    AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    AcquiredDate = new DateTime(2024, 1, 1),
                     IsActive = false,
                 },
                 new UserInventory
@@ -1145,7 +1240,7 @@ namespace SteamHub.Api.Context
                     UserId = 4,
                     ItemId = 7,
                     GameId = 6,
-                    AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    AcquiredDate = new DateTime(2024, 1, 1),
                     IsActive = false,
                 },
                 new UserInventory
@@ -1153,7 +1248,7 @@ namespace SteamHub.Api.Context
                     UserId = 4,
                     ItemId = 9,
                     GameId = 15,
-                    AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    AcquiredDate = new DateTime(2024, 1, 1),
                     IsActive = false,
                 },
                 new UserInventory
@@ -1161,7 +1256,7 @@ namespace SteamHub.Api.Context
                     UserId = 4,
                     ItemId = 10,
                     GameId = 15,
-                    AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    AcquiredDate = new DateTime(2024, 1, 1),
                     IsActive = false,
                 },
                 new UserInventory
@@ -1169,7 +1264,7 @@ namespace SteamHub.Api.Context
                     UserId = 5,
                     ItemId = 6,
                     GameId = 5,
-                    AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    AcquiredDate = new DateTime(2024, 1, 1),
                     IsActive = false,
                 },
                 new UserInventory
@@ -1177,7 +1272,7 @@ namespace SteamHub.Api.Context
                     UserId = 5,
                     ItemId = 8,
                     GameId = 6,
-                    AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    AcquiredDate = new DateTime(2024, 1, 1),
                     IsActive = false,
                 },
                 new UserInventory
@@ -1185,7 +1280,7 @@ namespace SteamHub.Api.Context
                     UserId = 5,
                     ItemId = 12,
                     GameId = 19,
-                    AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    AcquiredDate = new DateTime(2024, 1, 1),
                     IsActive = false,
                 },
                 new UserInventory
@@ -1193,7 +1288,7 @@ namespace SteamHub.Api.Context
                     UserId = 6,
                     ItemId = 13,
                     GameId = 20,
-                    AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0),
+                    AcquiredDate = new DateTime(2024, 1, 1),
                     IsActive = false,
                 },
             };
@@ -1230,6 +1325,795 @@ namespace SteamHub.Api.Context
             };
 
             builder.Entity<ItemTradeDetail>().HasData(itemTradeDetailsSeed);
+
+            // -- SessionDetails mapping (UserSessions) -------------------------------------
+            builder.Entity<SessionDetails>(entity =>
+            {
+                entity.HasKey(s => s.SessionId);
+                entity.Property(s => s.SessionId);
+                entity.Property(s => s.UserId)
+                    .IsRequired();
+                entity.Property(s => s.CreatedAt)
+                    .HasDefaultValueSql("GETDATE()");
+                entity.Property(s => s.ExpiresAt)
+                    .IsRequired();
+
+                entity.HasOne(s => s.User)
+                    .WithMany()
+                    .HasForeignKey(s => s.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Configure entities here
+
+            // -- ReviewsUser mapping ---------------------------------------------------
+            
+
+            // -- SoldGame mapping --------------------------------------------------------
+            builder.Entity<SoldGame>(entity =>
+            {
+                entity.HasKey(sg => sg.SoldGameId);
+                entity.Property(sg => sg.SoldGameId)
+                      .ValueGeneratedOnAdd();
+                entity.Property(sg => sg.UserId)
+                      .IsRequired();
+                entity.Property(sg => sg.GameId);
+                entity.Property(sg => sg.SoldDate);
+
+                entity.HasOne(e => e.User)
+                        .WithMany(u => u.SoldGames)
+                        .HasForeignKey(e => e.UserId)
+                        .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // -- CollectionGame mapping ------------------------------------------------
+            builder.Entity<CollectionGame>(entity =>
+            {
+                entity.HasKey(cg => new { cg.CollectionId, cg.GameId });
+                entity.Property(cg => cg.CollectionId);
+                entity.Property(cg => cg.GameId);
+
+                entity.HasOne(cg => cg.Collection)
+                      .WithMany(c => c.CollectionGames)
+                      .HasForeignKey(cg => cg.CollectionId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(cg => cg.OwnedGame)
+                      .WithMany(og => og.CollectionGames)
+                      .HasForeignKey(cg => cg.GameId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // -- Feature mapping -------------------------------------------------------
+            builder.Entity<Feature>(entity =>
+            {
+                entity.HasKey(f => f.FeatureId);
+                entity.Property(f => f.FeatureId)
+                      .ValueGeneratedOnAdd();
+                entity.Property(f => f.Name)
+                      .IsRequired();
+                entity.Property(f => f.Value)
+                      .IsRequired();
+                entity.Property(f => f.Description);
+                entity.Property(f => f.Type)
+                      .IsRequired();
+                entity.Property(f => f.Source);
+                entity.Property(f => f.Equipped);
+
+                entity.HasMany(f => f.Users)
+                      .WithOne(fu => fu.Feature)
+                      .HasForeignKey(fu => fu.FeatureId);
+            });
+
+            // -- FeatureUser mapping ---------------------------------------------------
+            builder.Entity<FeatureUser>(entity =>
+            {
+                entity.HasKey(fu => new { fu.UserId, fu.FeatureId });
+                entity.Property(fu => fu.UserId);
+                entity.Property(fu => fu.FeatureId);
+                entity.Property(fu => fu.Equipped)
+                      .HasDefaultValue(false);
+
+                entity.HasOne(fu => fu.Feature)
+                    .WithMany(f => f.Users)
+                    .HasForeignKey(fu => fu.FeatureId);
+
+                entity.HasOne(fu => fu.User)
+                    .WithMany()
+                    .HasForeignKey(fu => fu.UserId);
+            });
+
+            // -- ForumPost mapping ----------------------------------------------------
+            builder.Entity<ForumPost>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.Title);
+                entity.Property(e => e.Body);
+                entity.Property(e => e.TimeStamp);
+                entity.Property(e => e.AuthorId);
+                entity.Property(e => e.Score);
+                entity.Property(e => e.GameId);
+
+                entity.HasOne(fp => fp.Author)
+                      .WithMany()
+                      .HasForeignKey(fp => fp.AuthorId);
+
+                entity.HasOne(fp => fp.Game)
+                      .WithMany()
+                      .HasForeignKey(fp => fp.GameId);
+
+                entity.HasMany(fp => fp.Comments)
+                      .WithOne(fc => fc.Post)
+                      .HasForeignKey(fc => fc.PostId);
+            });
+
+            // -- ForumComment mapping ---------------------------------------------------
+            builder.Entity<ForumComment>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.Body);
+                entity.Property(e => e.TimeStamp);
+                entity.Property(e => e.AuthorId);
+                entity.Property(e => e.Score);
+                entity.Property(e => e.PostId);
+
+                entity.HasOne(fc => fc.Author)
+                      .WithMany(u => u.ForumComments)
+                      .HasForeignKey(fc => fc.AuthorId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(fc => fc.Post)
+                      .WithMany(fp => fp.Comments)
+                      .HasForeignKey(fc => fc.PostId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // -- UserLikedPost mapping ------------------------------------------------------
+            builder.Entity<UserLikedPost>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.PostId });
+                entity.Property(e => e.UserId);
+                entity.Property(e => e.PostId);
+
+                entity.HasOne(ulp => ulp.User)
+                      .WithMany()
+                      .HasForeignKey(ulp => ulp.UserId);
+
+                entity.HasOne(ulp => ulp.Post)
+                      .WithMany()
+                      .HasForeignKey(ulp => ulp.PostId);
+            });
+
+            // -- UserDislikedPost mapping ---------------------------------------------------
+            builder.Entity<UserDislikedPost>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.PostId });
+                entity.Property(e => e.UserId);
+                entity.Property(e => e.PostId);
+
+                entity.HasOne(udp => udp.User)
+                      .WithMany()
+                      .HasForeignKey(udp => udp.UserId);
+
+                entity.HasOne(udp => udp.Post)
+                      .WithMany()
+                      .HasForeignKey(udp => udp.PostId);
+            });
+
+            // -- UserLikedComment mapping ----------------------------------------------------
+            builder.Entity<UserLikedComment>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.CommentId });
+                entity.Property(e => e.UserId);
+                entity.Property(e => e.CommentId);
+
+                entity.HasOne(ulc => ulc.User)
+                      .WithMany()
+                      .HasForeignKey(ulc => ulc.UserId);
+
+                entity.HasOne(ulc => ulc.Comment)
+                      .WithMany()
+                      .HasForeignKey(ulc => ulc.CommentId);
+            });
+
+            // -- UserDislikedComment mapping -----------------------------------------------------
+            builder.Entity<UserDislikedComment>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.CommentId });
+                entity.Property(e => e.UserId);
+                entity.Property(e => e.CommentId);
+
+                entity.HasOne(udc => udc.User)
+                      .WithMany()
+                      .HasForeignKey(udc => udc.UserId);
+
+                entity.HasOne(udc => udc.Comment)
+                      .WithMany()
+                      .HasForeignKey(udc => udc.CommentId);
+            });
+
+            // -- FriendEntity mapping -----------------------------------------------------
+            builder.Entity<FriendEntity>(entity =>
+            {
+                entity.HasKey(f => f.FriendshipId);
+                entity.Property(f => f.User1Id)
+                    .IsRequired();
+                entity.Property(f => f.User2Id)
+                    .IsRequired();
+                entity.Property(f => f.CreatedDate)
+                    .HasDefaultValueSql("GETDATE()");
+
+                entity.HasOne(f => f.User1)
+                      .WithMany()
+                      .HasForeignKey(f => f.User1Id)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(f => f.User2)
+                      .WithMany()
+                      .HasForeignKey(f => f.User2Id)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // -- FriendRequest mapping ---------------------------------------------------
+            builder.Entity<FriendRequest>(entity =>
+            {
+                entity.HasKey(fr => fr.RequestId);
+                entity.Property(fr => fr.RequestId)
+                      .ValueGeneratedOnAdd();
+
+                entity.Property(fr => fr.SenderUserId)
+                      .IsRequired();
+
+                entity.Property(fr => fr.ReceiverUserId)
+                      .IsRequired();
+
+                entity.Property(fr => fr.RequestDate)
+                      .HasDefaultValueSql("GETDATE()");
+
+                entity.Property(fr => fr.Status)
+                      .IsRequired();
+
+                entity.HasOne(fr => fr.Sender)
+                      .WithMany()
+                      .HasForeignKey(fr => fr.SenderUserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(fr => fr.Receiver)
+                      .WithMany()
+                      .HasForeignKey(fr => fr.ReceiverUserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(fr => new { fr.SenderUserId, fr.ReceiverUserId })
+                      .IsUnique();
+            });
+
+            // -- NewsPost mapping -------------------------------------------------------
+            builder.Entity<Post>(entity =>
+            {
+                entity.HasKey(n => n.Id);
+                entity.Property(n => n.Id).ValueGeneratedOnAdd();
+                entity.Property(n => n.AuthorId);
+                entity.Property(n => n.Content);
+                entity.Property(n => n.UploadDate);
+                entity.Property(n => n.NrLikes);
+                entity.Property(n => n.NrDislikes);
+                entity.Property(n => n.NrComments);
+
+                entity.Ignore(n => n.ActiveUserRating);
+            });
+
+            // -- NewsComment mapping ----------------------------------------------------
+            builder.Entity<Comment>(entity =>
+            {
+                entity.HasKey(c => c.CommentId);
+                entity.Property(c => c.CommentId).ValueGeneratedOnAdd();
+                entity.Property(c => c.AuthorId);
+                entity.Property(c => c.PostId);
+                entity.Property(c => c.Content);
+                entity.Property(c => c.CommentDate);
+
+                entity.Ignore(c => c.NrLikes);
+                entity.Ignore(c => c.NrDislikes);
+            });
+
+            // -- NewsRating mapping -----------------------------------------------------
+            builder.Entity<PostRatingType>(entity =>
+            {
+                entity.HasKey(r => new { r.PostId, r.AuthorId });
+                entity.Property(r => r.PostId);
+                entity.Property(r => r.AuthorId);
+                entity.Property(r => r.RatingType);
+
+                entity.HasOne(r => r.Post)
+                    .WithMany()
+                    .HasForeignKey(r => r.PostId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(r => r.Author)
+                    .WithMany()
+                    .HasForeignKey(r => r.AuthorId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            // -- PasswordResetCode mapping -----------------------------------------------
+            builder.Entity<PasswordResetCode>(entity =>
+            {
+                entity.HasKey(p => p.Id);
+                entity.Property(p => p.Id)
+                      .ValueGeneratedOnAdd();
+                entity.Property(p => p.UserId)
+                      .IsRequired();
+                entity.Property(p => p.ResetCode);
+                entity.Property(p => p.ExpirationTime);
+                entity.Property(p => p.Used);
+                entity.Property(p => p.Email);
+            });
+
+            // -- Review mapping ------------------------------------------------------------
+            builder.Entity<Review>(entity =>
+            {
+                entity.HasKey(r => r.ReviewIdentifier);
+                entity.Property(r => r.ReviewIdentifier)
+                    .ValueGeneratedOnAdd();
+                entity.Property(r => r.ReviewTitleText)
+                    .IsRequired();
+                entity.Property(r => r.ReviewContentText)
+                    .IsRequired();
+                entity.Property(r => r.IsRecommended)
+                    .HasColumnType("bit");
+                entity.Property(r => r.NumericRatingGivenByUser)
+                    .HasColumnType("decimal(3,1)");
+                entity.Property(r => r.TotalHelpfulVotesReceived);
+                entity.Property(r => r.TotalFunnyVotesReceived);
+                entity.Property(r => r.TotalHoursPlayedByReviewer);
+                entity.Property(r => r.DateAndTimeWhenReviewWasCreated);
+                entity.Property(r => r.UserIdentifier)
+                    .IsRequired();
+                entity.Property(r => r.GameIdentifier)
+                    .IsRequired();
+
+                entity.HasOne(r => r.User)
+                    .WithMany(u => u.Reviews)
+                    .HasForeignKey(r => r.UserIdentifier)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(r => r.Game)
+                    .WithMany()
+                    .HasForeignKey(r => r.GameIdentifier)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.Ignore(r => r.Username);
+                entity.Ignore(r => r.TitleOfGame);
+                entity.Ignore(r => r.ProfilePictureBlob);
+                entity.Ignore(r => r.HasVotedHelpful);
+                entity.Ignore(r => r.HasVotedFunny);
+            });
+
+            // -- OwnedGame mapping ---------------------------------------------------------
+            builder.Entity<OwnedGame>(entity =>
+            {
+                entity.HasKey(og => og.GameId);
+                entity.Property(og => og.GameId)
+                    .ValueGeneratedOnAdd();
+                entity.Property(og => og.UserId)
+                    .IsRequired();
+                entity.HasIndex(og => og.UserId);
+                entity.Property(og => og.GameTitle)
+                    .IsRequired();
+                entity.Property(og => og.Description);
+                entity.Property(og => og.CoverPicture);
+
+                entity.HasMany(og => og.CollectionGames)
+                      .WithOne(cg => cg.OwnedGame)
+                      .HasForeignKey(cg => cg.GameId);
+            });
+
+            // -- SessionDetails mapping -----------------------------------------------------
+            builder.Entity<SessionDetails>(entity =>
+            {
+                entity.HasKey(s => s.SessionId);
+                entity.Property(s => s.SessionId);
+                entity.Property(s => s.UserId)
+                    .IsRequired();
+                entity.Property(s => s.CreatedAt)
+                    .HasDefaultValueSql("GETDATE()");
+                entity.Property(s => s.ExpiresAt)
+                    .IsRequired();
+            });
+
+            // -- Friendship mapping --------------------------------------------------------
+            builder.Entity<Friendship>(entity =>
+            {
+                entity.HasKey(f => f.FriendshipId);
+                entity.Property(f => f.FriendshipId)
+                    .ValueGeneratedOnAdd();
+                entity.Property(f => f.UserId)
+                    .IsRequired();
+                entity.Property(f => f.FriendId)
+                    .IsRequired();
+                entity.HasIndex(f => f.UserId);
+                entity.HasIndex(f => f.FriendId);
+                entity.HasIndex(f => new { f.UserId, f.FriendId })
+                    .IsUnique();
+
+                entity.HasOne(f => f.User)
+                    .WithMany(u => u.Friendships)
+                    .HasForeignKey(f => f.UserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(f => f.Friend)
+                    .WithMany(u => u.FriendOf)
+                    .HasForeignKey(f => f.FriendId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.Ignore(f => f.FriendUsername);
+                entity.Ignore(f => f.FriendProfilePicture);
+            });
+
+            // -- Achievement mapping --------------------------------------------------------
+            builder.Entity<Achievement>(entity =>
+            {
+                entity.HasKey(a => a.AchievementId);
+                entity.Property(a => a.AchievementId)
+                    .ValueGeneratedOnAdd();
+                entity.Property(a => a.AchievementName)
+                    .IsRequired();
+                entity.Property(a => a.Description);
+                entity.Property(a => a.AchievementType)
+                    .IsRequired();
+                entity.Property(a => a.Points)
+                    .IsRequired();
+                entity.Property(a => a.Icon);
+            });
+
+            // -- UserAchievement mapping ----------------------------------------------------
+            builder.Entity<UserAchievement>(entity =>
+            {
+                entity.HasKey(ua => new { ua.UserId, ua.AchievementId });
+                entity.Property(ua => ua.UserId)
+                      .IsRequired();
+                entity.Property(ua => ua.AchievementId)
+                      .IsRequired();
+                entity.Property(ua => ua.UnlockedAt)
+                      .HasDefaultValueSql("GETDATE()");
+
+                entity.HasOne(ua => ua.User)
+                      .WithMany(u => u.UserAchievements)
+                      .HasForeignKey(ua => ua.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(ua => ua.Achievement)
+                      .WithMany(a => a.UserAchievements)
+                      .HasForeignKey(ua => ua.AchievementId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // -- Collection mapping --------------------------------------------------------
+            builder.Entity<Collection>(entity =>
+            {
+                entity.HasKey(c => c.CollectionId);
+                entity.Property(c => c.CollectionId)
+                    .ValueGeneratedOnAdd();
+                entity.Property(c => c.UserId)
+                    .IsRequired();
+                entity.HasIndex(c => c.UserId);
+                entity.Property(c => c.CollectionName)
+                    .IsRequired();
+                entity.Property(c => c.CoverPicture);
+                entity.Property(c => c.IsPublic)
+                    .HasDefaultValue(true);
+                entity.Property(c => c.CreatedAt)
+                    .HasColumnType("date")
+                    .HasDefaultValueSql("CAST(GETDATE() AS DATE)");
+
+                entity.HasMany(c => c.CollectionGames)
+                      .WithOne(cg => cg.Collection)
+                      .HasForeignKey(cg => cg.CollectionId);
+            });
+
+            // -- UserProfile mapping --------------------------------------------------------
+            builder.Entity<UserProfile>(entity =>
+            {
+                entity.HasKey(up => up.ProfileId);
+                entity.Property(up => up.ProfileId)
+                    .ValueGeneratedOnAdd();
+                entity.Property(up => up.UserId)
+                    .IsRequired();
+                entity.Property(up => up.Bio);
+                entity.Property(up => up.LastModified)
+                    .HasDefaultValueSql("GETDATE()");
+
+                entity.HasOne(up => up.User)
+                    .WithOne()
+                    .HasForeignKey<UserProfile>(up => up.UserId);
+
+                entity.Ignore(up => up.Email);
+                entity.Ignore(up => up.Username);
+                entity.Ignore(up => up.ProfilePicture);
+            });
+
+            // -- Wallet mapping --------------------------------------------------------
+            builder.Entity<Wallet>(entity =>
+            {
+                entity.HasKey(w => w.WalletId);
+                entity.Property(w => w.WalletId)
+                    .ValueGeneratedOnAdd();
+                entity.Property(w => w.UserId)
+                    .IsRequired();
+                entity.HasIndex(w => w.UserId)
+                    .IsUnique();
+                entity.Property(w => w.Points)
+                    .HasDefaultValue(0);
+                entity.Property(w => w.Balance)
+                    .HasColumnType("decimal(10,2)")
+                    .HasDefaultValue(0m);
+            });
+
+            // -- Users mapping --------------------------------------------------------------
+            builder.Entity<User>(entity =>
+            {
+                entity.HasKey(u => u.UserId);
+                entity.Property(u => u.UserId)
+                    .ValueGeneratedOnAdd();
+                entity.Property(u => u.Username)
+                    .IsRequired();
+                entity.Property(u => u.Email)
+                    .IsRequired();
+                entity.Property(u => u.Password)
+                    .IsRequired();
+                entity.Property(u => u.IsDeveloper)
+                    .HasDefaultValue(false);
+                entity.Property(u => u.CreatedAt)
+                    .HasDefaultValueSql("GETDATE()");
+                entity.Property(u => u.LastLogin);
+
+                entity.HasMany(u => u.Reviews)
+                    .WithOne(r => r.User)
+                    .HasForeignKey(r => r.UserIdentifier)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.NewsPosts)
+                    .WithOne(p => p.Author)
+                    .HasForeignKey(p => p.AuthorId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.NewsComments)
+                    .WithOne(c => c.Author)
+                    .HasForeignKey(c => c.AuthorId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.PostRatings)
+                    .WithOne(r => r.Author)
+                    .HasForeignKey(r => r.AuthorId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.SentFriendRequests)
+                    .WithOne(fr => fr.Sender)
+                    .HasForeignKey(fr => fr.SenderUserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.ReceivedFriendRequests)
+                    .WithOne(fr => fr.Receiver)
+                    .HasForeignKey(fr => fr.ReceiverUserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                // Chat-related relationships
+                entity.HasMany(u => u.ConversationsAsUser1)
+                    .WithOne(c => c.User1)
+                    .HasForeignKey(c => c.User1Id)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.ConversationsAsUser2)
+                    .WithOne(c => c.User2)
+                    .HasForeignKey(c => c.User2Id)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.SentMessages)
+                    .WithOne(m => m.Sender)
+                    .HasForeignKey(m => m.SenderId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                // Forum-related relationships
+                entity.HasMany(u => u.ForumComments)
+                    .WithOne(fc => fc.Author)
+                    .HasForeignKey(fc => fc.AuthorId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.LikedComments)
+                    .WithOne(lc => lc.User)
+                    .HasForeignKey(lc => lc.UserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.DislikedComments)
+                    .WithOne(dc => dc.User)
+                    .HasForeignKey(dc => dc.UserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<ChatConversation>(entity =>
+            {
+                entity.HasKey(c => c.ConversationId);
+                entity.Property(c => c.ConversationId)
+                    .ValueGeneratedOnAdd();
+                entity.Property(c => c.User1Id)
+                    .IsRequired();
+                entity.Property(c => c.User2Id)
+                    .IsRequired();
+
+                entity.HasOne(c => c.User1)
+                      .WithMany()
+                      .HasForeignKey(c => c.User1Id)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(c => c.User2)
+                      .WithMany()
+                      .HasForeignKey(c => c.User2Id)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(c => c.Messages)
+                      .WithOne(m => m.Conversation)
+                      .HasForeignKey(m => m.ConversationId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            builder.Entity<ChatMessage>(entity =>
+            {
+                entity.HasKey(m => m.MessageId);
+                entity.Property(m => m.MessageId)
+                    .ValueGeneratedOnAdd();
+                entity.Property(m => m.ConversationId)
+                    .IsRequired();
+                entity.Property(m => m.SenderId)
+                    .IsRequired();
+                entity.Property(m => m.MessageContent)
+                    .IsRequired();
+                entity.Property(m => m.MessageFormat)
+                    .IsRequired();
+                entity.Property(m => m.Timestamp)
+                    .HasDefaultValueSql("GETDATE()");
+
+                entity.HasOne(m => m.Conversation)
+                      .WithMany(c => c.Messages)
+                      .HasForeignKey(m => m.ConversationId);
+
+                entity.HasOne(m => m.Sender)
+                      .WithMany()
+                      .HasForeignKey(m => m.SenderId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+
+
+            // UserProfiles seed data
+            var userProfilesSeed = new List<UserProfile>
+            {
+                new UserProfile
+                {
+                    ProfileId = 1,
+                    UserId = 1,
+                    Bio = "Gaming enthusiast and software developer",
+                    LastModified = new DateTime(2024, 1, 1)
+                },
+                new UserProfile
+                {
+                    ProfileId = 2,
+                    UserId = 2,
+                    Bio = "Game developer and tech lover",
+                    LastModified = new DateTime(2024, 1, 1)
+                },
+                new UserProfile
+                {
+                    ProfileId = 3,
+                    UserId = 3,
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
+                },
+                new UserProfile
+                {
+                    ProfileId = 4,
+                    UserId = 4,
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
+                },
+                new UserProfile
+                {
+                    ProfileId = 5,
+                    UserId = 5,
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
+                },
+                new UserProfile
+                {
+                    ProfileId = 6,
+                    UserId = 6,
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
+                },
+                new UserProfile
+                {
+                    ProfileId = 7,
+                    UserId = 7,
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
+                },
+                new UserProfile
+                {
+                    ProfileId = 8,
+                    UserId = 8,
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
+                }
+            };
+
+            builder.Entity<UserProfile>().HasData(userProfilesSeed);
+
+            // Wallets seed data
+            var walletsSeed = new List<Wallet>
+            {
+                new Wallet { WalletId = 1, UserId = 1, Points = 10, Balance = 200m },
+                new Wallet { WalletId = 2, UserId = 2, Points = 10, Balance = 200m },
+                new Wallet { WalletId = 3, UserId = 3, Points = 10, Balance = 200m },
+                new Wallet { WalletId = 4, UserId = 4, Points = 10, Balance = 200m },
+                new Wallet { WalletId = 5, UserId = 5, Points = 10, Balance = 200m },
+                new Wallet { WalletId = 6, UserId = 6, Points = 10, Balance = 200m },
+                new Wallet { WalletId = 7, UserId = 7, Points = 10, Balance = 200m },
+                new Wallet { WalletId = 8, UserId = 8, Points = 10, Balance = 200m }
+            };
+
+            builder.Entity<Wallet>().HasData(walletsSeed);
+
+            // Features seed data
+            var featuresSeed = new List<Feature>
+            {
+                new Feature { FeatureId = 1, Name = "Black Hat", Value = 2000, Description = "An elegant hat", Type = "hat", Source = "Assets/Features/Hats/black-hat.png", Equipped = false },
+                new Feature { FeatureId = 2, Name = "Pufu", Value = 10, Description = "Cute doggo", Type = "pet", Source = "Assets/Features/Pets/dog.png", Equipped = false },
+                new Feature { FeatureId = 3, Name = "Kitty", Value = 8, Description = "Cute cat", Type = "pet", Source = "Assets/Features/Pets/cat.png", Equipped = false },
+                new Feature { FeatureId = 4, Name = "Frame", Value = 5, Description = "Violet frame", Type = "frame", Source = "Assets/Features/Frames/frame1.png", Equipped = false },
+                new Feature { FeatureId = 5, Name = "Love Emoji", Value = 7, Description = "lalal", Type = "emoji", Source = "Assets/Features/Emojis/love.png", Equipped = false },
+                new Feature { FeatureId = 6, Name = "Violet Background", Value = 7, Description = "Violet Background", Type = "background", Source = "Assets/Features/Backgrounds/violet.jpg", Equipped = false }
+            };
+
+            builder.Entity<Feature>().HasData(featuresSeed);
+
+            // Collections seed data
+            var collectionsSeed = new List<Collection>
+            {
+                new Collection { CollectionId = 1, UserId = 1, CollectionName = "All Owned Games", CoverPicture = "/Assets/Collections/allgames.jpg", IsPublic = true, CreatedAt = DateOnly.Parse("2022-02-21") },
+                new Collection { CollectionId = 2, UserId = 1, CollectionName = "Sports", CoverPicture = "/Assets/Collections/sports.jpg", IsPublic = true, CreatedAt = DateOnly.Parse("2023-03-21") },
+                new Collection { CollectionId = 3, UserId = 1, CollectionName = "Chill Games", CoverPicture = "/Assets/Collections/chill.jpg", IsPublic = true, CreatedAt = DateOnly.Parse("2024-03-21") },
+                new Collection { CollectionId = 4, UserId = 1, CollectionName = "X-Mas", CoverPicture = "/Assets/Collections/xmas.jpg", IsPublic = false, CreatedAt = DateOnly.Parse("2025-02-21") },
+                new Collection { CollectionId = 5, UserId = 2, CollectionName = "Shooters", CoverPicture = "/Assets/Collections/shooters.jpg", IsPublic = true, CreatedAt = DateOnly.Parse("2025-03-21") },
+                new Collection { CollectionId = 6, UserId = 2, CollectionName = "Pets", CoverPicture = "/Assets/Collections/pets.jpg", IsPublic = false, CreatedAt = DateOnly.Parse("2025-01-21") }
+            };
+
+            builder.Entity<Collection>().HasData(collectionsSeed);
+
+            // OwnedGames seed data
+            var ownedGamesSeed = new List<OwnedGame>
+            {
+                new OwnedGame { GameId = 1, UserId = 1, GameTitle = "Call of Duty: MWIII", Description = "First-person military shooter", CoverPicture = "/Assets/Games/codmw3.png" },
+                new OwnedGame { GameId = 2, UserId = 1, GameTitle = "Overwatch2", Description = "Team-based hero shooter", CoverPicture = "/Assets/Games/overwatch2.png" },
+                new OwnedGame { GameId = 3, UserId = 1, GameTitle = "Counter-Strike2", Description = "Tactical shooter", CoverPicture = "/Assets/Games/cs2.png" },
+                new OwnedGame { GameId = 4, UserId = 2, GameTitle = "FIFA25", Description = "Football simulation", CoverPicture = "/Assets/Games/fifa25.png" },
+                new OwnedGame { GameId = 5, UserId = 2, GameTitle = "NBA2K25", Description = "Basketball simulation", CoverPicture = "/Assets/Games/nba2k25.png" },
+                new OwnedGame { GameId = 6, UserId = 2, GameTitle = "Tony Hawk Pro Skater", Description = "Skateboarding sports game", CoverPicture = "/Assets/Games/thps.png" }
+            };
+
+            builder.Entity<OwnedGame>().HasData(ownedGamesSeed);
+
+            // Achievements seed data
+            var achievementsSeed = new List<Achievement>
+            {
+                new Achievement { AchievementId = 1, AchievementName = "FRIENDSHIP1", Description = "You made a friend, you get a point", AchievementType = "Friendships", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new Achievement { AchievementId = 2, AchievementName = "FRIENDSHIP2", Description = "You made 5 friends, you get 3 points", AchievementType = "Friendships", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new Achievement { AchievementId = 3, AchievementName = "FRIENDSHIP3", Description = "You made 10 friends, you get 5 points", AchievementType = "Friendships", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new Achievement { AchievementId = 4, AchievementName = "FRIENDSHIP4", Description = "You made 50 friends, you get 10 points", AchievementType = "Friendships", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new Achievement { AchievementId = 5, AchievementName = "FRIENDSHIP5", Description = "You made 100 friends, you get 15 points", AchievementType = "Friendships", Points = 15, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" }
+            };
+
+            builder.Entity<Achievement>().HasData(achievementsSeed);
         }
     }
 }

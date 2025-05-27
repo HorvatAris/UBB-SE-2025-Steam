@@ -36,7 +36,6 @@
 
             cartService = new CartService(
                 userGamesRepositoryMock.Object,
-                userDetailsMock.Object,
                 gameRepositoryMock.Object);
         }
 

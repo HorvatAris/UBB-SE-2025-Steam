@@ -3,15 +3,14 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using BusinessLayer.Models;
-using BusinessLayer.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using BusinessLayer.Models.Login;
 using BusinessLayer.Models.Register;
+using BusinessLayer.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
-using BusinessLayer.Services;
 using BusinessLayer.Repositories.Interfaces;
+using LoginResponse = BusinessLayer.Services.Proxies.LoginResponse;
 
 namespace SteamWebApi.Controllers
 {

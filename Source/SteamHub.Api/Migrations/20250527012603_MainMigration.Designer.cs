@@ -12,7 +12,7 @@ using SteamHub.Api.Context;
 namespace SteamHub.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250525225355_MainMigration")]
+    [Migration("20250527012603_MainMigration")]
     partial class MainMigration
     {
         /// <inheritdoc />
@@ -235,6 +235,581 @@ namespace SteamHub.Api.Migrations
                             GamesGameId = 20,
                             TagsTagId = 16
                         });
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.Achievement", b =>
+                {
+                    b.Property<int>("AchievementId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AchievementId"));
+
+                    b.Property<string>("AchievementName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AchievementType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Points")
+                        .HasColumnType("int");
+
+                    b.HasKey("AchievementId");
+
+                    b.ToTable("Achievements");
+
+                    b.HasData(
+                        new
+                        {
+                            AchievementId = 1,
+                            AchievementName = "FRIENDSHIP1",
+                            AchievementType = "Friendships",
+                            Description = "You made a friend, you get a point",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                            Points = 1
+                        },
+                        new
+                        {
+                            AchievementId = 2,
+                            AchievementName = "FRIENDSHIP2",
+                            AchievementType = "Friendships",
+                            Description = "You made 5 friends, you get 3 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                            Points = 3
+                        },
+                        new
+                        {
+                            AchievementId = 3,
+                            AchievementName = "FRIENDSHIP3",
+                            AchievementType = "Friendships",
+                            Description = "You made 10 friends, you get 5 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                            Points = 5
+                        },
+                        new
+                        {
+                            AchievementId = 4,
+                            AchievementName = "FRIENDSHIP4",
+                            AchievementType = "Friendships",
+                            Description = "You made 50 friends, you get 10 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                            Points = 10
+                        },
+                        new
+                        {
+                            AchievementId = 5,
+                            AchievementName = "FRIENDSHIP5",
+                            AchievementType = "Friendships",
+                            Description = "You made 100 friends, you get 15 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                            Points = 15
+                        });
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.ChatConversation", b =>
+                {
+                    b.Property<int>("ConversationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ConversationId"));
+
+                    b.Property<int>("User1Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("User2Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId1")
+                        .HasColumnType("int");
+
+                    b.HasKey("ConversationId");
+
+                    b.HasIndex("User1Id");
+
+                    b.HasIndex("User2Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("ChatConversations");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.ChatMessage", b =>
+                {
+                    b.Property<int>("MessageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageId"));
+
+                    b.Property<int>("ConversationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MessageContent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MessageFormat")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MessageId");
+
+                    b.HasIndex("ConversationId");
+
+                    b.HasIndex("SenderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ChatMessages");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.Collection", b =>
+                {
+                    b.Property<int>("CollectionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CollectionId"));
+
+                    b.Property<string>("CollectionName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CoverPicture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("date")
+                        .HasDefaultValueSql("CAST(GETDATE() AS DATE)");
+
+                    b.Property<bool>("IsPublic")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CollectionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Collections");
+
+                    b.HasData(
+                        new
+                        {
+                            CollectionId = 1,
+                            CollectionName = "All Owned Games",
+                            CoverPicture = "/Assets/Collections/allgames.jpg",
+                            CreatedAt = new DateOnly(2022, 2, 21),
+                            IsPublic = true,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            CollectionId = 2,
+                            CollectionName = "Sports",
+                            CoverPicture = "/Assets/Collections/sports.jpg",
+                            CreatedAt = new DateOnly(2023, 3, 21),
+                            IsPublic = true,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            CollectionId = 3,
+                            CollectionName = "Chill Games",
+                            CoverPicture = "/Assets/Collections/chill.jpg",
+                            CreatedAt = new DateOnly(2024, 3, 21),
+                            IsPublic = true,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            CollectionId = 4,
+                            CollectionName = "X-Mas",
+                            CoverPicture = "/Assets/Collections/xmas.jpg",
+                            CreatedAt = new DateOnly(2025, 2, 21),
+                            IsPublic = false,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            CollectionId = 5,
+                            CollectionName = "Shooters",
+                            CoverPicture = "/Assets/Collections/shooters.jpg",
+                            CreatedAt = new DateOnly(2025, 3, 21),
+                            IsPublic = true,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            CollectionId = 6,
+                            CollectionName = "Pets",
+                            CoverPicture = "/Assets/Collections/pets.jpg",
+                            CreatedAt = new DateOnly(2025, 1, 21),
+                            IsPublic = false,
+                            UserId = 2
+                        });
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.CollectionGame", b =>
+                {
+                    b.Property<int>("CollectionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CollectionId", "GameId");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("CollectionGames");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.Comment", b =>
+                {
+                    b.Property<int>("CommentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"));
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CommentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CommentId");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("NewsComments");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.Feature", b =>
+                {
+                    b.Property<int>("FeatureId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeatureId"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Equipped")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
+
+                    b.HasKey("FeatureId");
+
+                    b.ToTable("Features");
+
+                    b.HasData(
+                        new
+                        {
+                            FeatureId = 1,
+                            Description = "An elegant hat",
+                            Equipped = false,
+                            Name = "Black Hat",
+                            Source = "Assets/Features/Hats/black-hat.png",
+                            Type = "hat",
+                            Value = 2000
+                        },
+                        new
+                        {
+                            FeatureId = 2,
+                            Description = "Cute doggo",
+                            Equipped = false,
+                            Name = "Pufu",
+                            Source = "Assets/Features/Pets/dog.png",
+                            Type = "pet",
+                            Value = 10
+                        },
+                        new
+                        {
+                            FeatureId = 3,
+                            Description = "Cute cat",
+                            Equipped = false,
+                            Name = "Kitty",
+                            Source = "Assets/Features/Pets/cat.png",
+                            Type = "pet",
+                            Value = 8
+                        },
+                        new
+                        {
+                            FeatureId = 4,
+                            Description = "Violet frame",
+                            Equipped = false,
+                            Name = "Frame",
+                            Source = "Assets/Features/Frames/frame1.png",
+                            Type = "frame",
+                            Value = 5
+                        },
+                        new
+                        {
+                            FeatureId = 5,
+                            Description = "lalal",
+                            Equipped = false,
+                            Name = "Love Emoji",
+                            Source = "Assets/Features/Emojis/love.png",
+                            Type = "emoji",
+                            Value = 7
+                        },
+                        new
+                        {
+                            FeatureId = 6,
+                            Description = "Violet Background",
+                            Equipped = false,
+                            Name = "Violet Background",
+                            Source = "Assets/Features/Backgrounds/violet.jpg",
+                            Type = "background",
+                            Value = 7
+                        });
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.FeatureUser", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FeatureId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Equipped")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.HasKey("UserId", "FeatureId");
+
+                    b.HasIndex("FeatureId");
+
+                    b.ToTable("FeatureUsers");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.ForumComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("ForumComments");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.ForumPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("GameId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("ForumPosts");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.FriendEntity", b =>
+                {
+                    b.Property<int>("FriendshipId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FriendshipId"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("User1Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("User2Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("FriendshipId");
+
+                    b.HasIndex("User1Id");
+
+                    b.HasIndex("User2Id");
+
+                    b.ToTable("FriendsTable");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.FriendRequest", b =>
+                {
+                    b.Property<int>("RequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestId"));
+
+                    b.Property<string>("ProfilePhotoPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ReceiverUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RequestDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("SenderUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserProfileProfileId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RequestId");
+
+                    b.HasIndex("ReceiverUserId");
+
+                    b.HasIndex("UserProfileProfileId");
+
+                    b.HasIndex("SenderUserId", "ReceiverUserId")
+                        .IsUnique();
+
+                    b.ToTable("FriendRequests");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.Friendship", b =>
+                {
+                    b.Property<int>("FriendshipId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FriendshipId"));
+
+                    b.Property<int>("FriendId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserProfileProfileId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FriendshipId");
+
+                    b.HasIndex("FriendId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserProfileProfileId");
+
+                    b.HasIndex("UserId", "FriendId")
+                        .IsUnique();
+
+                    b.ToTable("Friendships");
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.Game", b =>
@@ -901,7 +1476,7 @@ namespace SteamHub.Api.Migrations
                             DestinationUserId = 8,
                             GameOfTradeId = 6,
                             SourceUserId = 4,
-                            TradeDate = new DateTime(2025, 4, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TradeDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TradeDescription = "Trade 1: AliceJ offers Legend of Zelda to EmilyB",
                             TradeStatus = 0
                         },
@@ -913,7 +1488,7 @@ namespace SteamHub.Api.Migrations
                             DestinationUserId = 4,
                             GameOfTradeId = 19,
                             SourceUserId = 5,
-                            TradeDate = new DateTime(2025, 4, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TradeDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TradeDescription = "Trade 2: LiamG offers Cyberstrike 2077 to AliceJ",
                             TradeStatus = 0
                         },
@@ -925,7 +1500,7 @@ namespace SteamHub.Api.Migrations
                             DestinationUserId = 6,
                             GameOfTradeId = 20,
                             SourceUserId = 7,
-                            TradeDate = new DateTime(2025, 4, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TradeDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TradeDescription = "Trade 3: NoahS offers Shadow of Valhalla to SophieW",
                             TradeStatus = 1
                         });
@@ -967,6 +1542,116 @@ namespace SteamHub.Api.Migrations
                             ItemId = 13,
                             IsSourceUserItem = false
                         });
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.OwnedGame", b =>
+                {
+                    b.Property<int>("GameId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GameId"));
+
+                    b.Property<string>("CoverPicture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GameTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GameId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OwnedGames");
+
+                    b.HasData(
+                        new
+                        {
+                            GameId = 1,
+                            CoverPicture = "/Assets/Games/codmw3.png",
+                            Description = "First-person military shooter",
+                            GameTitle = "Call of Duty: MWIII",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            GameId = 2,
+                            CoverPicture = "/Assets/Games/overwatch2.png",
+                            Description = "Team-based hero shooter",
+                            GameTitle = "Overwatch2",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            GameId = 3,
+                            CoverPicture = "/Assets/Games/cs2.png",
+                            Description = "Tactical shooter",
+                            GameTitle = "Counter-Strike2",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            GameId = 4,
+                            CoverPicture = "/Assets/Games/fifa25.png",
+                            Description = "Football simulation",
+                            GameTitle = "FIFA25",
+                            UserId = 2
+                        },
+                        new
+                        {
+                            GameId = 5,
+                            CoverPicture = "/Assets/Games/nba2k25.png",
+                            Description = "Basketball simulation",
+                            GameTitle = "NBA2K25",
+                            UserId = 2
+                        },
+                        new
+                        {
+                            GameId = 6,
+                            CoverPicture = "/Assets/Games/thps.png",
+                            Description = "Skateboarding sports game",
+                            GameTitle = "Tony Hawk Pro Skater",
+                            UserId = 2
+                        });
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.PasswordResetCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpirationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ResetCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Used")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PasswordResetCodes");
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.PointShopItem", b =>
@@ -1091,6 +1776,107 @@ namespace SteamHub.Api.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SteamHub.Api.Entities.Post", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NrComments")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NrDislikes")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NrLikes")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UploadDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("NewsPosts");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.PostRatingType", b =>
+                {
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("RatingType")
+                        .HasColumnType("bit");
+
+                    b.HasKey("PostId", "AuthorId");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("NewsPostRatingTypes");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.Review", b =>
+                {
+                    b.Property<int>("ReviewIdentifier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReviewIdentifier"));
+
+                    b.Property<DateTime>("DateAndTimeWhenReviewWasCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GameIdentifier")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsRecommended")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("NumericRatingGivenByUser")
+                        .HasColumnType("decimal(3,1)");
+
+                    b.Property<string>("ReviewContentText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReviewTitleText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalFunnyVotesReceived")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalHelpfulVotesReceived")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalHoursPlayedByReviewer")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserIdentifier")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReviewIdentifier");
+
+                    b.HasIndex("GameIdentifier");
+
+                    b.HasIndex("UserIdentifier");
+
+                    b.ToTable("Reviews");
+                });
+
             modelBuilder.Entity("SteamHub.Api.Entities.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -1115,6 +1901,56 @@ namespace SteamHub.Api.Migrations
                             Id = 1,
                             Name = "Developer"
                         });
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.SessionDetails", b =>
+                {
+                    b.Property<Guid>("SessionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SessionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserSessions");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.SoldGame", b =>
+                {
+                    b.Property<int>("SoldGameId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SoldGameId"));
+
+                    b.Property<int?>("GameId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("SoldDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SoldGameId");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SoldGames");
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.StoreTransaction", b =>
@@ -1153,7 +1989,7 @@ namespace SteamHub.Api.Migrations
                         {
                             StoreTransactionId = 1,
                             Amount = 14.99f,
-                            Date = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             GameId = 5,
                             UserId = 4,
                             WithMoney = true
@@ -1162,7 +1998,7 @@ namespace SteamHub.Api.Migrations
                         {
                             StoreTransactionId = 2,
                             Amount = 34.99f,
-                            Date = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             GameId = 20,
                             UserId = 7,
                             WithMoney = false
@@ -1171,7 +2007,7 @@ namespace SteamHub.Api.Migrations
                         {
                             StoreTransactionId = 3,
                             Amount = 29.99f,
-                            Date = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             GameId = 15,
                             UserId = 4,
                             WithMoney = true
@@ -1290,17 +2126,38 @@ namespace SteamHub.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
                     b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeveloper")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("LastLogin")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("PointsBalance")
                         .HasColumnType("real");
 
+                    b.Property<string>("ProfilePicture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -1317,75 +2174,165 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "gabe.newell@valvestudio.com",
+                            IsDeveloper = true,
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                             PointsBalance = 6000f,
+                            ProfilePicture = "",
                             RoleId = 1,
-                            UserName = "GabeN",
+                            Username = "GabeN",
                             WalletBalance = 500f
                         },
                         new
                         {
                             UserId = 2,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mathias.new@cdprojektred.com",
+                            IsDeveloper = true,
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Password = "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG",
                             PointsBalance = 5000f,
+                            ProfilePicture = "",
                             RoleId = 1,
-                            UserName = "MattN",
+                            Username = "MattN",
                             WalletBalance = 420f
                         },
                         new
                         {
                             UserId = 3,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "john.chen@thatgamecompany.com",
+                            IsDeveloper = true,
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Password = "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq",
                             PointsBalance = 5000f,
+                            ProfilePicture = "",
                             RoleId = 1,
-                            UserName = "JohnC",
+                            Username = "JohnC",
                             WalletBalance = 390f
                         },
                         new
                         {
                             UserId = 4,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "alice.johnson@example.com",
+                            IsDeveloper = false,
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Password = "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6",
                             PointsBalance = 6000f,
+                            ProfilePicture = "",
                             RoleId = 0,
-                            UserName = "AliceJ",
+                            Username = "AliceJ",
                             WalletBalance = 780f
                         },
                         new
                         {
                             UserId = 5,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "liam.garcia@example.com",
+                            IsDeveloper = false,
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Password = "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a",
                             PointsBalance = 7000f,
+                            ProfilePicture = "",
                             RoleId = 0,
-                            UserName = "LiamG",
+                            Username = "LiamG",
                             WalletBalance = 5500f
                         },
                         new
                         {
                             UserId = 6,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "sophie.williams@example.com",
+                            IsDeveloper = false,
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Password = "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y",
                             PointsBalance = 6000f,
+                            ProfilePicture = "",
                             RoleId = 0,
-                            UserName = "SophieW",
+                            Username = "SophieW",
                             WalletBalance = 950f
                         },
                         new
                         {
                             UserId = 7,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "noah.smith@example.com",
+                            IsDeveloper = false,
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Password = "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu",
                             PointsBalance = 4000f,
+                            ProfilePicture = "",
                             RoleId = 0,
-                            UserName = "NoahS",
+                            Username = "NoahS",
                             WalletBalance = 3300f
                         },
                         new
                         {
                             UserId = 8,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "emily.brown@example.com",
+                            IsDeveloper = false,
+                            LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Password = "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC",
                             PointsBalance = 5000f,
+                            ProfilePicture = "",
                             RoleId = 0,
-                            UserName = "EmilyB",
+                            Username = "EmilyB",
                             WalletBalance = 1100f
                         });
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.UserAchievement", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AchievementId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UnlockedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.HasKey("UserId", "AchievementId");
+
+                    b.HasIndex("AchievementId");
+
+                    b.ToTable("UserAchievements");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.UserDislikedComment", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "CommentId");
+
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("UserDislikedComments");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.UserDislikedPost", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "PostId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("UserDislikedPosts");
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.UserInventory", b =>
@@ -1419,7 +2366,7 @@ namespace SteamHub.Api.Migrations
                             UserId = 4,
                             ItemId = 5,
                             GameId = 5,
-                            AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified),
+                            AcquiredDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = false
                         },
                         new
@@ -1427,7 +2374,7 @@ namespace SteamHub.Api.Migrations
                             UserId = 4,
                             ItemId = 7,
                             GameId = 6,
-                            AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified),
+                            AcquiredDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = false
                         },
                         new
@@ -1435,7 +2382,7 @@ namespace SteamHub.Api.Migrations
                             UserId = 4,
                             ItemId = 9,
                             GameId = 15,
-                            AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified),
+                            AcquiredDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = false
                         },
                         new
@@ -1443,7 +2390,7 @@ namespace SteamHub.Api.Migrations
                             UserId = 4,
                             ItemId = 10,
                             GameId = 15,
-                            AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified),
+                            AcquiredDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = false
                         },
                         new
@@ -1451,7 +2398,7 @@ namespace SteamHub.Api.Migrations
                             UserId = 5,
                             ItemId = 6,
                             GameId = 5,
-                            AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified),
+                            AcquiredDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = false
                         },
                         new
@@ -1459,7 +2406,7 @@ namespace SteamHub.Api.Migrations
                             UserId = 5,
                             ItemId = 8,
                             GameId = 6,
-                            AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified),
+                            AcquiredDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = false
                         },
                         new
@@ -1467,7 +2414,7 @@ namespace SteamHub.Api.Migrations
                             UserId = 5,
                             ItemId = 12,
                             GameId = 19,
-                            AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified),
+                            AcquiredDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = false
                         },
                         new
@@ -1475,9 +2422,39 @@ namespace SteamHub.Api.Migrations
                             UserId = 6,
                             ItemId = 13,
                             GameId = 20,
-                            AcquiredDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified),
+                            AcquiredDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = false
                         });
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.UserLikedComment", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "CommentId");
+
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("UserLikedComments");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.UserLikedPost", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "PostId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("UserLikedPosts");
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.UserPointShopItemInventory", b =>
@@ -1506,49 +2483,134 @@ namespace SteamHub.Api.Migrations
                             UserId = 4,
                             PointShopItemId = 1,
                             IsActive = false,
-                            PurchaseDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified)
+                            PurchaseDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             UserId = 4,
                             PointShopItemId = 2,
                             IsActive = true,
-                            PurchaseDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified)
+                            PurchaseDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             UserId = 4,
                             PointShopItemId = 5,
                             IsActive = false,
-                            PurchaseDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified)
+                            PurchaseDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             UserId = 5,
                             PointShopItemId = 2,
                             IsActive = true,
-                            PurchaseDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified)
+                            PurchaseDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             UserId = 5,
                             PointShopItemId = 6,
                             IsActive = false,
-                            PurchaseDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified)
+                            PurchaseDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             UserId = 6,
                             PointShopItemId = 3,
                             IsActive = false,
-                            PurchaseDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified)
+                            PurchaseDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             UserId = 7,
                             PointShopItemId = 4,
                             IsActive = true,
-                            PurchaseDate = new DateTime(2025, 4, 27, 14, 30, 0, 0, DateTimeKind.Unspecified)
+                            PurchaseDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.UserProfile", b =>
+                {
+                    b.Property<int>("ProfileId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfileId"));
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastModified")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProfileId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserProfiles");
+
+                    b.HasData(
+                        new
+                        {
+                            ProfileId = 1,
+                            Bio = "Gaming enthusiast and software developer",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 1
+                        },
+                        new
+                        {
+                            ProfileId = 2,
+                            Bio = "Game developer and tech lover",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 2
+                        },
+                        new
+                        {
+                            ProfileId = 3,
+                            Bio = "Casual gamer and streamer",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 3
+                        },
+                        new
+                        {
+                            ProfileId = 4,
+                            Bio = "Casual gamer and streamer",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 4
+                        },
+                        new
+                        {
+                            ProfileId = 5,
+                            Bio = "Casual gamer and streamer",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 5
+                        },
+                        new
+                        {
+                            ProfileId = 6,
+                            Bio = "Casual gamer and streamer",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 6
+                        },
+                        new
+                        {
+                            ProfileId = 7,
+                            Bio = "Casual gamer and streamer",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 7
+                        },
+                        new
+                        {
+                            ProfileId = 8,
+                            Bio = "Casual gamer and streamer",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 8
                         });
                 });
 
@@ -1658,6 +2720,93 @@ namespace SteamHub.Api.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SteamHub.Api.Entities.Wallet", b =>
+                {
+                    b.Property<int>("WalletId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WalletId"));
+
+                    b.Property<decimal>("Balance")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(10,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<int>("Points")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("WalletId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Wallets");
+
+                    b.HasData(
+                        new
+                        {
+                            WalletId = 1,
+                            Balance = 200m,
+                            Points = 10,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            WalletId = 2,
+                            Balance = 200m,
+                            Points = 10,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            WalletId = 3,
+                            Balance = 200m,
+                            Points = 10,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            WalletId = 4,
+                            Balance = 200m,
+                            Points = 10,
+                            UserId = 4
+                        },
+                        new
+                        {
+                            WalletId = 5,
+                            Balance = 200m,
+                            Points = 10,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            WalletId = 6,
+                            Balance = 200m,
+                            Points = 10,
+                            UserId = 6
+                        },
+                        new
+                        {
+                            WalletId = 7,
+                            Balance = 200m,
+                            Points = 10,
+                            UserId = 7
+                        },
+                        new
+                        {
+                            WalletId = 8,
+                            Balance = 200m,
+                            Points = 10,
+                            UserId = 8
+                        });
+                });
+
             modelBuilder.Entity("GameTag", b =>
                 {
                     b.HasOne("SteamHub.Api.Entities.Game", null)
@@ -1671,6 +2820,225 @@ namespace SteamHub.Api.Migrations
                         .HasForeignKey("TagsTagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.ChatConversation", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "User1")
+                        .WithMany()
+                        .HasForeignKey("User1Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", "User2")
+                        .WithMany()
+                        .HasForeignKey("User2Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", null)
+                        .WithMany("ConversationsAsUser1")
+                        .HasForeignKey("UserId");
+
+                    b.HasOne("SteamHub.Api.Entities.User", null)
+                        .WithMany("ConversationsAsUser2")
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("User1");
+
+                    b.Navigation("User2");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.ChatMessage", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.ChatConversation", "Conversation")
+                        .WithMany("Messages")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", null)
+                        .WithMany("SentMessages")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Conversation");
+
+                    b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.Collection", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.CollectionGame", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.Collection", "Collection")
+                        .WithMany("CollectionGames")
+                        .HasForeignKey("CollectionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.OwnedGame", "OwnedGame")
+                        .WithMany("CollectionGames")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Collection");
+
+                    b.Navigation("OwnedGame");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.Comment", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "Author")
+                        .WithMany("NewsComments")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.Post", "Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.FeatureUser", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.Feature", "Feature")
+                        .WithMany("Users")
+                        .HasForeignKey("FeatureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Feature");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.ForumComment", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "Author")
+                        .WithMany("ForumComments")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.ForumPost", "Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.ForumPost", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.Game", "Game")
+                        .WithMany()
+                        .HasForeignKey("GameId");
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.FriendEntity", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "User1")
+                        .WithMany()
+                        .HasForeignKey("User1Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", "User2")
+                        .WithMany()
+                        .HasForeignKey("User2Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User1");
+
+                    b.Navigation("User2");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.FriendRequest", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "Receiver")
+                        .WithMany("ReceivedFriendRequests")
+                        .HasForeignKey("ReceiverUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", "Sender")
+                        .WithMany("SentFriendRequests")
+                        .HasForeignKey("SenderUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.UserProfile", null)
+                        .WithMany("FriendRequests")
+                        .HasForeignKey("UserProfileProfileId");
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.Friendship", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "Friend")
+                        .WithMany("FriendOf")
+                        .HasForeignKey("FriendId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithMany("Friendships")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.UserProfile", null)
+                        .WithMany("Friendships")
+                        .HasForeignKey("UserProfileProfileId");
+
+                    b.Navigation("Friend");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.Game", b =>
@@ -1749,6 +3117,105 @@ namespace SteamHub.Api.Migrations
                     b.Navigation("ItemTrade");
                 });
 
+            modelBuilder.Entity("SteamHub.Api.Entities.OwnedGame", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.PasswordResetCode", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.Post", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "Author")
+                        .WithMany("NewsPosts")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.PostRatingType", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "Author")
+                        .WithMany("PostRatings")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.Review", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.Game", "Game")
+                        .WithMany()
+                        .HasForeignKey("GameIdentifier")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithMany("Reviews")
+                        .HasForeignKey("UserIdentifier")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.SessionDetails", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.SoldGame", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.Game", "Game")
+                        .WithMany()
+                        .HasForeignKey("GameId");
+
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithMany("SoldGames")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SteamHub.Api.Entities.StoreTransaction", b =>
                 {
                     b.HasOne("SteamHub.Api.Entities.Game", "Game")
@@ -1779,6 +3246,63 @@ namespace SteamHub.Api.Migrations
                     b.Navigation("UserRole");
                 });
 
+            modelBuilder.Entity("SteamHub.Api.Entities.UserAchievement", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.Achievement", "Achievement")
+                        .WithMany("UserAchievements")
+                        .HasForeignKey("AchievementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithMany("UserAchievements")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Achievement");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.UserDislikedComment", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.Comment", "Comment")
+                        .WithMany()
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithMany("DislikedComments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.UserDislikedPost", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SteamHub.Api.Entities.UserInventory", b =>
                 {
                     b.HasOne("SteamHub.Api.Entities.Game", "Game")
@@ -1806,6 +3330,44 @@ namespace SteamHub.Api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SteamHub.Api.Entities.UserLikedComment", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.Comment", "Comment")
+                        .WithMany()
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithMany("LikedComments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.UserLikedPost", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SteamHub.Api.Entities.UserPointShopItemInventory", b =>
                 {
                     b.HasOne("SteamHub.Api.Entities.PointShopItem", "PointShopItem")
@@ -1821,6 +3383,17 @@ namespace SteamHub.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("PointShopItem");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.UserProfile", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithOne()
+                        .HasForeignKey("SteamHub.Api.Entities.UserProfile", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -1844,6 +3417,42 @@ namespace SteamHub.Api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SteamHub.Api.Entities.Wallet", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.Achievement", b =>
+                {
+                    b.Navigation("UserAchievements");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.ChatConversation", b =>
+                {
+                    b.Navigation("Messages");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.Collection", b =>
+                {
+                    b.Navigation("CollectionGames");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.Feature", b =>
+                {
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.ForumPost", b =>
+                {
+                    b.Navigation("Comments");
+                });
+
             modelBuilder.Entity("SteamHub.Api.Entities.Game", b =>
                 {
                     b.Navigation("Items");
@@ -1861,16 +3470,65 @@ namespace SteamHub.Api.Migrations
                     b.Navigation("ItemTradeDetails");
                 });
 
+            modelBuilder.Entity("SteamHub.Api.Entities.OwnedGame", b =>
+                {
+                    b.Navigation("CollectionGames");
+                });
+
             modelBuilder.Entity("SteamHub.Api.Entities.PointShopItem", b =>
                 {
                     b.Navigation("UserPointShopItemsInventory");
                 });
 
+            modelBuilder.Entity("SteamHub.Api.Entities.Post", b =>
+                {
+                    b.Navigation("Comments");
+                });
+
             modelBuilder.Entity("SteamHub.Api.Entities.User", b =>
                 {
+                    b.Navigation("ConversationsAsUser1");
+
+                    b.Navigation("ConversationsAsUser2");
+
+                    b.Navigation("DislikedComments");
+
+                    b.Navigation("ForumComments");
+
+                    b.Navigation("FriendOf");
+
+                    b.Navigation("Friendships");
+
+                    b.Navigation("LikedComments");
+
+                    b.Navigation("NewsComments");
+
+                    b.Navigation("NewsPosts");
+
+                    b.Navigation("PostRatings");
+
+                    b.Navigation("ReceivedFriendRequests");
+
+                    b.Navigation("Reviews");
+
+                    b.Navigation("SentFriendRequests");
+
+                    b.Navigation("SentMessages");
+
+                    b.Navigation("SoldGames");
+
                     b.Navigation("StoreTransactions");
 
+                    b.Navigation("UserAchievements");
+
                     b.Navigation("UserPointShopItemsInventory");
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.UserProfile", b =>
+                {
+                    b.Navigation("FriendRequests");
+
+                    b.Navigation("Friendships");
                 });
 #pragma warning restore 612, 618
         }

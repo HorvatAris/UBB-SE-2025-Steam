@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using BusinessLayer.Models;
+using BusinessLayer.Services;
+using BusinessLayer.Services.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.WinUI.UI.Controls.TextToolbarSymbols;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Imaging;
-using BusinessLayer.Services;
-using BusinessLayer.Models;
-using BusinessLayer.Services.Interfaces;
 
 namespace SteamProfile.ViewModels
 {
@@ -45,11 +48,12 @@ namespace SteamProfile.ViewModels
         public IRelayCommand EditCommand { get; }
         public IRelayCommand DeleteCommand { get; }
 
-        public CommentViewModel()
+        public CommentViewModel(IUserService userService)
         {
             service = (NewsService)App.GetService<INewsService>();
             EditCommand = new RelayCommand(ExecuteEdit);
             DeleteCommand = new RelayCommand(ExecuteDelete);
+            users = userService.GetAllUsers();
         }
 
         public void LoadComment(Comment comment)

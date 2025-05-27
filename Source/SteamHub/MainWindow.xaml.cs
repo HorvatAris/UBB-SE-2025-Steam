@@ -33,6 +33,8 @@ namespace SteamHub
         private MarketplaceServiceProxy marketplaceService;
         private TradeServiceProxy tradeService;
         private UserServiceProxy userService;
+        private SessionServiceProxy sessionService;
+        private PasswordResetServiceProxy passwordResetService;
 
         public MainWindow()
         {
@@ -48,7 +50,7 @@ namespace SteamHub
                     UserId = 3,
                     Email = "john.chen@thatgamecompany.com",
                     PointsBalance = 5000,
-                    UserName = "JohnC",
+                    Username = "JohnC",
                     UserRole = UserRole.Developer,
                     WalletBalance = 390,
                 },
@@ -58,7 +60,7 @@ namespace SteamHub
                     UserId = 4,
                     Email = "alice.johnson@example.com",
                     PointsBalance = 6000,
-                    UserName = "AliceJ",
+                    Username = "AliceJ",
                     UserRole = UserRole.User,
                     WalletBalance = 78,
                 },
@@ -68,7 +70,7 @@ namespace SteamHub
                     UserId = 5,
                     Email = "liam.garcia@example.com",
                     PointsBalance = 7000,
-                    UserName = "LiamG",
+                    Username = "LiamG",
                     UserRole = UserRole.User,
                     WalletBalance = 55,
                 },
@@ -78,7 +80,7 @@ namespace SteamHub
                     UserId = 7,
                     Email = "noah.smith@example.com",
                     PointsBalance = 4000,
-                    UserName = "NoahS",
+                    Username = "NoahS",
                     UserRole = UserRole.User,
                     WalletBalance = 33,
                 },
@@ -109,7 +111,11 @@ namespace SteamHub
 
             this.tradeService = new TradeServiceProxy(httpClientFactory, loggedInUser);
 
-            this.userService = new UserServiceProxy(httpClientFactory);
+            this.sessionService = new SessionServiceProxy();
+
+            this.userService = new UserServiceProxy(httpClientFactory, sessionService);
+            
+            this.passwordResetService = new PasswordResetServiceProxy();
 
             this.marketplaceService = new MarketplaceServiceProxy(httpClientFactory, loggedInUser);
 
@@ -130,7 +136,7 @@ namespace SteamHub
                 throw new Exception("ContentFrame is not initialized.");
             }
 
-            this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
+            this.ContentFrame.Content = new LoginPage(this.userService);
         }
 
         public void ResetToHomePage()
@@ -168,6 +174,15 @@ namespace SteamHub
                         break;
                     case "trading":
                         this.ContentFrame.Content = new TradingPage(this.tradeService, this.userService, this.gameService);
+                        break;
+                    case "LoginPage":
+                        this.ContentFrame.Content = new LoginPage(this.userService);
+                        break;
+                    case "RegisterPage":
+                        this.ContentFrame.Content = new LoginPage(this.userService);
+                        break;
+                    case "ForgotPasswordPage":
+                        this.ContentFrame.Content = new ForgotPasswordPage(this.passwordResetService);
                         break;
                 }
             }
