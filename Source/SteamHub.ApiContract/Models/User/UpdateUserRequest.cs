@@ -1,4 +1,6 @@
-﻿namespace SteamHub.ApiContract.Models.User;
+﻿using SteamHub.ApiContract.Models.Common;
+
+namespace SteamHub.ApiContract.Models.User;
 
 public class UpdateUserRequest
 {
@@ -10,5 +12,5 @@ public class UpdateUserRequest
 
     public float PointsBalance { get; set; }
 
-    public RoleEnum Role { get; set; }
+    public UserRole UserRole { get; set; }
 }

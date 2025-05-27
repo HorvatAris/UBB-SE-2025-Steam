@@ -222,7 +222,7 @@ namespace SteamHub.ApiContract.Services
                     Email = u.Email,
                     WalletBalance = u.WalletBalance,
                     PointsBalance = u.PointsBalance,
-                    UserRole = u.Role == RoleEnum.Developer ? UserRole.Developer : UserRole.User,
+                    UserRole = u.UserRole,
                     CreatedAt = u.CreatedAt,
                     LastLogin = u.LastLogin,
                     ProfilePicture = u.ProfilePicture,

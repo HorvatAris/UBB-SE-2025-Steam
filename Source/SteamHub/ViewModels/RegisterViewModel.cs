@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls;
 using SteamHub.ApiContract.Exceptions;
 using SteamHub.ApiContract.Models.User;
+using SteamHub.ApiContract.Models.Common;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ApiContract.Validators;
 using SteamHub.Pages;
