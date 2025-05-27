@@ -52,6 +52,7 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.2" />
     <PackageReference Include="Google.Apis" Version="1.69.0" />
     <PackageReference Include="Google.Protobuf" Version="3.30.2" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
@@ -64,7 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SteamHub.ApiContract\SteamHub.ApiContract.csproj" />
-    <ProjectReference Include="..\SteamProfile\SteamProfile.csproj" />
+    
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\CollectionGamesPage.xaml">
