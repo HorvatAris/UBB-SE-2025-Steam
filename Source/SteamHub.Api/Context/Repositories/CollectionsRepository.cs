@@ -2,21 +2,20 @@
 using System.Data;
 using System.Linq;
 using System.Collections.Generic;
-using BusinessLayer.Data;
 using BusinessLayer.Models;
 using Microsoft.Data.SqlClient;
 using BusinessLayer.Repositories.Interfaces;
-using BusinessLayer.Exceptions;
-using BusinessLayer.DataContext;
 using Microsoft.EntityFrameworkCore;
+using SteamHub.ApiContract.Repositories;
+using SteamHub.Api.Entities;
 
 namespace SteamHub.Api.Context.Repositories
 {
     public class CollectionsRepository : ICollectionsRepository
     {
-        private readonly ApplicationDbContext context;
+        private readonly DataContext context;
 
-        public CollectionsRepository(ApplicationDbContext newContext)
+        public CollectionsRepository(DataContext newContext)
         {
             this.context = newContext ?? throw new ArgumentNullException(nameof(newContext));
         }
@@ -77,7 +76,12 @@ namespace SteamHub.Api.Context.Repositories
 
         public void CreateCollection(int userIdentifier, string collectionName, string? coverPicture, bool isPublic, DateOnly createdAt)
         {
-            var collection = new Collection(userIdentifier, collectionName, createdAt, coverPicture, isPublic);
+            var collection = new Collection();
+            collection.UserId = userIdentifier; // Ensure the user ID is set correctly
+            collection.CollectionName = collectionName;
+            collection.CreatedAt = createdAt;
+            collection.CoverPicture = coverPicture;
+            collection.IsPublic = isPublic;
             context.Collections.Add(collection);
             context.SaveChanges();
         }
