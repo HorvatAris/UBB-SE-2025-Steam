@@ -20,11 +20,30 @@ namespace SteamHub.ApiContract.ServiceProxies
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
+        private string _authToken;
 
         public UserServiceProxy(IHttpClientFactory httpClientFactory)
             : base()
         {
             _httpClient = httpClientFactory.CreateClient("SteamHubApi");
+        }
+
+        private string GetAuthToken()
+        {
+            return _authToken;
+        }
+
+        private void SetAuthToken(string token)
+        {
+            _authToken = token;
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+            else
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = null;
+            }
         }
 
         /// <inheritdoc/>
@@ -197,79 +216,64 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public async Task<User?> LoginAsync(string emailOrUsername, string password)
-        {
-            try
-            {
-                Debug.WriteLine($"Attempting login for user: {emailOrUsername}");
-                var loginRequest = new { EmailOrUsername = emailOrUsername, Password = password };
-                
-                Debug.WriteLine("Sending login request...");
-                var response = await PostAsync<LoginResponse>("Authentication/Login", loginRequest);
-                Debug.WriteLine($"Response received: {response != null}");
-                
-                if (response == null)
-                {
-                    Debug.WriteLine("Login response is null");
-                    return null;
-                }
-
-                Debug.WriteLine($"Response details - Token: {!string.IsNullOrEmpty(response.Token)}, User: {response.User != null}, SessionDetails: {response.UserWithSessionDetails != null}");
-                
-                if (response.User != null)
-                {
-                    Debug.WriteLine($"Login successful for user: {response.User.Username}");
-                    Debug.WriteLine("Setting auth token...");
-                    SetAuthToken(response.Token);
-                    Debug.WriteLine("Setting current user...");
-                    SetCurrentUser(response.UserWithSessionDetails);
-                    Debug.WriteLine("Login process completed successfully");
-                    return response.User;
-                }
-
-                Debug.WriteLine("Login response User is null");
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Login failed with error: {ex.Message}");
-                Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
-                    Debug.WriteLine($"Inner exception stack trace: {ex.InnerException.StackTrace}");
-                }
-                return null;
-            }
-        }
-
-        /// <inheritdoc/>
-        public async Task LogoutAsync()
-        {
-            try
-            {
-                await _httpClient.PostAsync("/api/Session/Logout", null);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Logout failed: {ex.Message}");
-            }
-        }
-
-        /// <inheritdoc/>
         public User? GetCurrentUser()
         {
             try
             {
-                var response = _httpClient.GetAsync("/api/Session/CurrentUser").GetAwaiter().GetResult();
-                if (!response.IsSuccessStatusCode)
+                Debug.WriteLine("Attempting to get current user...");
+                
+                // Check if we have an auth token
+                var authToken = GetAuthToken();
+                if (string.IsNullOrEmpty(authToken))
+                {
+                    Debug.WriteLine("No auth token found");
                     return null;
+                }
 
-                return response.Content.ReadFromJsonAsync<User>(_jsonOptions).GetAwaiter().GetResult();
+                Debug.WriteLine($"Auth token found: {authToken.Substring(0, 20)}...");
+
+                // Create a new request message to avoid header accumulation
+                var request = new HttpRequestMessage(HttpMethod.Get, "api/Session/CurrentUser");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authToken);
+                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                Debug.WriteLine("Sending request to /api/Session/CurrentUser");
+                var response = _httpClient.SendAsync(request).GetAwaiter().GetResult();
+                Debug.WriteLine($"Response status code: {response.StatusCode}");
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    Debug.WriteLine($"Failed to get current user. Status: {response.StatusCode}, Error: {errorContent}");
+                    return null;
+                }
+
+                var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                Debug.WriteLine($"Response content: {content}");
+
+                var user = JsonSerializer.Deserialize<User>(content, _jsonOptions);
+                Debug.WriteLine($"Successfully retrieved user: {user?.Username ?? "null"}");
+                return user;
+            }
+            catch (HttpRequestException ex)
+            {
+                Debug.WriteLine($"HTTP Request failed: {ex.Message}");
+                Debug.WriteLine($"Inner exception: {ex.InnerException?.Message}");
+                return null;
+            }
+            catch (TaskCanceledException ex)
+            {
+                Debug.WriteLine($"Request timed out: {ex.Message}");
+                return null;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Failed to get current user: {ex.Message}");
+                Debug.WriteLine($"Exception in GetCurrentUser: {ex.Message}");
+                Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
                 return null;
             }
         }
@@ -344,6 +348,67 @@ namespace SteamHub.ApiContract.ServiceProxies
             catch
             {
                 return false;
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<User?> LoginAsync(string emailOrUsername, string password)
+        {
+            try
+            {
+                Debug.WriteLine($"Attempting login for user: {emailOrUsername}");
+                var loginRequest = new { EmailOrUsername = emailOrUsername, Password = password };
+                
+                Debug.WriteLine("Sending login request...");
+                var response = await PostAsync<LoginResponse>("Authentication/Login", loginRequest);
+                Debug.WriteLine($"Response received: {response != null}");
+                
+                if (response == null)
+                {
+                    Debug.WriteLine("Login response is null");
+                    return null;
+                }
+
+                Debug.WriteLine($"Response details - Token: {!string.IsNullOrEmpty(response.Token)}, User: {response.User != null}, SessionDetails: {response.UserWithSessionDetails != null}");
+                
+                if (response.User != null)
+                {
+                    Debug.WriteLine($"Login successful for user: {response.User.Username}");
+                    Debug.WriteLine("Setting auth token...");
+                    SetAuthToken(response.Token);
+                    Debug.WriteLine("Setting current user...");
+                    SetCurrentUser(response.UserWithSessionDetails);
+                    Debug.WriteLine("Login process completed successfully");
+                    return response.User;
+                }
+
+                Debug.WriteLine("Login response User is null");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Login failed with error: {ex.Message}");
+                Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                    Debug.WriteLine($"Inner exception stack trace: {ex.InnerException.StackTrace}");
+                }
+                return null;
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task LogoutAsync()
+        {
+            try
+            {
+                await _httpClient.PostAsync("/api/Session/Logout", null);
+                SetAuthToken(null); // Clear the auth token on logout
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Logout failed: {ex.Message}");
             }
         }
     }

@@ -1,10 +1,8 @@
-﻿using BusinessLayer.Services;
-using BusinessLayer.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.Web.ViewModels;
-using SteamProfileWeb.ViewModels;
 using System.Security.Claims;
-namespace SteamProfileWeb.Controllers
+namespace SteamHub.Web.Controllers
 {
     public class AchievementsController : Controller
     {
@@ -14,7 +12,7 @@ namespace SteamProfileWeb.Controllers
         {
             _achievementsService = achievementsService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -23,7 +21,7 @@ namespace SteamProfileWeb.Controllers
                 return RedirectToAction("Login", "Auth"); //  redirect to login
             }
 
-            var result = _achievementsService.GetGroupedAchievementsForUser(userId);
+            var result = await _achievementsService.GetGroupedAchievementsForUser(userId);
 
             var vm = new AchievementsViewModel
             {
