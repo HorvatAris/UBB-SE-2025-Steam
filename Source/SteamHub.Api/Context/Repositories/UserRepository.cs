@@ -275,7 +275,7 @@ namespace SteamHub.Api.Context.Repositories
         public async Task UpdateProfilePictureAsync(int userId, string localImagePath)
         {
             string imgurClientId = "bbf48913b385d7b";
-            var existing = dataContext.UserProfiles.SingleOrDefault(up => up.UserId == userId)
+            var existing = dataContext.Users.SingleOrDefault(up => up.UserId == userId)
                 ?? throw new Exception($"Profile with user ID {userId} not found.");
 
             string imageUrl = await UploadImageToImgurAsync(localImagePath, imgurClientId);

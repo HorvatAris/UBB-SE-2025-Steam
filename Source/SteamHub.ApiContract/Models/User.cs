@@ -21,8 +21,9 @@ namespace BusinessLayer.Models
         public bool IsDeveloper { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public ICollection<UserAchievement> UserAchievements { get; set; }
-        public ICollection<SoldGame> SoldGames { get; set; } = new List<SoldGame>();
+        // These were errors, they might need to be added back
+        // public ICollection<UserAchievement> UserAchievements { get; set; }
+        // public ICollection<SoldGame> SoldGames { get; set; } = new List<SoldGame>();
         public DateTime? LastLogin { get; set; }
         public string IpAddress;
         public string ProfilePicturePath;
