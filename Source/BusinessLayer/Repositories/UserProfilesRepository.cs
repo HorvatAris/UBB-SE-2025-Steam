@@ -23,17 +23,6 @@ namespace BusinessLayer.Repositories
             return context.UserProfiles.SingleOrDefault(up => up.UserId == userId);
         }
 
-        public UserProfile? UpdateProfile(UserProfile profile)
-        {
-            var existing = context.UserProfiles.Find(profile.ProfileId)
-                ?? throw new RepositoryException($"Profile with ID {profile.ProfileId} not found.");
-            existing.ProfilePicture = profile.ProfilePicture;
-            existing.Bio = profile.Bio;
-            existing.LastModified = DateTime.UtcNow;
-            context.SaveChanges();
-            return existing;
-        }
-
         public UserProfile? CreateProfile(int userId)
         {
             var profile = new UserProfile { UserId = userId };
