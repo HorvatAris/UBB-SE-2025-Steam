@@ -59,7 +59,6 @@
     <PackageReference Include="Refit" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BusinessLayer\BusinessLayer.csproj" />
     <ProjectReference Include="..\SteamHub.ApiContract\SteamHub.ApiContract.csproj" />
   </ItemGroup>
 
