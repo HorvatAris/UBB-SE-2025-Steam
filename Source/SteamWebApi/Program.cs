@@ -53,7 +53,7 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "SteamWebApi",
-        ValidAudience = builder.Configuration["Jwt:Audience"] ?? "SteamProfileWeb",
+        ValidAudience = builder.Configuration["Jwt:Audience"] ?? "SteamProfile",
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "YourTemporarySecretKeyHere32CharsMini")),
         ClockSkew = TimeSpan.Zero
@@ -61,6 +61,11 @@ builder.Services.AddAuthentication(options =>
 
     options.Events = new JwtBearerEvents
     {
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+            return Task.CompletedTask;
+        },
         OnTokenValidated = async context =>
         {
             var sessionId = context.Principal.FindFirst("sessionId")?.Value;
@@ -69,6 +74,11 @@ builder.Services.AddAuthentication(options =>
                 var sessionService = context.HttpContext.RequestServices.GetRequiredService<ISessionService>();
                 sessionService.RestoreSessionFromDatabase(sessionGuid);
             }
+        },
+        OnChallenge = context =>
+        {
+            Console.WriteLine($"Challenge issued: {context.Error}, {context.ErrorDescription}");
+            return Task.CompletedTask;
         }
     };
 });

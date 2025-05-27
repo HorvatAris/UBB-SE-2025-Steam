@@ -38,6 +38,7 @@ namespace SteamHub
         private UserServiceProxy userService;
         private SessionServiceProxy sessionService;
         private PasswordResetServiceProxy passwordResetService;
+        private AchievementsServiceProxy achievementsService;
         private readonly IHttpClientFactory _httpClientFactory;
 
         public MainWindow()
@@ -153,6 +154,7 @@ namespace SteamHub
             this.user = loggedInUser;
 
             // Initialize services that require the logged-in user
+            this.achievementsService = new AchievementsServiceProxy(_httpClientFactory);
             this.tradeService = new TradeServiceProxy(_httpClientFactory, loggedInUser);
             this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory, loggedInUser);
             this.pointShopService = new PointShopServiceProxy(_httpClientFactory, loggedInUser);
@@ -169,6 +171,7 @@ namespace SteamHub
             // Navigate to home page
             this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
         }
+
 
         public void ResetToHomePage()
         {
@@ -214,6 +217,9 @@ namespace SteamHub
                         break;
                     case "ForgotPasswordPage":
                         ShowLoginPage();
+                        break;
+                    case "AchievementsPage":
+                        this.ContentFrame.Content = new AchievementsPage(this.userService, this.achievementsService);
                         break;
                 }
             }

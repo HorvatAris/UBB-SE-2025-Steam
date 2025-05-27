@@ -15,6 +15,7 @@
 	<ItemGroup>
 		<PackageReference Include="Google.Apis" Version="1.69.0" />
 		<PackageReference Include="Google.Protobuf" Version="3.30.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
