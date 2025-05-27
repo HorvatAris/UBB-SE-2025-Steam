@@ -105,7 +105,7 @@ builder.Services.AddScoped<IAchievementsService, AchievementsService>();
 builder.Services.AddScoped<IOwnedGamesService, OwnedGamesService>();
 builder.Services.AddScoped<INewsService, NewsService>();
 builder.Services.AddScoped<IForumService, ForumService>();
-
+builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
 
 // Register core repositories
@@ -127,6 +127,7 @@ builder.Services.AddScoped<IUserProfilesRepository, UserProfilesRepository>();
 builder.Services.AddScoped<IForumRepository, ForumRepository>();
 builder.Services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
 builder.Services.AddScoped<IUserProfilesRepository, UserProfilesRepository>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
 
 // Add test connection validation
 builder.Services.AddHealthChecks()

@@ -137,5 +137,10 @@ namespace SteamProfile.Services
         {
             return new TestServiceProxy(apiBaseUrl);
         }
+
+        public static ChatServiceProxy CreateChatService()
+        {
+            return new ChatServiceProxy(apiBaseUrl);
+        }
     }
 }

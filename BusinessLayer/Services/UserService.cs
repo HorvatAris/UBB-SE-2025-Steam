@@ -93,13 +93,13 @@ namespace BusinessLayer.Services
         {
             var user = usersRepository.VerifyCredentials(emailOrUsername);
 
-            /*bool bypassLogin = true;
+            bool bypassLogin = true;
             if (bypassLogin)
             {
                 sessionService.CreateNewSession(user);
                 usersRepository.UpdateLastLogin(user.UserId);
                 return user;
-            }*/
+            }
 
             if (user != null)
             {

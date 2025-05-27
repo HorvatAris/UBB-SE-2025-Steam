@@ -172,6 +172,8 @@ namespace SteamProfile
             // Register view models
             var friendRequestViewModel = new FriendRequestViewModel(friendRequestService, currentUsername);
             Services[typeof(FriendRequestViewModel)] = friendRequestViewModel;
+
+            Services[typeof(IChatService)] = new ChatService(GetService<IChatRepository>());
         }
 
         // Configure proxy services for remote API usage
@@ -208,6 +210,8 @@ namespace SteamProfile
             var collectionsRepository = new CollectionsRepository(dataContext);
             Services[typeof(ICollectionsRepository)] = collectionsRepository;
 
+            Services[typeof(IChatRepository)] = new ChatRepository(dataContext);
+
             // Configure user service next as it's also a common dependency
             var userService = ServiceFactory.CreateUserService();
             Services[typeof(IUserService)] = userService;
@@ -225,7 +229,7 @@ namespace SteamProfile
             Services[typeof(IForumService)] = ServiceFactory.CreateForumService();
             Services[typeof(IPasswordResetService)] = ServiceFactory.CreatePasswordResetService();
             Services[typeof(IFriendService)] = ServiceFactory.CreateFriendService();
-            Services[typeof(IChatRepository)] = new ChatRepository(GetService<ApplicationDbContext>());
+            Services[typeof(IChatService)] = ServiceFactory.CreateChatService();
         }
 
         public static T GetService<T>()

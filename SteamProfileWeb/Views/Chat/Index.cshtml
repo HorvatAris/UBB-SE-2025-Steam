@@ -1,0 +1,94 @@
+﻿@model SteamProfileWeb.ViewModels.ChatViewModel
+
+@{
+    ViewData["Title"] = "Chat with " + Model.FriendName;
+    var myId = Model.MyId;
+    var friendId = Model.FriendId;
+    var friendName = Model.FriendName;
+}
+
+<h2>Chat with @friendName</h2>
+
+<!-- Chat Box -->
+<div id="chatBox" class="chat-box border rounded p-3 mb-3" style="height: 500px; overflow-y: auto; background-color: #f8f9fa;"></div>
+
+<!-- Message Input -->
+<div class="input-group">
+    <input type="text" id="messageInput" class="form-control" placeholder="Type your message..." />
+    <button id="sendButton" class="btn btn-primary">Send</button>
+</div>
+
+@section Scripts {
+        <script>
+            const myId = @myId;
+            const friendId = @friendId;
+
+            const chatBox = document.getElementById('chatBox');
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+
+            let previousMessagesJson = '';
+
+            async function loadMessages() {
+                try {
+                        const response = await fetch(`/Chat/FetchMessages/${friendId}`,{credentials: 'include'});
+                    const messages = await response.json();
+                    const newJson = JSON.stringify(messages);
+
+                    if (newJson !== previousMessagesJson) {
+                        previousMessagesJson = newJson;
+                        const scrollAtBottom = chatBox.scrollTop + chatBox.clientHeight >= chatBox.scrollHeight - 5;
+                        chatBox.innerHTML = '';
+
+                        messages.forEach(msg => {
+                            const isMine = msg.senderId === myId;
+                            const sentAt = new Date(msg.timestamp * 1000).toLocaleString();
+
+                            const messageDiv = document.createElement('div');
+                            messageDiv.className = `mb-2 d-flex ${isMine ? 'justify-content-end' : 'justify-content-start'}`;
+                            messageDiv.innerHTML = `
+                                <div class="p-2 rounded ${isMine ? 'bg-primary text-white' : 'bg-light border'}" style="max-width: 60%;">
+                                    <div>${msg.messageContent}</div>
+                                            <small ${isMine ? 'style="color: white;"' : 'class="text-muted"'}>${sentAt}</small>
+                                </div>
+                            `;
+                            chatBox.appendChild(messageDiv);
+                        });
+
+                        if (scrollAtBottom) {
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading messages:', error);
+                }
+            }
+
+            async function sendMessage() {
+                const text = messageInput.value.trim();
+                if (!text) return;
+
+                try {
+                    await fetch('/Chat/SendMessage', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ myId, friendId, data: text }),
+                        credentials: 'include' 
+                    });
+
+                    messageInput.value = '';
+                    await loadMessages();
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                }
+            }
+
+            sendButton.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter') sendMessage();
+            });
+
+            loadMessages();
+            setInterval(loadMessages, 1500);
+        </script>
+}
