@@ -1,9 +1,10 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using SteamHub.ApiContract.Models.User;
+using SteamHub.ApiContract.Exceptions;
 
 namespace SteamHub.ApiContract.ServiceProxies
 {
@@ -63,25 +64,43 @@ namespace SteamHub.ApiContract.ServiceProxies
         private void SetAuthTokenSafely(string token)
         {
             if (string.IsNullOrEmpty(token)) return;
-            if (StaticHttpClient.DefaultRequestHeaders.Contains("Authorization"))
+
+            try
             {
-                StaticHttpClient.DefaultRequestHeaders.Remove("Authorization");
+                if (StaticHttpClient.DefaultRequestHeaders.Contains("Authorization"))
+                {
+                    StaticHttpClient.DefaultRequestHeaders.Remove("Authorization");
+                }
+                StaticHttpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
             }
-            StaticHttpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error setting auth token: {ex.Message}");
+                // Don't throw - just log the error
+            }
         }
 
-        #region Synchronous HTTP Methods
+        #region Asynchronous HTTP Methods
 
         /// <summary>
-        /// Sends a GET request synchronously and deserializes the JSON response.
+        /// Sends a GET request asynchronously and deserializes the JSON response.
         /// </summary>
-        protected T GetSync<T>(string endpoint)
+        protected async Task<T> GetAsync<T>(string endpoint)
         {
             try
             {
-                var response = Task.Run(() => StaticHttpClient.GetAsync(BaseUrl + endpoint)).GetAwaiter().GetResult();
-                return HandleResponseSync<T>(response);
+                var response = await StaticHttpClient.GetAsync(BaseUrl + endpoint).ConfigureAwait(false);
+                return await HandleResponseAsync<T>(response).ConfigureAwait(false);
+            }
+            catch (HttpRequestException ex)
+            {
+                Debug.WriteLine($"GET Error for {endpoint}: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+                throw new ServiceException($"Network error: {ex.Message}", ex);
             }
             catch (Exception ex)
             {
@@ -91,76 +110,33 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <summary>
-        /// Sends a POST request with JSON content synchronously and deserializes the JSON response.
-        /// </summary>
-        protected T PostSync<T>(string endpoint, object data)
-        {
-            try
-            {
-                var content = new StringContent(
-                    JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
-                var response = Task.Run(() => StaticHttpClient.PostAsync(BaseUrl + endpoint, content)).GetAwaiter().GetResult();
-                return HandleResponseSync<T>(response);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Sends a POST request with JSON content synchronously without expecting a response body.
-        /// </summary>
-        protected void PostSync(string endpoint, object data)
-        {
-            var content = new StringContent(
-                JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
-            var response = Task.Run(() => StaticHttpClient.PostAsync(BaseUrl + endpoint, content)).GetAwaiter().GetResult();
-            EnsureSuccessStatusCodeSync(response);
-        }
-
-        /// <summary>
-        /// Sends a PUT request with JSON content synchronously and deserializes the JSON response.
-        /// </summary>
-        protected T PutSync<T>(string endpoint, object data)
-        {
-            var content = new StringContent(
-                JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
-            var response = Task.Run(() => StaticHttpClient.PutAsync(BaseUrl + endpoint, content)).GetAwaiter().GetResult();
-            return HandleResponseSync<T>(response);
-        }
-
-        /// <summary>
-        /// Sends a DELETE request synchronously and deserializes the JSON response.
-        /// </summary>
-        protected T DeleteSync<T>(string endpoint)
-        {
-            var response = Task.Run(() => StaticHttpClient.DeleteAsync(BaseUrl + endpoint)).GetAwaiter().GetResult();
-            return HandleResponseSync<T>(response);
-        }
-
-        #endregion
-
-        #region Asynchronous HTTP Methods
-
-        /// <summary>
-        /// Sends a GET request asynchronously and deserializes the JSON response.
-        /// </summary>
-        protected async Task<T> GetAsync<T>(string endpoint)
-        {
-            var response = await StaticHttpClient.GetAsync(BaseUrl + endpoint).ConfigureAwait(false);
-            return await HandleResponseAsync<T>(response).ConfigureAwait(false);
-        }
-
-        /// <summary>
         /// Sends a POST request with JSON content asynchronously and deserializes the JSON response.
         /// </summary>
         protected async Task<T> PostAsync<T>(string endpoint, object data)
         {
-            var content = new StringContent(
-                JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
-            var response = await StaticHttpClient.PostAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
-            return await HandleResponseAsync<T>(response).ConfigureAwait(false);
+            try
+            {
+                var json = JsonSerializer.Serialize(data, _jsonOptions);
+                Debug.WriteLine($"POST Request to {endpoint}: {json}");
+
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await StaticHttpClient.PostAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
+                return await HandleResponseAsync<T>(response).ConfigureAwait(false);
+            }
+            catch (HttpRequestException ex)
+            {
+                Debug.WriteLine($"POST Error for {endpoint}: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+                throw new ServiceException($"Network error: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"POST Error for {endpoint}: {ex.Message}");
+                throw;
+            }
         }
 
         /// <summary>
@@ -168,10 +144,29 @@ namespace SteamHub.ApiContract.ServiceProxies
         /// </summary>
         protected async Task PostAsync(string endpoint, object data)
         {
-            var content = new StringContent(
-                JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
-            var response = await StaticHttpClient.PostAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
-            await EnsureSuccessStatusCodeAsync(response).ConfigureAwait(false);
+            try
+            {
+                var json = JsonSerializer.Serialize(data, _jsonOptions);
+                Debug.WriteLine($"POST Request to {endpoint}: {json}");
+
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await StaticHttpClient.PostAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
+                await EnsureSuccessStatusCodeAsync(response).ConfigureAwait(false);
+            }
+            catch (HttpRequestException ex)
+            {
+                Debug.WriteLine($"POST Error for {endpoint}: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+                throw new ServiceException($"Network error: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"POST Error for {endpoint}: {ex.Message}");
+                throw;
+            }
         }
 
         /// <summary>
@@ -179,10 +174,55 @@ namespace SteamHub.ApiContract.ServiceProxies
         /// </summary>
         protected async Task<T> PutAsync<T>(string endpoint, object data)
         {
-            var content = new StringContent(
-                JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
-            var response = await StaticHttpClient.PutAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
-            return await HandleResponseAsync<T>(response).ConfigureAwait(false);
+            try
+            {
+                var content = new StringContent(
+                    JsonSerializer.Serialize(data, _jsonOptions), Encoding.UTF8, "application/json");
+                var response = await StaticHttpClient.PutAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
+                return await HandleResponseAsync<T>(response).ConfigureAwait(false);
+            }
+            catch (HttpRequestException ex)
+            {
+                Debug.WriteLine($"PUT Error for {endpoint}: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+                throw new ServiceException($"Network error: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"PUT Error for {endpoint}: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Sends a PUT request with JSON content asynchronously without expecting a response body.
+        /// </summary>
+        protected async Task PutAsync(string endpoint, object data)
+        {
+            try
+            {
+                var content = new StringContent(
+                    JsonSerializer.Serialize(data, _jsonOptions), Encoding.UTF8, "application/json");
+                var response = await StaticHttpClient.PutAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
+                await EnsureSuccessStatusCodeAsync(response).ConfigureAwait(false);
+            }
+            catch (HttpRequestException ex)
+            {
+                Debug.WriteLine($"PUT Error for {endpoint}: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+                throw new ServiceException($"Network error: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"PUT Error for {endpoint}: {ex.Message}");
+                throw;
+            }
         }
 
         /// <summary>
@@ -190,46 +230,56 @@ namespace SteamHub.ApiContract.ServiceProxies
         /// </summary>
         protected async Task<T> DeleteAsync<T>(string endpoint)
         {
-            var response = await StaticHttpClient.DeleteAsync(BaseUrl + endpoint).ConfigureAwait(false);
-            return await HandleResponseAsync<T>(response).ConfigureAwait(false);
+            try
+            {
+                var response = await StaticHttpClient.DeleteAsync(BaseUrl + endpoint).ConfigureAwait(false);
+                return await HandleResponseAsync<T>(response).ConfigureAwait(false);
+            }
+            catch (HttpRequestException ex)
+            {
+                Debug.WriteLine($"DELETE Error for {endpoint}: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+                throw new ServiceException($"Network error: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"DELETE Error for {endpoint}: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Sends a DELETE request asynchronously without expecting a response body.
+        /// </summary>
+        protected async Task DeleteAsync(string endpoint)
+        {
+            try
+            {
+                var response = await StaticHttpClient.DeleteAsync(BaseUrl + endpoint).ConfigureAwait(false);
+                await EnsureSuccessStatusCodeAsync(response).ConfigureAwait(false);
+            }
+            catch (HttpRequestException ex)
+            {
+                Debug.WriteLine($"DELETE Error for {endpoint}: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+                throw new ServiceException($"Network error: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"DELETE Error for {endpoint}: {ex.Message}");
+                throw;
+            }
         }
 
         #endregion
 
         #region Response Handling
-
-        /// <summary>
-        /// Ensures the response status code indicates success, throwing exceptions for error statuses (sync).
-        /// </summary>
-        private void EnsureSuccessStatusCodeSync(HttpResponseMessage response)
-        {
-            if (!response.IsSuccessStatusCode)
-            {
-                var content = Task.Run(() => response.Content.ReadAsStringAsync()).GetAwaiter().GetResult();
-                switch (response.StatusCode)
-                {
-                    case System.Net.HttpStatusCode.Unauthorized:
-                        throw new UnauthorizedAccessException("Authentication required");
-                    case System.Net.HttpStatusCode.Forbidden:
-                        throw new UnauthorizedAccessException("You don't have permission to access this resource");
-                    case System.Net.HttpStatusCode.NotFound:
-                        throw new Exception("Resource not found");
-                    default:
-                        throw new Exception($"API error: {response.StatusCode}. {content}");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Deserializes a JSON response synchronously after ensuring success.
-        /// </summary>
-        private T HandleResponseSync<T>(HttpResponseMessage response)
-        {
-            EnsureSuccessStatusCodeSync(response);
-            var json = Task.Run(() => response.Content.ReadAsStringAsync()).GetAwaiter().GetResult();
-            Debug.WriteLine($"Response JSON: {json}");
-            return JsonSerializer.Deserialize<T>(json, _jsonOptions);
-        }
 
         /// <summary>
         /// Ensures the response status code indicates success, throwing exceptions for error statuses (async).
@@ -239,6 +289,8 @@ namespace SteamHub.ApiContract.ServiceProxies
             if (!response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                Debug.WriteLine($"Error Response: {content}");
+
                 switch (response.StatusCode)
                 {
                     case System.Net.HttpStatusCode.Unauthorized:
@@ -246,9 +298,9 @@ namespace SteamHub.ApiContract.ServiceProxies
                     case System.Net.HttpStatusCode.Forbidden:
                         throw new UnauthorizedAccessException("You don't have permission to access this resource");
                     case System.Net.HttpStatusCode.NotFound:
-                        throw new Exception("Resource not found");
+                        throw new RepositoryException("Resource not found");
                     default:
-                        throw new Exception($"API error: {response.StatusCode}. {content}");
+                        throw new ServiceException($"API error: {response.StatusCode}. {content}");
                 }
             }
         }
