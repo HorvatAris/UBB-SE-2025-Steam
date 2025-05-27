@@ -16,14 +16,12 @@ namespace SteamWebApi.Controllers
     {
         private readonly IUserService userService;
         private readonly IWalletService walletService;
-        private readonly IUserProfilesRepository profilesRepo;
         private readonly ApplicationDbContext dbContext;
 
-        public UserController(IUserService userService, IWalletService walletService, IUserProfilesRepository profilesRepo, ApplicationDbContext dbContext)
+        public UserController(IUserService userService, IWalletService walletService, ApplicationDbContext dbContext)
         {
             this.userService = userService;
             this.walletService = walletService;
-            this.profilesRepo = profilesRepo;
             this.dbContext = dbContext;
         }
 

@@ -123,5 +123,15 @@
             var result = await response.Content.ReadFromJsonAsync<UserResponse>(_jsonOptions);
             return result;
         }
+
+        public void UpdateProfileBioAsync(int userId, string bio)
+        {
+            // No-op
+        }
+
+        public Task UpdateProfilePictureAsync(int userId, string localImagePath)
+        {
+            return null;
+        }
     }
 }

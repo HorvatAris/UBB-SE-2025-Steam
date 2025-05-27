@@ -16,7 +16,6 @@ namespace SteamProfile.ViewModels
     {
         private IWalletService WalletService { get; set; }
         private IUserService UserService { get; set; }
-        private IUserProfilesRepository UserProfilesRepository { get; set; }
         private readonly Frame frame;
 
         [ObservableProperty]
@@ -42,7 +41,6 @@ namespace SteamProfile.ViewModels
         {
             WalletService = App.WalletService;
             UserService = App.UserService;
-            UserProfilesRepository = App.UserProfileRepository;
             this.frame = frame;
         }
 

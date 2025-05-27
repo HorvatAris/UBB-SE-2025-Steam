@@ -22,7 +22,6 @@ namespace SteamWebApi.Controllers
         private readonly ISessionService sessionService;
         private readonly IConfiguration configuration;
         private readonly IWalletService walletService;
-        private readonly IUserProfilesRepository profilesRepo;
 
         /// <summary>
         /// Constructor for AuthController
@@ -30,13 +29,12 @@ namespace SteamWebApi.Controllers
         /// <param name="userService">Service to manage user operations</param>
         /// <param name="sessionService">Service to manage session operations</param>
         /// <param name="configuration">Application configuration settings</param>
-        public AuthController(IUserService userService, ISessionService sessionService, IConfiguration configuration, IWalletService walletService, IUserProfilesRepository userProfilesRepository)
+        public AuthController(IUserService userService, ISessionService sessionService, IConfiguration configuration, IWalletService walletService)
         {
             this.userService = userService;
             this.sessionService = sessionService;
             this.configuration = configuration;
             this.walletService = walletService;
-            this.profilesRepo = userProfilesRepository;
         }
 
         /// <summary>
