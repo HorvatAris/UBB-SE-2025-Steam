@@ -167,7 +167,7 @@ namespace SteamHub
             this.userGameService = new UserGameServiceProxy(_httpClientFactory, loggedInUser);
             this.developerService = new DeveloperServiceProxy(_httpClientFactory, loggedInUser);
             this.friendsService = new FriendServiceProxy();
-            this.featuresService = new FeaturesServiceProxy(this.userService);
+            this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
             this.walletService = new WalletServiceProxy(_httpClientFactory, loggedInUser);
 
             // Hide login overlay and show main content
