@@ -1,39 +1,62 @@
-﻿@model SteamProfileWeb.ViewModels.AchievementsViewModel
+﻿@model SteamHub.Web.ViewModels.AchievementsViewModel
 @using System.Security.Claims
 
-<div class="container mt-5 text-center">
-    <h1 class="mb-4">ACHIEVEMENTS</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-5 display-4">Your Achievements</h1>
 
     @if (User.Identity.IsAuthenticated)
     {
         @foreach (var sectionData in new[] {
-        new { Title = "FRIENDSHIPS", Items = Model.FriendshipsAchievements },
-        new { Title = "OWNED GAMES", Items = Model.OwnedGamesAchievements },
-        new { Title = "SOLD GAMES", Items = Model.SoldGamesAchievements },
-        new { Title = "NUMBER OF POSTS", Items = Model.NumberOfPostsAchievements },
-        new { Title = "NUMBER OF REVIEWS GIVEN", Items = Model.NumberOfReviewsGivenAchievements },
-        new { Title = "NUMBER OF REVIEWS RECEIVED", Items = Model.NumberOfReviewsReceivedAchievements },
-        new { Title = "YEARS OF ACTIVITY", Items = Model.YearsOfActivityAchievements },
-        new { Title = "DEVELOPER", Items = Model.DeveloperAchievements }
-        })
+    new { Title = "Friendships", Icon = "bi-people-fill", Items = Model.FriendshipsAchievements },
+    new { Title = "Owned Games", Icon = "bi-controller", Items = Model.OwnedGamesAchievements },
+    new { Title = "Sold Games", Icon = "bi-cash-stack", Items = Model.SoldGamesAchievements },
+    new { Title = "Number of Posts", Icon = "bi-chat-left-text-fill", Items = Model.NumberOfPostsAchievements },
+    new { Title = "Number of Reviews Given", Icon = "bi-pencil-square", Items = Model.NumberOfReviewsGivenAchievements },
+    new { Title = "Number of Reviews Received", Icon = "bi-chat-dots-fill", Items = Model.NumberOfReviewsReceivedAchievements },
+    new { Title = "Years of Activity", Icon = "bi-calendar-fill", Items = Model.YearsOfActivityAchievements },
+    new { Title = "Developer", Icon = "bi-code-slash", Items = Model.DeveloperAchievements }
+    })
         {
-            <h3 class="mt-4 mb-3">@sectionData.Title</h3>
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                @foreach (var a in sectionData.Items)
-                {
-                    <div style="width: 70px; height: 70px; border-radius: 35px; background-color: lightgray;"
-                         title="@a.Achievement.AchievementName - @a.Achievement.Description - @a.UnlockedDate">
-                        <img src="@a.Achievement.Icon" alt="icon"
-                             style="width:100%; height:100%; opacity:@a.Opacity;" />
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="card-title text-primary text-center mb-4">
+                        <i class="bi @sectionData.Icon me-2"></i>
+                        @sectionData.Title
+                    </h3>
+                    <div class="d-flex justify-content-center flex-wrap gap-3">
+                        @foreach (var a in sectionData.Items)
+                        {
+                            <div class="position-relative"
+                                 data-bs-toggle="tooltip"
+                                 data-bs-placement="top"
+                                 title="@($"{a.Achievement.AchievementName}&#10;{a.Achievement.Description}&#10;Unlocked: {a.UnlockedDate}")">
+                                <img src="@a.Achievement.Icon"
+                                     alt="icon"
+                                     class="img-thumbnail rounded-circle"
+                                     style="width: 70px; height: 70px; opacity: @a.Opacity;" />
+                            </div>
+                        }
                     </div>
-                }
+                </div>
             </div>
         }
     }
     else
     {
-        <div class="mt-5">
-            <p class="lead">You must be <a href="/Account/Login">logged in</a> to view your achievements.</p>
+        <div class="text-center mt-5">
+            <p class="lead">You must be <a href="/Account/Login" class="link-primary">logged in</a> to view your achievements.</p>
         </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+        // Activate Bootstrap tooltips
+        document.addEventListener("DOMContentLoaded", function () {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        });
+    </script>
+}

@@ -71,8 +71,10 @@ namespace BusinessLayer.Repositories
             context.SaveChanges();
         }
 
-        public bool IsAchievementsTableEmpty()
-            => !context.Achievements.Any();
+        public async Task<bool> IsAchievementsTableEmpty()
+        {
+            return !await context.Achievements.AnyAsync();
+        }
 
         public void UpdateAchievementIconUrl(int points, string iconUrl)
         {
@@ -84,7 +86,7 @@ namespace BusinessLayer.Repositories
             ach.Icon = iconUrl;
             context.SaveChanges();
         }
-        //in dat context => entities
+        //in data context => entities
         public SteamHub.ApiContract.Models.Achievement MapEnitytToModel(Achievement achievement)
         {
             return new SteamHub.ApiContract.Models.Achievement
@@ -97,25 +99,27 @@ namespace BusinessLayer.Repositories
                 Icon = achievement.Icon
             };
         }
-        public List<SteamHub.ApiContract.Models.Achievement> GetAllAchievements()
-            => context.Achievements
-                  .AsNoTracking()
-                  .OrderByDescending(a => a.Points)
-                  .Select(a => new SteamHub.ApiContract.Models.Achievement
-                  {
-                      AchievementId = a.AchievementId,
-                      AchievementName = a.AchievementName,
-                      Description = a.Description,
-                      AchievementType = a.AchievementType,
-                      Points = a.Points,
-                      Icon = a.Icon
-                  })
-                  .ToList();
+        public async Task<List<SteamHub.ApiContract.Models.Achievement>> GetAllAchievements()
+        {
+            return await context.Achievements
+                .AsNoTracking()
+                .OrderByDescending(achievement => achievement.Points)
+                .Select(achievement => new SteamHub.ApiContract.Models.Achievement
+                {
+                    AchievementId = achievement.AchievementId,
+                    AchievementName = achievement.AchievementName,
+                    Description = achievement.Description,
+                    AchievementType = achievement.AchievementType,
+                    Points = achievement.Points,
+                    Icon = achievement.Icon
+                })
+                .ToListAsync();
+        }
 
         public List<SteamHub.ApiContract.Models.Achievement> GetUnlockedAchievementsForUser(int userIdentifier)
             => context.UserAchievements
-                  .Where(ua => ua.UserId == userIdentifier)
-                  .Include(ua => ua.Achievement)
+                  .Where(currentUserAchievement => currentUserAchievement.UserId == userIdentifier)
+                  .Include(currentUserAchievement => currentUserAchievement.Achievement)
                   .Select(ua => new SteamHub.ApiContract.Models.Achievement
                   {
                       AchievementId = ua.Achievement.AchievementId,
@@ -129,7 +133,7 @@ namespace BusinessLayer.Repositories
 
         public void UnlockAchievement(int userIdentifier, int achievementId)
         {
-            if (context.UserAchievements.Any(ua => ua.UserId == userIdentifier && ua.AchievementId == achievementId))
+            if (context.UserAchievements.Any(currentUserAchievement => currentUserAchievement.UserId == userIdentifier && currentUserAchievement.AchievementId == achievementId))
             {
                 return;
             }
@@ -145,50 +149,53 @@ namespace BusinessLayer.Repositories
 
         public void RemoveAchievement(int userIdentifier, int achievementId)
         {
-            var ua = context.UserAchievements
+            var achievementForRemove = context.UserAchievements
                         .FirstOrDefault(x => x.UserId == userIdentifier && x.AchievementId == achievementId);
-            if (ua == null)
+            if (achievementForRemove == null)
             {
                 return;
             }
-            context.UserAchievements.Remove(ua);
+            context.UserAchievements.Remove(achievementForRemove);
             context.SaveChanges();
         }
 
         public AchievementUnlockedData GetUnlockedDataForAchievement(int userIdentifier, int achievementId)
         {
-            var ua = context.UserAchievements
+            var unlockedAchievement = context.UserAchievements
                         .Include(x => x.Achievement)
                         .FirstOrDefault(x => x.UserId == userIdentifier && x.AchievementId == achievementId);
-            if (ua == null)
+            if (unlockedAchievement == null)
             {
                 return null;
             }
             return new AchievementUnlockedData
             {
-                AchievementName = ua.Achievement.AchievementName,
-                AchievementDescription = ua.Achievement.Description,
-                UnlockDate = ua.UnlockedAt
+                AchievementName = unlockedAchievement.Achievement.AchievementName,
+                AchievementDescription = unlockedAchievement.Achievement.Description,
+                UnlockDate = unlockedAchievement.UnlockedAt
             };
         }
 
-        public bool IsAchievementUnlocked(int userIdentifier, int achievementId)
-            => context.UserAchievements.Any(ua => ua.UserId == userIdentifier && ua.AchievementId == achievementId);
+        public async Task<bool> IsAchievementUnlocked(int userIdentifier, int achievementId)
+        {
+            return await context.UserAchievements
+                .AnyAsync(currentAchievement => currentAchievement.UserId == userIdentifier && currentAchievement.AchievementId == achievementId);
+        }
 
         public async Task<List<AchievementWithStatus>> GetAchievementsWithStatusForUser(int userIdentifier)
         {
-            var all = GetAllAchievements();
+            var all = await GetAllAchievements();
             var unlockedIds = new HashSet<int>(
                 context.UserAchievements
-                   .Where(ua => ua.UserId == userIdentifier)
-                   .Select(ua => ua.AchievementId));
+                   .Where(currentUserAchievement => currentUserAchievement.UserId == userIdentifier)
+                   .Select(userAchievement => userAchievement.AchievementId));
 
-            return all.Select(a => new AchievementWithStatus
+            return all.Select(currentAchievement => new AchievementWithStatus
             {
-                Achievement = a,
-                IsUnlocked = unlockedIds.Contains(a.AchievementId),
-                UnlockedDate = unlockedIds.Contains(a.AchievementId)
-                    ? context.UserAchievements.First(ua => ua.UserId == userIdentifier && ua.AchievementId == a.AchievementId).UnlockedAt
+                Achievement = currentAchievement,
+                IsUnlocked = unlockedIds.Contains(currentAchievement.AchievementId),
+                UnlockedDate = unlockedIds.Contains(currentAchievement.AchievementId)
+                    ? context.UserAchievements.First(ua => ua.UserId == userIdentifier && ua.AchievementId == currentAchievement.AchievementId).UnlockedAt
                     : (DateTime?)null
             }).ToList();
         }
@@ -234,84 +241,9 @@ namespace BusinessLayer.Repositories
         public bool IsUserDeveloper(int userIdentifier)
             => context.Users
                   .Where(u => u.UserId == userIdentifier)
-                  .Select(u => u.IsDeveloper)
+                  .Select(u => u.UserRole==SteamHub.ApiContract.Models.Common.UserRole.Developer)
                   .SingleOrDefault();
-
-        // Old test methods // -------------------------------------------------
-        private static List<Achievement> MapDataTableToAchievements(DataTable dataTable)
-        {
-            var achievements = new List<Achievement>();
-            foreach (DataRow row in dataTable.Rows)
-            {
-                achievements.Add(MapDataRowToAchievement(row));
-            }
-            return achievements;
         }
-        private static Achievement MapDataRowToAchievement(DataRow row)
-        {
-            string achievementName = string.Empty;
-            string description = string.Empty;
-            string achievementType = string.Empty;
-            string iconUrl = string.Empty;
-
-            if (row["achievement_name"] != DBNull.Value)
-            {
-                achievementName = row["achievement_name"].ToString();
-            }
-
-            if (row["description"] != DBNull.Value)
-            {
-                description = row["description"].ToString();
-            }
-
-            if (row["achievement_type"] != DBNull.Value)
-            {
-                achievementType = row["achievement_type"].ToString();
-            }
-
-            if (row["icon_url"] != DBNull.Value)
-            {
-                iconUrl = row["icon_url"].ToString();
-            }
-
-            return new Achievement
-            {
-                AchievementId = Convert.ToInt32(row["achievement_id"]),
-                AchievementName = achievementName,
-                Description = description,
-                AchievementType = achievementType,
-                Points = Convert.ToInt32(row["points"]),
-                Icon = iconUrl
-            };
-        }
-
-        private static AchievementUnlockedData MapDataRowToAchievementUnlockedData(DataRow row)
-        {
-            string achievementName = string.Empty;
-            string achievementDescription = string.Empty;
-            DateTime? unlockDate = null;
-
-            if (row["AchievementName"] != DBNull.Value)
-            {
-                achievementName = row["AchievementName"].ToString();
-            }
-
-            if (row["AchievementDescription"] != DBNull.Value)
-            {
-                achievementDescription = row["AchievementDescription"].ToString();
-            }
-
-            if (row["UnlockDate"] != DBNull.Value)
-            {
-                unlockDate = Convert.ToDateTime(row["UnlockDate"]);
-            }
-
-            return new AchievementUnlockedData
-            {
-                AchievementName = achievementName,
-                AchievementDescription = achievementDescription,
-                UnlockDate = unlockDate
-            };
-        }
-    }
+        
 }
+

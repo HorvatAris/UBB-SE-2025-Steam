@@ -82,7 +82,8 @@ namespace SteamHub.ViewModels
                     $"Friendships: {groupedAchievements.Friendships?.Count ?? 0}, " +
                     $"OwnedGames: {groupedAchievements.OwnedGames?.Count ?? 0}, " +
                     $"SoldGames: {groupedAchievements.SoldGames?.Count ?? 0}");
-
+                
+               
                 try
                 {
                     // Assign to ObservableCollections

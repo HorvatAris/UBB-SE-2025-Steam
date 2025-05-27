@@ -26,13 +26,12 @@ namespace SteamHub.ApiContract.ServiceProxies
             _httpClient = httpClientFactory.CreateClient("SteamHubApi");
         }
        
-        
-
-        public void InitializeAchievements()
+        public async Task InitializeAchievements()
         {
             try
             {
-                PostAsync("Achievements/initialize", null).GetAwaiter().GetResult();
+                await _httpClient.PostAsync("Achievements/initialize", null);
+                //PostAsync("Achievements/initialize", null).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -49,29 +48,35 @@ namespace SteamHub.ApiContract.ServiceProxies
                 response.EnsureSuccessStatusCode();
                 
                 var jsonString = await response.Content.ReadAsStringAsync();
-
                 System.Diagnostics.Debug.WriteLine($"Response JSON: {jsonString}"); // Log the JSON response
-                using var document = JsonDocument.Parse(jsonString);
-                var resultElement = document.RootElement.GetProperty("result");
-                System.Diagnostics.Debug.WriteLine($"Response JSON: {resultElement}");
 
-                var result = JsonSerializer.Deserialize<GroupedAchievementsResult>(
-                    resultElement.GetRawText(), _options);
+                // Deserialize the entire response
+                var result = JsonSerializer.Deserialize<GroupedAchievementsResult>(jsonString, _options);
+                
+                if (result == null)
+                {
+                    throw new Exception("Failed to deserialize achievements response");
+                }
 
-                return result!;
+                return result;
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error in GetGroupedAchievementsForUser: {ex}");
                 throw new Exception("Error grouping achievements for user", ex);
             }
         }
 
 
-        public List<Achievement> GetAchievementsForUser(int userIdentifier)
+        public async Task<List<Achievement>> GetAchievementsForUser(int userIdentifier)
         {
             try
             {
-                return GetAsync<List<Achievement>>($"Achievements/{userIdentifier}").GetAwaiter().GetResult();
+                var response = await _httpClient.GetAsync($"Achievements/{userIdentifier}");
+                response.EnsureSuccessStatusCode();
+                var result = await response.Content.ReadFromJsonAsync<List<Achievement>>(_options);
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -79,11 +84,12 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public void UnlockAchievementForUser(int userIdentifier)
+        public async Task UnlockAchievementForUser(int userIdentifier)
         {
             try
             {
-                PostAsync($"Achievements/{userIdentifier}/unlock", null).GetAwaiter().GetResult();
+                await _httpClient.PostAsync($"Achievements/{userIdentifier}/unlock", null);
+                //PostAsync($"Achievements/{userIdentifier}/unlock", null).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -115,11 +121,16 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public List<Achievement> GetAllAchievements()
+        public async Task<List<Achievement>> GetAllAchievements()
         {
             try
             {
-                return GetAsync<List<Achievement>>("Achievements").GetAwaiter().GetResult();
+                var response=await _httpClient.GetAsync("Achievements");
+                response.EnsureSuccessStatusCode();
+                var result = await response.Content.ReadFromJsonAsync<List<Achievement>>(_options);
+                return result;
+
+                //return GetAsync<List<Achievement>>("Achievements").GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -151,7 +162,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public int GetPointsForUnlockedAchievement(int userIdentifier, int achievementIdentifier)
+        public async Task<int> GetPointsForUnlockedAchievement(int userIdentifier, int achievementIdentifier)
         {
             try
             {

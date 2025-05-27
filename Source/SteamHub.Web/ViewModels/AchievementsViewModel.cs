@@ -1,4 +1,4 @@
-﻿using BusinessLayer.Models;
+﻿using SteamHub.ApiContract.Models;
 
 namespace SteamHub.Web.ViewModels
 {

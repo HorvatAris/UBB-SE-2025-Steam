@@ -24,16 +24,16 @@ namespace SteamWebApi.Controllers
         }
 
         [HttpGet("{userId}")]
-        public IActionResult GetAchievementsForUser(int userId)
+        public async Task<IActionResult> GetAchievementsForUser(int userId)
         {
-            var achievements = achievementsService.GetAchievementsForUser(userId);
+            var achievements = await achievementsService.GetAchievementsForUser(userId);
             return Ok(achievements);
         }
 
         [HttpGet("{userId}/grouped")]
-        public IActionResult GetGroupedAchievementsForUser(int userId)
+        public async Task<IActionResult> GetGroupedAchievementsForUser(int userId)
         {
-            var groupedAchievements = achievementsService.GetGroupedAchievementsForUser(userId);
+            var groupedAchievements = await achievementsService.GetGroupedAchievementsForUser(userId);
             return Ok(groupedAchievements);
         }
 

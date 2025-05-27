@@ -6,14 +6,14 @@ namespace SteamHub.ApiContract.Repositories
     public interface IAchievementsRepository
     {
         void InsertAchievements();
-        bool IsAchievementsTableEmpty();
+        Task<bool> IsAchievementsTableEmpty();
         void UpdateAchievementIconUrl(int points, string iconUrl);
-        List<Achievement> GetAllAchievements();
+        Task<List<Achievement>> GetAllAchievements();
         List<Achievement> GetUnlockedAchievementsForUser(int userId);
         void UnlockAchievement(int userId, int achievementId);
         void RemoveAchievement(int userId, int achievementId);
         AchievementUnlockedData GetUnlockedDataForAchievement(int userId, int achievementId);
-        bool IsAchievementUnlocked(int userId, int achievementId);
+        Task<bool> IsAchievementUnlocked(int userId, int achievementId);
         Task<List<AchievementWithStatus>> GetAchievementsWithStatusForUser(int userId);
         int GetNumberOfSoldGames(int userId);
         int GetFriendshipCount(int userId);
