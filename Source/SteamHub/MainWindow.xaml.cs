@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Models.Common;
 using SteamHub.ApiContract.Proxies;
@@ -65,11 +66,6 @@ namespace SteamHub
             this.sessionService = new SessionServiceProxy(_httpClientFactory);
             this.passwordResetService = new PasswordResetServiceProxy();
 
-            if (this.ContentFrame == null)
-            {
-                throw new Exception("ContentFrame is not initialized.");
-            }
-
             // Start with login page
             ShowLoginPage();
         }
@@ -77,7 +73,79 @@ namespace SteamHub
         private void ShowLoginPage()
         {
             var loginPage = new LoginPage(this.userService, OnLoginSuccess);
-            this.ContentFrame.Content = loginPage;
+            LoginFrame.Content = loginPage;
+            LoginOverlay.Visibility = Visibility.Visible;
+            NavView.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowRegisterPage()
+        {
+            var registerPage = new RegisterPage(this.userService);
+            LoginFrame.Content = registerPage;
+        }
+
+        private void LoginFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            if (e.SourcePageType == typeof(RegisterPage))
+            {
+                ShowRegisterPage();
+            }
+            else if (e.SourcePageType == typeof(LoginPage))
+            {
+                ShowLoginPage();
+            }
+        }
+
+        private async void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Show confirmation dialog
+                var dialog = new ContentDialog
+                {
+                    Title = "Logout",
+                    Content = "Are you sure you want to logout?",
+                    PrimaryButtonText = "Yes",
+                    SecondaryButtonText = "No",
+                    DefaultButton = ContentDialogButton.Secondary,
+                    XamlRoot = this.Content.XamlRoot
+                };
+
+                var result = await dialog.ShowAsync();
+
+                if (result == ContentDialogResult.Primary)
+                {
+                    // Call logout on the user service
+                    await this.userService.LogoutAsync();
+
+                    // Clear user data
+                    this.user = null;
+
+                    // Reset services that require user context
+                    this.tradeService = null;
+                    this.marketplaceService = null;
+                    this.pointShopService = null;
+                    this.inventoryService = null;
+                    this.cartService = null;
+                    this.userGameService = null;
+                    this.developerService = null;
+
+                    // Show login page
+                    ShowLoginPage();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Show error dialog
+                var errorDialog = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = $"An error occurred during logout: {ex.Message}",
+                    CloseButtonText = "OK",
+                    XamlRoot = this.Content.XamlRoot
+                };
+                await errorDialog.ShowAsync();
+            }
         }
 
         private void OnLoginSuccess(User loggedInUser)
@@ -93,6 +161,10 @@ namespace SteamHub
             this.cartService = new CartServiceProxy(_httpClientFactory, loggedInUser);
             this.userGameService = new UserGameServiceProxy(_httpClientFactory, loggedInUser);
             this.developerService = new DeveloperServiceProxy(_httpClientFactory, loggedInUser);
+
+            // Hide login overlay and show main content
+            LoginOverlay.Visibility = Visibility.Collapsed;
+            NavView.Visibility = Visibility.Visible;
 
             // Navigate to home page
             this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
@@ -138,10 +210,10 @@ namespace SteamHub
                         ShowLoginPage();
                         break;
                     case "RegisterPage":
-                        ShowLoginPage();
+                        ShowRegisterPage();
                         break;
                     case "ForgotPasswordPage":
-                        this.ContentFrame.Content = new ForgotPasswordPage(this.passwordResetService);
+                        ShowLoginPage();
                         break;
                 }
             }
