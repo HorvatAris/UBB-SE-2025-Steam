@@ -181,7 +181,7 @@ namespace SteamHub.ApiContract.Services
                     if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         System.Diagnostics.Debug.WriteLine($"Unlocking achievement ID {achievementId.Value} for user {userId}");
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                        await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
 
@@ -192,7 +192,7 @@ namespace SteamHub.ApiContract.Services
                     if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         System.Diagnostics.Debug.WriteLine($"Unlocking achievement ID {achievementId.Value} for user {userId}");
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                       await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
 
@@ -203,7 +203,7 @@ namespace SteamHub.ApiContract.Services
                     if (achievementId.HasValue && !await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         System.Diagnostics.Debug.WriteLine($"Unlocking achievement ID {achievementId.Value} for user {userId}");
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                        await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
 
@@ -214,7 +214,7 @@ namespace SteamHub.ApiContract.Services
                     if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         System.Diagnostics.Debug.WriteLine($"Unlocking achievement ID {achievementId.Value} for user {userId}");
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                        await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
 
@@ -225,7 +225,7 @@ namespace SteamHub.ApiContract.Services
                     if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         System.Diagnostics.Debug.WriteLine($"Unlocking achievement ID {achievementId.Value} for user {userId}");
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                        await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
 
@@ -236,7 +236,7 @@ namespace SteamHub.ApiContract.Services
                     if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         System.Diagnostics.Debug.WriteLine($"Unlocking achievement ID {achievementId.Value} for user {userId}");
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                        await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
                 if (yearsOfActivity == MilestoneLevel1 || yearsOfActivity == MilestoneLevel2 || yearsOfActivity == MilestoneLevel3 || yearsOfActivity == MilestoneLevel4)
@@ -246,7 +246,7 @@ namespace SteamHub.ApiContract.Services
                     if (achievementId.HasValue && !await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         System.Diagnostics.Debug.WriteLine($"Unlocking achievement ID {achievementId.Value} for user {userId}");
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                        await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
 
@@ -255,37 +255,13 @@ namespace SteamHub.ApiContract.Services
                     int? achievementId = GetAchievementIdByTypeAndCount(Categories.Developer, MilestoneLevel1);
                     if (achievementId.HasValue && !await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
-                        achievementsRepository.UnlockAchievement(userId, achievementId.Value);
+                        await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
                     }
                 }
             }
             catch (Exception exception)
             {
                 System.Diagnostics.Debug.WriteLine($"Error: {exception.Message}");
-            }
-        }
-
-        public void RemoveAchievement(int userId, int achievementId)
-        {
-            try
-            {
-                achievementsRepository.RemoveAchievement(userId, achievementId);
-            }
-            catch (Exception exception)
-            {
-                throw new Exception("Error removing achievement.", exception);
-            }
-        }
-
-        public List<Achievement> GetUnlockedAchievementsForUser(int userId)
-        {
-            try
-            {
-                return achievementsRepository.GetUnlockedAchievementsForUser(userId);
-            }
-            catch (Exception exception)
-            {
-                throw new Exception("Error retrieving unlocked achievements for user.", exception);
             }
         }
 
@@ -298,18 +274,6 @@ namespace SteamHub.ApiContract.Services
             catch (Exception exception)
             {
                 throw new Exception("Error retrieving unlocked achievements for user.", exception);
-            }
-        }
-
-        public AchievementUnlockedData GetUnlockedDataForAchievement(int userId, int achievementId)
-        {
-            try
-            {
-                return achievementsRepository.GetUnlockedDataForAchievement(userId, achievementId);
-            }
-            catch (Exception exception)
-            {
-                throw new Exception("Error retrieving unlocked data for achievement.", exception);
             }
         }
 

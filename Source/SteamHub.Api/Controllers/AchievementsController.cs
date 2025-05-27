@@ -17,9 +17,9 @@ namespace SteamWebApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllAchievements()
+        public async Task<IActionResult> GetAllAchievements()
         {
-            var achievements = achievementsService.GetAllAchievements();
+            var achievements = await achievementsService.GetAllAchievements();
             return Ok(achievements);
         }
 
@@ -37,25 +37,11 @@ namespace SteamWebApi.Controllers
             return Ok(groupedAchievements);
         }
 
-        [HttpGet("{userId}/unlocked")]
-        public IActionResult GetUnlockedAchievementsForUser(int userId)
-        {
-            var unlockedAchievements = achievementsService.GetUnlockedAchievementsForUser(userId);
-            return Ok(unlockedAchievements);
-        }
-
         [HttpGet("{userId}/status")]
         public IActionResult GetAchievementsWithStatusForUser(int userId)
         {
             var achievementsWithStatus = achievementsService.GetAchievementsWithStatusForUser(userId);
             return Ok(achievementsWithStatus);
-        }
-
-        [HttpGet("{userId}/{achievementId}/data")]
-        public IActionResult GetUnlockedDataForAchievement(int userId, int achievementId)
-        {
-            var unlockedData = achievementsService.GetUnlockedDataForAchievement(userId, achievementId);
-            return Ok(unlockedData);
         }
 
         [HttpGet("{userId}/{achievementId}/points")]
@@ -89,13 +75,6 @@ namespace SteamWebApi.Controllers
         public IActionResult UnlockAchievementForUser(int userId)
         {
             achievementsService.UnlockAchievementForUser(userId);
-            return Ok();
-        }
-
-        [HttpDelete("{userId}/{achievementId}")]
-        public IActionResult RemoveAchievement(int userId, int achievementId)
-        {
-            achievementsService.RemoveAchievement(userId, achievementId);
             return Ok();
         }
     }

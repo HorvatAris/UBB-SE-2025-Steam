@@ -131,7 +131,7 @@ namespace BusinessLayer.Repositories
                   })
                   .ToList();
 
-        public void UnlockAchievement(int userIdentifier, int achievementId)
+        public async Task UnlockAchievement(int userIdentifier, int achievementId)
         {
             if (context.UserAchievements.Any(currentUserAchievement => currentUserAchievement.UserId == userIdentifier && currentUserAchievement.AchievementId == achievementId))
             {

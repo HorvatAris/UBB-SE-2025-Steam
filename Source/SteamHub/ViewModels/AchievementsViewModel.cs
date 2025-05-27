@@ -77,13 +77,7 @@ namespace SteamHub.ViewModels
 
                 // Get grouped achievements (no logic in ViewModel)
                 var groupedAchievements = await achievementsService.GetGroupedAchievementsForUser(userId);
-                System.Diagnostics.Debug.WriteLine($"Retrieved grouped achievements. Counts: " +
-                    $"All: {groupedAchievements.AllAchievements?.Count ?? 0}, " +
-                    $"Friendships: {groupedAchievements.Friendships?.Count ?? 0}, " +
-                    $"OwnedGames: {groupedAchievements.OwnedGames?.Count ?? 0}, " +
-                    $"SoldGames: {groupedAchievements.SoldGames?.Count ?? 0}");
-                
-               
+             
                 try
                 {
                     // Assign to ObservableCollections

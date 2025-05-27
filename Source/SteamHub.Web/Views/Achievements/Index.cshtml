@@ -21,10 +21,16 @@
             <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
                 @foreach (var a in sectionData.Items)
                 {
-                    <div style="width: 70px; height: 70px; border-radius: 35px; background-color: lightgray;"
-                         title="@a.Achievement.AchievementName - @a.Achievement.Description - @a.UnlockedDate">
-                        <img src="@a.Achievement.Icon" alt="icon"
-                             style="width:100%; height:100%; opacity:@a.Opacity;" />
+                    <div style="width: 120px; text-align: center;">
+                        <div style="width: 70px; height: 70px; border-radius: 35px; background-color: lightgray; margin: 0 auto;">
+                            <img src="@a.Achievement.Icon" alt="icon"
+                                 style="width: 100%; height: 100%; opacity: @a.Opacity;"
+                                 title="@a.Achievement.AchievementName - @a.Achievement.Description - @a.UnlockedDate" />
+                        </div>
+                        <div style="font-size: 0.8rem; margin-top: 5px;">
+                            <strong>@a.Achievement.AchievementName</strong><br />
+                            <span>@a.Achievement.Description</span>
+                        </div>
                     </div>
                 }
             </div>
