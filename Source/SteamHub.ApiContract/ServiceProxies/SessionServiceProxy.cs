@@ -1,100 +1,152 @@
 ﻿using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ApiContract.Models.Common;
+using SteamHub.ApiContract.Models.Session;
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SteamHub.ApiContract.ServiceProxies
 {
-    /// <summary>
-    /// Proxy implementation of <see cref="ISessionService"/>, managing session state via HTTP and local cache.
-    /// </summary>
-    public class SessionServiceProxy : ServiceProxy, ISessionService
+    public class SessionServiceProxy : ISessionService
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SessionServiceProxy"/> class.
-        /// </summary>
-        /// <param name="baseUrl">The base URL for API endpoints.</param>
-        public SessionServiceProxy(string baseUrl = "https://localhost:7241/api/")
-            : base(baseUrl)
+        private readonly HttpClient _httpClient;
+        private readonly JsonSerializerOptions _options = new JsonSerializerOptions
         {
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+        };
+
+        public SessionServiceProxy(IHttpClientFactory httpClientFactory)
+        {
+            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
         }
 
         /// <inheritdoc />
-        public Guid CreateNewSession(User user)
+        public async Task<Guid> CreateNewSessionAsync(User user)
         {
-            // Session is managed by login in UserServiceProxy; return current session ID if exists
-            return CurrentUser?.SessionId ?? Guid.Empty;
-        }
-
-        /// <inheritdoc />
-        public void EndSession()
-        {
-            // Clear local session info
-            ClearCurrentUser();
-
-            // Notify server to end session asynchronously
-            _ = Task.Run(async () =>
+            try
             {
-                try
-                {
-                    await PostAsync("Session/Logout", null).ConfigureAwait(false);
-                }
-                catch
-                {
-                    // Ignore errors after local clear
-                }
-            });
+                var response = await _httpClient.PostAsJsonAsync("/api/Session/Create", user, _options);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<Guid>(_options);
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error creating session: {exception.Message}");
+                return Guid.Empty;
+            }
         }
 
         /// <inheritdoc />
-        public User GetCurrentUser()
+        public async Task EndSessionAsync()
         {
-            if (CurrentUser == null)
+            try
             {
+                var response = await _httpClient.PostAsync("/api/Session/Logout", null);
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error ending session: {exception.Message}");
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<User?> GetCurrentUserAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync("/api/Session/CurrentUser");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<User>(_options);
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting current user: {exception.Message}");
                 return null;
             }
+        }
 
-            // Map session details to User DTO
-            return new User
+        /// <inheritdoc />
+        public async Task<bool> IsUserLoggedInAsync()
+        {
+            try
             {
-                UserId = CurrentUser.UserId,
-                Username = CurrentUser.Username,
-                Email = CurrentUser.Email,
-                UserRole = CurrentUser.Developer ? UserRole.Developer : UserRole.User,
-            };
-        }
-
-        /// <inheritdoc />
-        public bool IsUserLoggedIn()
-        {
-            // Check local cache for session validity
-            return CurrentUser != null && CurrentUser.ExpiresAt > DateTime.Now;
-        }
-
-        /// <inheritdoc />
-        public void RestoreSessionFromDatabase(Guid sessionId)
-        {
-            // Attempt to restore session asynchronously
-            _ = Task.Run(async () =>
+                var response = await _httpClient.GetAsync("/api/Session/IsLoggedIn");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<bool>(_options);
+            }
+            catch (Exception exception)
             {
-                try
-                {
-                    var sessionDetails = await GetAsync<UserWithSessionDetails>($"Session/{sessionId}").ConfigureAwait(false);
-                    if (sessionDetails != null)
-                    {
-                        SetCurrentUser(sessionDetails);
-                    }
-                }
-                catch
-                {
-                    // Do nothing if session invalid or expired
-                }
-            });
+                System.Diagnostics.Debug.WriteLine($"Error checking login status: {exception.Message}");
+                return false;
+            }
         }
 
         /// <inheritdoc />
-        public void CleanupExpiredSessions()
+        public async Task RestoreSessionFromDatabaseAsync(Guid sessionId)
         {
-            // No-op: cleanup is handled server-side
+            try
+            {
+                var response = await _httpClient.GetAsync($"/api/Session/{sessionId}");
+                response.EnsureSuccessStatusCode();
+                var sessionDetails = await response.Content.ReadFromJsonAsync<UserWithSessionDetails>(_options);
+                if (sessionDetails != null)
+                {
+                    // Handle session restoration logic here
+                }
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error restoring session: {exception.Message}");
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task CleanupExpiredSessionsAsync()
+        {
+            try
+            {
+                var response = await _httpClient.PostAsync("/api/Session/Cleanup", null);
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error cleaning up sessions: {exception.Message}");
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> ValidateSessionAsync(Guid sessionId)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"/api/Session/Validate/{sessionId}");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<bool>(_options);
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error validating session: {exception.Message}");
+                return false;
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<SessionDetails?> GetCurrentSessionDetailsAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync("/api/Session/Current");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<SessionDetails>(_options);
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting session details: {exception.Message}");
+                return null;
+            }
         }
     }
 }
