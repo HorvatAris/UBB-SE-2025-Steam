@@ -165,7 +165,7 @@ namespace SteamHub
             this.cartService = new CartServiceProxy(_httpClientFactory, loggedInUser);
             this.userGameService = new UserGameServiceProxy(_httpClientFactory, loggedInUser);
             this.developerService = new DeveloperServiceProxy(_httpClientFactory, loggedInUser);
-            this.walletService = new WalletServiceProxy(httpClientFactory, loggedInUser);
+            this.walletService = new WalletServiceProxy(_httpClientFactory, loggedInUser);
 
             // Hide login overlay and show main content
             LoginOverlay.Visibility = Visibility.Collapsed;
