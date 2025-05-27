@@ -33,10 +33,11 @@ namespace SteamHub.Pages
         private bool isNavigatingAway = false;
         private IUserService userService;
         private IFriendsService friendsService;
+        private ICollectionsService collectionsService;
         private IFeaturesService featureService;
         private IAchievementsService achievementsService;
 
-        public ProfilePage(IUserService userService, IFriendsService friendsService, IFeaturesService featureService, IAchievementsService achievementsService, User user)
+        public ProfilePage(IUserService userService, IFriendsService friendsService, IFeaturesService featureService, ICollectionsService collectionsService, IAchievementsService achievementsService, User user)
         {
             try
             {
@@ -59,8 +60,8 @@ namespace SteamHub.Pages
                     this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
                     this.friendsService = friendsService ?? throw new ArgumentNullException(nameof(friendsService));
                     this.featureService = featureService ?? throw new ArgumentNullException(nameof(featureService));
-                    
-                    ViewModel = new ProfileViewModel(userService, friendsService, Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread(), featureService, achievementsService);
+                    this.collectionsService = collectionsService ?? throw new ArgumentNullException(nameof(collectionsService));
+                    ViewModel = new ProfileViewModel(userService, friendsService, Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread(),collectionsService, featureService, achievementsService);
                 }
 
                 DataContext = ViewModel; // Ensure this is set correctly
@@ -110,6 +111,7 @@ namespace SteamHub.Pages
                     this.userService,
                     this.friendsService,
                     Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread(),
+                    this.collectionsService,
                     this.featureService,
                     this.achievementsService);
                 Debug.WriteLine("ProfileViewModel initialized with services.");
@@ -165,6 +167,7 @@ namespace SteamHub.Pages
                     this.userService,
                     this.friendsService,
                     Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread(),
+                    this.collectionsService,
                     this.featureService,
                     this.achievementsService);
                 Debug.WriteLine("ProfileViewModel initialized with services.");

@@ -93,7 +93,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public bool AreUsersFriends(int userIdentifier1, int userIdentifier2)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public int? GetFriendshipIdentifier(int userIdentifier1, int userIdentifier2)

@@ -249,6 +249,7 @@ namespace SteamHub.ViewModels
             IUserService userService,
             IFriendsService friendsService,
             DispatcherQueue dispatcherQueue,
+            ICollectionsService gameCollectionsService,
             IFeaturesService featuresService,
             IAchievementsService achievementsService)
         {
@@ -257,13 +258,14 @@ namespace SteamHub.ViewModels
                 throw new InvalidOperationException("ProfileViewModel is already initialized");
             }
 
-            profileViewModelInstance = new ProfileViewModel(userService, friendsService, dispatcherQueue, featuresService, achievementsService);
+            profileViewModelInstance = new ProfileViewModel(userService, friendsService, dispatcherQueue,gameCollectionsService, featuresService, achievementsService);
         }
 
         public ProfileViewModel(
             IUserService userService,
             IFriendsService friendsService,
             DispatcherQueue dispatcherQueue,
+            ICollectionsService gameCollectionsService,
             IFeaturesService featuresService,
             IAchievementsService achievementsService)
         {
@@ -273,7 +275,7 @@ namespace SteamHub.ViewModels
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.friendsService = friendsService ?? throw new ArgumentNullException(nameof(friendsService));
             this.dispatcherQueue = dispatcherQueue ?? throw new ArgumentNullException(nameof(dispatcherQueue));
-            // ProfileViewModel.gameCollectionsService = (ICollectionsService)(gameCollectionsService ?? throw new ArgumentNullException(nameof(gameCollectionsService)));
+            ProfileViewModel.gameCollectionsService = (ICollectionsService)(gameCollectionsService ?? throw new ArgumentNullException(nameof(gameCollectionsService)));
             this.featuresService = featuresService ?? throw new ArgumentNullException(nameof(featuresService));
             this.achievementsService = achievementsService ?? throw new ArgumentNullException(nameof(achievementsService));
 
@@ -346,14 +348,16 @@ namespace SteamHub.ViewModels
                 // Continue with rest of the method only if we successfully got a user
                 try
                 {
-                    var currentUserId = userService.GetCurrentUser().UserId;
+                    //var currentUserId = userService.GetCurrentUser().UserId;
+                    var currentUserId = user_id;
                     var isFriend = await Task.Run(() => friendsService.AreUsersFriends(currentUserId, user_id));
 
                     // Get equipped features (safer direct call instead of Task.Run)
                     List<Feature> equippedFeatures = new List<Feature>();
                     try
                     {
-                        equippedFeatures = featuresService.GetUserEquippedFeatures(currentUser.UserId);
+                        // TEMPORARY UNTIL FEATURES IMPLEMENTED
+                        // equippedFeatures = featuresService.GetUserEquippedFeatures(currentUser.UserId);
                         Debug.WriteLine($"Retrieved {equippedFeatures.Count} equipped features");
                     }
                     catch (Exception exception)
@@ -377,7 +381,7 @@ namespace SteamHub.ViewModels
                             IsFriend = isFriend;
                             FriendButtonText = isFriend ? "Unfriend" : "Add Friend";
                             FriendButtonStyle = "AccentButtonStyle";
-
+                            user = currentUser;
                             Debug.WriteLine($"Current user {Username} ; isProfileOwner = {isProfileOwner} ; isFriend = {IsFriend}");
                             // Profile info from UserProfiles table
                             if (user != null)
@@ -418,7 +422,9 @@ namespace SteamHub.ViewModels
                             // Load friend count
                             try
                             {
-                                FriendCount = friendsService.GetFriendshipCount(currentUser.UserId);
+                                // TEMPORARY
+                                // FriendCount = friendsService.GetFriendshipCount(currentUser.UserId);
+                                FriendCount = 0;
                             }
                             catch (Exception exception)
                             {

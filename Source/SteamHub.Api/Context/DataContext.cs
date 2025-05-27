@@ -134,7 +134,7 @@ namespace SteamHub.Api.Context
                     Password = passwords[0],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = "",
+                    ProfilePicture = "https://i.imgur.com/vixhhkC.jpeg",
                     Bio = "Gaming enthusiast and software developer",
                     LastModified = new DateTime(2024, 1, 1)
                 },
