@@ -35,6 +35,7 @@ namespace SteamHub
         private UserServiceProxy userService;
         private SessionServiceProxy sessionService;
         private PasswordResetServiceProxy passwordResetService;
+        private WalletServiceProxy walletService;
 
         public MainWindow()
         {
@@ -131,6 +132,8 @@ namespace SteamHub
 
             this.developerService = new DeveloperServiceProxy(httpClientFactory, loggedInUser);
 
+            this.walletService = new WalletServiceProxy(httpClientFactory, loggedInUser);
+
             if (this.ContentFrame == null)
             {
                 throw new Exception("ContentFrame is not initialized.");
@@ -183,6 +186,10 @@ namespace SteamHub
                         break;
                     case "ForgotPasswordPage":
                         this.ContentFrame.Content = new ForgotPasswordPage(this.passwordResetService);
+                        break;
+                    case "Wallet":
+                        //this.ContentFrame.Content = new WalletPage(this.walletService);
+                        this.ContentFrame.Navigate(typeof(WalletPage), this.walletService);
                         break;
                 }
             }

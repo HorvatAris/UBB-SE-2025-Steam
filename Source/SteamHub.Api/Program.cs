@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using SteamHub.Api.Context;
 using SteamHub.Api.Context.Repositories;
+using SteamHub.ApiContext.Services;
 using SteamHub.ApiContract.Context.Repositories;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Repositories;
@@ -30,6 +31,7 @@ builder.Services.AddScoped<IItemTradeRepository, ItemTradeRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IUserInventoryRepository, UserInventoryRepository>();
 builder.Services.AddScoped<IItemTradeDetailRepository, ItemTradeDetailRepository>();
+builder.Services.AddScoped<IWalletRepository, WalletRepository>();
 
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -41,6 +43,7 @@ builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<IPointShopService, PointShopService>();
 builder.Services.AddScoped<ITradeService, TradeService>();
 builder.Services.AddScoped<IMarketplaceService, MarketplaceService>();
+builder.Services.AddScoped<IWalletService, WalletService>();
 
 
 builder.Services.AddControllersWithViews()
