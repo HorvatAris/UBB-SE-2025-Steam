@@ -1,4 +1,3 @@
-﻿
 using SteamHub.ApiContract.Models;
 
 namespace SteamHub.ApiContract.Repositories

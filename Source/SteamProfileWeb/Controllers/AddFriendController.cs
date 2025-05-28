@@ -13,13 +13,11 @@ namespace SteamProfileWeb.Controllers
     {
         private readonly IUserService userService;
         private readonly IFriendsService friendsService;
-        private readonly IUserProfilesRepository userProfilesRepository;
 
-        public AddFriendController(IUserService userService, IFriendsService friendsService, IUserProfilesRepository userProfilesRepository)
+        public AddFriendController(IUserService userService, IFriendsService friendsService)
         {
             this.userService = userService;
             this.friendsService = friendsService;
-            this.userProfilesRepository = userProfilesRepository;
         }
 
         public IActionResult Index()
@@ -36,13 +34,13 @@ namespace SteamProfileWeb.Controllers
             var model = new AddFriendViewModel
             {
                 Users = allUsers.Select(u => {
-                    var userProfile = userProfilesRepository.GetUserProfileByUserId(u.UserId);
+                    
                     return new AddFriendUserViewModel
                     {
                         UserId = u.UserId,
                         Username = u.Username,
                         Email = u.Email,
-                        ProfilePhotoPath = userProfile?.ProfilePicture ?? "/images/default-profile.png",
+                        ProfilePhotoPath = u?.ProfilePicture ?? "/images/default-profile.png",
                         IsFriend = friendIds.Contains(u.UserId)
                     };
                 }).ToList(),

@@ -50,7 +50,6 @@ namespace SteamHub.Api.Context
         public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
 
         public DbSet<Wallet> Wallets { get; set; }
-        public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Achievement> Achievements { get; set; }
         public DbSet<ChatConversation> ChatConversations { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
@@ -130,105 +129,105 @@ namespace SteamHub.Api.Context
                 {
                     UserId = 1,
                     Email = "gabe.newell@valvestudio.com",
-                    PointsBalance = 6000,
                     Username = "GabeN",
                     UserRole = UserRole.Developer,
-                    WalletBalance = 500,
                     Password = passwords[0],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "https://i.imgur.com/vixhhkC.jpeg",
+                    Bio = "Gaming enthusiast and software developer",
+                    LastModified = new DateTime(2024, 1, 1)
                 },
                 new User
                 {
                     UserId = 2,
                     Email = "mathias.new@cdprojektred.com",
-                    PointsBalance = 5000,
                     Username = "MattN",
                     UserRole = UserRole.Developer,
-                    WalletBalance = 420,
                     Password = passwords[1],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "",
+                    Bio = "Game developer and tech lover",
+                    LastModified = new DateTime(2024, 1, 1)
                 },
                 new User
                 {
                     UserId = 3,
                     Email = "john.chen@thatgamecompany.com",
-                    PointsBalance = 5000,
                     Username = "JohnC",
                     UserRole = UserRole.Developer,
-                    WalletBalance = 390,
                     Password = passwords[2],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "",
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
                 },
                 new User
                 {
                     UserId = 4,
                     Email = "alice.johnson@example.com",
-                    PointsBalance = 6000,
                     Username = "AliceJ",
                     UserRole = UserRole.User,
-                    WalletBalance = 780,
                     Password = passwords[3],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "",
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
                 },
                 new User
                 {
                     UserId = 5,
                     Email = "liam.garcia@example.com",
-                    PointsBalance = 7000,
                     Username = "LiamG",
                     UserRole = UserRole.User,
-                    WalletBalance = 5500,
                     Password = passwords[4],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "",
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
                 },
                 new User
                 {
                     UserId = 6,
                     Email = "sophie.williams@example.com",
-                    PointsBalance = 6000,
                     Username = "SophieW",
                     UserRole = UserRole.User,
-                    WalletBalance = 950,
                     Password = passwords[5],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "",
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
                 },
                 new User
                 {
                     UserId = 7,
                     Email = "noah.smith@example.com",
-                    PointsBalance = 4000,
                     Username = "NoahS",
                     UserRole = UserRole.User,
-                    WalletBalance = 3300,
                     Password = passwords[6],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "",
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
                 },
                 new User
                 {
                     UserId = 8,
                     Email = "emily.brown@example.com",
-                    PointsBalance = 5000,
                     Username = "EmilyB",
                     UserRole = UserRole.User,
-                    WalletBalance = 1100,
                     Password = passwords[7],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "",
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
                 }
             };
 
@@ -1792,42 +1791,32 @@ namespace SteamHub.Api.Context
                       .HasForeignKey(cg => cg.CollectionId);
             });
 
-            // -- UserProfile mapping --------------------------------------------------------
-            builder.Entity<UserProfile>(entity =>
-            {
-                entity.HasKey(up => up.ProfileId);
-                entity.Property(up => up.ProfileId)
-                    .ValueGeneratedOnAdd();
-                entity.Property(up => up.UserId)
-                    .IsRequired();
-                entity.Property(up => up.Bio);
-                entity.Property(up => up.LastModified)
-                    .HasDefaultValueSql("GETDATE()");
-
-                entity.HasOne(up => up.User)
-                    .WithOne()
-                    .HasForeignKey<UserProfile>(up => up.UserId);
-
-                entity.Ignore(up => up.Email);
-                entity.Ignore(up => up.Username);
-                entity.Ignore(up => up.ProfilePicture);
-            });
-
             // -- Wallet mapping --------------------------------------------------------
             builder.Entity<Wallet>(entity =>
             {
                 entity.HasKey(w => w.WalletId);
                 entity.Property(w => w.WalletId)
                     .ValueGeneratedOnAdd();
+                
                 entity.Property(w => w.UserId)
                     .IsRequired();
-                entity.HasIndex(w => w.UserId)
-                    .IsUnique();
+                
                 entity.Property(w => w.Points)
                     .HasDefaultValue(0);
+                
                 entity.Property(w => w.Balance)
                     .HasColumnType("decimal(10,2)")
                     .HasDefaultValue(0m);
+
+                // Configure one-to-one relationship with User
+                entity.HasOne(w => w.User)
+                    .WithOne(u => u.Wallet)
+                    .HasForeignKey<Wallet>(w => w.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Ensure each user can only have one wallet
+                entity.HasIndex(w => w.UserId)
+                    .IsUnique();
             });
 
             // -- Users mapping --------------------------------------------------------------
@@ -1846,10 +1835,22 @@ namespace SteamHub.Api.Context
                     .HasDefaultValueSql("GETDATE()");
                 entity.Property(u => u.LastLogin);
 
+                // Configure one-to-one relationship with Wallet
+                entity.HasOne(u => u.Wallet)
+                    .WithOne(w => w.User)
+                    .HasForeignKey<Wallet>(w => w.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
                 entity.HasMany(u => u.Reviews)
                     .WithOne(r => r.User)
                     .HasForeignKey(r => r.UserIdentifier)
                     .OnDelete(DeleteBehavior.NoAction);
+
+                // UserProfile
+                entity.Property(up => up.Bio);
+                entity.Property(up => up.LastModified)
+                    .HasDefaultValueSql("GETDATE()");
+                entity.Ignore(up => up.ProfilePicture);
 
                 entity.HasMany(u => u.NewsPosts)
                     .WithOne(p => p.Author)
@@ -1961,82 +1962,17 @@ namespace SteamHub.Api.Context
                       .OnDelete(DeleteBehavior.Restrict);
             });
 
-
-
-            // UserProfiles seed data
-            var userProfilesSeed = new List<UserProfile>
-            {
-                new UserProfile
-                {
-                    ProfileId = 1,
-                    UserId = 1,
-                    Bio = "Gaming enthusiast and software developer",
-                    LastModified = new DateTime(2024, 1, 1)
-                },
-                new UserProfile
-                {
-                    ProfileId = 2,
-                    UserId = 2,
-                    Bio = "Game developer and tech lover",
-                    LastModified = new DateTime(2024, 1, 1)
-                },
-                new UserProfile
-                {
-                    ProfileId = 3,
-                    UserId = 3,
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
-                },
-                new UserProfile
-                {
-                    ProfileId = 4,
-                    UserId = 4,
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
-                },
-                new UserProfile
-                {
-                    ProfileId = 5,
-                    UserId = 5,
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
-                },
-                new UserProfile
-                {
-                    ProfileId = 6,
-                    UserId = 6,
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
-                },
-                new UserProfile
-                {
-                    ProfileId = 7,
-                    UserId = 7,
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
-                },
-                new UserProfile
-                {
-                    ProfileId = 8,
-                    UserId = 8,
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
-                }
-            };
-
-            builder.Entity<UserProfile>().HasData(userProfilesSeed);
-
-            // Wallets seed data
+            // Update the wallets seed data to match the new schema
             var walletsSeed = new List<Wallet>
             {
-                new Wallet { WalletId = 1, UserId = 1, Points = 10, Balance = 200m },
-                new Wallet { WalletId = 2, UserId = 2, Points = 10, Balance = 200m },
-                new Wallet { WalletId = 3, UserId = 3, Points = 10, Balance = 200m },
-                new Wallet { WalletId = 4, UserId = 4, Points = 10, Balance = 200m },
-                new Wallet { WalletId = 5, UserId = 5, Points = 10, Balance = 200m },
-                new Wallet { WalletId = 6, UserId = 6, Points = 10, Balance = 200m },
-                new Wallet { WalletId = 7, UserId = 7, Points = 10, Balance = 200m },
-                new Wallet { WalletId = 8, UserId = 8, Points = 10, Balance = 200m }
+                new Wallet { WalletId = 1, UserId = 1, Points = 6000, Balance = 500m },
+                new Wallet { WalletId = 2, UserId = 2, Points = 5000, Balance = 420m },
+                new Wallet { WalletId = 3, UserId = 3, Points = 5000, Balance = 390m },
+                new Wallet { WalletId = 4, UserId = 4, Points = 6000, Balance = 780m },
+                new Wallet { WalletId = 5, UserId = 5, Points = 7000, Balance = 5500m },
+                new Wallet { WalletId = 6, UserId = 6, Points = 6000, Balance = 950m },
+                new Wallet { WalletId = 7, UserId = 7, Points = 4000, Balance = 3300m },
+                new Wallet { WalletId = 8, UserId = 8, Points = 5000, Balance = 1100m }
             };
 
             builder.Entity<Wallet>().HasData(walletsSeed);

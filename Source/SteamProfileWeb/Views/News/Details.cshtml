@@ -173,7 +173,7 @@
                 <div class="d-flex align-items-center">
                     @{
                         var imageBase64 = Model.Author?.ProfilePicture != null
-                        ? Convert.ToBase64String(Model.Author.ProfilePicture)
+                        ? (Model.Author.ProfilePicture)
                         : string.Empty;
                         var imgSrc = !string.IsNullOrEmpty(imageBase64)
                         ? $"data:image/png;base64,{imageBase64}"

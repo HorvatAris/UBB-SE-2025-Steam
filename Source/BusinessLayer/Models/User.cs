@@ -9,7 +9,7 @@ namespace BusinessLayer.Models
 {
     public class User
     {
-        public byte[] ProfilePicture;
+        public string ProfilePicture;
 
         public int UserId { get; set; }
         public string Username { get; set; }
@@ -26,6 +26,8 @@ namespace BusinessLayer.Models
         public DateTime? LastLogin { get; set; }
         public string IpAddress;
         public string ProfilePicturePath;
+        public string? Bio { get; set; }
+        public DateTime LastModified { get; set; }
         public FriendshipStatus FriendshipStatus;
         private async void LoadProfilePicture()
         {
@@ -34,11 +36,11 @@ namespace BusinessLayer.Models
             {
                 string exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 string imagePath = Path.Combine(exePath, "Assets", "default_avatar.png");
-                ProfilePicture = File.ReadAllBytes(imagePath);
+                ProfilePicture = imagePath;
             }
             catch
             {
-                ProfilePicture = new byte[0];
+                ProfilePicture = string.Empty;
             }
             #endif
         }

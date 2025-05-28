@@ -61,12 +61,6 @@ namespace SteamProfile.Services
         //    return new AchievementsServiceProxy(apiBaseUrl);
         //}
 
-        // Create owned games service instance
-       
-        public static IPasswordResetService CreatePasswordResetService()
-        {
-            return new PasswordResetServiceProxy(apiBaseUrl);
-        }
      
     }
 }

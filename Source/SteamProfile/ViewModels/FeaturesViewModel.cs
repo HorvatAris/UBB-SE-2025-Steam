@@ -30,7 +30,6 @@ namespace SteamProfile.ViewModels
         private XamlRoot xamlRoot;
         private string statusMessage = string.Empty;
         private const string PathStart = "ms-appx:///";
-        private readonly IUserProfilesRepository userProfilesRepository;
         private SolidColorBrush statusColor = new(Colors.Black);
         private FeatureDisplay selectedFeature;
         private XamlRoot featuresXamlRoot;

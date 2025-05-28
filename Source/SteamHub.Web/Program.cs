@@ -1,6 +1,5 @@
 using SteamHub.ApiContract.Context.Repositories;
 using SteamHub.ApiContract.Models.User;
-using SteamHub.ApiContract.Proxies;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.ServiceProxies;
 using SteamHub.ApiContract.Services;
