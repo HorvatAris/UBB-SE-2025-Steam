@@ -78,7 +78,12 @@ namespace SteamHub.Pages
         {
             if (sender is Button button && button.CommandParameter is Collection collection)
             {
-                Frame.Navigate(typeof(CollectionGamesPage), (collection.CollectionId, collection.CollectionName));
+                // Safe cast and null-check
+                if ((MainWindow)SteamHub.App.MainWindow is MainWindow mainWindow)
+                {
+                    var frame = ((MainWindow)SteamHub.App.MainWindow).MainContentFrame;
+                    frame.Navigate(typeof(CollectionGamesPage), (collection.CollectionId, collection.CollectionName));
+                }
             }
         }
 

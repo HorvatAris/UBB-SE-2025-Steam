@@ -21,7 +21,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                return await GetAsync<List<Collection>>($"Collection/{userIdentifier}");
+                return await GetAsync<List<Collection>>($"Collections/{userIdentifier}");
             }
             catch (Exception ex)
             {
@@ -45,7 +45,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                return await GetAsync<List<OwnedGame>>($"Collection/{collectionIdentifier}/games");
+                return await GetAsync<List<OwnedGame>>($"Collections/{collectionIdentifier}/games");
             }
             catch (Exception ex)
             {
@@ -114,7 +114,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await PutAsync<Collection>($"Collection/{collectionIdentifier}", new
+                await PutAsync<Collection>($"Collections/{collectionIdentifier}", new
                 {
                     UserId = userIdentifier,
                     CollectionName = collectionName,
@@ -132,7 +132,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                return await GetAsync<List<Collection>>($"Collection/public/{userIdentifier}");
+                return await GetAsync<List<Collection>>($"Collections/public/{userIdentifier}");
             }
             catch (Exception ex)
             {
@@ -145,7 +145,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             try
             {
                 return await GetAsync<List<OwnedGame>>(
-                    $"Collection/{collectionIdentifier}/user/{userIdentifier}/games-not-in-collection");
+                    $"Collections/{collectionIdentifier}/user/{userIdentifier}/games-not-in-collection");
             }
             catch (Exception ex)
             {

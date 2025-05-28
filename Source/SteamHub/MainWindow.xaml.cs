@@ -45,6 +45,7 @@ namespace SteamHub
         private CollectionsServiceProxy collectionServiceProxy;
         
         private readonly IHttpClientFactory _httpClientFactory;
+        public Frame MainContentFrame => this.ContentFrame;
 
         public MainWindow()
         {

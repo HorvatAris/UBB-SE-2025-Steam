@@ -51,7 +51,7 @@ namespace SteamHub
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            MainWindow = new MainWindow();
+            MainWindow = new SteamHub.MainWindow();
             //var rootFrame = new Frame();
             //MainWindow.Content = rootFrame;
             //rootFrame.Navigate(typeof(LoginPage), null);
