@@ -12,13 +12,8 @@ using SteamHub.Api.Context;
 namespace SteamHub.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-<<<<<<<< HEAD:Source/SteamHub.Api/Migrations/20250528175618_MainMigration.Designer.cs
-    [Migration("20250528175618_MainMigration")]
+    [Migration("20250528191003_MainMigration")]
     partial class MainMigration
-========
-    [Migration("20250528160059_InitialCreate")]
-    partial class InitialCreate
->>>>>>>> leliuc_collections:Source/SteamHub.Api/Migrations/20250528160059_InitialCreate.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

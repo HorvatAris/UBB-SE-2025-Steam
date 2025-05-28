@@ -12,7 +12,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class CollectionsServiceProxy : ServiceProxy, ICollectionsService
     {
-        public CollectionsServiceProxy(string baseUrl = "https://localhost:7262/api/")
+        public CollectionsServiceProxy(string baseUrl = "https://localhost:7241/api/")
             : base(baseUrl)
         {
         }
