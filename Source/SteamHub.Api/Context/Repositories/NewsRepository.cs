@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
 using SteamHub.ApiContract.Models;
 
@@ -106,7 +105,7 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or the execution failed</exception>
 	public async Task<int> RemoveRatingFromPost(int postId, int userId)
 	{
-		var rating = context.NewsPostRatingTypes.Find(postId, userId);
+		var rating = await context.NewsPostRatingTypes.FindAsync(postId, userId);
 		if (rating == null)
 		{
 			return 0;
@@ -177,7 +176,7 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or execution failed</exception>
 	public async Task<int> UpdateComment(int commentId, string commentContent)
 	{
-		var comment = context.NewsComments.Find(commentId);
+		var comment = await context.NewsComments.FindAsync(commentId);
 		if (comment == null)
 		{
 			return 0;
@@ -197,14 +196,14 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or the execution failed</exception>
 	public async Task<int> DeleteCommentFromDatabase(int commentId)
 	{
-		var comment = context.NewsComments.Find(commentId);
+		var comment = await context.NewsComments.FindAsync(commentId);
 		if (comment == null)
 		{
 			return 0;
 		}
 
 		// Update the comment count of the post
-		var post = context.NewsPosts.Find(comment.PostId);
+		var post = await context.NewsPosts.FindAsync(comment.PostId);
 		if (post != null)
 		{
 			post.NrComments--;
@@ -272,7 +271,7 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or execution failed</exception>
 	public async Task<int> UpdatePost(int postId, string postContent)
 	{
-		var post = context.NewsPosts.Find(postId);
+		var post = await context.NewsPosts.FindAsync(postId);
 		if (post is null)
 		{
 			return 0;
@@ -290,7 +289,7 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or execution failed</exception>
 	public async Task<int> DeletePostFromDatabase(int postId)
 	{
-		var post = context.NewsPosts.Find(postId);
+		var post = await context.NewsPosts.FindAsync(postId);
 		if (post is null)
 		{
 			return 0;
