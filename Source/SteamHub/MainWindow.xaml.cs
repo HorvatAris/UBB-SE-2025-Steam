@@ -202,8 +202,8 @@ namespace SteamHub
                 this.friendsService = new FriendServiceProxy();
                 this.collectionServiceProxy = new CollectionsServiceProxy();
                 this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
-                this.walletService = new WalletServiceProxy(_httpClientFactory, user);
-                this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory);
+                this.walletService = new WalletServiceProxy(user);
+                this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory, user);
 
                 Debug.WriteLine("User services initialized successfully");
             }
