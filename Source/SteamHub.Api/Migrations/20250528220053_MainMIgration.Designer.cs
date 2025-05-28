@@ -12,8 +12,13 @@ using SteamHub.Api.Context;
 namespace SteamHub.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250528091400_RepairMigrations")]
-    partial class RepairMigrations
+<<<<<<<< HEAD:Source/SteamHub.Api/Migrations/20250528213218_MainMigration.Designer.cs
+    [Migration("20250528213218_MainMigration")]
+    partial class MainMigration
+========
+    [Migration("20250528220053_MainMIgration")]
+    partial class MainMIgration
+>>>>>>>> NewFriendsBranch:Source/SteamHub.Api/Migrations/20250528220053_MainMIgration.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -312,6 +317,24 @@ namespace SteamHub.Api.Migrations
                             Description = "You made 100 friends, you get 15 points",
                             Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
                             Points = 15
+                        },
+                        new
+                        {
+                            AchievementId = 6,
+                            AchievementName = "OWNEDGAMES1",
+                            AchievementType = "Owned Games",
+                            Description = "You own 1 game, you get 1 point",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                            Points = 1
+                        },
+                        new
+                        {
+                            AchievementId = 7,
+                            AchievementName = "OWNEDGAMES2",
+                            AchievementType = "Owned Games",
+                            Description = "You own 5 games, you get 3 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                            Points = 3
                         });
                 });
 
@@ -815,6 +838,140 @@ namespace SteamHub.Api.Migrations
                         .IsUnique();
 
                     b.ToTable("Friendships");
+
+                    b.HasData(
+                        new
+                        {
+                            FriendshipId = 1,
+                            FriendId = 1,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            FriendshipId = 2,
+                            FriendId = 2,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            FriendshipId = 3,
+                            FriendId = 3,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            FriendshipId = 4,
+                            FriendId = 4,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            FriendshipId = 5,
+                            FriendId = 6,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            FriendshipId = 6,
+                            FriendId = 7,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            FriendshipId = 7,
+                            FriendId = 8,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            FriendshipId = 8,
+                            FriendId = 6,
+                            UserId = 4
+                        },
+                        new
+                        {
+                            FriendshipId = 9,
+                            FriendId = 7,
+                            UserId = 4
+                        },
+                        new
+                        {
+                            FriendshipId = 10,
+                            FriendId = 7,
+                            UserId = 6
+                        },
+                        new
+                        {
+                            FriendshipId = 11,
+                            FriendId = 5,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            FriendshipId = 12,
+                            FriendId = 5,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            FriendshipId = 13,
+                            FriendId = 5,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            FriendshipId = 14,
+                            FriendId = 5,
+                            UserId = 4
+                        },
+                        new
+                        {
+                            FriendshipId = 15,
+                            FriendId = 5,
+                            UserId = 6
+                        },
+                        new
+                        {
+                            FriendshipId = 16,
+                            FriendId = 5,
+                            UserId = 7
+                        },
+                        new
+                        {
+                            FriendshipId = 17,
+                            FriendId = 5,
+                            UserId = 8
+                        },
+                        new
+                        {
+                            FriendshipId = 22,
+                            FriendId = 2,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            FriendshipId = 18,
+                            FriendId = 3,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            FriendshipId = 19,
+                            FriendId = 3,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            FriendshipId = 20,
+                            FriendId = 4,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            FriendshipId = 21,
+                            FriendId = 8,
+                            UserId = 6
+                        });
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.Game", b =>
@@ -2105,6 +2262,9 @@ namespace SteamHub.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -2117,12 +2277,19 @@ namespace SteamHub.Api.Migrations
                     b.Property<DateTime?>("LastLogin")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("LastModified")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("PointsBalance")
-                        .HasColumnType("real");
+                    b.Property<int>("PointsBalance")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProfilePicture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfilePicture")
                         .IsRequired()
@@ -2135,8 +2302,8 @@ namespace SteamHub.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("WalletBalance")
-                        .HasColumnType("real");
+                    b.Property<decimal>("WalletBalance")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("UserId");
 
@@ -2149,12 +2316,17 @@ namespace SteamHub.Api.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "gabe.newell@valvestudio.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
-                            PointsBalance = 6000f,
+                            PointsBalance = 6000,
+<<<<<<<< HEAD:Source/SteamHub.Api/Migrations/20250528213218_MainMigration.Designer.cs
+                            ProfilePicture = "https://i.imgur.com/vixhhkC.jpeg",
+========
                             ProfilePicture = "",
+>>>>>>>> NewFriendsBranch:Source/SteamHub.Api/Migrations/20250528220053_MainMIgration.Designer.cs
                             UserRole = 1,
                             Username = "GabeN",
-                            WalletBalance = 500f
+                            WalletBalance = 500m
                         },
                         new
                         {
@@ -2162,12 +2334,13 @@ namespace SteamHub.Api.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mathias.new@cdprojektred.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG",
-                            PointsBalance = 5000f,
+                            PointsBalance = 5000,
                             ProfilePicture = "",
                             UserRole = 1,
                             Username = "MattN",
-                            WalletBalance = 420f
+                            WalletBalance = 420m
                         },
                         new
                         {
@@ -2175,12 +2348,13 @@ namespace SteamHub.Api.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "john.chen@thatgamecompany.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq",
-                            PointsBalance = 5000f,
+                            PointsBalance = 5000,
                             ProfilePicture = "",
                             UserRole = 1,
                             Username = "JohnC",
-                            WalletBalance = 390f
+                            WalletBalance = 390m
                         },
                         new
                         {
@@ -2188,12 +2362,13 @@ namespace SteamHub.Api.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "alice.johnson@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6",
-                            PointsBalance = 6000f,
+                            PointsBalance = 6000,
                             ProfilePicture = "",
                             UserRole = 0,
                             Username = "AliceJ",
-                            WalletBalance = 780f
+                            WalletBalance = 780m
                         },
                         new
                         {
@@ -2201,12 +2376,13 @@ namespace SteamHub.Api.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "liam.garcia@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a",
-                            PointsBalance = 7000f,
+                            PointsBalance = 7000,
                             ProfilePicture = "",
                             UserRole = 0,
                             Username = "LiamG",
-                            WalletBalance = 5500f
+                            WalletBalance = 5500m
                         },
                         new
                         {
@@ -2214,12 +2390,13 @@ namespace SteamHub.Api.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "sophie.williams@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y",
-                            PointsBalance = 6000f,
+                            PointsBalance = 6000,
                             ProfilePicture = "",
                             UserRole = 0,
                             Username = "SophieW",
-                            WalletBalance = 950f
+                            WalletBalance = 950m
                         },
                         new
                         {
@@ -2227,12 +2404,13 @@ namespace SteamHub.Api.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "noah.smith@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu",
-                            PointsBalance = 4000f,
+                            PointsBalance = 4000,
                             ProfilePicture = "",
                             UserRole = 0,
                             Username = "NoahS",
-                            WalletBalance = 3300f
+                            WalletBalance = 3300m
                         },
                         new
                         {
@@ -2240,12 +2418,13 @@ namespace SteamHub.Api.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "emily.brown@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC",
-                            PointsBalance = 5000f,
+                            PointsBalance = 5000,
                             ProfilePicture = "",
                             UserRole = 0,
                             Username = "EmilyB",
-                            WalletBalance = 1100f
+                            WalletBalance = 1100m
                         });
                 });
 
@@ -2716,57 +2895,57 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             WalletId = 1,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 500m,
+                            Points = 6000,
                             UserId = 1
                         },
                         new
                         {
                             WalletId = 2,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 420m,
+                            Points = 5000,
                             UserId = 2
                         },
                         new
                         {
                             WalletId = 3,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 390m,
+                            Points = 5000,
                             UserId = 3
                         },
                         new
                         {
                             WalletId = 4,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 780m,
+                            Points = 6000,
                             UserId = 4
                         },
                         new
                         {
                             WalletId = 5,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 5500m,
+                            Points = 7000,
                             UserId = 5
                         },
                         new
                         {
                             WalletId = 6,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 950m,
+                            Points = 6000,
                             UserId = 6
                         },
                         new
                         {
                             WalletId = 7,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 3300m,
+                            Points = 4000,
                             UserId = 7
                         },
                         new
                         {
                             WalletId = 8,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 1100m,
+                            Points = 5000,
                             UserId = 8
                         });
                 });
@@ -3377,8 +3556,8 @@ namespace SteamHub.Api.Migrations
             modelBuilder.Entity("SteamHub.Api.Entities.Wallet", b =>
                 {
                     b.HasOne("SteamHub.Api.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("Wallet")
+                        .HasForeignKey("SteamHub.Api.Entities.Wallet", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -3479,6 +3658,9 @@ namespace SteamHub.Api.Migrations
                     b.Navigation("UserAchievements");
 
                     b.Navigation("UserPointShopItemsInventory");
+
+                    b.Navigation("Wallet")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.UserProfile", b =>

@@ -38,7 +38,8 @@ namespace SteamHub
         private TradeServiceProxy tradeService;
         private UserServiceProxy userService;
         private SessionServiceProxy sessionService;
-        private FriendServiceProxy friendsService;
+        private FriendsServiceProxy friendsService;
+        
         private FeaturesServiceProxy featuresService;
         private WalletServiceProxy walletService;
         private FriendRequestServiceProxy friendRequestService;
@@ -135,6 +136,7 @@ namespace SteamHub
                     this.cartService = null;
                     this.userGameService = null;
                     this.developerService = null;
+                    this.friendsService = null;
                     this.friendRequestService = null;
 
                     // Show login page
@@ -142,6 +144,7 @@ namespace SteamHub
                 }
             }
             catch (Exception ex)
+
             {
                 // Show error dialog
                 var errorDialog = new ContentDialog
@@ -199,11 +202,12 @@ namespace SteamHub
                 this.cartService = new CartServiceProxy(_httpClientFactory, user);
                 this.userGameService = new UserGameServiceProxy(_httpClientFactory, user);
                 this.developerService = new DeveloperServiceProxy(_httpClientFactory, user);
-                this.friendsService = new FriendServiceProxy();
+                this.friendsService = new FriendsServiceProxy(_httpClientFactory, user);
+                this.achievementsService = new AchievementsServiceProxy();
                 this.collectionServiceProxy = new CollectionsServiceProxy();
                 this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
                 this.walletService = new WalletServiceProxy(user);
-                this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory, user);
+                this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory,user);
 
                 Debug.WriteLine("User services initialized successfully");
             }
@@ -253,6 +257,16 @@ namespace SteamHub
                     case "trading":
                         this.ContentFrame.Content = new TradingPage(this.tradeService, this.userService, this.gameService);
                         break;
+                    case "friends":
+                        this.ContentFrame.Content = new FriendsPage(this.friendsService);
+                        break;
+                    case "LoginPage":
+                        ShowLoginPage();
+                        break;
+                    case "RegisterPage":
+                        ShowRegisterPage();
+                        break;
+                   
                     case "profile":
                         this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService,this.collectionServiceProxy, achievementsService, this.user);
                         break;
