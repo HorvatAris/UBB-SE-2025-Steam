@@ -38,9 +38,8 @@ namespace SteamHub
         private TradeServiceProxy tradeService;
         private UserServiceProxy userService;
         private SessionServiceProxy sessionService;
-        private PasswordResetServiceProxy passwordResetService;
         private FriendsServiceProxy friendsService;
-        private FriendServiceProxy friendsService;
+        
         private FeaturesServiceProxy featuresService;
         private WalletServiceProxy walletService;
         private AchievementsServiceProxy achievementsService;
@@ -201,7 +200,7 @@ namespace SteamHub
                 this.cartService = new CartServiceProxy(_httpClientFactory, user);
                 this.userGameService = new UserGameServiceProxy(_httpClientFactory, user);
                 this.developerService = new DeveloperServiceProxy(_httpClientFactory, user);
-                this.friendsService = new FriendServiceProxy();
+                this.friendsService = new FriendsServiceProxy(_httpClientFactory, user);
                 this.achievementsService = new AchievementsServiceProxy();
                 this.collectionServiceProxy = new CollectionsServiceProxy();
                 this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
@@ -264,8 +263,7 @@ namespace SteamHub
                     case "RegisterPage":
                         ShowRegisterPage();
                         break;
-                    case "ForgotPasswordPage":
-                        ShowLoginPage();
+                   
                     case "profile":
                         this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService, this.collectionServiceProxy, achievementsService, this.user);
                         break;

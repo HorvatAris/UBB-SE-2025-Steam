@@ -7,7 +7,7 @@
 namespace SteamHub.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class NewMigration : Migration
+    public partial class friends1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,16 +17,18 @@ namespace SteamHub.Api.Migrations
                 columns: new[] { "FriendshipId", "FriendId", "UserId", "UserProfileProfileId" },
                 values: new object[,]
                 {
-                    { 1, 1, 5, null },
-                    { 2, 2, 5, null },
-                    { 3, 3, 5, null },
-                    { 4, 4, 5, null },
-                    { 5, 6, 5, null },
-                    { 6, 7, 5, null },
-                    { 7, 8, 5, null },
-                    { 8, 6, 4, null },
-                    { 9, 7, 4, null },
-                    { 10, 7, 6, null }
+                    { 11, 5, 1, null },
+                    { 12, 5, 2, null },
+                    { 13, 5, 3, null },
+                    { 14, 5, 4, null },
+                    { 15, 5, 6, null },
+                    { 16, 5, 7, null },
+                    { 17, 5, 8, null },
+                    { 18, 3, 1, null },
+                    { 19, 3, 2, null },
+                    { 20, 4, 3, null },
+                    { 21, 8, 6, null },
+                    { 22, 2, 1, null }
                 });
         }
 
@@ -36,52 +38,62 @@ namespace SteamHub.Api.Migrations
             migrationBuilder.DeleteData(
                 table: "Friendships",
                 keyColumn: "FriendshipId",
-                keyValue: 1);
+                keyValue: 11);
 
             migrationBuilder.DeleteData(
                 table: "Friendships",
                 keyColumn: "FriendshipId",
-                keyValue: 2);
+                keyValue: 12);
 
             migrationBuilder.DeleteData(
                 table: "Friendships",
                 keyColumn: "FriendshipId",
-                keyValue: 3);
+                keyValue: 13);
 
             migrationBuilder.DeleteData(
                 table: "Friendships",
                 keyColumn: "FriendshipId",
-                keyValue: 4);
+                keyValue: 14);
 
             migrationBuilder.DeleteData(
                 table: "Friendships",
                 keyColumn: "FriendshipId",
-                keyValue: 5);
+                keyValue: 15);
 
             migrationBuilder.DeleteData(
                 table: "Friendships",
                 keyColumn: "FriendshipId",
-                keyValue: 6);
+                keyValue: 16);
 
             migrationBuilder.DeleteData(
                 table: "Friendships",
                 keyColumn: "FriendshipId",
-                keyValue: 7);
+                keyValue: 17);
 
             migrationBuilder.DeleteData(
                 table: "Friendships",
                 keyColumn: "FriendshipId",
-                keyValue: 8);
+                keyValue: 18);
 
             migrationBuilder.DeleteData(
                 table: "Friendships",
                 keyColumn: "FriendshipId",
-                keyValue: 9);
+                keyValue: 19);
 
             migrationBuilder.DeleteData(
                 table: "Friendships",
                 keyColumn: "FriendshipId",
-                keyValue: 10);
+                keyValue: 20);
+
+            migrationBuilder.DeleteData(
+                table: "Friendships",
+                keyColumn: "FriendshipId",
+                keyValue: 21);
+
+            migrationBuilder.DeleteData(
+                table: "Friendships",
+                keyColumn: "FriendshipId",
+                keyValue: 22);
         }
     }
 }

@@ -38,7 +38,7 @@
                 <NavigationViewItem Icon="List" Content="Inventory" Tag="inventory" />
                 <NavigationViewItem Icon="Account" Content="Profile" Tag="profile" />
                 <NavigationViewItem Icon="Switch" Content="Trading" Tag="trading" />
-                <NavigationViewItem Content="Friends" Tag="friends" />
+                <NavigationViewItem Icon="AddFriend" Content="Friends" Tag="friends" />
                 <NavigationViewItem Icon="Scan" Content="Wallet" Tag="Wallet" />
                 <NavigationViewItem Icon="Like" Content="Achievements" Tag="AchievementsPage" />
                 
