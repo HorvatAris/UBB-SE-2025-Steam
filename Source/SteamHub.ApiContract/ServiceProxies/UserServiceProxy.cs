@@ -350,10 +350,17 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task UpdateProfilePictureAsync(int userId, string profilePicturePath)
+        public async Task<bool> UpdateProfilePictureAsync(string profilePicturePath)
         {
-            // IMPLEMENT
-            await Task.CompletedTask;
+            try
+            {
+                await PostAsync("User/updatePFP", new { ProfilePicture = profilePicturePath });
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task UpdateProfileBioAsync(int userId, string profileBio)

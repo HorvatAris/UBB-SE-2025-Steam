@@ -430,12 +430,14 @@
 
                 <!-- Settings button -->
                 <Button Style="{StaticResource TransparentButton}"
-                        Command="{x:Bind ViewModel.ConfigurationCommand}"
-                        Visibility="{x:Bind ViewModel.IsProfileOwner, Mode=OneWay}">
-                    <FontIcon FontFamily="Segoe MDL2 Assets" 
-                             Glyph="&#xE713;"
-                             Foreground="White"/>
+                    Command="{x:Bind ViewModel.ConfigurationCommand}"
+                    CommandParameter="{x:Bind ViewModel.userService}"
+                    Visibility="{x:Bind ViewModel.IsProfileOwner, Mode=OneWay}">
+                            <FontIcon FontFamily="Segoe MDL2 Assets" 
+                          Glyph="&#xE713;"
+                          Foreground="White"/>  
                 </Button>
+
             </StackPanel>
 
             <!-- Collections Header -->

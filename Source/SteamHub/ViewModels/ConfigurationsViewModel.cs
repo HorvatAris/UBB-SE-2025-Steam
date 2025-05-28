@@ -36,7 +36,7 @@ namespace SteamHub.ViewModels
         [RelayCommand]
         private void NavigateToProfileSettings()
         {
-            frame.Navigate(typeof(ModifyProfilePage));
+            frame.Content = new ModifyProfilePage(this.frame, this.userService);
         }
 
         [RelayCommand]

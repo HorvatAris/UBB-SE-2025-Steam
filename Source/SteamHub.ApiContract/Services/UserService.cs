@@ -158,8 +158,12 @@ namespace SteamHub.ApiContract.Services
             return await userRepository.GetAllUsersAsync();
         }
 
-        public async Task UpdateProfilePictureAsync(int userId, string profilePicturePath) 
-            => await userRepository.UpdateProfilePictureAsync(userId, profilePicturePath);
+        public async Task<bool> UpdateProfilePictureAsync(string profilePicturePath)
+        {
+            var currentUser = await GetCurrentUserAsync();
+            await userRepository.UpdateProfilePictureAsync(currentUser.UserId, profilePicturePath);
+            return true;
+        }
 
         public async Task UpdateProfileBioAsync(int userId, string profileBio) 
             => await userRepository.UpdateProfileBioAsync(userId, profileBio);

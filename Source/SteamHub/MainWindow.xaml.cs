@@ -225,6 +225,9 @@ namespace SteamHub
                     case "profile":
                         this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService,this.collectionServiceProxy, achievementsService, this.user);
                         break;
+                    case "profileSettings":
+                        this.ContentFrame.Content = new ConfigurationsPage(this.userService, this.ContentFrame);
+                        break;
                     case "ForgotPasswordPage":
                         ShowLoginPage();
                         break;
@@ -233,7 +236,7 @@ namespace SteamHub
                         break;
                     case "Wallet":
                         this.ContentFrame.Navigate(typeof(WalletPage), this.walletService);
-                        break;
+                        break;   
                 }
             }
 

@@ -235,6 +235,24 @@ namespace SteamHub.Api.Controllers
             return BadRequest("Failed to update email");
         }
 
+        [HttpPost("updatePFP")]
+        [Authorize]
+        public async Task<IActionResult> UpdatePFP([FromBody] PFPChangeRequest request)
+        {
+            var user = await userService.GetCurrentUserAsync();
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var result = await userService.UpdateProfilePictureAsync(request.ProfilePicutre);
+            if (result)
+            {
+                return Ok();
+            }
+            return BadRequest("Failed to update pfp");
+        }
+
         [HttpPost("verifyPassword")]
         [Authorize]
         public async Task<IActionResult> VerifyPassword([FromBody] PasswordVerifyRequest request)
@@ -253,6 +271,11 @@ namespace SteamHub.Api.Controllers
     public class PasswordVerifyRequest
     {
         public string Password { get; set; }
+    }
+
+    public class PFPChangeRequest
+    {
+        public string ProfilePicutre { get; set; }
     }
 
     public class EmailUpdateRequest

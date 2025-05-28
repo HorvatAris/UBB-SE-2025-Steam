@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.Pages;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -17,9 +18,11 @@ namespace SteamHub.ViewModels
         private string originalImagePath = string.Empty;
         private string originalDescription = string.Empty;
         private StorageFile selectedImageFile;
+        private readonly IUserService userService;
 
-        public ModifyProfileViewModel(Frame frame)
+        public ModifyProfileViewModel(IUserService userService, Frame frame)
         {
+            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _ = InitializeAsync();
         }
 
@@ -28,7 +31,7 @@ namespace SteamHub.ViewModels
             try
             {
                 // Get current user ID
-                var currentUser = await App.UserService.GetCurrentUserAsync();
+                var currentUser = await userService.GetCurrentUserAsync();
                 if (currentUser != null)
                 {
                     userIdentifier = currentUser.UserId;
@@ -49,7 +52,7 @@ namespace SteamHub.ViewModels
         {
             try
             {
-                var user = await App.UserService.GetUserByIdentifierAsync(userIdentifier);
+                var user = await userService.GetUserByIdentifierAsync(userIdentifier);
                 if (user != null)
                 {
                     originalImagePath = user.ProfilePicture ?? string.Empty;
@@ -109,7 +112,7 @@ namespace SteamHub.ViewModels
                     // Save new picture if changed
                     if (selectedImageFile != null && SelectedImagePath != originalImagePath)
                     {
-                        await App.UserService.UpdateProfilePictureAsync(userIdentifier, selectedImageFile.Path);
+                        await userService.UpdateProfilePictureAsync(selectedImageFile.Path);
                         originalImagePath = SelectedImagePath;
                         changesMade = true;
                     }
