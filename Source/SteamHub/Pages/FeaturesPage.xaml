@@ -5,269 +5,46 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SteamHub.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Page.Resources>
-        <Style x:Key="FeatureItemStyle" TargetType="Grid">
-            <Setter Property="Width" Value="200"/>
-            <Setter Property="Height" Value="200"/>
-            <Setter Property="Margin" Value="10"/>
-        </Style>
-        
-        <Style x:Key="CategoryHeaderStyle" TargetType="TextBlock">
-            <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
-            <Setter Property="FontSize" Value="24"/>
-            <Setter Property="Foreground" Value="#0078D7"/>
-            <Setter Property="TextDecorations" Value="Underline"/>
-            <Setter Property="Margin" Value="0,15,0,8"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-        </Style>
-    </Page.Resources>
+    <Grid Padding="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-    <ScrollViewer Padding="20">
-        <StackPanel>
-            <!-- Page Title and Back Button -->
-            <Grid Margin="0,0,0,20">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                
-                <Button Content="Back to Profile" 
-                        Click="BackToProfileButton_Click"
-                        Grid.Column="0"
-                        Style="{ThemeResource DefaultButtonStyle}"
-                        HorizontalAlignment="Left"/>
-                        
-                <TextBlock Text="Available Features" 
-                           Style="{ThemeResource TitleLargeTextBlockStyle}" 
-                           Foreground="Black"
-                           HorizontalAlignment="Center"
-                           Grid.Column="1"/>
-                
-                <Button Content="My Features"
-                        Click="MyFeaturesButton_Click"
-                        Grid.Column="2"
-                        Style="{ThemeResource DefaultButtonStyle}"
-                        HorizontalAlignment="Right"
-                        Margin="10,0,0,0"/>
-            </Grid>
-            
-            <!-- Status Message -->
-            <TextBlock Text="{x:Bind featuresViewModel.StatusMessage, Mode=OneWay}"
-                       Foreground="{x:Bind featuresViewModel.StatusColor, Mode=OneWay}"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,20"
-                       Visibility="{x:Bind featuresViewModel.StatusMessage, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}}"/>
-            
-            <!-- Frames Section -->
-            <TextBlock Text="Frames" 
-                      Style="{StaticResource CategoryHeaderStyle}"/>
-            <ItemsControl ItemsSource="{x:Bind featuresViewModel.Frames, Mode=OneWay}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Width="160" Height="160" Margin="8" Tapped="Grid_Tapped">
-                            <Border BorderThickness="3" 
-                                    BorderBrush="{Binding BorderBrush}">
-                                <Image Source="{Binding Source}" 
-                                       Stretch="Uniform"
-                                       Opacity="{Binding Opacity}"
-                                       ImageFailed="Image_ImageFailed"/>
-                            </Border>
-                            
-                            <FontIcon Glyph="&#xE72E;" 
-                                      FontSize="40"
-                                      Foreground="White"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Visibility="{Binding LockIconVisibility}"/>
-                            
-                            <StackPanel VerticalAlignment="Bottom"
-                                        Background="{ThemeResource SystemControlBackgroundBaseLowBrush}">
-                                <TextBlock Text="{Binding Name}" 
-                                         HorizontalAlignment="Center"
-                                         Margin="5"/>
-                                <TextBlock Text="{Binding DisplayValue}"
-                                         HorizontalAlignment="Center"
-                                         Margin="5"/>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+        <!-- Header -->
+        <TextBlock 
+            Text="Features List" 
+            FontSize="24"
+            FontWeight="Bold"
+            Margin="0,0,0,10"/>
 
-            <!-- Emojis Section -->
-            <TextBlock Text="Emojis" 
-                      Style="{StaticResource CategoryHeaderStyle}"/>
-            <ItemsControl ItemsSource="{x:Bind featuresViewModel.Emojis, Mode=OneWay}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Width="160" Height="160" Margin="8" Tapped="Grid_Tapped">
-                            <Border BorderThickness="3" 
-                                    BorderBrush="{Binding BorderBrush}">
-                                <Image Source="{Binding Source}" 
-                                       Stretch="Uniform"
-                                       Opacity="{Binding Opacity}"
-                                       ImageFailed="Image_ImageFailed"/>
-                            </Border>
-                            
-                            <FontIcon Glyph="&#xE72E;" 
-                                      FontSize="40"
-                                      Foreground="White"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Visibility="{Binding LockIconVisibility}"/>
-                            
-                            <StackPanel VerticalAlignment="Bottom"
-                                        Background="{ThemeResource SystemControlBackgroundBaseLowBrush}">
-                                <TextBlock Text="{Binding Name}" 
-                                         HorizontalAlignment="Center"
-                                         Margin="5"/>
-                                <TextBlock Text="{Binding DisplayValue}"
-                                         HorizontalAlignment="Center"
-                                         Margin="5"/>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-
-            <!-- Backgrounds Section -->
-            <TextBlock Text="Backgrounds" 
-                      Style="{StaticResource CategoryHeaderStyle}"/>
-            <ItemsControl ItemsSource="{x:Bind featuresViewModel.Backgrounds, Mode=OneWay}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Width="160" Height="160" Margin="8" Tapped="Grid_Tapped">
-                            <Border BorderThickness="3" 
-                                    BorderBrush="{Binding BorderBrush}">
-                                <Image Source="{Binding Source}" 
-                                       Stretch="Uniform"
-                                       Opacity="{Binding Opacity}"
-                                       ImageFailed="Image_ImageFailed"/>
-                            </Border>
-                            
-                            <FontIcon Glyph="&#xE72E;" 
-                                      FontSize="40"
-                                      Foreground="White"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Visibility="{Binding LockIconVisibility}"/>
-                            
-                            <StackPanel VerticalAlignment="Bottom"
-                                        Background="{ThemeResource SystemControlBackgroundBaseLowBrush}">
-                                <TextBlock Text="{Binding Name}" 
-                                         HorizontalAlignment="Center"
-                                         Margin="5"/>
-                                <TextBlock Text="{Binding DisplayValue}"
-                                         HorizontalAlignment="Center"
-                                         Margin="5"/>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-
-            <!-- Pets Section -->
-            <TextBlock Text="Pets" 
-                      Style="{StaticResource CategoryHeaderStyle}"/>
-            <ItemsControl ItemsSource="{x:Bind featuresViewModel.Pets, Mode=OneWay}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Width="160" Height="160" Margin="8" Tapped="Grid_Tapped">
-                            <Border BorderThickness="3" 
-                                    BorderBrush="{Binding BorderBrush}">
-                                <Image Source="{Binding Source}" 
-                                       Stretch="Uniform"
-                                       Opacity="{Binding Opacity}"
-                                       ImageFailed="Image_ImageFailed"/>
-                            </Border>
-                            
-                            <FontIcon Glyph="&#xE72E;" 
-                                      FontSize="40"
-                                      Foreground="White"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Visibility="{Binding LockIconVisibility}"/>
-                            
-                            <StackPanel VerticalAlignment="Bottom"
-                                        Background="{ThemeResource SystemControlBackgroundBaseLowBrush}">
-                                <TextBlock Text="{Binding Name}" 
-                                         HorizontalAlignment="Center"
-                                         Margin="5"/>
-                                <TextBlock Text="{Binding DisplayValue}"
-                                         HorizontalAlignment="Center"
-                                         Margin="5"/>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-
-            <!-- Hats Section -->
-            <TextBlock Text="Hats" 
-                      Style="{StaticResource CategoryHeaderStyle}"/>
-            <ItemsControl ItemsSource="{x:Bind featuresViewModel.Hats, Mode=OneWay}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Width="160" Height="160" Margin="8" Tapped="Grid_Tapped">
-                            <Border BorderThickness="3" 
-                                    BorderBrush="{Binding BorderBrush}">
-                                <Image Source="{Binding Source}" 
-                                       Stretch="Uniform"
-                                       Opacity="{Binding Opacity}"
-                                       ImageFailed="Image_ImageFailed"/>
-                            </Border>
-                            
-                            <FontIcon Glyph="&#xE72E;" 
-                                      FontSize="40"
-                                      Foreground="White"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Visibility="{Binding LockIconVisibility}"/>
-                            
-                            <StackPanel VerticalAlignment="Bottom"
-                                        Background="{ThemeResource SystemControlBackgroundBaseLowBrush}">
-                                <TextBlock Text="{Binding Name}" 
-                                         HorizontalAlignment="Center"
-                                         Margin="5"/>
-                                <TextBlock Text="{Binding DisplayValue}"
-                                         HorizontalAlignment="Center"
-                                         Margin="5"/>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
-    </ScrollViewer>
+        <!-- Features Table List -->
+        <ListView 
+            x:Name="FeaturesPageRoot"
+            Grid.Row="1"
+            ItemsSource="{x:Bind ViewModel.AllFeatures}"
+            SelectionMode="None">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <!-- Feature Name -->
+                        <TextBlock Grid.Column="0" Text="{Binding Feature.Name}" FontSize="18" VerticalAlignment="Center"/>
+                        <!-- Preview Button -->
+                        <Button Grid.Column="1" Content="Preview" Margin="10,0" Command="{Binding DataContext.PreviewFeatureCommand, ElementName=FeaturesPageRoot}" CommandParameter="{Binding}"/>
+                        <!-- Purchase Button -->
+                        <Button Grid.Column="2" Content="Purchase" Margin="10,0" Command="{Binding DataContext.PurchaseFeatureCommand, ElementName=FeaturesPageRoot}" CommandParameter="{Binding}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
 </Page> 
