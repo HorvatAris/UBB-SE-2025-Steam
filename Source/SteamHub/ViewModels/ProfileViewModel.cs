@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Models.Collections;
 using Collection = SteamHub.ApiContract.Models.Collections.Collection;
+using CommunityToolkit.Common;
 
 
 
@@ -680,7 +681,7 @@ namespace SteamHub.ViewModels
             try
             {
                 // Get all achievements for this category
-                var achievements = achievementsService.GetAchievementsWithStatusForUser(userId)
+                var achievements = achievementsService.GetAchievementsWithStatusForUser(userId).GetResultOrDefault()
                     .Where(achievementWithStatus => achievementWithStatus.Achievement.AchievementType == category)
                     .ToList();
 
@@ -768,7 +769,7 @@ namespace SteamHub.ViewModels
                 Debug.WriteLine($"Refreshing equipped features for user {userIdentifier}");
 
                 // Get the updated equipped features
-                var equippedFeatures = featuresService.GetUserEquippedFeatures(userIdentifier);
+                var equippedFeatures = featuresService.GetEquippedFeaturesAsync(userIdentifier).GetResultOrDefault();
 
                 // Process and update the UI
                 await dispatcherQueue.EnqueueAsync(() =>

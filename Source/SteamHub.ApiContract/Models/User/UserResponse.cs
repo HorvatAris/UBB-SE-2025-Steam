@@ -22,6 +22,8 @@ public class UserResponse
     public DateTime? LastLogin { get; set; }
 
     public string ProfilePicture { get; set; }
+    public string Bio { get; set; }
+    public DateTime LastChanged { get; set; }
 
     public bool IsDeveloper => UserRole == UserRole.Developer;
 }

@@ -21,6 +21,7 @@ using SteamHub.Pages;
 using SteamHub.ApiContract.Models;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ApiContract.Services;
+using CommunityToolkit.Common;
 
 namespace SteamHub.ViewModels
 {
@@ -84,7 +85,7 @@ namespace SteamHub.ViewModels
                 const string petString = "pet";
                 const string hatString = "hat";
 
-                var features = featuresService.GetFeaturesByCategories();
+                var features = featuresService.GetFeaturesByCategoriesAsync(userService.GetCurrentUser().UserId).GetResultOrDefault();
 
                 UpdateCollection(Frames, features.GetValueOrDefault(frameString, new()));
                 UpdateCollection(Emojis, features.GetValueOrDefault(emojiString, new()));
@@ -107,7 +108,7 @@ namespace SteamHub.ViewModels
             var currentUser = userService.GetCurrentUser();
             foreach (var feature in features)
             {
-                bool isPurchased = featuresService.IsFeaturePurchased(currentUser.UserId, feature.FeatureId);
+                bool isPurchased = featuresService.IsFeaturePurchasedAsync(currentUser.UserId, feature.FeatureId).GetResultOrDefault();
                 collection.Add(new FeatureDisplay(feature, isPurchased));
             }
         }
@@ -167,9 +168,9 @@ namespace SteamHub.ViewModels
         {
             try
             {
-                bool success = featuresService.EquipFeature(
+                bool success = featuresService.EquipFeatureAsync(
                     userService.GetCurrentUser().UserId,
-                    featureId);
+                    featureId).GetResultOrDefault();
 
                 if (success)
                 {
@@ -198,14 +199,15 @@ namespace SteamHub.ViewModels
 
         public bool UnequipFeature(int userId, FeatureDisplay feature)
         {
-            var result = featuresService.UnequipFeature(userId, feature.FeatureId);
-            StatusMessage = result.Item2;
-            StatusColor = new SolidColorBrush(result.Item1 ? Colors.Green : Colors.Red);
-            if (result.Item1)
-            {
+            var result = featuresService.UnequipFeatureAsync(userId, feature.FeatureId).GetResultOrDefault();
+            // StatusMessage = result.Item2;
+            // StatusColor = new SolidColorBrush(result.Item1 ? Colors.Green : Colors.Red);
+            // if (result.Item1)
+            // {
                 LoadFeatures();
-            }
-            return result.Item1;
+            return result;
+            // }
+            // return result.Item1;
         }
 
         public async void ShowPreview(FeatureDisplay feature)
@@ -215,7 +217,8 @@ namespace SteamHub.ViewModels
 
         private void PurchaseFeature(int userId, FeatureDisplay feature)
         {
-            var result = featuresService.PurchaseFeature(userId, feature.FeatureId);
+            /*
+            var result = featuresService.PurchaseFeatureAsync(userId, feature.FeatureId);
 
             StatusMessage = result.message;
             StatusColor = new SolidColorBrush(result.success ? Colors.Green : Colors.Red);
@@ -223,7 +226,7 @@ namespace SteamHub.ViewModels
             if (result.success)
             {
                 LoadFeatures();
-            }
+            }*/
         }
 
         private async Task ShowPreviewDialog(FeatureDisplay featureDisplay)
@@ -232,7 +235,7 @@ namespace SteamHub.ViewModels
             var user = userService.GetCurrentUser();
 
             // Use service to get preview data
-            var previewData = featuresService.GetFeaturePreviewData(user.UserId, featureDisplay.FeatureId);
+            var previewData = featuresService.GetFeaturePreviewDataAsync(user.UserId, featureDisplay.FeatureId).GetResultOrDefault();
 
             var profileControl = new AdaptiveProfileControl();
 
