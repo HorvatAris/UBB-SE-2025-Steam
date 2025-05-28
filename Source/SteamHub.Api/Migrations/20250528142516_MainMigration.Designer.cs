@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SteamHub.Api.Context;
 
@@ -11,9 +12,11 @@ using SteamHub.Api.Context;
 namespace SteamHub.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250528142516_MainMigration")]
+    partial class MainMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2111,12 +2114,18 @@ namespace SteamHub.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<float>("PointsBalance")
+                        .HasColumnType("real");
+
                     b.Property<int>("UserRole")
                         .HasColumnType("int");
 
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("WalletBalance")
+                        .HasColumnType("real");
 
                     b.HasKey("UserId");
 
@@ -2132,8 +2141,10 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
+                            PointsBalance = 6000f,
                             UserRole = 1,
-                            Username = "GabeN"
+                            Username = "GabeN",
+                            WalletBalance = 500f
                         },
                         new
                         {
@@ -2144,8 +2155,10 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG",
+                            PointsBalance = 5000f,
                             UserRole = 1,
-                            Username = "MattN"
+                            Username = "MattN",
+                            WalletBalance = 420f
                         },
                         new
                         {
@@ -2156,8 +2169,10 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq",
+                            PointsBalance = 5000f,
                             UserRole = 1,
-                            Username = "JohnC"
+                            Username = "JohnC",
+                            WalletBalance = 390f
                         },
                         new
                         {
@@ -2168,8 +2183,10 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6",
+                            PointsBalance = 6000f,
                             UserRole = 0,
-                            Username = "AliceJ"
+                            Username = "AliceJ",
+                            WalletBalance = 780f
                         },
                         new
                         {
@@ -2180,8 +2197,10 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a",
+                            PointsBalance = 7000f,
                             UserRole = 0,
-                            Username = "LiamG"
+                            Username = "LiamG",
+                            WalletBalance = 5500f
                         },
                         new
                         {
@@ -2192,8 +2211,10 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y",
+                            PointsBalance = 6000f,
                             UserRole = 0,
-                            Username = "SophieW"
+                            Username = "SophieW",
+                            WalletBalance = 950f
                         },
                         new
                         {
@@ -2204,8 +2225,10 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu",
+                            PointsBalance = 4000f,
                             UserRole = 0,
-                            Username = "NoahS"
+                            Username = "NoahS",
+                            WalletBalance = 3300f
                         },
                         new
                         {
@@ -2216,8 +2239,10 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC",
+                            PointsBalance = 5000f,
                             UserRole = 0,
-                            Username = "EmilyB"
+                            Username = "EmilyB",
+                            WalletBalance = 1100f
                         });
                 });
 
@@ -2603,57 +2628,57 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             WalletId = 1,
-                            Balance = 500m,
-                            Points = 6000,
+                            Balance = 200m,
+                            Points = 10,
                             UserId = 1
                         },
                         new
                         {
                             WalletId = 2,
-                            Balance = 420m,
-                            Points = 5000,
+                            Balance = 200m,
+                            Points = 10,
                             UserId = 2
                         },
                         new
                         {
                             WalletId = 3,
-                            Balance = 390m,
-                            Points = 5000,
+                            Balance = 200m,
+                            Points = 10,
                             UserId = 3
                         },
                         new
                         {
                             WalletId = 4,
-                            Balance = 780m,
-                            Points = 6000,
+                            Balance = 200m,
+                            Points = 10,
                             UserId = 4
                         },
                         new
                         {
                             WalletId = 5,
-                            Balance = 5500m,
-                            Points = 7000,
+                            Balance = 200m,
+                            Points = 10,
                             UserId = 5
                         },
                         new
                         {
                             WalletId = 6,
-                            Balance = 950m,
-                            Points = 6000,
+                            Balance = 200m,
+                            Points = 10,
                             UserId = 6
                         },
                         new
                         {
                             WalletId = 7,
-                            Balance = 3300m,
-                            Points = 4000,
+                            Balance = 200m,
+                            Points = 10,
                             UserId = 7
                         },
                         new
                         {
                             WalletId = 8,
-                            Balance = 1100m,
-                            Points = 5000,
+                            Balance = 200m,
+                            Points = 10,
                             UserId = 8
                         });
                 });
@@ -3241,8 +3266,8 @@ namespace SteamHub.Api.Migrations
             modelBuilder.Entity("SteamHub.Api.Entities.Wallet", b =>
                 {
                     b.HasOne("SteamHub.Api.Entities.User", "User")
-                        .WithOne("Wallet")
-                        .HasForeignKey("SteamHub.Api.Entities.Wallet", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -3343,9 +3368,6 @@ namespace SteamHub.Api.Migrations
                     b.Navigation("UserAchievements");
 
                     b.Navigation("UserPointShopItemsInventory");
-
-                    b.Navigation("Wallet")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
