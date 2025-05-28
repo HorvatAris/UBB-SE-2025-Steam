@@ -25,12 +25,14 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or the query execution failed</exception>
 	public async Task<int> UpdatePostLikeCount(int postId)
 	{
-		var post = context.NewsPosts.Find(postId);
+		var post = await context.NewsPosts.FindAsync(postId);
 		if (post is null)
 		{
 			return 0;
 		}
 		post.NrLikes++;
+
+		context.NewsPosts.Update(post);
 
 		return await context.SaveChangesAsync();
 	}
@@ -43,7 +45,7 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or the query execution failed</exception>
 	public async Task<int> UpdatePostDislikeCount(int postId)
 	{
-		var post = context.NewsPosts.Find(postId);
+		var post = await context.NewsPosts.FindAsync(postId);
 
 		if (post is null)
 		{
@@ -51,6 +53,8 @@ public class NewsRepository : INewsRepository
 		}
 
 		post.NrDislikes++;
+
+		context.NewsPosts.Update(post);
 
 		return await context.SaveChangesAsync();
 	}
@@ -71,6 +75,24 @@ public class NewsRepository : INewsRepository
 			AuthorId = userId,
 			RatingType = ratingType == 1 ? true : false
 		};
+
+
+		var post = await context.NewsPosts.FindAsync(postId);
+		if (post == null)
+		{
+			return 0;
+		}
+		if (rating.RatingType == false)
+		{
+			post.NrDislikes++;
+		}
+		else
+		{
+			post.NrLikes++;
+		}
+
+		context.NewsPosts.Update(post);
+
 		context.NewsPostRatingTypes.Add(rating);
 		return await context.SaveChangesAsync();
 	}
@@ -90,7 +112,7 @@ public class NewsRepository : INewsRepository
 			return 0;
 		}
 
-		var post = context.NewsPosts.Find(postId);
+		var post = await context.NewsPosts.FindAsync(postId);
 		if (post == null)
 		{
 			return 0;
@@ -103,6 +125,8 @@ public class NewsRepository : INewsRepository
 		{
 			post.NrLikes--;
 		}
+
+		context.NewsPosts.Update(post);
 
 		context.NewsPostRatingTypes.Remove(rating);
 		return await context.SaveChangesAsync();
@@ -129,15 +153,18 @@ public class NewsRepository : INewsRepository
 			NrDislikes = 0
 		};
 
-		// Update the comment count of the post
-		var post = context.NewsPosts.Find(postId);
-		if (post == null)
+		var post = await context.NewsPosts.FindAsync(postId);
+
+		if (post is null)
 		{
 			return 0;
 		}
+
 		post.NrComments++;
 
 		context.NewsComments.Add(comment);
+		context.NewsPosts.Update(post);
+
 		return await context.SaveChangesAsync();
 	}
 
@@ -157,6 +184,8 @@ public class NewsRepository : INewsRepository
 		}
 
 		comment.Content = commentContent;
+		context.NewsComments.Update(comment);
+
 		return await context.SaveChangesAsync();
 	}
 
@@ -179,9 +208,11 @@ public class NewsRepository : INewsRepository
 		if (post != null)
 		{
 			post.NrComments--;
+			context.NewsPosts.Update(post);
 		}
 
 		context.NewsComments.Remove(comment);
+
 		return await context.SaveChangesAsync();
 	}
 
@@ -242,11 +273,12 @@ public class NewsRepository : INewsRepository
 	public async Task<int> UpdatePost(int postId, string postContent)
 	{
 		var post = context.NewsPosts.Find(postId);
-		if (post == null)
+		if (post is null)
 		{
 			return 0;
 		}
 		post.Content = postContent;
+		context.NewsPosts.Update(post);
 		return await context.SaveChangesAsync();
 	}
 
@@ -259,7 +291,7 @@ public class NewsRepository : INewsRepository
 	public async Task<int> DeletePostFromDatabase(int postId)
 	{
 		var post = context.NewsPosts.Find(postId);
-		if (post == null)
+		if (post is null)
 		{
 			return 0;
 		}
