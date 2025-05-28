@@ -10,12 +10,12 @@ namespace BusinessLayer.Services
     public class FriendRequestService : IFriendRequestService
     {
         private readonly IFriendRequestRepository friendRequestRepository;
-        private readonly IFriendService friendService;
+        private readonly IFriendsService friendsService;
 
-        public FriendRequestService(IFriendRequestRepository friendRequestRepository, IFriendService friendService)
+        public FriendRequestService(IFriendRequestRepository friendRequestRepository, IFriendsService friendService)
         {
             this.friendRequestRepository = friendRequestRepository ?? throw new ArgumentNullException(nameof(friendRequestRepository));
-            this.friendService = friendService ?? throw new ArgumentNullException(nameof(friendService));
+            this.friendsService = friendService ?? throw new ArgumentNullException(nameof(friendService));
         }
 
         public async Task<IEnumerable<FriendRequest>> GetFriendRequestsAsync(string username)
@@ -73,7 +73,7 @@ namespace BusinessLayer.Services
             }
 
             // First, add as friend
-            bool friendAdded = await friendService.AddFriendAsync(
+            bool friendAdded = await friendsService.AddFriendAsync(
                 senderUsername,
                 receiverUsername,
                 requestToAccept.Email,

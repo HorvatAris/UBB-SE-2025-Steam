@@ -36,6 +36,7 @@ namespace SteamHub
         private UserServiceProxy userService;
         private SessionServiceProxy sessionService;
         private PasswordResetServiceProxy passwordResetService;
+        private FriendsServiceProxy friendsService;
 
         public MainWindow()
         {
@@ -132,6 +133,8 @@ namespace SteamHub
 
             this.developerService = new DeveloperServiceProxy(httpClientFactory, loggedInUser);
 
+            this.friendsService = new FriendsServiceProxy(httpClientFactory, loggedInUser);
+
             if (this.ContentFrame == null)
             {
                 throw new Exception("ContentFrame is not initialized.");
@@ -175,6 +178,9 @@ namespace SteamHub
                         break;
                     case "trading":
                         this.ContentFrame.Content = new TradingPage(this.tradeService, this.userService, this.gameService);
+                        break;
+                    case "friends":
+                        this.ContentFrame.Content = new FriendsPage(this.friendsService);
                         break;
                     case "LoginPage":
                         this.ContentFrame.Content = new LoginPage(this.userService);

@@ -37,7 +37,8 @@
                 <NavigationViewItem Icon="Shop" Content="Marketplace" Tag="marketplace" />
                 <NavigationViewItem Icon="List" Content="Inventory" Tag="inventory" />
                 <NavigationViewItem Icon="Switch" Content="Trading" Tag="trading" />
-                
+                <NavigationViewItem Content="Friends" Tag="friends" />
+
             </NavigationView.MenuItems>
 
             <Frame x:Name="ContentFrame" />
