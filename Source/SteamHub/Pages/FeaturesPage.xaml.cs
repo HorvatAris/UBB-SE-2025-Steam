@@ -35,7 +35,14 @@ namespace SteamHub.Pages
                 userService);
             this.DataContext = this.featuresViewModel;
             this.Loaded += this.FeaturesPage_Loaded;
-            userIdentifier = userService.GetCurrentUser().UserId;
+            SetUserIdentifierAsync(userService);
+        }
+
+        private async void SetUserIdentifierAsync(IUserService userService)
+        {
+            var user = await userService.GetCurrentUserAsync();
+            if (user != null)
+                userIdentifier = user.UserId;
         }
 
         private void FeaturesPage_Loaded(object sender, RoutedEventArgs routedEventArguments)
@@ -43,11 +50,27 @@ namespace SteamHub.Pages
             this.featuresViewModel.Initialize(this.XamlRoot);
         }
 
-        private void Grid_Tapped(object sender, TappedRoutedEventArgs tappedRoutedEventArguments)
+        private async void Grid_Tapped(object sender, TappedRoutedEventArgs tappedRoutedEventArguments)
         {
             if (sender is FrameworkElement element && element.DataContext is FeatureDisplay feature)
             {
-                this.featuresViewModel.ShowPreview(feature);
+                var user = await featuresViewModel.GetCurrentUserAsync();
+                if (user == null)
+                {
+                    featuresViewModel.StatusMessage = "No user is currently logged in.";
+                    featuresViewModel.StatusColor = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
+                    return;
+                }
+                var previewData = await featuresViewModel.GetFeaturePreviewDataAsync(user.UserId, feature.FeatureId);
+
+                var dialog = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Preview",
+                    Content = new TextBlock { Text = "Test dialog" }, // Replace with AdaptiveProfileControl if desired
+                    PrimaryButtonText = "Close"
+                };
+                await dialog.ShowAsync();
             }
         }
 
@@ -73,7 +96,7 @@ namespace SteamHub.Pages
             else
             {
                 // Navigate directly to ProfilePage with the user ID
-               // this.Frame.Navigate(typeof(ProfilePage), userId);
+               this.Frame.Navigate(typeof(ProfilePage), userId);
             }
         }
 
@@ -115,6 +138,24 @@ namespace SteamHub.Pages
                 featuresViewModel.Hats.Clear();
                 foreach (var f in allHats) featuresViewModel.Hats.Add(f);
                 showingMyFeatures = false;
+            }
+        }
+
+        // Add this method to allow explicit reloading of features with error handling
+        public async void ReloadFeaturesButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                await featuresViewModel.LoadFeaturesAsyncPublic();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                // Optionally show a dialog or status message
+                if (featuresViewModel != null)
+                {
+                    featuresViewModel.StatusMessage = $"Error: {ex.Message}";
+                }
             }
         }
     }

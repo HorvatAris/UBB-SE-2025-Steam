@@ -16,8 +16,10 @@ namespace SteamHub.ViewModels
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Media;
     using SteamHub.ApiContract.Models;
+    using SteamHub.ApiContract.Models.User;
     using SteamHub.ApiContract.Services;
     using SteamHub.ApiContract.Services.Interfaces;
+    using SteamHub.Pages;
 
     public class FeaturesViewModel : INotifyPropertyChanged
     {
@@ -104,7 +106,13 @@ namespace SteamHub.ViewModels
                 const string petString = "pet";
                 const string hatString = "hat";
 
-                var currentUser = this.userService.GetCurrentUser();
+                var currentUser = await this.userService.GetCurrentUserAsync();
+                if (currentUser == null)
+                {
+                    this.StatusMessage = "No user is currently logged in.";
+                    this.StatusColor = new SolidColorBrush(Colors.Red);
+                    return;
+                }
                 var features = await this.featuresService.GetFeaturesByCategoriesAsync(currentUser.UserId);
 
                 await this.UpdateCollectionAsync(this.Frames, features.GetValueOrDefault(frameString, new()));
@@ -126,7 +134,13 @@ namespace SteamHub.ViewModels
         private async Task UpdateCollectionAsync(ObservableCollection<FeatureDisplay> collection, List<Feature> features)
         {
             collection.Clear();
-            var currentUser = this.userService.GetCurrentUser();
+            var currentUser = await this.userService.GetCurrentUserAsync();
+            if (currentUser == null)
+            {
+                this.StatusMessage = "No user is currently logged in.";
+                this.StatusColor = new SolidColorBrush(Colors.Red);
+                return;
+            }
             foreach (var feature in features)
             {
                 bool isPurchased = await this.featuresService.IsFeaturePurchasedAsync(currentUser.UserId, feature.FeatureId);
@@ -144,7 +158,13 @@ namespace SteamHub.ViewModels
                 }
 
                 this.SelectedFeature = feature;
-                var currentUser = this.userService.GetCurrentUser();
+                var currentUser = await this.userService.GetCurrentUserAsync();
+                if (currentUser == null)
+                {
+                    this.StatusMessage = "No user is currently logged in.";
+                    this.StatusColor = new SolidColorBrush(Colors.Red);
+                    return;
+                }
                 var dialog = new ContentDialog
                 {
                     XamlRoot = this.xamlRoot,
@@ -229,13 +249,20 @@ namespace SteamHub.ViewModels
         {
             try
             {
+                var currentUser = await this.userService.GetCurrentUserAsync();
+                if (currentUser == null)
+                {
+                    this.StatusMessage = "No user is currently logged in.";
+                    this.StatusColor = new SolidColorBrush(Colors.Red);
+                    return false;
+                }
                 bool success = await this.featuresService.EquipFeatureAsync(
-                    this.userService.GetCurrentUser().UserId,
+                    currentUser.UserId,
                     featureId);
 
                 if (success)
                 {
-                    FeatureEquipStatusChanged?.Invoke(this, this.userService.GetCurrentUser().UserId);
+                    FeatureEquipStatusChanged?.Invoke(this, currentUser.UserId);
 
                     this.StatusMessage = "Feature equipped successfully";
                     this.StatusColor = new SolidColorBrush(Colors.Green);
@@ -309,61 +336,63 @@ namespace SteamHub.ViewModels
 
         private async Task ShowPreviewDialog(FeatureDisplay featureDisplay)
         {
-            var user = this.userService.GetCurrentUser();
-            var previewData = await this.featuresService.GetFeaturePreviewDataAsync(user.UserId, featureDisplay.FeatureId);
-
-            //var profileControl = new AdaptiveProfileControl();
-
-            string profilePicturePath = previewData.profilePicturePath;
-            string bioText = previewData.bioText;
-            var userFeatures = previewData.equippedFeatures;
-
-            string hatPath = null;
-            string petPath = null;
-            string emojiPath = null;
-            string framePath = null;
-            string backgroundPath = null;
-
-            foreach (var feature in userFeatures)
+            try
             {
-                switch (feature.Type.ToLower())
+                if (this.featuresXamlRoot == null)
                 {
-                    case "hat":
-                        hatPath = feature.Source;
-                        break;
-                    case "pet":
-                        petPath = feature.Source;
-                        break;
-                    case "emoji":
-                        emojiPath = feature.Source;
-                        break;
-                    case "frame":
-                        framePath = feature.Source;
-                        break;
-                    case "background":
-                        backgroundPath = feature.Source;
-                        break;
+                    this.StatusMessage = "Error: XamlRoot is null. Cannot show dialog.";
+                    this.StatusColor = new SolidColorBrush(Colors.Red);
+                    System.Diagnostics.Debug.WriteLine("Error: featuresXamlRoot is null.");
+                    return;
                 }
+
+                // Ensure dialog is shown on the UI thread
+                if (!Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread().HasThreadAccess)
+                {
+                    await Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread().EnqueueAsync(async () =>
+                    {
+                        var dialog = new ContentDialog
+                        {
+                            XamlRoot = this.featuresXamlRoot,
+                            Title = "Preview",
+                            Content = new TextBlock { Text = "Test dialog" },
+                            PrimaryButtonText = "Close"
+                        };
+                        await dialog.ShowAsync();
+                    });
+                    return;
+                }
+
+                var dialog = new ContentDialog
+                {
+                    XamlRoot = this.featuresXamlRoot,
+                    Title = "Preview",
+                    Content = new TextBlock { Text = "Test dialog" },
+                    PrimaryButtonText = "Close"
+                };
+                await dialog.ShowAsync();
             }
-
-            /* profileControl.UpdateProfilePreview(
-                profilePicturePath,
-                bioText,
-                hatPath,
-                petPath,
-                emojiPath,
-                framePath,
-                backgroundPath);
-
-            var dialog = new ContentDialog
+            catch (Exception ex)
             {
-                XamlRoot = this.featuresXamlRoot,
-                Title = "Preview",
-                Content = profileControl,
-                PrimaryButtonText = "Close"
-            };*/
+                this.StatusMessage = $"Error: {ex.Message}";
+                this.StatusColor = new SolidColorBrush(Colors.Red);
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+            }
+        }
 
-            //await dialog.ShowAsync();
+        public async Task LoadFeaturesAsyncPublic()
+        {
+            await LoadFeaturesAsync();
+        }
+
+        public async Task<(string profilePicturePath, string bioText, List<Feature> equippedFeatures)> GetFeaturePreviewDataAsync(int userId, int featureId)
+        {
+            return await this.featuresService.GetFeaturePreviewDataAsync(userId, featureId);
+        }
+
+        public async Task<User> GetCurrentUserAsync()
+        {
+            return await this.userService.GetCurrentUserAsync();
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

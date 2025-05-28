@@ -128,7 +128,7 @@ namespace SteamHub.ApiContract.Services
                 throw new InvalidOperationException(validationResult.errorMessage);
             }
 
-            var user = userService.GetUserByIdentifier(userIdentifier);
+            var user = userService.GetUserByIdentifierAsync(userIdentifier);
             if (user == null)
             {
                 throw new InvalidOperationException("User not found.");
