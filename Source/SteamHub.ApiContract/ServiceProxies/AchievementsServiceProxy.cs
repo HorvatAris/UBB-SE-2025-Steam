@@ -120,7 +120,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"Achievements/{userIdentifier}/status");
+                var response = await _httpClient.GetAsync($"/api/Achievements/user/{userIdentifier}/status");
                 response.EnsureSuccessStatusCode();
                 var result = await response.Content.ReadFromJsonAsync<List<AchievementWithStatus>>(_options);
                 return result;
