@@ -136,7 +136,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "https://i.imgur.com/vixhhkC.jpeg",
                     Bio = "Gaming enthusiast and software developer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 500m,
+                    PointsBalance = 6000
                 },
                 new User
                 {
@@ -149,7 +151,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "",
                     Bio = "Game developer and tech lover",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 420m,
+                    PointsBalance = 5000
                 },
                 new User
                 {
@@ -162,7 +166,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "",
                     Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 390m,
+                    PointsBalance = 5000
                 },
                 new User
                 {
@@ -175,7 +181,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "",
                     Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 780m,
+                    PointsBalance = 6000
                 },
                 new User
                 {
@@ -188,7 +196,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "",
                     Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 5500m,
+                    PointsBalance = 7000
                 },
                 new User
                 {
@@ -201,7 +211,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "",
                     Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 950m,
+                    PointsBalance = 6000
                 },
                 new User
                 {
@@ -214,7 +226,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "",
                     Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 3300m,
+                    PointsBalance = 4000
                 },
                 new User
                 {
@@ -227,7 +241,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "",
                     Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 1100m,
+                    PointsBalance = 5000
                 }
             };
 
@@ -1599,6 +1615,11 @@ namespace SteamHub.Api.Context
 
                 entity.Ignore(c => c.NrLikes);
                 entity.Ignore(c => c.NrDislikes);
+
+				entity.HasOne(c => c.Post)
+					.WithMany()
+					.HasForeignKey(c => c.PostId)
+					.OnDelete(DeleteBehavior.Cascade);
             });
 
             // -- NewsRating mapping -----------------------------------------------------
@@ -1612,12 +1633,12 @@ namespace SteamHub.Api.Context
                 entity.HasOne(r => r.Post)
                     .WithMany()
                     .HasForeignKey(r => r.PostId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(r => r.Author)
                     .WithMany()
                     .HasForeignKey(r => r.AuthorId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // -- PasswordResetCode mapping -----------------------------------------------
@@ -1835,6 +1856,13 @@ namespace SteamHub.Api.Context
                     .HasDefaultValueSql("GETDATE()");
                 entity.Property(u => u.LastLogin);
 
+                // Add WalletBalance and PointsBalance properties
+                entity.Property(u => u.WalletBalance)
+                    .HasDefaultValue(0m);
+
+                entity.Property(u => u.PointsBalance)
+                    .HasDefaultValue(0);
+
                 // Configure one-to-one relationship with Wallet
                 entity.HasOne(u => u.Wallet)
                     .WithOne(w => w.User)
@@ -2023,7 +2051,10 @@ namespace SteamHub.Api.Context
                 new Achievement { AchievementId = 2, AchievementName = "FRIENDSHIP2", Description = "You made 5 friends, you get 3 points", AchievementType = "Friendships", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
                 new Achievement { AchievementId = 3, AchievementName = "FRIENDSHIP3", Description = "You made 10 friends, you get 5 points", AchievementType = "Friendships", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
                 new Achievement { AchievementId = 4, AchievementName = "FRIENDSHIP4", Description = "You made 50 friends, you get 10 points", AchievementType = "Friendships", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new Achievement { AchievementId = 5, AchievementName = "FRIENDSHIP5", Description = "You made 100 friends, you get 15 points", AchievementType = "Friendships", Points = 15, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" }
+                new Achievement { AchievementId = 5, AchievementName = "FRIENDSHIP5", Description = "You made 100 friends, you get 15 points", AchievementType = "Friendships", Points = 15, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new Achievement { AchievementId=6, AchievementName = "OWNEDGAMES1", Description = "You own 1 game, you get 1 point", AchievementType = "Owned Games", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new Achievement { AchievementId=7,AchievementName = "OWNEDGAMES2", Description = "You own 5 games, you get 3 points", AchievementType = "Owned Games", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+
             };
 
             builder.Entity<Achievement>().HasData(achievementsSeed);
