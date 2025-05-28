@@ -88,6 +88,10 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand]
     private void NavigateToRegister()
     {
+        if (loginViewFrame == null)
+        {
+            throw new InvalidOperationException("Navigation frame is not initialized.");
+        }
         loginViewFrame.Navigate(typeof(RegisterPage));
     }
 }

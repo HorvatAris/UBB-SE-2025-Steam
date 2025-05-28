@@ -234,6 +234,9 @@ namespace SteamHub
                     case "Wallet":
                         this.ContentFrame.Navigate(typeof(WalletPage), this.walletService);
                         break;
+                    case "CollectionsPage":
+                        this.ContentFrame.Content = new CollectionsPage(this.collectionServiceProxy , this.userService);
+                        break;
                 }
             }
 

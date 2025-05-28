@@ -40,7 +40,9 @@
                 <NavigationViewItem Icon="Switch" Content="Trading" Tag="trading" />
                 <NavigationViewItem Icon="Scan" Content="Wallet" Tag="Wallet" />
                 <NavigationViewItem Icon="Like" Content="Achievements" Tag="AchievementsPage" />
-                
+                <NavigationViewItem Icon="Like" Content="Collections" Tag="CollectionsPage" />
+
+
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>

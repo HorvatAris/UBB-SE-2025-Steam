@@ -39,14 +39,17 @@ namespace SteamHub.ViewModels
             ownedGames = new ObservableCollection<OwnedGame>();
         }
 
-        public void LoadGames(int collectionId)
+        public async Task LoadGamesAsync(int collectionId)
         {
             try
             {
                 isLoading = true;
                 errorMessage = string.Empty;
                 isAllOwnedGamesCollection = collectionId == AllOwnedGamesCollectionId;
-                var gamesInCollection = collectionsService.GetGamesInCollection(collectionId);
+
+                // Await the task to get the list of games
+                var gamesInCollection = await collectionsService.GetGamesInCollection(collectionId);
+
                 ownedGames.Clear();
                 foreach (var game in gamesInCollection)
                 {

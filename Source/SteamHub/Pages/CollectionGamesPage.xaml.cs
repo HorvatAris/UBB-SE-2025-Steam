@@ -76,7 +76,7 @@ namespace SteamHub.Pages
         private void LoadCollectionGames()
         {
             collectionGamesViewModel.CollectionName = collectionName;
-            collectionGamesViewModel.LoadGames(collectionIdentifier);
+            collectionGamesViewModel.LoadGamesAsync(collectionIdentifier);
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs eventArgs)
@@ -102,7 +102,7 @@ namespace SteamHub.Pages
                 int gameId = Convert.ToInt32(button.Tag);
 
                 collectionsViewModel.RemoveGameFromCollectionAsync(collectionIdentifier, gameId);
-                collectionGamesViewModel.LoadGames(collectionIdentifier);
+                collectionGamesViewModel.LoadGamesAsync(collectionIdentifier);
             }
             catch (Exception exception)
             {

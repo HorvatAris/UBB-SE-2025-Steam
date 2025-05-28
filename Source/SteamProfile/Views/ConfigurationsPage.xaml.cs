@@ -29,6 +29,8 @@ namespace SteamHub.Pages
 
         private void ConfigurationsPage_Loaded(object sender, RoutedEventArgs e)
         {
+            if (this.Frame == null)
+                throw new InvalidOperationException("ConfigurationsPage is not hosted in a Frame.");
             ViewModel = new ConfigurationsViewModel(this.Frame, SteamHub.App.UserService);
             this.DataContext = ViewModel;
         }
