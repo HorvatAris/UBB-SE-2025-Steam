@@ -159,7 +159,7 @@ namespace SteamHub.Web.Controllers
         private async Task<IActionResult> SteamWalletPayment()
         {
             var total = await cartService.GetTotalSumToBePaidAsync();
-            if (user.WalletBalance < (float)total)
+            if (user.WalletBalance < total)
             {
                 TempData["Error"] = "Insufficient Steam Wallet funds.";
                 return RedirectToAction(nameof(Index));
