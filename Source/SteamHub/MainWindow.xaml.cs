@@ -188,7 +188,7 @@ namespace SteamHub
             
             try
             {
-                this.achievementsService = new AchievementsServiceProxy(_httpClientFactory);
+                this.achievementsService = new AchievementsServiceProxy();
                 this.tradeService = new TradeServiceProxy(_httpClientFactory, user);
                 this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory, user);
                 this.pointShopService = new PointShopServiceProxy(_httpClientFactory, user);
@@ -198,7 +198,7 @@ namespace SteamHub
                 this.userGameService = new UserGameServiceProxy(_httpClientFactory, user);
                 this.developerService = new DeveloperServiceProxy(_httpClientFactory, user);
                 this.friendsService = new FriendServiceProxy();
-                this.achievementsService = new AchievementsServiceProxy(_httpClientFactory);
+                this.achievementsService = new AchievementsServiceProxy();
                 this.collectionServiceProxy = new CollectionsServiceProxy();
                 this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
                 this.walletService = new WalletServiceProxy(_httpClientFactory, user);

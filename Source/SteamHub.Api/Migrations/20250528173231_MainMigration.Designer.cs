@@ -12,8 +12,8 @@ using SteamHub.Api.Context;
 namespace SteamHub.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250528150134_AddWalletUser")]
-    partial class AddWalletUser
+    [Migration("20250528173231_MainMigration")]
+    partial class MainMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -312,6 +312,24 @@ namespace SteamHub.Api.Migrations
                             Description = "You made 100 friends, you get 15 points",
                             Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
                             Points = 15
+                        },
+                        new
+                        {
+                            AchievementId = 6,
+                            AchievementName = "OWNEDGAMES1",
+                            AchievementType = "Owned Games",
+                            Description = "You own 1 game, you get 1 point",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                            Points = 1
+                        },
+                        new
+                        {
+                            AchievementId = 7,
+                            AchievementName = "OWNEDGAMES2",
+                            AchievementType = "Owned Games",
+                            Description = "You own 5 games, you get 3 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                            Points = 3
                         });
                 });
 
