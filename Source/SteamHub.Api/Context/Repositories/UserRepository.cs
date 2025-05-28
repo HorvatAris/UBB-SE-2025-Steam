@@ -30,14 +30,14 @@ namespace SteamHub.Api.Context.Repositories
                 Username = userEntity.Username,
                 Password = userEntity.Password,
                 Email = userEntity.Email,
-                WalletBalance = userEntity.WalletBalance,
-                PointsBalance = userEntity.PointsBalance,
                 UserRole = userEntity.UserRole,
                 CreatedAt = userEntity.CreatedAt,
                 LastLogin = userEntity.LastLogin,
                 ProfilePicture = userEntity.ProfilePicture,
                 Bio = userEntity.Bio ?? string.Empty,
                 LastModified = userEntity.LastModified,
+                WalletBalance = (float)userEntity.WalletBalance,
+                PointsBalance = userEntity.PointsBalance,
                 
                 // This for later
                 //UserAchievements = userEntity.UserAchievements.Select(ua => new UserAchievement
@@ -62,8 +62,6 @@ namespace SteamHub.Api.Context.Repositories
         {
             userEntity.Username = userDto.Username;
             userEntity.Email = userDto.Email;
-            userEntity.WalletBalance = userDto.WalletBalance;
-            userEntity.PointsBalance = userDto.PointsBalance;
             userEntity.UserRole = userDto.UserRole;
         }
 
@@ -78,13 +76,13 @@ namespace SteamHub.Api.Context.Repositories
                     Password = userEntity.Password,
                     Email = userEntity.Email,
                     UserRole = userEntity.UserRole,
-                    WalletBalance = userEntity.WalletBalance,
-                    PointsBalance = userEntity.PointsBalance,
                     CreatedAt = userEntity.CreatedAt,
                     LastLogin = userEntity.LastLogin,
                     ProfilePicture = userEntity.ProfilePicture,
                     Bio = userEntity.Bio ?? string.Empty,
-                    LastChanged = userEntity.LastModified
+                    LastChanged = userEntity.LastModified,
+                    WalletBalance = (float)userEntity.WalletBalance,
+                    PointsBalance = userEntity.PointsBalance,
                 })
                 .ToListAsync();
 
@@ -109,8 +107,6 @@ namespace SteamHub.Api.Context.Repositories
                 Email = request.Email,
                 Password = PasswordHasher.HashPassword(request.Password),
                 UserRole = request.UserRole,
-                WalletBalance = request.WalletBalance,
-                PointsBalance = request.PointsBalance,
                 ProfilePicture = request.ProfilePicture,
                 CreatedAt = DateTime.UtcNow
             };
@@ -130,7 +126,7 @@ namespace SteamHub.Api.Context.Repositories
             existingUserEntity.Email = request.Email;
             existingUserEntity.UserRole = request.UserRole;
             existingUserEntity.WalletBalance = request.WalletBalance;
-            existingUserEntity.PointsBalance = request.PointsBalance;
+            existingUserEntity.PointsBalance = (int)request.PointsBalance;
 
             await dataContext.SaveChangesAsync();
         }

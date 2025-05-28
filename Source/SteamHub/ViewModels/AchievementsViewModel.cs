@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls;
@@ -12,12 +12,9 @@ using SteamHub.ApiContract.Services.Interfaces;
 
 namespace SteamHub.ViewModels
 {
-    public partial class AchievementsViewModel : ObservableObject
+    public partial class AchievementsViewModel : BaseViewModel
     {
-        private static AchievementsViewModel achievementsViewModelInstance;
         private readonly IAchievementsService achievementsService;
-        private readonly IUserService userService;
-        private User currentUser;
        
         [ObservableProperty]
         private ObservableCollection<AchievementWithStatus> allAchievements = new();
@@ -52,35 +49,62 @@ namespace SteamHub.ViewModels
         [ObservableProperty]
         private string errorMessage;
 
-        public AchievementsViewModel(IAchievementsService achievementsService, IUserService userService)
+        public AchievementsViewModel(IAchievementsService achievementsService, IUserService userService, User currentUser)
+            : base(userService, currentUser)
         {
             this.achievementsService = achievementsService ?? throw new ArgumentNullException(nameof(achievementsService));
-            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            BackToProfileCommand = new RelayCommand(BackToProfile);
-            _ = InitializeAsync();
+            Debug.WriteLine($"AchievementsViewModel initialized for user: {currentUser.Username}");
+            _ = LoadAchievementsAsync();
         }
 
-        private async Task InitializeAsync()
+        protected override void OnUserChanged()
+        {
+            base.OnUserChanged();
+            Debug.WriteLine($"User changed in AchievementsViewModel - refreshing achievements for user: {CurrentUser.Username}");
+            _ = LoadAchievementsAsync();
+        }
+
+        [RelayCommand]
+        public async Task LoadAchievementsAsync()
         {
             try
             {
                 isLoading = true;
                 errorMessage = string.Empty;
-                currentUser = await userService.GetCurrentUserAsync();
-                if (currentUser != null)
+
+                Debug.WriteLine($"Loading achievements for user: {CurrentUser.Username} (ID: {CurrentUser.UserId})");
+                
+                // Get grouped achievements
+                var groupedAchievements = await achievementsService.GetGroupedAchievementsForUser(CurrentUser.UserId);
+             
+                try
                 {
-                    await LoadAchievementsAsync();
+                    // Assign to ObservableCollections
+                    AllAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.AllAchievements);
+                    FriendshipsAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.Friendships);
+                    OwnedGamesAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.OwnedGames);
+                    SoldGamesAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.SoldGames);
+                    YearsOfActivityAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.YearsOfActivity);
+                    NumberOfPostsAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.NumberOfPosts);
+                    NumberOfReviewsGivenAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.NumberOfReviewsGiven);
+                    NumberOfReviewsReceivedAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.NumberOfReviewsReceived);
+                    DeveloperAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.Developer);
+
+                    Debug.WriteLine($"Successfully loaded achievements for user: {CurrentUser.Username}");
                 }
-                else
+                catch (Exception ex)
                 {
-                    errorMessage = "Failed to get current user";
-                    System.Diagnostics.Debug.WriteLine("Failed to get current user during initialization");
+                    errorMessage = "Error assigning achievements to collections";
+                    Debug.WriteLine($"Error assigning achievements to collections: {ex}");
+                    Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                    throw;
                 }
             }
             catch (Exception ex)
             {
-                errorMessage = "Error initializing achievements";
-                System.Diagnostics.Debug.WriteLine($"Error in InitializeAsync: {ex.Message}");
+                errorMessage = "Error loading achievements";
+                Debug.WriteLine($"Error in LoadAchievementsAsync: {ex}");
+                Debug.WriteLine($"Stack trace: {ex.StackTrace}");
             }
             finally
             {
@@ -89,89 +113,12 @@ namespace SteamHub.ViewModels
         }
 
         [RelayCommand]
-        public async Task LoadAchievementsAsync()
-        {
-            try
-            {
-                if (currentUser == null)
-                {
-                    currentUser = await userService.GetCurrentUserAsync();
-                    if (currentUser == null)
-                    {
-                        errorMessage = "Failed to get current user";
-                        return;
-                    }
-                }
-
-                isLoading = true;
-                errorMessage = string.Empty;
-                System.Diagnostics.Debug.WriteLine("Starting LoadAchievementsAsync in ViewModel");
-                var userId = currentUser.UserId;
-                System.Diagnostics.Debug.WriteLine($"Current UserId: {userId}");
-
-                // Get grouped achievements (no logic in ViewModel)
-                var groupedAchievements = await achievementsService.GetGroupedAchievementsForUser(userId);
-             
-                try
-                {
-                    // Assign to ObservableCollections
-                    AllAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.AllAchievements);
-                    System.Diagnostics.Debug.WriteLine("AllAchievements assigned");
-                    
-                    FriendshipsAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.Friendships);
-                    System.Diagnostics.Debug.WriteLine("FriendshipsAchievements assigned");
-                    
-                    OwnedGamesAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.OwnedGames);
-                    System.Diagnostics.Debug.WriteLine("OwnedGamesAchievements assigned");
-                    
-                    SoldGamesAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.SoldGames);
-                    System.Diagnostics.Debug.WriteLine("SoldGamesAchievements assigned");
-                    
-                    YearsOfActivityAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.YearsOfActivity);
-                    System.Diagnostics.Debug.WriteLine("YearsOfActivityAchievements assigned");
-                    
-                    NumberOfPostsAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.NumberOfPosts);
-                    System.Diagnostics.Debug.WriteLine("NumberOfPostsAchievements assigned");
-                    
-                    NumberOfReviewsGivenAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.NumberOfReviewsGiven);
-                    System.Diagnostics.Debug.WriteLine("NumberOfReviewsGivenAchievements assigned");
-                    
-                    NumberOfReviewsReceivedAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.NumberOfReviewsReceived);
-                    System.Diagnostics.Debug.WriteLine("NumberOfReviewsReceivedAchievements assigned");
-                    
-                    DeveloperAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.Developer);
-                    System.Diagnostics.Debug.WriteLine("DeveloperAchievements assigned");
-
-                    System.Diagnostics.Debug.WriteLine("Successfully assigned achievements to ObservableCollections");
-                }
-                catch (Exception ex)
-                {
-                    errorMessage = "Error assigning achievements to collections";
-                    System.Diagnostics.Debug.WriteLine($"Error assigning achievements to collections: {ex}");
-                    System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-                    throw;
-                }
-            }
-            catch (Exception ex)
-            {
-                errorMessage = "Error loading achievements";
-                System.Diagnostics.Debug.WriteLine($"Error in LoadAchievementsAsync: {ex}");
-                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-            }
-            finally
-            {
-                isLoading = false;
-            }
-        }
-
-        public IRelayCommand BackToProfileCommand { get; private set; }
-
         private void BackToProfile()
         {
-            if (currentUser != null)
+            if (CurrentUser != null)
             {
-                int currentUserId = currentUser.UserId;
-                //NavigationService.Instance.Navigate(typeof(ProfilePage), currentUserId);
+                Debug.WriteLine($"Navigating back to profile for user: {CurrentUser.Username}");
+                //NavigationService.Instance.Navigate(typeof(ProfilePage), CurrentUser.UserId);
             }
         }
     }

@@ -5,27 +5,42 @@ using SteamHub.ApiContract.Models.Common;
 
 namespace SteamHub.Web.Services;
 
-public class WebUserDetails: IUserDetails
+public class WebUserDetails : IUserDetails
 {
     private readonly IHttpContextAccessor httpContextAccessor;
+    private float _walletBalance;
+    private float _pointsBalance;
 
     public WebUserDetails(IHttpContextAccessor httpContextAccessor)
     {
         this.httpContextAccessor = httpContextAccessor;
+        InitializeBalances();
     }
 
+    private void InitializeBalances()
+    {
+        var walletStr = httpContextAccessor.HttpContext?.Session.GetString("WalletBalance");
+        var pointsStr = httpContextAccessor.HttpContext?.Session.GetString("PointsBalance");
+
+        if (float.TryParse(walletStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var wallet))
+        {
+            _walletBalance = wallet;
+        }
+
+        if (float.TryParse(pointsStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var points))
+        {
+            _pointsBalance = points;
+        }
+    }
 
     public int UserId => int.Parse(GetClaimValue(ClaimTypes.NameIdentifier)!);
 
     public float PointsBalance
     {
-        get
-        {
-            var value = httpContextAccessor.HttpContext?.Session.GetString("PointsBalance");
-            return float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var result) ? result : 0;
-        }
+        get => _pointsBalance;
         set
         {
+            _pointsBalance = value;
             httpContextAccessor.HttpContext?.Session.SetString("PointsBalance",
                 value.ToString(CultureInfo.InvariantCulture));
         }
@@ -35,15 +50,13 @@ public class WebUserDetails: IUserDetails
     public string Username => GetClaimValue(ClaimTypes.Name)!;
     public string Password => GetClaimValue(ClaimTypes.Hash)!;
     public string Email => GetClaimValue(ClaimTypes.Email)!;
+
     public float WalletBalance
     {
-        get
-        {
-            var value = httpContextAccessor.HttpContext?.Session.GetString("WalletBalance");
-            return float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var result) ? result : 0;
-        }
+        get => _walletBalance;
         set
         {
+            _walletBalance = value;
             httpContextAccessor.HttpContext?.Session.SetString("WalletBalance",
                 value.ToString(CultureInfo.InvariantCulture));
         }
@@ -51,6 +64,6 @@ public class WebUserDetails: IUserDetails
 
     private string? GetClaimValue(string claimType)
     {
-        return httpContextAccessor.HttpContext!.User.FindFirst(claimType)!.Value;
+        return httpContextAccessor.HttpContext?.User.FindFirst(claimType)?.Value;
     }
 }
