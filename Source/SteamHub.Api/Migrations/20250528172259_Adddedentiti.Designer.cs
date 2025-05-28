@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SteamHub.Api.Context;
 
@@ -11,9 +12,11 @@ using SteamHub.Api.Context;
 namespace SteamHub.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250528172259_Adddedentiti")]
+    partial class Adddedentiti
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -309,24 +312,6 @@ namespace SteamHub.Api.Migrations
                             Description = "You made 100 friends, you get 15 points",
                             Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
                             Points = 15
-                        },
-                        new
-                        {
-                            AchievementId = 6,
-                            AchievementName = "OWNEDGAMES1",
-                            AchievementType = "Owned Games",
-                            Description = "You own 1 game, you get 1 point",
-                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
-                            Points = 1
-                        },
-                        new
-                        {
-                            AchievementId = 7,
-                            AchievementName = "OWNEDGAMES2",
-                            AchievementType = "Owned Games",
-                            Description = "You own 5 games, you get 3 points",
-                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
-                            Points = 3
                         });
                 });
 

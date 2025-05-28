@@ -136,7 +136,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "https://i.imgur.com/vixhhkC.jpeg",
                     Bio = "Gaming enthusiast and software developer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 500m,
+                    PointsBalance = 6000
                 },
                 new User
                 {
@@ -149,7 +151,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "",
                     Bio = "Game developer and tech lover",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 420m,
+                    PointsBalance = 5000
                 },
                 new User
                 {
@@ -162,7 +166,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "",
                     Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 390m,
+                    PointsBalance = 5000
                 },
                 new User
                 {
@@ -175,7 +181,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "",
                     Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 780m,
+                    PointsBalance = 6000
                 },
                 new User
                 {
@@ -188,7 +196,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "",
                     Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 5500m,
+                    PointsBalance = 7000
                 },
                 new User
                 {
@@ -201,7 +211,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "",
                     Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 950m,
+                    PointsBalance = 6000
                 },
                 new User
                 {
@@ -214,7 +226,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "",
                     Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 3300m,
+                    PointsBalance = 4000
                 },
                 new User
                 {
@@ -227,7 +241,9 @@ namespace SteamHub.Api.Context
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "",
                     Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    LastModified = new DateTime(2024, 1, 1),
+                    WalletBalance = 1100m,
+                    PointsBalance = 5000
                 }
             };
 
@@ -1834,6 +1850,13 @@ namespace SteamHub.Api.Context
                 entity.Property(u => u.CreatedAt)
                     .HasDefaultValueSql("GETDATE()");
                 entity.Property(u => u.LastLogin);
+
+                // Add WalletBalance and PointsBalance properties
+                entity.Property(u => u.WalletBalance)
+                    .HasDefaultValue(0m);
+
+                entity.Property(u => u.PointsBalance)
+                    .HasDefaultValue(0);
 
                 // Configure one-to-one relationship with Wallet
                 entity.HasOne(u => u.Wallet)
