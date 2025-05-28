@@ -36,6 +36,8 @@ namespace SteamHub.Api.Context.Repositories
                 CreatedAt = userEntity.CreatedAt,
                 LastLogin = userEntity.LastLogin,
                 ProfilePicture = userEntity.ProfilePicture,
+                Bio = userEntity.Bio ?? string.Empty,
+                LastModified = userEntity.LastModified,
                 
                 // This for later
                 //UserAchievements = userEntity.UserAchievements.Select(ua => new UserAchievement
@@ -80,34 +82,23 @@ namespace SteamHub.Api.Context.Repositories
                     PointsBalance = userEntity.PointsBalance,
                     CreatedAt = userEntity.CreatedAt,
                     LastLogin = userEntity.LastLogin,
-                    ProfilePicture = userEntity.ProfilePicture
+                    ProfilePicture = userEntity.ProfilePicture,
+                    Bio = userEntity.Bio ?? string.Empty,
+                    LastChanged = userEntity.LastModified
                 })
                 .ToListAsync();
 
             return new GetUsersResponse { Users = userResponses };
         }
 
-        public async Task<UserResponse?> GetUserByIdAsync(int userId)
+        public async Task<User?> GetUserByIdAsync(int userId)
         {
-            var userResponse = await dataContext.Users
+            var userEntity = await dataContext.Users
                 .AsNoTracking()
                 .Where(userEntity => userEntity.UserId == userId)
-                .Select(userEntity => new UserResponse
-                {
-                    UserId = userEntity.UserId,
-                    UserName = userEntity.Username,
-                    Password = userEntity.Password,
-                    Email = userEntity.Email,
-                    UserRole = userEntity.UserRole,
-                    WalletBalance = userEntity.WalletBalance,
-                    PointsBalance = userEntity.PointsBalance,
-                    CreatedAt = userEntity.CreatedAt,
-                    LastLogin = userEntity.LastLogin,
-                    ProfilePicture = userEntity.ProfilePicture
-                })
                 .SingleOrDefaultAsync();
 
-            return userResponse;
+            return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
         public async Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request)
@@ -144,7 +135,7 @@ namespace SteamHub.Api.Context.Repositories
             await dataContext.SaveChangesAsync();
         }
 
-        public List<User> GetAllUsers()
+        public async Task<List<User>> GetAllUsersAsync()
         {
             return dataContext.Users
                 .AsNoTracking()
@@ -153,72 +144,66 @@ namespace SteamHub.Api.Context.Repositories
                 .ToList();
         }
 
-        public User? GetUserById(int userId)
+        public async Task<User> UpdateUserAsync(User userDto)
         {
-            var userEntity = dataContext.Users.Find(userId);
-            return userEntity == null ? null : MapEntityToUserDto(userEntity);
-        }
-
-        public User UpdateUser(User userDto)
-        {
-            var existingUserEntity = dataContext.Users.Find(userDto.UserId)
+            var existingUserEntity = await dataContext.Users.FindAsync(userDto.UserId)
                 ?? throw new KeyNotFoundException($"User {userDto.UserId} not found.");
 
             ApplyUserDtoToEntity(existingUserEntity, userDto);
-            dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
 
             return MapEntityToUserDto(existingUserEntity);
         }
 
-        public User CreateUser(User userDto)
+        public async Task<User> CreateUserAsync(User userDto)
         {
             var newUserEntity = new UserDTO();
             ApplyUserDtoToEntity(newUserEntity, userDto);
 
-            dataContext.Users.Add(newUserEntity);
-            dataContext.SaveChanges();
+            await dataContext.Users.AddAsync(newUserEntity);
+            await dataContext.SaveChangesAsync();
 
             return MapEntityToUserDto(newUserEntity);
         }
 
-        public void DeleteUser(int userId)
+        public async Task DeleteUserAsync(int userId)
         {
-            var userEntity = dataContext.Users.Find(userId);
+            var userEntity = await dataContext.Users.FindAsync(userId);
             if (userEntity != null)
             {
                 dataContext.Users.Remove(userEntity);
-                dataContext.SaveChanges();
+                await dataContext.SaveChangesAsync();
             }
         }
 
-        public User? VerifyCredentials(string emailOrUsername)
+        public async Task<User?> VerifyCredentialsAsync(string emailOrUsername)
         {
-            var userEntity = dataContext.Users.SingleOrDefault(
+            var userEntity = await dataContext.Users.SingleOrDefaultAsync(
                 user => user.Username == emailOrUsername || user.Email == emailOrUsername);
 
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
-        public User? GetUserByEmail(string email)
+        public async Task<User?> GetUserByEmailAsync(string email)
         {
-            var userEntity = dataContext.Users.SingleOrDefault(user => user.Email == email);
+            var userEntity = await dataContext.Users.SingleOrDefaultAsync(user => user.Email == email);
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
-        public User? GetUserByUsername(string username)
+        public async Task<User?> GetUserByUsernameAsync(string username)
         {
-            var userEntity = dataContext.Users.SingleOrDefault(user => user.Username == username);
+            var userEntity = await dataContext.Users.SingleOrDefaultAsync(user => user.Username == username);
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
-        public string CheckUserExists(string email, string username)
+        public async Task<string> CheckUserExistsAsync(string email, string username)
         {
-            if (dataContext.Users.Any(user => user.Email == email))
+            if (await dataContext.Users.AnyAsync(user => user.Email == email))
             {
                 return "EMAIL_EXISTS";
             }
 
-            if (dataContext.Users.Any(user => user.Username == username))
+            if (await dataContext.Users.AnyAsync(user => user.Username == username))
             {
                 return "USERNAME_EXISTS";
             }
@@ -226,46 +211,46 @@ namespace SteamHub.Api.Context.Repositories
             return null;
         }
 
-        public void ChangeEmail(int userId, string newEmail)
+        public async Task ChangeEmailAsync(int userId, string newEmail)
         {
-            var userEntity = dataContext.Users.Find(userId)
+            var userEntity = await dataContext.Users.FindAsync(userId)
                 ?? throw new KeyNotFoundException($"User {userId} not found.");
 
             userEntity.Email = newEmail;
-            dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
         }
 
-        public void ChangePassword(int userId, string newPassword)
+        public async Task ChangePasswordAsync(int userId, string newPassword)
         {
-            var userEntity = dataContext.Users.Find(userId)
+            var userEntity = await dataContext.Users.FindAsync(userId)
                 ?? throw new KeyNotFoundException($"User {userId} not found.");
 
             userEntity.Password = PasswordHasher.HashPassword(newPassword);
-            dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
         }
 
-        public void ChangeUsername(int userId, string newUsername)
+        public async Task ChangeUsernameAsync(int userId, string newUsername)
         {
-            var userEntity = dataContext.Users.Find(userId)
+            var userEntity = await dataContext.Users.FindAsync(userId)
                 ?? throw new KeyNotFoundException($"User {userId} not found.");
 
             userEntity.Username = newUsername;
-            dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
         }
 
-        public void UpdateLastLogin(int userId)
+        public async Task UpdateLastLoginAsync(int userId)
         {
-            var userEntity = dataContext.Users.Find(userId)
+            var userEntity = await dataContext.Users.FindAsync(userId)
                 ?? throw new KeyNotFoundException($"User {userId} not found.");
 
             userEntity.LastLogin = DateTime.UtcNow;
-            dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
         }
 
         // From UserProfile, WORK IN PROGRESS
-        public async void UpdateProfileBioAsync(int userId, string bio)
+        public async Task UpdateProfileBioAsync(int userId, string bio)
         {
-            var existing = dataContext.Users.SingleOrDefault(user => user.UserId == userId)
+            var existing = await dataContext.Users.SingleOrDefaultAsync(user => user.UserId == userId)
                 ?? throw new Exception($"Profile with user ID {userId} not found.");
             existing.Bio = bio;
             existing.LastModified = DateTime.UtcNow;
@@ -275,7 +260,7 @@ namespace SteamHub.Api.Context.Repositories
         public async Task UpdateProfilePictureAsync(int userId, string localImagePath)
         {
             string imgurClientId = "bbf48913b385d7b";
-            var existing = dataContext.Users.SingleOrDefault(up => up.UserId == userId)
+            var existing = await dataContext.Users.SingleOrDefaultAsync(up => up.UserId == userId)
                 ?? throw new Exception($"Profile with user ID {userId} not found.");
 
             string imageUrl = await UploadImageToImgurAsync(localImagePath, imgurClientId);
@@ -289,7 +274,7 @@ namespace SteamHub.Api.Context.Repositories
         {
             using var client = new HttpClient();
             using var form = new MultipartFormDataContent();
-            using var image = new ByteArrayContent(File.ReadAllBytes(imagePath));
+            using var image = new ByteArrayContent(await File.ReadAllBytesAsync(imagePath));
 
             image.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
             form.Add(image, "image");

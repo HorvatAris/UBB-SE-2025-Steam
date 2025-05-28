@@ -309,14 +309,15 @@ namespace SteamHub.Pages
                 {
                     // Get the friendship ID for the current user and friend
                     var friendships = App.FriendsService.GetAllFriendships();
+                    var currentUser = await App.UserService.GetCurrentUserAsync();
                     var friendship = friendships.FirstOrDefault(currentFriendship =>
-                        (currentFriendship.UserId == App.UserService.GetCurrentUser().UserId && currentFriendship.FriendId == userIdentifier) ||
-                        (currentFriendship.UserId == userIdentifier && currentFriendship.FriendId == App.UserService.GetCurrentUser().UserId));
+                        (currentFriendship.UserId == currentUser.UserId && currentFriendship.FriendId == userIdentifier) ||
+                        (currentFriendship.UserId == userIdentifier && currentFriendship.FriendId == currentUser.UserId));
 
                     if (friendship != null)
                     {
                         App.FriendsService.RemoveFriend(friendship.FriendshipId);
-                        Frame.Navigate(typeof(ProfilePage), App.UserService.GetCurrentUser().UserId);
+                        Frame.Navigate(typeof(ProfilePage), currentUser.UserId);
                     }
                     else
                     {
@@ -341,12 +342,12 @@ namespace SteamHub.Pages
             // this.Frame.Navigate(typeof(AchievementsPage));
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             // If we have a valid user ID, refresh the profile
             if (userIdentifier > 0)
             {
-                _ = ViewModel.LoadProfileAsync(userIdentifier);
+                await ViewModel.LoadProfileAsync(userIdentifier);
             }
             // Initial update of the profile control
             UpdateProfileControl();

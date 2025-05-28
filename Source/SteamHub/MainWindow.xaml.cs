@@ -36,7 +36,6 @@ namespace SteamHub
         private TradeServiceProxy tradeService;
         private UserServiceProxy userService;
         private SessionServiceProxy sessionService;
-        private PasswordResetServiceProxy passwordResetService;
         private FriendServiceProxy friendsService;
         private FeaturesServiceProxy featuresService;
         private WalletServiceProxy walletService;
@@ -69,7 +68,6 @@ namespace SteamHub
 
             this.userService = new UserServiceProxy(_httpClientFactory);
             this.sessionService = new SessionServiceProxy(_httpClientFactory);
-            this.passwordResetService = new PasswordResetServiceProxy();
 
             // Start with login page
             ShowLoginPage();

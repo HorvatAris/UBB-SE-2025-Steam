@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using SteamHub.ApiContract.Services;
 using SteamHub.Pages;
 using SteamHub.ApiContract.Services.Interfaces;
+using System.Threading.Tasks;
 
 namespace SteamHub.ViewModels
 {
@@ -26,17 +27,19 @@ namespace SteamHub.ViewModels
         }
 
         [RelayCommand]
-        private void NavigateToProfile()
+        private async Task NavigateToProfile()
         {
-            frame.Navigate(typeof(ProfilePage), userService.GetCurrentUser().UserId);
+            var currentUser = await userService.GetCurrentUserAsync();
+            frame.Navigate(typeof(ProfilePage), currentUser.UserId);
         }
+
         [RelayCommand]
         private void NavigateToProfileSettings()
         {
             frame.Navigate(typeof(ModifyProfilePage));
         }
-        [RelayCommand]
 
+        [RelayCommand]
         private void NavigateToAccountSettings()
         {
             frame.Navigate(typeof(AccountSettingsPage));

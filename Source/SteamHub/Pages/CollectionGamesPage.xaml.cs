@@ -44,7 +44,7 @@ namespace SteamHub.Pages
             this.InitializeComponent();
             collectionGamesViewModel = new CollectionGamesViewModel(collectionsService);
             collectionsViewModel = new CollectionsViewModel(collectionsService, userService);
-            collectionsViewModel.LoadCollections();
+            collectionsViewModel.LoadCollectionsAsync();
 
             // TO SOLVE userViewModel = App.UsersViewModel;
             this.DataContext = collectionGamesViewModel;
@@ -101,7 +101,7 @@ namespace SteamHub.Pages
 
                 int gameId = Convert.ToInt32(button.Tag);
 
-                collectionsViewModel.RemoveGameFromCollection(collectionIdentifier, gameId);
+                collectionsViewModel.RemoveGameFromCollectionAsync(collectionIdentifier, gameId);
                 collectionGamesViewModel.LoadGames(collectionIdentifier);
             }
             catch (Exception exception)

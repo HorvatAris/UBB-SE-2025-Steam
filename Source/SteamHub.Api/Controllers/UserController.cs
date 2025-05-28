@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ApiContract.Models.User;
-
-
 using SteamHub.Api.Context;
 
 namespace SteamHub.Api.Controllers
@@ -23,41 +21,41 @@ namespace SteamHub.Api.Controllers
 
         [HttpGet]
         [Authorize]
-        public IActionResult GetAllUsers()
+        public async Task<IActionResult> GetAllUsers()
         {
-            return Ok(userService.GetAllUsers());
+            return Ok(await userService.GetAllUsersAsync());
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetUser(int id)
+        public async Task<IActionResult> GetUser(int id)
         {
-            var user = userService.GetUserByIdentifier(id);
+            var user = await userService.GetUserByIdentifierAsync(id);
             if (user == null) return NotFound();
             return Ok(user);
         }
 
         [HttpGet("email/{email}")]
-        public IActionResult GetUserByEmail(string email)
+        public async Task<IActionResult> GetUserByEmail(string email)
         {
-            var user = userService.GetUserByEmail(email);
+            var user = await userService.GetUserByEmailAsync(email);
             if (user == null) return NotFound();
             return Ok(user);
         }
 
         [HttpGet("username/{username}")]
-        public IActionResult GetUserByUsername(string username)
+        public async Task<IActionResult> GetUserByUsername(string username)
         {
-            var user = userService.GetUserByUsername(username);
+            var user = await userService.GetUserByUsernameAsync(username);
             if (user == null) return NotFound();
             return Ok(user);
         }
 
         [HttpPost("validate")]
-        public IActionResult ValidateUser([FromBody] ValidateUserRequest request)
+        public async Task<IActionResult> ValidateUser([FromBody] ValidateUserRequest request)
         {
             try
             {
-                userService.ValidateUserAndEmail(request.Email, request.Username);
+                await userService.ValidateUserAndEmailAsync(request.Email, request.Username);
                 return Ok();
             }
             catch (Exception ex)
@@ -98,7 +96,7 @@ namespace SteamHub.Api.Controllers
         */
         [HttpPut("{id}")]
         [Authorize]
-        public IActionResult UpdateUser(int id, [FromBody] User user)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] User user)
         {
             if (id != user.UserId)
             {
@@ -107,7 +105,7 @@ namespace SteamHub.Api.Controllers
 
             try
             {
-                var updatedUser = userService.UpdateUser(user);
+                var updatedUser = await userService.UpdateUserAsync(user);
                 return Ok(updatedUser);
             }
             catch (Exception ex)
@@ -118,11 +116,11 @@ namespace SteamHub.Api.Controllers
 
         [HttpDelete("{id}")]
         [Authorize]
-        public IActionResult DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
             try
             {
-                userService.DeleteUser(id);
+                await userService.DeleteUserAsync(id);
                 return Ok();
             }
             catch (Exception ex)
@@ -133,18 +131,18 @@ namespace SteamHub.Api.Controllers
 
         [HttpPost("{id}/verify")]
         [Authorize]
-        public IActionResult VerifyPassword(int id, [FromBody] PasswordVerifyRequest request)
+        public async Task<IActionResult> VerifyPassword(int id, [FromBody] PasswordVerifyRequest request)
         {
-            return Ok(userService.AcceptChanges(id, request.Password));
+            return Ok(await userService.AcceptChangesAsync(id, request.Password));
         }
 
         [HttpPut("{id}/email")]
         [Authorize]
-        public IActionResult UpdateEmail(int id, [FromBody] EmailUpdateRequest request)
+        public async Task<IActionResult> UpdateEmail(int id, [FromBody] EmailUpdateRequest request)
         {
             try
             {
-                userService.UpdateUserEmail(id, request.Email);
+                await userService.UpdateUserEmailAsync(id, request.Email);
                 return Ok();
             }
             catch (Exception ex)
@@ -155,11 +153,11 @@ namespace SteamHub.Api.Controllers
 
         [HttpPut("{id}/password")]
         [Authorize]
-        public IActionResult UpdatePassword(int id, [FromBody] PasswordUpdateRequest request)
+        public async Task<IActionResult> UpdatePassword(int id, [FromBody] PasswordUpdateRequest request)
         {
             try
             {
-                userService.UpdateUserPassword(id, request.Password);
+                await userService.UpdateUserPasswordAsync(id, request.Password);
                 return Ok();
             }
             catch (Exception ex)
@@ -170,11 +168,11 @@ namespace SteamHub.Api.Controllers
 
         [HttpPut("{id}/username")]
         [Authorize]
-        public IActionResult UpdateUsername(int id, [FromBody] UsernameUpdateRequest request)
+        public async Task<IActionResult> UpdateUsername(int id, [FromBody] UsernameUpdateRequest request)
         {
             try
             {
-                userService.UpdateUserUsername(id, request.Username);
+                await userService.UpdateUserUsernameAsync(id, request.Username);
                 return Ok();
             }
             catch (Exception ex)
@@ -185,15 +183,15 @@ namespace SteamHub.Api.Controllers
 
         [HttpPost("updateUsername")]
         [Authorize]
-        public IActionResult UpdateUsername([FromBody] UsernameChangeRequest request)
+        public async Task<IActionResult> UpdateUsername([FromBody] UsernameChangeRequest request)
         {
-            var user = userService.GetCurrentUser();
+            var user = await userService.GetCurrentUserAsync();
             if (user == null)
             {
                 return Unauthorized();
             }
 
-            var result = userService.UpdateUserUsername(request.Username, request.CurrentPassword);
+            var result = await userService.UpdateUserUsernameAsync(request.Username, request.CurrentPassword);
             if (result)
             {
                 return Ok();
@@ -203,15 +201,15 @@ namespace SteamHub.Api.Controllers
 
         [HttpPost("updatePassword")]
         [Authorize]
-        public IActionResult UpdatePassword([FromBody] PasswordChangeRequest request)
+        public async Task<IActionResult> UpdatePassword([FromBody] PasswordChangeRequest request)
         {
-            var user = userService.GetCurrentUser();
+            var user = await userService.GetCurrentUserAsync();
             if (user == null)
             {
                 return Unauthorized();
             }
 
-            var result = userService.UpdateUserPassword(request.Password, request.CurrentPassword);
+            var result = await userService.UpdateUserPasswordAsync(request.Password, request.CurrentPassword);
             if (result)
             {
                 return Ok();
@@ -221,15 +219,15 @@ namespace SteamHub.Api.Controllers
 
         [HttpPost("updateEmail")]
         [Authorize]
-        public IActionResult UpdateEmail([FromBody] EmailChangeRequest request)
+        public async Task<IActionResult> UpdateEmail([FromBody] EmailChangeRequest request)
         {
-            var user = userService.GetCurrentUser();
+            var user = await userService.GetCurrentUserAsync();
             if (user == null)
             {
                 return Unauthorized();
             }
 
-            var result = userService.UpdateUserEmail(request.Email, request.CurrentPassword);
+            var result = await userService.UpdateUserEmailAsync(request.Email, request.CurrentPassword);
             if (result)
             {
                 return Ok();
@@ -239,9 +237,9 @@ namespace SteamHub.Api.Controllers
 
         [HttpPost("verifyPassword")]
         [Authorize]
-        public IActionResult VerifyPassword([FromBody] PasswordVerifyRequest request)
+        public async Task<IActionResult> VerifyPassword([FromBody] PasswordVerifyRequest request)
         {
-            return Ok(userService.VerifyUserPassword(request.Password));
+            return Ok(await userService.VerifyUserPasswordAsync(request.Password));
         }
     }
 

@@ -64,7 +64,7 @@ namespace SteamHub.ViewModels
         {
             this.featuresService = featuresService;
             this.userService = userService;
-            LoadFeatures();
+            LoadFeaturesAsync();
         }
 
         public void SetXamlRoot(XamlRoot xamlRoot)
@@ -75,7 +75,7 @@ namespace SteamHub.ViewModels
         {
             featuresXamlRoot = xamlRoot;
         }
-        private void LoadFeatures()
+        private async void LoadFeaturesAsync()
         {
             try
             {
@@ -85,7 +85,8 @@ namespace SteamHub.ViewModels
                 const string petString = "pet";
                 const string hatString = "hat";
 
-                var features = featuresService.GetFeaturesByCategoriesAsync(userService.GetCurrentUser().UserId).GetResultOrDefault();
+                var currentUser = await userService.GetCurrentUserAsync();
+                var features = await featuresService.GetFeaturesByCategoriesAsync(currentUser.UserId);
 
                 UpdateCollection(Frames, features.GetValueOrDefault(frameString, new()));
                 UpdateCollection(Emojis, features.GetValueOrDefault(emojiString, new()));
@@ -102,13 +103,13 @@ namespace SteamHub.ViewModels
             }
         }
 
-        private void UpdateCollection(ObservableCollection<FeatureDisplay> collection, List<Feature> features)
+        private async void UpdateCollection(ObservableCollection<FeatureDisplay> collection, List<Feature> features)
         {
             collection.Clear();
-            var currentUser = userService.GetCurrentUser();
+            var currentUser = await userService.GetCurrentUserAsync();
             foreach (var feature in features)
             {
-                bool isPurchased = featuresService.IsFeaturePurchasedAsync(currentUser.UserId, feature.FeatureId).GetResultOrDefault();
+                bool isPurchased = await featuresService.IsFeaturePurchasedAsync(currentUser.UserId, feature.FeatureId);
                 collection.Add(new FeatureDisplay(feature, isPurchased));
             }
         }
@@ -122,7 +123,7 @@ namespace SteamHub.ViewModels
             }
 
             SelectedFeature = feature;
-            var currentUser = userService.GetCurrentUser();
+            var currentUser = await userService.GetCurrentUserAsync();
             var dialog = new ContentDialog
             {
                 XamlRoot = xamlRoot,
@@ -164,22 +165,21 @@ namespace SteamHub.ViewModels
         }
 
         public static event EventHandler<int> FeatureEquipStatusChanged;
-        public bool EquipFeature(int featureId)
+        public async Task<bool> EquipFeature(int featureId)
         {
             try
             {
-                bool success = featuresService.EquipFeatureAsync(
-                    userService.GetCurrentUser().UserId,
-                    featureId).GetResultOrDefault();
+                var currentUser = await userService.GetCurrentUserAsync();
+                bool success = await featuresService.EquipFeatureAsync(currentUser.UserId, featureId);
 
                 if (success)
                 {
-                    FeatureEquipStatusChanged?.Invoke(this, userService.GetCurrentUser().UserId);
+                    FeatureEquipStatusChanged?.Invoke(this, currentUser.UserId);
 
                     StatusMessage = "Feature equipped successfully";
                     StatusColor = new SolidColorBrush(Colors.Green);
 
-                    LoadFeatures();
+                    LoadFeaturesAsync();
                 }
                 else
                 {
@@ -197,17 +197,11 @@ namespace SteamHub.ViewModels
             }
         }
 
-        public bool UnequipFeature(int userId, FeatureDisplay feature)
+        public async Task<bool> UnequipFeature(int userId, FeatureDisplay feature)
         {
-            var result = featuresService.UnequipFeatureAsync(userId, feature.FeatureId).GetResultOrDefault();
-            // StatusMessage = result.Item2;
-            // StatusColor = new SolidColorBrush(result.Item1 ? Colors.Green : Colors.Red);
-            // if (result.Item1)
-            // {
-                LoadFeatures();
+            var result = await featuresService.UnequipFeatureAsync(userId, feature.FeatureId);
+            LoadFeaturesAsync();
             return result;
-            // }
-            // return result.Item1;
         }
 
         public async void ShowPreview(FeatureDisplay feature)
@@ -215,27 +209,27 @@ namespace SteamHub.ViewModels
             await ShowPreviewDialog(feature);
         }
 
-        private void PurchaseFeature(int userId, FeatureDisplay feature)
+        private async Task PurchaseFeature(int userId, FeatureDisplay feature)
         {
             /*
-            var result = featuresService.PurchaseFeatureAsync(userId, feature.FeatureId);
+            var result = await featuresService.PurchaseFeatureAsync(userId, feature.FeatureId);
 
             StatusMessage = result.message;
             StatusColor = new SolidColorBrush(result.success ? Colors.Green : Colors.Red);
 
             if (result.success)
             {
-                LoadFeatures();
+                LoadFeaturesAsync();
             }*/
         }
 
         private async Task ShowPreviewDialog(FeatureDisplay featureDisplay)
         {
             // Get current user
-            var user = userService.GetCurrentUser();
+            var user = await userService.GetCurrentUserAsync();
 
             // Use service to get preview data
-            var previewData = featuresService.GetFeaturePreviewDataAsync(user.UserId, featureDisplay.FeatureId).GetResultOrDefault();
+            var previewData = await featuresService.GetFeaturePreviewDataAsync(user.UserId, featureDisplay.FeatureId);
 
             var profileControl = new AdaptiveProfileControl();
 

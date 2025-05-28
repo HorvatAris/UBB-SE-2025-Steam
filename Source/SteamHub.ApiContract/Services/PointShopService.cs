@@ -18,7 +18,6 @@ namespace SteamHub.ApiContract.Services
     using SteamHub.ApiContract.Models.PointShopItem;
     using SteamHub.ApiContract.Models.User;
     using SteamHub.ApiContract.Models.UserPointShopItemInventory;
-    using SteamHub.ApiContract.Proxies;
     using SteamHub.ApiContract.Repositories;
     using SteamHub.ApiContract.Services;
     using SteamHub.ApiContract.Services.Interfaces;
@@ -95,7 +94,7 @@ namespace SteamHub.ApiContract.Services
             try
             {
                 PointShopItemResponse item = await this.PointShopItemRepository.GetPointShopItemByIdAsync(itemRequest.PointShopItemId);
-                UserResponse user = await this.UserRepository.GetUserByIdAsync(itemRequest.UserId);
+                User user = await this.UserRepository.GetUserByIdAsync(itemRequest.UserId);
 
                 if (item == null)
                 {
@@ -125,7 +124,7 @@ namespace SteamHub.ApiContract.Services
                 // Update the user's points balance in the database
                 var updateUserRequest = new UpdateUserRequest
                 {
-                    UserName = user.UserName,
+                    UserName = user.Username,
                     Email = user.Email,
                     WalletBalance = user.WalletBalance,
                     PointsBalance = user.PointsBalance,
