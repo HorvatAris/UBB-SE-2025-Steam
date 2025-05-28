@@ -36,7 +36,7 @@ namespace SteamHub.Pages
         {
             this.InitializeComponent();
             collectionsViewModel = new CollectionsViewModel(collectionsService , userService);
-            collectionsViewModel.LoadCollections();
+            collectionsViewModel.LoadCollectionsAsync();
             this.DataContext = collectionsViewModel;
         }
 
@@ -50,14 +50,14 @@ namespace SteamHub.Pages
             }
         }
 
-        private void LoadCollections()
+        private async void LoadCollections()
         {
             try
             {
                 collectionsViewModel.IsLoading = true;
                 collectionsViewModel.ErrorMessage = string.Empty;
 
-                var collections = collectionsViewModel.GetPublicCollectionsForUser(userIdentifier);
+                var collections = await collectionsViewModel.GetPublicCollectionsForUserAsync(userIdentifier);
                 collectionsViewModel.Collections = new ObservableCollection<Collection>(collections);
             }
             catch (Exception)

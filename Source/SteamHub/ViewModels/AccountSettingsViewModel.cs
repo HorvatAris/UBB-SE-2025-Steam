@@ -64,13 +64,17 @@ namespace SteamHub.ViewModels
         public event EventHandler RequestPasswordConfirmation;
 
         private readonly IUserService userService;
-        private Action pendingAction;
+        private Func<Task> pendingAction;
 
         public AccountSettingsViewModel()
         {
             userService = App.UserService;
+            _ = LoadUserDataAsync();
+        }
 
-            var currentUser = userService.GetCurrentUser();
+        private async Task LoadUserDataAsync()
+        {
+            var currentUser = await userService.GetCurrentUserAsync();
             if (currentUser != null)
             {
                 username = currentUser.Username;
@@ -104,31 +108,32 @@ namespace SteamHub.ViewModels
 
         partial void OnUsernameChanged(string value)
         {
-            ValidateUsername(value);
+            _ = ValidateUsernameAsync(value);
         }
 
-        private void ValidateUsername(string username)
+        private async Task ValidateUsernameAsync(string username)
         {
-            bool isValid = IsValidUsername(username);
+            bool isValid = await IsValidUsernameAsync(username);
             UsernameErrorMessageVisibility = isValid ? Visibility.Collapsed : Visibility.Visible;
             UpdateUsernameEnabled = isValid;
         }
 
-        private bool IsValidUsername(string username)
+        private async Task<bool> IsValidUsernameAsync(string username)
         {
             if (!UserValidator.IsValidUsername(username))
             {
                 return false;
             }
-            return userService.GetUserByUsername(username) == null;
+            var user = await userService.GetUserByUsernameAsync(username);
+            return user == null;
         }
 
         [RelayCommand]
-        private void UpdateUsername()
+        private async Task UpdateUsername()
         {
-            pendingAction = () =>
+            pendingAction = async () =>
             {
-                if (userService.UpdateUserUsername(Username, CurrentPassword))
+                if (await userService.UpdateUserUsernameAsync(Username, CurrentPassword))
                 {
                     ShowSuccessMessage("Username updated successfully!");
                 }
@@ -142,11 +147,11 @@ namespace SteamHub.ViewModels
         }
 
         [RelayCommand]
-        private void UpdateEmail()
+        private async Task UpdateEmail()
         {
-            pendingAction = () =>
+            pendingAction = async () =>
             {
-                if (userService.UpdateUserEmail(Email, CurrentPassword))
+                if (await userService.UpdateUserEmailAsync(Email, CurrentPassword))
                 {
                     ShowSuccessMessage("Email updated successfully!");
                 }
@@ -160,14 +165,14 @@ namespace SteamHub.ViewModels
         }
 
         [RelayCommand]
-        private void UpdatePassword()
+        private async Task UpdatePassword()
         {
-            pendingAction = () =>
+            pendingAction = async () =>
             {
-                if (userService.UpdateUserPassword(Password, CurrentPassword))
+                if (await userService.UpdateUserPasswordAsync(Password, CurrentPassword))
                 {
                     ShowSuccessMessage("Password updated successfully!");
-                    Password = string.Empty; // Clear the password field
+                    Password = string.Empty;
                 }
                 else
                 {
@@ -196,14 +201,14 @@ namespace SteamHub.ViewModels
             RequestPasswordConfirmation?.Invoke(this, EventArgs.Empty);
         }*/
 
-        private bool ValidateCurrentPassword()
+        private async Task<bool> ValidateCurrentPassword()
         {
             if (string.IsNullOrWhiteSpace(CurrentPassword))
             {
                 ErrorMessage = "Current password is required.";
                 return false;
             }
-            return userService.VerifyUserPassword(CurrentPassword);
+            return await userService.VerifyUserPasswordAsync(CurrentPassword);
         }
 
         private void ShowSuccessMessage(string message)
@@ -219,16 +224,16 @@ namespace SteamHub.ViewModels
             });
         }
 
-        public bool VerifyPassword(string password)
+        public async Task<bool> VerifyPassword(string password)
         {
-            return userService.VerifyUserPassword(password);
+            return await userService.VerifyUserPasswordAsync(password);
         }
 
-        public void ExecutePendingAction()
+        public async Task ExecutePendingAction()
         {
             if (pendingAction != null)
             {
-                pendingAction();
+                await pendingAction();
                 pendingAction = null;
             }
             CurrentPassword = string.Empty;

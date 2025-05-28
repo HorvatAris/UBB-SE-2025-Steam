@@ -18,6 +18,8 @@ using SteamHub.ApiContract.Models;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Microsoft.UI;
+using SteamHub.ApiContract.Services.Interfaces;
+using SteamHub.ApiContract.Models.User;
 
 namespace SteamHub.Pages
 {
@@ -29,8 +31,13 @@ namespace SteamHub.Pages
         public ProfileViewModel ViewModel { get; private set; }
         private int userIdentifier;
         private bool isNavigatingAway = false;
+        private IUserService userService;
+        private IFriendsService friendsService;
+        private ICollectionsService collectionsService;
+        private IFeaturesService featureService;
+        private IAchievementsService achievementsService;
 
-        public ProfilePage()
+        public ProfilePage(IUserService userService, IFriendsService friendsService, IFeaturesService featureService, ICollectionsService collectionsService, IAchievementsService achievementsService, User user)
         {
             try
             {
@@ -48,24 +55,18 @@ namespace SteamHub.Pages
                     // Initialize the ViewModel with the UI thread's dispatcher
                     Debug.WriteLine("DataLink instance obtained.");
 
-                    var friendsService = App.FriendsService;
                     Debug.WriteLine("FriendshipsRepository and FriendsService initialized.");
-
-                    // Add the UserProfileRepository parameter
-                    ProfileViewModel.Initialize(
-                        App.UserService,
-                        friendsService,
-                        Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread(),
-                        App.CollectionsRepository,
-                        App.FeaturesService,
-                        App.AchievementsService);
-
-                    Debug.WriteLine("ProfileViewModel initialized with services.");
-                    ViewModel = ProfileViewModel.Instance;
+                    this.achievementsService = achievementsService ?? throw new ArgumentNullException(nameof(achievementsService));
+                    this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
+                    this.friendsService = friendsService ?? throw new ArgumentNullException(nameof(friendsService));
+                    this.featureService = featureService ?? throw new ArgumentNullException(nameof(featureService));
+                    this.collectionsService = collectionsService ?? throw new ArgumentNullException(nameof(collectionsService));
+                    ViewModel = new ProfileViewModel(userService, friendsService, Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread(),collectionsService, featureService, achievementsService);
                 }
 
                 DataContext = ViewModel; // Ensure this is set correctly
                 Debug.WriteLine("Profile data loading initiated.");
+                this.OnNavigatedToTemp(user.UserId); // Pass null if no navigation parameter is available
             }
             catch (Exception exception)
             {
@@ -105,17 +106,14 @@ namespace SteamHub.Pages
             {
                 Debug.WriteLine("Initializing ProfileViewModel...");
 
-                var friendsService = App.FriendsService;
-                Debug.WriteLine("FriendsService obtained.");
-
                 // Initialize ProfileViewModel with all required services
                 ProfileViewModel.Initialize(
-                    App.UserService,
-                    friendsService,
+                    this.userService,
+                    this.friendsService,
                     Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread(),
-                    App.CollectionsRepository,
-                    App.FeaturesService,
-                    App.AchievementsService);
+                    this.collectionsService,
+                    this.featureService,
+                    this.achievementsService);
                 Debug.WriteLine("ProfileViewModel initialized with services.");
             }
 
@@ -137,6 +135,59 @@ namespace SteamHub.Pages
                 _ = ViewModel.LoadProfileAsync(userIdentifier);
             }
 
+            // If no parameter but we're returning to the page and ViewModel has a user ID
+            else if (ViewModel.UserIdentifier > 0)
+            {
+                // Use the user ID stored in the ViewModel
+                userIdentifier = ViewModel.UserIdentifier;
+                Debug.WriteLine($"Using stored user ID from ViewModel: {userIdentifier}");
+
+                // Load the profile data
+                _ = LoadAndUpdateProfile(userIdentifier);  /// VERY IMPORTANT
+            }
+            else
+            {
+                Debug.WriteLine("No user ID available - cannot load profile");
+            }
+
+            UpdateProfileControl();
+        }
+
+        protected void OnNavigatedToTemp(int userId)
+        {
+            Debug.WriteLine("Navigated to ProfilePage.");
+
+            // Ensure ProfileViewModel is initialized
+            if (!ProfileViewModel.IsInitialized)
+            {
+                Debug.WriteLine("Initializing ProfileViewModel...");
+
+                // Initialize ProfileViewModel with all required services
+                ProfileViewModel.Initialize(
+                    this.userService,
+                    this.friendsService,
+                    Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread(),
+                    this.collectionsService,
+                    this.featureService,
+                    this.achievementsService);
+                Debug.WriteLine("ProfileViewModel initialized with services.");
+            }
+
+            // Get the ViewModel instance
+            ViewModel = ProfileViewModel.Instance;
+            DataContext = ViewModel;
+
+            // Register for property changed events
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            if (userId != null)
+            {
+                // Use the parameter as the user ID
+                userIdentifier = userId;
+                Debug.WriteLine($"Using user ID from navigation parameter: {userIdentifier}");
+
+                // Load the profile data
+                _ = ViewModel.LoadProfileAsync(userIdentifier);
+            }
             // If no parameter but we're returning to the page and ViewModel has a user ID
             else if (ViewModel.UserIdentifier > 0)
             {
@@ -258,14 +309,15 @@ namespace SteamHub.Pages
                 {
                     // Get the friendship ID for the current user and friend
                     var friendships = App.FriendsService.GetAllFriendships();
+                    var currentUser = await App.UserService.GetCurrentUserAsync();
                     var friendship = friendships.FirstOrDefault(currentFriendship =>
-                        (currentFriendship.UserId == App.UserService.GetCurrentUser().UserId && currentFriendship.FriendId == userIdentifier) ||
-                        (currentFriendship.UserId == userIdentifier && currentFriendship.FriendId == App.UserService.GetCurrentUser().UserId));
+                        (currentFriendship.UserId == currentUser.UserId && currentFriendship.FriendId == userIdentifier) ||
+                        (currentFriendship.UserId == userIdentifier && currentFriendship.FriendId == currentUser.UserId));
 
                     if (friendship != null)
                     {
                         App.FriendsService.RemoveFriend(friendship.FriendshipId);
-                        Frame.Navigate(typeof(ProfilePage), App.UserService.GetCurrentUser().UserId);
+                        Frame.Navigate(typeof(ProfilePage), currentUser.UserId);
                     }
                     else
                     {
@@ -290,12 +342,12 @@ namespace SteamHub.Pages
             // this.Frame.Navigate(typeof(AchievementsPage));
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             // If we have a valid user ID, refresh the profile
             if (userIdentifier > 0)
             {
-                _ = ViewModel.LoadProfileAsync(userIdentifier);
+                await ViewModel.LoadProfileAsync(userIdentifier);
             }
             // Initial update of the profile control
             UpdateProfileControl();

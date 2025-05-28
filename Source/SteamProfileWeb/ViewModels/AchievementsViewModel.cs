@@ -1,6 +1,6 @@
 ﻿using BusinessLayer.Models;
 
-namespace SteamProfileWeb.ViewModels
+namespace SteamHub.Web.ViewModels
 {
     public class AchievementsViewModel
     {

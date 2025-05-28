@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -51,20 +52,32 @@ namespace SteamHub.Pages
             }
         }
 
-        private void BackToProfileButton_Click(object sender, RoutedEventArgs routedEventArguments)
+        private async void BackToProfileButton_Click(object sender, RoutedEventArgs routedEventArguments)
         {
-            // Get the current user ID from the service or ViewModel
-            int userId = App.UserService.GetCurrentUser().UserId;
+            try
+            {
+                // Get the current user ID from the service
+                var currentUser = await App.UserService.GetCurrentUserAsync();
+                if (currentUser == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("Failed to get current user for navigation");
+                    return;
+                }
 
-            // If we can navigate back (in case we came from Profile)
-            if (this.Frame.CanGoBack)
-            {
-                this.Frame.GoBack();
+                // If we can navigate back (in case we came from Profile)
+                if (this.Frame.CanGoBack)
+                {
+                    this.Frame.GoBack();
+                }
+                else
+                {
+                    // Navigate directly to ProfilePage with the user ID
+                    this.Frame.Navigate(typeof(ProfilePage), currentUser.UserId);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // Navigate directly to ProfilePage with the user ID
-                this.Frame.Navigate(typeof(ProfilePage), userId);
+                System.Diagnostics.Debug.WriteLine($"Error in BackToProfileButton_Click: {ex.Message}");
             }
         }
     }

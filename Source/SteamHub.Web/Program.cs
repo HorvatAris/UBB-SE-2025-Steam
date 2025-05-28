@@ -1,6 +1,5 @@
 using SteamHub.ApiContract.Context.Repositories;
 using SteamHub.ApiContract.Models.User;
-using SteamHub.ApiContract.Proxies;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.ServiceProxies;
 using SteamHub.ApiContract.Services;
@@ -30,8 +29,7 @@ builder.Services.AddScoped<IPointShopService, PointShopServiceProxy>();
 builder.Services.AddScoped<IInventoryService, InventoryServiceProxy>();
 builder.Services.AddScoped<ITradeService, TradeServiceProxy>();
 builder.Services.AddScoped<IMarketplaceService, MarketplaceServiceProxy>();
-
-
+builder.Services.AddScoped<IAchievementsService, AchievementsServiceProxy>();
 
 var apiBaseUri = new Uri(builder.Configuration["ApiSettings:BaseUrl"]!);
 

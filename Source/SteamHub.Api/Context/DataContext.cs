@@ -1,18 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+using SteamHub.Api.Entities;
+using SteamHub.ApiContract.Models.Common;
+using SteamHub.ApiContract.Models.Game;
+using CollectionGame = SteamHub.Api.Entities.CollectionGame;
+using Game = SteamHub.Api.Entities.Game;
+using OwnedGame = SteamHub.Api.Entities.OwnedGame;
+
 namespace SteamHub.Api.Context
 {
-    using Azure;
-    using Entities;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.VisualBasic;
-    using Models;
-    using System.Reflection.Emit;
-    using SteamHub.ApiContract.Models.Game;
-    using SteamHub.ApiContract.Models.Common;
-    using Game = SteamHub.Api.Entities.Game;
-    using OwnedGame = SteamHub.Api.Entities.OwnedGame;
-    using CollectionGame = SteamHub.Api.Entities.CollectionGame;
-    using Collection = SteamHub.Api.Entities.Collection;
-    using User = SteamHub.Api.Entities.User;
+    using Game = Game;
+    using OwnedGame = OwnedGame;
+    using CollectionGame = CollectionGame;
+    using Collection = Collection;
+    using User = User;
 
 
     public class DataContext : DbContext
@@ -84,6 +84,8 @@ namespace SteamHub.Api.Context
             {
                 optionsBuilder.UseSqlServer(configuration.GetConnectionString("Default"));
             }
+            
+            
         }  
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -134,7 +136,7 @@ namespace SteamHub.Api.Context
                     Password = passwords[0],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = "",
+                    ProfilePicture = "https://i.imgur.com/vixhhkC.jpeg",
                     Bio = "Gaming enthusiast and software developer",
                     LastModified = new DateTime(2024, 1, 1)
                 },
@@ -1681,11 +1683,6 @@ namespace SteamHub.Api.Context
                     .HasForeignKey(r => r.GameIdentifier)
                     .OnDelete(DeleteBehavior.NoAction);
 
-                entity.Ignore(r => r.Username);
-                entity.Ignore(r => r.TitleOfGame);
-                entity.Ignore(r => r.ProfilePictureBlob);
-                entity.Ignore(r => r.HasVotedHelpful);
-                entity.Ignore(r => r.HasVotedFunny);
             });
 
             // -- OwnedGame mapping ---------------------------------------------------------

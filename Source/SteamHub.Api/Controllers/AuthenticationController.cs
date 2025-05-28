@@ -92,7 +92,7 @@ public class AuthenticationController : ControllerBase
         User newUser;
         try
         {
-            newUser = userService.CreateUser(new User
+            newUser = await userService.CreateUserAsync(new SteamHub.ApiContract.Models.User.User
             {
                 Username = request.Username,
                 Email = request.Email,
@@ -153,8 +153,7 @@ public class AuthenticationController : ControllerBase
 
         // Create the token
         var token = new JwtSecurityToken(
-            issuer: configuration["Jwt:Issuer"] ?? "SteamWebApi",
-            audience: configuration["Jwt:Audience"] ?? "SteamProfile",
+            issuer: configuration["Jwt:Issuer"] ?? "SteamHubApi",
             claims: claims,
             expires: DateTime.Now.AddHours(3),
             signingCredentials: credentials);

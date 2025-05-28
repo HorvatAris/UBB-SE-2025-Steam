@@ -36,6 +36,18 @@ namespace SteamHub
 
         public static Window? MainWindow { get; private set; }
 
+        /*
+         * TEMPORARY: This is a placeholder for getting the Services from APP,
+         * until we think of a solution I will keep them here. Sorry if it's a bother
+         * 
+        */
+        private static readonly Dictionary<Type, object> Services = new Dictionary<Type, object>();
+        public static IFriendsService FriendsService { get; private set; }
+        public static ICollectionsRepository CollectionsRepository { get; private set; }
+        public static IUserService UserService { get; private set; }
+        public static IFeaturesService FeaturesService { get; private set; }
+        public static IAchievementsService AchievementsService { get; private set; }
+
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             MainWindow = new MainWindow();
@@ -45,18 +57,8 @@ namespace SteamHub
                 Debug.WriteLine($"Unhandled UI Exception: {e.Exception.StackTrace}");
                 e.Handled = true; // Prevents app from crashing
             };
-        }
-        /*
-         * TEMPORARY: This is a placeholder for getting the Services from APP,
-         * until we think of a solution I will keep them here. Sorry if it's a bother
-         * 
-        */
 
-        public static IFriendsService FriendsService { get; private set; }
-        public static ICollectionsRepository CollectionsRepository { get; private set; }
-        public static IUserService UserService { get; private set; }
-        public static IFeaturesService FeaturesService { get; private set; }
-        public static IAchievementsService AchievementsService { get; private set; }
+        }
 
     }
 

@@ -12,7 +12,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Models.Common;
-using SteamHub.ApiContract.Proxies;
 using SteamHub.ApiContract.Services;
 using SteamHub.ApiContract.ServiceProxies;
 using SteamHub.Pages;
@@ -37,7 +36,12 @@ namespace SteamHub
         private TradeServiceProxy tradeService;
         private UserServiceProxy userService;
         private SessionServiceProxy sessionService;
-        private PasswordResetServiceProxy passwordResetService;
+        private FriendServiceProxy friendsService;
+        private FeaturesServiceProxy featuresService;
+        private WalletServiceProxy walletService;
+        private AchievementsServiceProxy achievementsService;
+        private CollectionsServiceProxy collectionServiceProxy;
+        
         private readonly IHttpClientFactory _httpClientFactory;
 
         public MainWindow()
@@ -64,7 +68,6 @@ namespace SteamHub
 
             this.userService = new UserServiceProxy(_httpClientFactory);
             this.sessionService = new SessionServiceProxy(_httpClientFactory);
-            this.passwordResetService = new PasswordResetServiceProxy();
 
             // Start with login page
             ShowLoginPage();
@@ -153,6 +156,7 @@ namespace SteamHub
             this.user = loggedInUser;
 
             // Initialize services that require the logged-in user
+            this.achievementsService = new AchievementsServiceProxy(_httpClientFactory);
             this.tradeService = new TradeServiceProxy(_httpClientFactory, loggedInUser);
             this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory, loggedInUser);
             this.pointShopService = new PointShopServiceProxy(_httpClientFactory, loggedInUser);
@@ -161,6 +165,11 @@ namespace SteamHub
             this.cartService = new CartServiceProxy(_httpClientFactory, loggedInUser);
             this.userGameService = new UserGameServiceProxy(_httpClientFactory, loggedInUser);
             this.developerService = new DeveloperServiceProxy(_httpClientFactory, loggedInUser);
+            this.friendsService = new FriendServiceProxy();
+            this.achievementsService = new AchievementsServiceProxy(_httpClientFactory);
+            this.collectionServiceProxy = new CollectionsServiceProxy();
+            this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
+            this.walletService = new WalletServiceProxy(_httpClientFactory, loggedInUser);
 
             // Hide login overlay and show main content
             LoginOverlay.Visibility = Visibility.Collapsed;
@@ -169,6 +178,7 @@ namespace SteamHub
             // Navigate to home page
             this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
         }
+
 
         public void ResetToHomePage()
         {
@@ -213,10 +223,16 @@ namespace SteamHub
                         ShowRegisterPage();
                         break;
                     case "profile":
-                        this.ContentFrame.Content = new ProfilePage();
+                        this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService,this.collectionServiceProxy, achievementsService, this.user);
                         break;
                     case "ForgotPasswordPage":
                         ShowLoginPage();
+                        break;
+                    case "AchievementsPage":
+                        this.ContentFrame.Content = new AchievementsPage(this.userService, this.achievementsService);
+                        break;
+                    case "Wallet":
+                        this.ContentFrame.Navigate(typeof(WalletPage), this.walletService);
                         break;
                 }
             }

@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Models.Collections;
 using Collection = SteamHub.ApiContract.Models.Collections.Collection;
+using CommunityToolkit.Common;
 
 
 
@@ -249,7 +250,7 @@ namespace SteamHub.ViewModels
             IUserService userService,
             IFriendsService friendsService,
             DispatcherQueue dispatcherQueue,
-            ICollectionsRepository gameCollectionsRepository,
+            ICollectionsService gameCollectionsService,
             IFeaturesService featuresService,
             IAchievementsService achievementsService)
         {
@@ -258,14 +259,14 @@ namespace SteamHub.ViewModels
                 throw new InvalidOperationException("ProfileViewModel is already initialized");
             }
 
-            profileViewModelInstance = new ProfileViewModel(userService, friendsService, dispatcherQueue, gameCollectionsRepository, featuresService, achievementsService);
+            profileViewModelInstance = new ProfileViewModel(userService, friendsService, dispatcherQueue,gameCollectionsService, featuresService, achievementsService);
         }
 
         public ProfileViewModel(
             IUserService userService,
             IFriendsService friendsService,
             DispatcherQueue dispatcherQueue,
-            ICollectionsRepository gameCollectionsRepository,
+            ICollectionsService gameCollectionsService,
             IFeaturesService featuresService,
             IAchievementsService achievementsService)
         {
@@ -312,8 +313,7 @@ namespace SteamHub.ViewModels
                 User currentUser = null;
                 try
                 {
-                    // Instead of using Task.Run, try direct call to reduce complexity
-                    currentUser = userService.GetUserByIdentifier(user_id);
+                    currentUser = await userService.GetUserByIdentifierAsync(user_id);
 
                     if (currentUser == null)
                     {
@@ -348,20 +348,19 @@ namespace SteamHub.ViewModels
                 // Continue with rest of the method only if we successfully got a user
                 try
                 {
-                    var currentUserId = userService.GetCurrentUser().UserId;
-                    var isFriend = await Task.Run(() => friendsService.AreUsersFriends(currentUserId, user_id));
+                    var currentUserId = user_id;
+                    var isFriend = friendsService.AreUsersFriends(currentUserId, user_id);
 
-                    // Get equipped features (safer direct call instead of Task.Run)
+                    // Get equipped features
                     List<Feature> equippedFeatures = new List<Feature>();
                     try
                     {
-                        equippedFeatures = featuresService.GetUserEquippedFeatures(currentUser.UserId);
+                        equippedFeatures = await featuresService.GetUserFeaturesAsync(currentUser.UserId);
                         Debug.WriteLine($"Retrieved {equippedFeatures.Count} equipped features");
                     }
                     catch (Exception exception)
                     {
                         Debug.WriteLine($"Error getting equipped features: {exception.Message}");
-
                         // Continue with empty features list
                     }
 
@@ -370,38 +369,31 @@ namespace SteamHub.ViewModels
                         if (currentUser != null)
                         {
                             isProfileOwner = user_id == currentUserId;
-                            // Basic user info from Users table
                             userIdentifier = currentUser.UserId;
                             Username = currentUser.Username ?? string.Empty;
                             Debug.WriteLine($"Current user {Username}; isProfileOwner = {isProfileOwner}");
                             IsDeveloper = currentUser.IsDeveloper;
-                            // Update friend status
                             IsFriend = isFriend;
                             FriendButtonText = isFriend ? "Unfriend" : "Add Friend";
                             FriendButtonStyle = "AccentButtonStyle";
-
+                            user = currentUser;
                             Debug.WriteLine($"Current user {Username} ; isProfileOwner = {isProfileOwner} ; isFriend = {IsFriend}");
-                            // Profile info from UserProfiles table
+                            
                             if (user != null)
                             {
                                 biography = user.Bio ?? string.Empty;
-                                // Set the string property for backward compatibility
-                                // Handle different types of image sources
                                 if (user.ProfilePicture != null)
                                 {
                                     if (user.ProfilePicture.StartsWith("http://") || user.ProfilePicture.StartsWith("https://"))
                                     {
-                                        // Web URL - use as-is for BitmapImage
                                         ProfilePicture = user.ProfilePicture;
                                     }
                                     else if (user.ProfilePicture.StartsWith("ms-appx:///"))
                                     {
-                                        // Already has ms-appx prefix
                                         ProfilePicture = user.ProfilePicture;
                                     }
                                     else
                                     {
-                                        // Local asset - add ms-appx prefix
                                         ProfilePicture = $"ms-appx:///{user.ProfilePicture}";
                                     }
                                 }
@@ -410,14 +402,11 @@ namespace SteamHub.ViewModels
                                     ProfilePicture = "ms-appx:///Assets/default-profile.png";
                                 }
 
-                                // Load as BitmapImage
                                 await LoadProfilePhotoAsync(ProfilePicture);
                             }
 
-                            // Process equipped features
                             ProcessEquippedFeatures(equippedFeatures);
 
-                            // Load friend count
                             try
                             {
                                 FriendCount = friendsService.GetFriendshipCount(currentUser.UserId);
@@ -429,24 +418,19 @@ namespace SteamHub.ViewModels
                             }
 
                             // Set achievement values
-                            // First unlock any achievements the user has earned
-                            achievementsService.UnlockAchievementForUser(currentUser.UserId);
+                            await achievementsService.UnlockAchievementForUser(currentUser.UserId);
 
-                            // Then load achievements
-                            FriendshipsAchievement = GetTopAchievement(currentUser.UserId, "Friendships");
-                            OwnedGamesAchievement = GetTopAchievement(currentUser.UserId, "Owned Games");
-                            SoldGamesAchievement = GetTopAchievement(currentUser.UserId, "Sold Games");
-                            NumberOfReviewsAchievement = GetTopAchievement(currentUser.UserId, "Number of Reviews Given");
-                            NumberOfReviewsReceived = GetTopAchievement(currentUser.UserId, "Number of Reviews Received");
-                            DeveloperAchievement = GetTopAchievement(currentUser.UserId, "Developer");
-                            YearsOfActivity = GetTopAchievement(currentUser.UserId, "Years of Activity");
-                            NumberOfPostsGetTopAchievement = GetTopAchievement(currentUser.UserId, "Number of Posts");
+                            // Load achievements
+                            FriendshipsAchievement = await GetTopAchievementAsync(currentUser.UserId, "Friendships");
+                            OwnedGamesAchievement = await GetTopAchievementAsync(currentUser.UserId, "Owned Games");
+                            SoldGamesAchievement = await GetTopAchievementAsync(currentUser.UserId, "Sold Games");
+                            NumberOfReviewsAchievement = await GetTopAchievementAsync(currentUser.UserId, "Number of Reviews Given");
+                            NumberOfReviewsReceived = await GetTopAchievementAsync(currentUser.UserId, "Number of Reviews Received");
+                            DeveloperAchievement = await GetTopAchievementAsync(currentUser.UserId, "Developer");
+                            YearsOfActivity = await GetTopAchievementAsync(currentUser.UserId, "Years of Activity");
+                            NumberOfPostsGetTopAchievement = await GetTopAchievementAsync(currentUser.UserId, "Number of Posts");
 
-                            Debug.WriteLine($"Loaded achievements for user {currentUser.UserId}:");
-                            Debug.WriteLine($"Friendships: {FriendshipsAchievement?.Achievement?.AchievementName}, Unlocked: {FriendshipsAchievement?.IsUnlocked}");
-                            Debug.WriteLine($"Owned Games: {OwnedGamesAchievement?.Achievement?.AchievementName}, Unlocked: {OwnedGamesAchievement?.IsUnlocked}");
-                            Debug.WriteLine($"Sold Games: {SoldGamesAchievement?.Achievement?.AchievementName}, Unlocked: {SoldGamesAchievement?.IsUnlocked}");
-                            Debug.WriteLine($"Reviews: {NumberOfReviewsAchievement?.Achievement?.AchievementName}, Unlocked: {NumberOfReviewsAchievement?.IsUnlocked}");
+                            Debug.WriteLine($"Loaded achievements for user {currentUser.UserId}");
 
                             moneyBalance = 0;
                             pointsBalance = 0;
@@ -493,7 +477,6 @@ namespace SteamHub.ViewModels
                 {
                     Debug.WriteLine($"Inner exception: {exception.InnerException.Message}");
                 }
-
                 Debug.WriteLine($"Stack trace: {exception.StackTrace}");
             }
         }
@@ -622,13 +605,14 @@ namespace SteamHub.ViewModels
         {
             try
             {
+                var currentUser = await userService.GetCurrentUserAsync();
                 if (IsFriend)
                 {
                     // Remove friend
-                    var friendshipId = await Task.Run(() => friendsService.GetFriendshipIdentifier(userService.GetCurrentUser().UserId, userIdentifier));
+                    var friendshipId = friendsService.GetFriendshipIdentifier(currentUser.UserId, userIdentifier);
                     if (friendshipId.HasValue)
                     {
-                        await Task.Run(() => friendsService.RemoveFriend(friendshipId.Value));
+                        friendsService.RemoveFriend(friendshipId.Value);
                         IsFriend = false;
                         FriendButtonText = "Add Friend";
                         FriendCount = friendsService.GetFriendshipCount(userIdentifier);
@@ -637,7 +621,7 @@ namespace SteamHub.ViewModels
                 else
                 {
                     // Add friend
-                    await Task.Run(() => friendsService.AddFriend(userService.GetCurrentUser().UserId, userIdentifier));
+                    friendsService.AddFriend(currentUser.UserId, userIdentifier);
                     IsFriend = true;
                     FriendButtonText = "Unfriend";
                     FriendCount = friendsService.GetFriendshipCount(userIdentifier);
@@ -671,42 +655,37 @@ namespace SteamHub.ViewModels
             }
         }
 
-        private AchievementWithStatus GetTopAchievement(int userId, string category)
+        private async Task<AchievementWithStatus> GetTopAchievementAsync(int userId, string category)
         {
             try
             {
-                // Get all achievements for this category
-                var achievements = achievementsService.GetAchievementsWithStatusForUser(userId)
+                var achievements = await achievementsService.GetAchievementsWithStatusForUser(userId);
+                var categoryAchievements = achievements
                     .Where(achievementWithStatus => achievementWithStatus.Achievement.AchievementType == category)
                     .ToList();
 
-                // First try to get the highest-points unlocked achievement
-                var topUnlockedAchievement = achievements
+                var topUnlockedAchievement = categoryAchievements
                     .Where(achievement => achievement.IsUnlocked)
                     .OrderByDescending(achievement => achievement.Achievement.Points)
                     .FirstOrDefault();
 
-                // If we found an unlocked achievement, return it
                 if (topUnlockedAchievement != null)
                 {
                     Debug.WriteLine($"Found top unlocked {category} achievement: {topUnlockedAchievement.Achievement.AchievementName}");
                     return topUnlockedAchievement;
                 }
 
-                // If no unlocked achievements, get the lowest-points locked achievement
-                var lowestLockedAchievement = achievements
+                var lowestLockedAchievement = categoryAchievements
                     .Where(achievement => !achievement.IsUnlocked)
                     .OrderBy(achievement => achievement.Achievement.Points)
                     .FirstOrDefault();
 
-                // If we found a locked achievement, return it
                 if (lowestLockedAchievement != null)
                 {
                     Debug.WriteLine($"Found lowest locked {category} achievement: {lowestLockedAchievement.Achievement.AchievementName}");
                     return lowestLockedAchievement;
                 }
 
-                // If no achievements found at all, return an empty achievement
                 Debug.WriteLine($"No achievements found for {category}, returning empty achievement");
                 return new AchievementWithStatus
                 {
@@ -716,7 +695,7 @@ namespace SteamHub.ViewModels
                         Description = "Complete tasks to unlock this achievement",
                         AchievementType = category,
                         Points = 0,
-                        Icon = "ms-appx:///Assets/empty_achievement.png" // Use a grayscale or empty icon
+                        Icon = "ms-appx:///Assets/empty_achievement.png"
                     },
                     IsUnlocked = false
                 };
@@ -732,7 +711,7 @@ namespace SteamHub.ViewModels
                         Description = "Complete tasks to unlock this achievement",
                         AchievementType = category,
                         Points = 0,
-                        Icon = "ms-appx:///Assets/empty_achievement.png" // Use a grayscale or empty icon
+                        Icon = "ms-appx:///Assets/empty_achievement.png"
                     },
                     IsUnlocked = false
                 };
@@ -748,13 +727,26 @@ namespace SteamHub.ViewModels
         }
 
         [RelayCommand]
-        private void BackToProfile()
+        private async Task BackToProfile()
         {
-            // Get the current user's ID from the UserService
-            int currentUserId = userService.GetCurrentUser().UserId;
-
-            // Navigate back to the Profile page with the current user ID
-            NavigationService.Instance.Navigate(typeof(ProfilePage), currentUserId);
+            try
+            {
+                var currentUser = await userService.GetCurrentUserAsync();
+                if (currentUser != null)
+                {
+                    NavigationService.Instance.Navigate(typeof(ProfilePage), currentUser.UserId);
+                }
+                else
+                {
+                    Debug.WriteLine("Failed to get current user for navigation");
+                    ErrorMessage = "Failed to navigate to profile. Please try again.";
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in BackToProfile: {ex.Message}");
+                ErrorMessage = "Failed to navigate to profile. Please try again.";
+            }
         }
 
         public async Task RefreshEquippedFeaturesAsync()
@@ -763,10 +755,8 @@ namespace SteamHub.ViewModels
             {
                 Debug.WriteLine($"Refreshing equipped features for user {userIdentifier}");
 
-                // Get the updated equipped features
-                var equippedFeatures = featuresService.GetUserEquippedFeatures(userIdentifier);
+                var equippedFeatures = await featuresService.GetEquippedFeaturesAsync(userIdentifier);
 
-                // Process and update the UI
                 await dispatcherQueue.EnqueueAsync(() =>
                 {
                     ProcessEquippedFeatures(equippedFeatures);

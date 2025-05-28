@@ -52,7 +52,7 @@ namespace SteamHub.Pages
             this.InitializeComponent();
 
             collectionsViewModel = new CollectionsViewModel(collectionsService , userService);
-            collectionsViewModel.LoadCollections();
+            collectionsViewModel.LoadCollectionsAsync();
 
             //TO SOLVE usersViewModel = App.UsersViewModel;
             this.DataContext = collectionsViewModel;

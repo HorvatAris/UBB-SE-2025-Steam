@@ -73,19 +73,37 @@ namespace SteamHub.ViewModels
             this.collectionsService = collectionsService ?? throw new ArgumentNullException(nameof(collectionsService));
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             collections = new ObservableCollection<Collection>();
+            _ = InitializeAsync();
         }
 
-        [RelayCommand]
-        public void LoadCollections()
+        private async Task InitializeAsync()
         {
             try
             {
-                userIdentifier = userService.GetCurrentUser().UserId;
+                var currentUser = await userService.GetCurrentUserAsync();
+                if (currentUser != null)
+                {
+                    userIdentifier = currentUser.UserId;
+                    await LoadCollectionsAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in InitializeAsync: {ex.Message}");
+                errorMessage = ErrorLoadCollections;
+            }
+        }
+
+        [RelayCommand]
+        public async Task LoadCollectionsAsync()
+        {
+            try
+            {
                 isLoading = true;
                 errorMessage = string.Empty;
 
                 var collections = collectionsService.GetAllCollections(userIdentifier);
-
+                    
                 if (collections == null || collections.Count == 0)
                 {
                     errorMessage = ErrorNoCollectionsFound;
@@ -99,8 +117,9 @@ namespace SteamHub.ViewModels
                     Collections.Add(collection);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error in LoadCollectionsAsync: {ex.Message}");
                 errorMessage = ErrorLoadCollections;
             }
             finally
@@ -110,15 +129,16 @@ namespace SteamHub.ViewModels
         }
 
         [RelayCommand]
-        private void DeleteCollection(int collectionId)
+        private async Task DeleteCollectionAsync(int collectionId)
         {
             try
             {
                 collectionsService.DeleteCollection(collectionId, userIdentifier);
-                LoadCollections(); // Reload collections after deletion
+                await LoadCollectionsAsync(); // Reload collections after deletion
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error in DeleteCollectionAsync: {ex.Message}");
                 errorMessage = ErrorDeleteCollection;
             }
         }
@@ -136,14 +156,15 @@ namespace SteamHub.ViewModels
                 selectedCollection = collection;
                 // TODO: Navigate to collection details page
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error in ViewCollection: {ex.Message}");
                 errorMessage = ErrorViewCollection;
             }
         }
 
         [RelayCommand]
-        private void AddGameToCollection(int gameId)
+        private async Task AddGameToCollectionAsync(int gameId)
         {
             try
             {
@@ -153,16 +174,17 @@ namespace SteamHub.ViewModels
                 }
 
                 collectionsService.AddGameToCollection(selectedCollection.CollectionId, gameId, userIdentifier);
-                LoadCollections(); // Reload collections to update the UI
+                await LoadCollectionsAsync(); // Reload collections to update the UI
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error in AddGameToCollectionAsync: {ex.Message}");
                 errorMessage = ErrorAddGameToCollection;
             }
         }
 
         [RelayCommand]
-        private void RemoveGameFromCollection(int gameId)
+        private async Task RemoveGameFromCollectionAsync(int gameId)
         {
             try
             {
@@ -172,16 +194,17 @@ namespace SteamHub.ViewModels
                 }
 
                 collectionsService.RemoveGameFromCollection(selectedCollection.CollectionId, gameId);
-                LoadCollections(); // Reload collections to update the UI
+                await LoadCollectionsAsync(); // Reload collections to update the UI
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error in RemoveGameFromCollectionAsync: {ex.Message}");
                 errorMessage = ErrorRemoveGameFromCollection;
             }
         }
 
         [RelayCommand]
-        private void CreateCollection(CreateCollectionParams parameters)
+        private async Task CreateCollectionAsync(CreateCollectionParams parameters)
         {
             try
             {
@@ -191,16 +214,17 @@ namespace SteamHub.ViewModels
                     parameters.CoverPicture,
                     parameters.IsPublic,
                     parameters.CreatedAt);
-                LoadCollections(); // Reload collections after creation
+                await LoadCollectionsAsync(); // Reload collections after creation
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error in CreateCollectionAsync: {ex.Message}");
                 errorMessage = ErrorCreateCollection;
             }
         }
 
         [RelayCommand]
-        private void UpdateCollection(UpdateCollectionParams parameters)
+        private async Task UpdateCollectionAsync(UpdateCollectionParams parameters)
         {
             try
             {
@@ -210,25 +234,26 @@ namespace SteamHub.ViewModels
                     parameters.CollectionName,
                     parameters.CoverPicture,
                     parameters.IsPublic);
-                LoadCollections(); // Reload collections after update
+                await LoadCollectionsAsync(); // Reload collections after update
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error in UpdateCollectionAsync: {ex.Message}");
                 errorMessage = ErrorUpdateCollection;
             }
         }
 
-        public List<Collection> GetPublicCollectionsForUser(int userId)
+        public async Task<List<Collection>> GetPublicCollectionsForUserAsync(int userId)
         {
             return collectionsService.GetPublicCollectionsForUser(userId);
         }
 
-        public Collection GetCollectionById(int collectionId, int userId)
+        public async Task<Collection> GetCollectionByIdAsync(int collectionId, int userId)
         {
             return collectionsService.GetCollectionByIdentifier(collectionId, userId);
         }
 
-        public void RemoveGameFromCollection(int collectionId, int gameId)
+        public async Task RemoveGameFromCollectionAsync(int collectionId, int gameId)
         {
             collectionsService.RemoveGameFromCollection(collectionId, gameId);
         }

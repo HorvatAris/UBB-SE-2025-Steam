@@ -11,49 +11,47 @@ namespace SteamHub.ApiContract.Services.Interfaces
 
     public interface IUserService
     {
-        List<User> GetAllUsers();
+        Task<User> GetUserByIdentifierAsync(int userIdentifier);
 
-        User GetUserByIdentifier(int userIdentifier);
+        Task<User> GetUserByEmailAsync(string email);
 
-        User GetUserByEmail(string email);
+        Task<User> GetUserByUsernameAsync(string username);
 
-        User GetUserByUsername(string username);
+        Task ValidateUserAndEmailAsync(string email, string username);
 
-        void ValidateUserAndEmail(string email, string username);
-
-        User CreateUser(User user);
+        Task<User> CreateUserAsync(User user);
         
-        User UpdateUser(User user);
+        Task<User> UpdateUserAsync(User user);
 
-        void DeleteUser(int userIdentifier);
+        Task DeleteUserAsync(int userIdentifier);
 
-        bool AcceptChanges(int userIdentifier, string givenPassword);
+        Task<bool> AcceptChangesAsync(int userIdentifier, string givenPassword);
 
-        void UpdateUserEmail(int userIdentifier, string newEmail);
+        Task UpdateUserEmailAsync(int userIdentifier, string newEmail);
 
-        void UpdateUserPassword(int userIdentifier, string newPassword);
+        Task UpdateUserPasswordAsync(int userIdentifier, string newPassword);
 
-        void UpdateUserUsername(int userIdentifier, string newUsername);
+        Task UpdateUserUsernameAsync(int userIdentifier, string newUsername);
 
         Task<User?> LoginAsync(string emailOrUsername, string password);
 
         Task LogoutAsync();
 
-        User GetCurrentUser();
+        Task<User?> GetCurrentUserAsync();
 
-        bool IsUserLoggedIn();
+        Task<bool> IsUserLoggedInAsync();
 
-        bool UpdateUserUsername(string username, string currentPassword);
+        Task<bool> UpdateUserUsernameAsync(string username, string currentPassword);
 
-        bool UpdateUserPassword(string password, string currentPassword);
+        Task<bool> UpdateUserPasswordAsync(string password, string currentPassword);
 
-        bool UpdateUserEmail(string email, string currentPassword);
+        Task<bool> UpdateUserEmailAsync(string email, string currentPassword);
 
-        bool VerifyUserPassword(string password);
+        Task<bool> VerifyUserPasswordAsync(string password);
 
         Task<List<User>> GetAllUsersAsync();
 
-        void UpdateProfilePicture(int userId, string profilePicturePath);
-        void UpdateProfileBio(int userId, string profileBio);
+        Task UpdateProfilePictureAsync(int userId, string profilePicturePath);
+        Task UpdateProfileBioAsync(int userId, string profileBio);
     }
 }

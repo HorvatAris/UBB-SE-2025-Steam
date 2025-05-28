@@ -20,29 +20,54 @@ namespace SteamHub.ViewModels
 
         public ModifyProfileViewModel(Frame frame)
         {
-            // Get current user ID (you might need to adjust how you get this)
-            userIdentifier = App.UserService.GetCurrentUser().UserId; // Assuming this exists
-
-            // Load existing profile data
-            LoadUserProfile();
-
-            // Set initial save state
-            UpdateCanSave();
+            _ = InitializeAsync();
         }
 
-        private void LoadUserProfile()
+        private async Task InitializeAsync()
         {
-            var user = App.UserService.GetUserByIdentifier(userIdentifier);
-            if (user != null)
+            try
             {
-                originalImagePath = user.ProfilePicture ?? string.Empty;
-                originalDescription = user.Bio ?? string.Empty;
+                // Get current user ID
+                var currentUser = await App.UserService.GetCurrentUserAsync();
+                if (currentUser != null)
+                {
+                    userIdentifier = currentUser.UserId;
+                    await LoadUserProfileAsync();
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("Failed to get current user during initialization");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in InitializeAsync: {ex.Message}");
+            }
+        }
 
-                // Set current values
-                SelectedImagePath = originalImagePath;
-                SelectedImageName = !string.IsNullOrEmpty(originalImagePath) ?
-                    System.IO.Path.GetFileName(originalImagePath) : "No image selected";
-                Description = originalDescription;
+        private async Task LoadUserProfileAsync()
+        {
+            try
+            {
+                var user = await App.UserService.GetUserByIdentifierAsync(userIdentifier);
+                if (user != null)
+                {
+                    originalImagePath = user.ProfilePicture ?? string.Empty;
+                    originalDescription = user.Bio ?? string.Empty;
+
+                    // Set current values
+                    SelectedImagePath = originalImagePath;
+                    SelectedImageName = !string.IsNullOrEmpty(originalImagePath) ?
+                        System.IO.Path.GetFileName(originalImagePath) : "No image selected";
+                    Description = originalDescription;
+
+                    // Set initial save state
+                    UpdateCanSave();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in LoadUserProfileAsync: {ex.Message}");
             }
         }
 
@@ -74,38 +99,49 @@ namespace SteamHub.ViewModels
         [RelayCommand]
         private async Task SaveChangesAsync()
         {
-            // Check if description has validation errors
-            if (ValidateDescription())
+            try
             {
-                bool changesMade = false;
-
-                // Save new picture if changed
-                if (selectedImageFile != null && SelectedImagePath != originalImagePath)
+                // Check if description has validation errors
+                if (ValidateDescription())
                 {
-                    App.UserService.UpdateProfilePicture(userIdentifier, selectedImageFile.Path);
-                    originalImagePath = SelectedImagePath;
-                    changesMade = true;
+                    bool changesMade = false;
+
+                    // Save new picture if changed
+                    if (selectedImageFile != null && SelectedImagePath != originalImagePath)
+                    {
+                        await App.UserService.UpdateProfilePictureAsync(userIdentifier, selectedImageFile.Path);
+                        originalImagePath = SelectedImagePath;
+                        changesMade = true;
+                    }
+
+                    // Save new description if changed
+                    if (Description != originalDescription)
+                    {
+                        await App.UserService.UpdateProfileBioAsync(userIdentifier, Description);
+                        originalDescription = Description;
+                        changesMade = true;
+                    }
+
+                    if (changesMade)
+                    {
+                        SuccessMessage = "Your profile has been updated successfully!";
+                        SuccessMessageVisibility = Visibility.Visible;
+
+                        // Hide success message after a few seconds
+                        await Task.Delay(3000);
+                        SuccessMessageVisibility = Visibility.Collapsed;
+                    }
+
+                    UpdateCanSave();
                 }
-
-                // Save new description if changed
-                if (Description != originalDescription)
-                {
-                    App.UserService.UpdateProfileBio(userIdentifier, Description);
-                    originalDescription = Description;
-                    changesMade = true;
-                }
-
-                if (changesMade)
-                {
-                    SuccessMessage = "Your profile has been updated successfully!";
-                    SuccessMessageVisibility = Visibility.Visible;
-
-                    // Hide success message after a few seconds
-                    await Task.Delay(3000);
-                    SuccessMessageVisibility = Visibility.Collapsed;
-                }
-
-                UpdateCanSave();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in SaveChangesAsync: {ex.Message}");
+                SuccessMessage = "Failed to update profile. Please try again.";
+                SuccessMessageVisibility = Visibility.Visible;
+                await Task.Delay(3000);
+                SuccessMessageVisibility = Visibility.Collapsed;
             }
         }
 
