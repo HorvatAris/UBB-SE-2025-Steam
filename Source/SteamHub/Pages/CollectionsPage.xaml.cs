@@ -46,7 +46,7 @@ namespace SteamHub.Pages
         private const string PublicCollectionHeader = "Public Collection";
 
         private CollectionsViewModel collectionsViewModel;
-        //TO SOLVE private UsersViewModel usersViewModel;
+        private UsersViewModel usersViewModel;
 
         public CollectionsPage(ICollectionsService collectionsService, IUserService userService)
         {
@@ -54,9 +54,9 @@ namespace SteamHub.Pages
 
             collectionsViewModel = new CollectionsViewModel(collectionsService , userService);
             LoadCollectionsAsync();
-   
 
-            //TO SOLVE usersViewModel = App.UsersViewModel;
+
+            usersViewModel = new UsersViewModel(userService);
             this.DataContext = collectionsViewModel;
         }
         private async Task LoadCollectionsAsync()
@@ -225,9 +225,13 @@ namespace SteamHub.Pages
             }
         }
 
-        private void BackToProfileButton_Click(object sender, RoutedEventArgs eventArgs)
+        private async void BackToProfileButton_Click(object sender, RoutedEventArgs eventArgs)
         {
-          //TO SOLVE  Frame.Navigate(typeof(ProfilePage), usersViewModel.GetCurrentUser().UserId);
+            var currentUser = await usersViewModel.GetCurrentUserAsync();
+            if (currentUser != null)
+            {
+                Frame.Navigate(typeof(ProfilePage), currentUser.UserId);
+            }
         }
     }
 }
