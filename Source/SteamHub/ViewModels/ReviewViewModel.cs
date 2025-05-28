@@ -125,7 +125,7 @@ namespace SteamHub.ViewModels
 
                 isEditingReview = false;
                 editingReviewId = null;
-                LoadReviewsForGame(currentGameIdentifier);
+                await LoadReviewsForGame(currentGameIdentifier);
             }
         }
 
@@ -157,7 +157,7 @@ namespace SteamHub.ViewModels
         {
             if (await reviewService.DeleteReview(reviewIdentifier))
             {
-                LoadReviewsForGame(currentGameIdentifier);
+                await LoadReviewsForGame(currentGameIdentifier);
             }
         }
 
@@ -192,13 +192,13 @@ namespace SteamHub.ViewModels
         public void ApplyReccomendationFilter(string filter)
         {
             CurrentRecommendationFilter = filter;
-            LoadReviewsForGame(currentGameIdentifier);
+            _ = LoadReviewsForGame(currentGameIdentifier);
         }
 
         public void ApplySortinOption(string sortOption)
         {
             CurrentSortOption = sortOption;
-            LoadReviewsForGame(currentGameIdentifier);
+            _ = LoadReviewsForGame(currentGameIdentifier);
         }
 
         private async void UpdateReviewStatistics()

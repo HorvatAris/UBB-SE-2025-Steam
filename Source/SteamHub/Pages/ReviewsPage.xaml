@@ -12,6 +12,7 @@
     mc:Ignorable="d">
 
     <Page.Resources>
+        <converters:ImagePathToImageSourceConverter x:Key="ImagePathToImageSourceConverter"/>
         <converters:UserIdToVisibilityConverter x:Key="UserIdToVisibilityConverter" />
         <converters:RelativeTimeConverter x:Key="RelativeTimeConverter" />
         <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
@@ -22,7 +23,7 @@
         <StackPanel Padding="20" Spacing="15">
             <!-- Game Info -->
             <StackPanel Orientation="Horizontal" Spacing="15">
-                <Image Source="/Assets/default_avatar.png" Width="120" Height="160" />
+                <Image Source="{Binding Game.ImagePath, Converter={StaticResource ImagePathToImageSourceConverter}}" Width="120" Height="160" />
                 <StackPanel>
                     <TextBlock Text="Release Date: March 20, 2024" FontWeight="Bold" />
                     <TextBlock Text="Review Statistics:" Margin="0,10,0,0"/>
@@ -92,9 +93,9 @@
                     <x:Double>5.0</x:Double>
                 </ComboBox>
 
-                <CheckBox Content="Recommended?" IsChecked="{Binding ReviewCurrentlyBeingWritten.IsRecommended}" />
-
-
+                <ToggleSwitch
+                    Header="Recommend this game?"
+                    IsOn="{Binding ReviewCurrentlyBeingWritten.IsRecommended, Mode=TwoWay}" />
 
                 <Button Content="Submit Review"
                     Click="OnSubmitReviewClicked"
