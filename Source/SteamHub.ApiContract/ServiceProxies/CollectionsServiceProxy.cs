@@ -158,7 +158,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             try
             {
                 return await GetAsync<List<Collection>>(
-                    $"Collection/user/{userIdentifier}/last-three");
+                    $"Collections/user/{userIdentifier}/last-three");
             }
             catch (Exception ex)
             {
