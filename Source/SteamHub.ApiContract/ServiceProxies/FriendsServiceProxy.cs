@@ -8,36 +8,31 @@ using System.Text.Json;
 
 namespace SteamHub.ApiContract.ServiceProxies
 {
-    public class FriendsServiceProxy : IFriendsService
+    public class FriendsServiceProxy : ServiceProxy, IFriendsService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-        };
+        private readonly IUserDetails _user;
 
-        private IUserDetails User;
+        public FriendsServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user, string baseUrl = "https://localhost:7241/api/")
+            : base(baseUrl)
+        {
+            _user = user;
+            SetCurrentUser(new UserWithSessionDetails
+            {
+                UserId = user.UserId,
+                Username = user.Username,
+            });
+        }
 
         public User GetUser()
         {
-            return new User(this.User);
-        }
-
-        public FriendsServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user)
-        {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
-            this.User = user;
+            return new User(_user);
         }
 
         public async Task<List<Friendship>> GetAllFriendshipsAsync(int userId)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Friends/{userId}");
-                response.EnsureSuccessStatusCode();
-
-                return await response.Content.ReadFromJsonAsync<List<Friendship>>(_options) ?? new List<Friendship>();
+                return await GetAsync<List<Friendship>>($"Friends/{userId}") ?? new List<Friendship>();
             }
             catch (Exception ex)
             {
@@ -49,8 +44,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.DeleteAsync($"/api/Friends/{friendshipIdentifier}");
-                response.EnsureSuccessStatusCode();
+                await DeleteAsync<object>($"Friends/{friendshipIdentifier}");
             }
             catch (Exception ex)
             {
@@ -62,10 +56,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Friends/{userIdentifier}/count");
-                response.EnsureSuccessStatusCode();
-
-                return await response.Content.ReadFromJsonAsync<int>(_options);
+                return await GetAsync<int>($"Friends/{userIdentifier}/count");
             }
             catch (Exception ex)
             {
@@ -77,10 +68,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Friends/check?user1={userIdentifier1}&user2={userIdentifier2}");
-                response.EnsureSuccessStatusCode();
-
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                return await GetAsync<bool>($"Friends/check?user1={userIdentifier1}&user2={userIdentifier2}");
             }
             catch (Exception ex)
             {
@@ -92,10 +80,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Friends/id?user1={userIdentifier1}&user2={userIdentifier2}");
-                response.EnsureSuccessStatusCode();
-
-                return await response.Content.ReadFromJsonAsync<int?>(_options);
+                return await GetAsync<int?>($"Friends/id?user1={userIdentifier1}&user2={userIdentifier2}");
             }
             catch (Exception ex)
             {
@@ -108,8 +93,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             try
             {
                 var request = new { UserId = userIdentifier, FriendId = friendIdentifier };
-                var response = await _httpClient.PostAsJsonAsync("/api/Friends", request, _options);
-                response.EnsureSuccessStatusCode();
+                await PostAsync("Friends", request);
             }
             catch (Exception ex)
             {
@@ -134,10 +118,7 @@ namespace SteamHub.ApiContract.ServiceProxies
                     FriendProfilePhotoPath = friendProfilePhotoPath
                 };
 
-                var response = await _httpClient.PostAsJsonAsync("/api/Friends/add-by-username", request, _options);
-                response.EnsureSuccessStatusCode();
-
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                return await PostAsync<bool>("Friends/add-by-username", request);
             }
             catch (Exception ex)
             {

@@ -46,14 +46,14 @@ namespace SteamHub.Api.Controllers
         public async Task<IActionResult> AddFriendAsync([FromBody] FriendshipRequest request)
         {
             await friendsService.AddFriendAsync(request.UserId, request.FriendId);
-            return Ok();
+            return Ok(new { success = true });
         }
 
         [HttpDelete("{friendshipId}")]
         public async Task<IActionResult> RemoveFriendAsync(int friendshipId)
         {
             await friendsService.RemoveFriendAsync(friendshipId);
-            return Ok();
+            return Ok(new { success = true, message = "Friend removed successfully" });
         }
 
         [HttpPost("add-by-username")]
@@ -66,7 +66,7 @@ namespace SteamHub.Api.Controllers
                 request.FriendEmail,
                 request.FriendProfilePhotoPath);
 
-            return Ok(result);
+            return Ok(new { success = result });
         }
     }
 
