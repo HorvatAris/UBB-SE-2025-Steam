@@ -85,7 +85,7 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 
 builder.Services.AddScoped<IAchievementsRepository, AchievementsRepository>();
 builder.Services.AddScoped<IAchievementsService, AchievementsService>();
-builder.Services.AddScoped<ICollectionsRepository, CollectionsRepository>();
+builder.Services.AddScoped<ICollectionsService, CollectionsService>();
 
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IUserService, UserService>();
