@@ -456,7 +456,7 @@ namespace SteamHub.ViewModels
 
                             try
                             {
-                                var lastThreeCollections = gameCollectionsService.GetLastThreeCollectionsForUser(user_id);
+                                var lastThreeCollections = await gameCollectionsService.GetLastThreeCollectionsForUser(user_id);
                                 gameCollections.Clear();
                                 foreach (var collection in lastThreeCollections)
                                 {

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -52,12 +53,16 @@ namespace SteamHub.Pages
             this.InitializeComponent();
 
             collectionsViewModel = new CollectionsViewModel(collectionsService , userService);
-            collectionsViewModel.LoadCollectionsAsync();
+            LoadCollectionsAsync();
+   
 
             //TO SOLVE usersViewModel = App.UsersViewModel;
             this.DataContext = collectionsViewModel;
         }
-
+        private async Task LoadCollectionsAsync()
+        {
+            await collectionsViewModel.LoadCollectionsAsync();
+        }
         protected override void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
             base.OnNavigatedTo(eventArgs);

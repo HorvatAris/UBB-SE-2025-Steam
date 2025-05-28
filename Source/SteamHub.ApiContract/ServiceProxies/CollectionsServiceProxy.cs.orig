@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using SteamHub.ApiContract.Exceptions;
 using SteamHub.ApiContract.Models.Collections;
 using SteamHub.ApiContract.Models.Game;
@@ -7,6 +8,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+=======
+﻿using System;
+using System.Collections.Generic;
+using BusinessLayer.Models;
+using SteamHub.ApiContract.Services.Interfaces;
+using SteamHub.ApiContract.Exceptions;
+using SteamHub.ApiContract.Models.Collections;
+using SteamHub.ApiContract.Models.Game;
+>>>>>>> main
 
 namespace SteamHub.ApiContract.ServiceProxies
 {
@@ -17,11 +27,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
         }
 
-        public async Task<List<Collection>> GetAllCollections(int userIdentifier)
+        public List<Collection> GetAllCollections(int userIdentifier)
         {
             try
             {
-                return await GetAsync<List<Collection>>($"Collection/{userIdentifier}");
+                return GetAsync<List<Collection>>($"Collection/{userIdentifier}").GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -29,11 +39,11 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task<Collection> GetCollectionByIdentifier(int collectionIdentifier, int userIdentifier)
+        public Collection GetCollectionByIdentifier(int collectionIdentifier, int userIdentifier)
         {
             try
             {
-                return await GetAsync<Collection>($"Collection/{collectionIdentifier}/user/{userIdentifier}");
+                return GetAsync<Collection>($"Collection/{collectionIdentifier}/user/{userIdentifier}").GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -41,11 +51,11 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task<List<OwnedGame>> GetGamesInCollection(int collectionIdentifier)
+        public List<OwnedGame> GetGamesInCollection(int collectionIdentifier)
         {
             try
             {
-                return await GetAsync<List<OwnedGame>>($"Collection/{collectionIdentifier}/games");
+                return GetAsync<List<OwnedGame>>($"Collection/{collectionIdentifier}/games").GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -53,15 +63,16 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task AddGameToCollection(int collectionIdentifier, int gameIdentifier)
+        public void AddGameToCollection(int collectionIdentifier, int gameIdentifier, int userIdentifier)
         {
             try
             {
-                await PostAsync("Collection/add-game", new
+                PostAsync("Collection/add-game", new
                 {
                     CollectionId = collectionIdentifier,
-                    GameId = gameIdentifier
-                });
+                    GameId = gameIdentifier,
+                    UserId = userIdentifier
+                }).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -69,15 +80,15 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task RemoveGameFromCollection(int collectionIdentifier, int gameIdentifier)
+        public void RemoveGameFromCollection(int collectionIdentifier, int gameIdentifier)
         {
             try
             {
-                await PostAsync("Collection/remove-game", new
+                PostAsync("Collection/remove-game", new
                 {
                     CollectionId = collectionIdentifier,
                     GameId = gameIdentifier
-                });
+                }).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -85,11 +96,11 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task DeleteCollection(int collectionIdentifier, int userIdentifier)
+        public void DeleteCollection(int collectionIdentifier, int userIdentifier)
         {
             try
             {
-                await DeleteAsync<object>($"Collection/{collectionIdentifier}/user/{userIdentifier}");
+                DeleteAsync<object>($"Collection/{collectionIdentifier}/user/{userIdentifier}").GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -97,12 +108,18 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task CreateCollection(int userIdentifier, string collectionName, string coverPicture, bool isPublic, DateOnly createdAt)
+        public void CreateCollection(int userIdentifier, string collectionName, string coverPicture, bool isPublic, DateOnly createdAt)
         {
             try
             {
-                var collection = new Collection(userIdentifier, collectionName, createdAt, coverPicture, isPublic);
-                await PostAsync("Collection", collection);
+                var collection = new Collection(
+                    userIdentifier,   // for userId
+                    collectionName,   // for collectionName
+                    createdAt,        // for createdAt
+                    coverPicture,     // for coverPicture
+                    isPublic);
+
+                PostAsync("Collection", collection).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -110,17 +127,17 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task UpdateCollection(int collectionIdentifier, int userIdentifier, string collectionName, string coverPicture, bool isPublic)
+        public void UpdateCollection(int collectionIdentifier, int userIdentifier, string collectionName, string coverPicture, bool isPublic)
         {
             try
             {
-                await PutAsync<Collection>($"Collection/{collectionIdentifier}", new
+                PutAsync<Collection>($"Collection/{collectionIdentifier}", new
                 {
                     UserId = userIdentifier,
                     CollectionName = collectionName,
                     CoverPicture = coverPicture,
                     IsPublic = isPublic
-                });
+                }).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -128,11 +145,11 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task<List<Collection>> GetPublicCollectionsForUser(int userIdentifier)
+        public List<Collection> GetPublicCollectionsForUser(int userIdentifier)
         {
             try
             {
-                return await GetAsync<List<Collection>>($"Collection/public/{userIdentifier}");
+                return GetAsync<List<Collection>>($"Collection/public/{userIdentifier}").GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -140,12 +157,11 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task<List<OwnedGame>> GetGamesNotInCollection(int collectionIdentifier, int userIdentifier)
+        public List<OwnedGame> GetGamesNotInCollection(int collectionIdentifier, int userIdentifier)
         {
             try
             {
-                return await GetAsync<List<OwnedGame>>(
-                    $"Collection/{collectionIdentifier}/user/{userIdentifier}/games-not-in-collection");
+                return GetAsync<List<OwnedGame>>($"Collection/{collectionIdentifier}/user/{userIdentifier}/games-not-in-collection").GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -153,12 +169,15 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task<List<Collection>> GetLastThreeCollectionsForUser(int userIdentifier)
+        public List<Collection> GetLastThreeCollectionsForUser(int userIdentifier)
         {
+<<<<<<< HEAD
             try
             {
-                return await GetAsync<List<Collection>>(
-                    $"Collection/user/{userIdentifier}/last-three");
+                return 
+                    GetAsync<List<Collection>>($"Collection/user/{userIdentifier}/last-three")
+                    .GetAwaiter()
+                    .GetResult();
             }
             catch (Exception ex)
             {
@@ -167,3 +186,10 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
     }
 }
+=======
+            // TEMPORARY: This method is not implemented yet.
+            return new List<Collection> { };
+        }
+    }
+}
+>>>>>>> main

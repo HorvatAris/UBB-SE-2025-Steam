@@ -39,162 +39,161 @@ namespace SteamHub.ApiContract.Services
             this.collectionsRepository = collectionsRepository ?? throw new ArgumentNullException(nameof(collectionsRepository));
         }
 
-        public List<Collection> GetAllCollections(int userId)
+        public async Task<List<Collection>> GetAllCollections(int userId)
         {
             try
             {
-                var userCollections = collectionsRepository.GetAllCollections(userId);
-                return userCollections;
+                return await collectionsRepository.GetAllCollectionsAsync(userId);
             }
-            catch (RepositoryException repositoryException)
+            catch (RepositoryException ex)
             {
-                throw new ServiceException(Error_RetrieveCollectionsDataBase, repositoryException);
+                throw new ServiceException(Error_RetrieveCollectionsDataBase, ex);
             }
-            catch (Exception generalException)
+            catch (Exception ex)
             {
-                throw new ServiceException(Error_RetrieveCollectionsUnexpected, generalException);
+                throw new ServiceException(Error_RetrieveCollectionsUnexpected, ex);
             }
         }
 
-        public Collection GetCollectionByIdentifier(int collectionId, int userId)
+        public async Task<Collection> GetCollectionByIdentifier(int collectionId, int userId)
         {
             try
             {
-                var collection = collectionsRepository.GetCollectionById(collectionId, userId);
+                var collection = await collectionsRepository.GetCollectionByIdAsync(collectionId, userId);
+                if (collection == null)
+                {
+                    throw new ServiceException(Error_RetrieveCollection);
+                }
 
-                // Attach the games to the collection
-                collection.Games = collectionsRepository.GetGamesInCollection(collectionId, userId);
+                collection.Games = await collectionsRepository.GetGamesInCollectionAsync(collectionId, userId);
                 return collection;
             }
-            catch (RepositoryException repositoryException)
+            catch (RepositoryException ex)
             {
-                throw new ServiceException(Error_RetrieveCollection, repositoryException);
+                throw new ServiceException(Error_RetrieveCollection, ex);
             }
-            catch (Exception generalException)
+            catch (Exception ex)
             {
-                throw new ServiceException(Error_RetrieveCollectionUnexpected, generalException);
+                throw new ServiceException(Error_RetrieveCollectionUnexpected, ex);
             }
         }
 
-        public List<SteamHub.ApiContract.Models.Collections.Collection> GetLastThreeCollectionsForUser(int userIdentifier)
+        public async Task<List<Collection>> GetLastThreeCollectionsForUser(int userId)
         {
-            return collectionsRepository.GetLastThreeCollectionsForUser(userIdentifier);
+            return await collectionsRepository.GetLastThreeCollectionsForUserAsync(userId);
         }
 
-        public List<OwnedGame> GetGamesInCollection(int collectionId)
-        {
-            try
-            {
-                var ownedGamesInCollection = collectionsRepository.GetGamesInCollection(collectionId);
-                return ownedGamesInCollection;
-            }
-            catch (RepositoryException repositoryException)
-            {
-                throw new ServiceException(Error_RetrieveGamesDataBase, repositoryException);
-            }
-            catch (Exception generalException)
-            {
-                throw new ServiceException(Error_RetrieveGamesUnexpected, generalException);
-            }
-        }
-
-        public void AddGameToCollection(int collectionId, int gameId, int userId)
+        public async Task<List<OwnedGame>> GetGamesInCollection(int collectionId)
         {
             try
             {
-                collectionsRepository.AddGameToCollection(collectionId, gameId, userId);
+                return await collectionsRepository.GetGamesInCollectionAsync(collectionId);
             }
-            catch (RepositoryException repositoryException)
+            catch (RepositoryException ex)
             {
-                throw new ServiceException(Error_AddGameToCollection, repositoryException);
+                throw new ServiceException(Error_RetrieveGamesDataBase, ex);
             }
-            catch (Exception generalException)
+            catch (Exception ex)
             {
-                throw new ServiceException(Error_Unexpected, generalException);
+                throw new ServiceException(Error_RetrieveGamesUnexpected, ex);
             }
         }
 
-        public void RemoveGameFromCollection(int collectionId, int gameId)
+        public async Task AddGameToCollection(int collectionId, int gameId)
         {
             try
             {
-                collectionsRepository.RemoveGameFromCollection(collectionId, gameId);
+                await collectionsRepository.AddGameToCollectionAsync(collectionId, gameId);
             }
-            catch (RepositoryException repositoryException)
+            catch (RepositoryException ex)
             {
-                throw new ServiceException(Error_RemoveGameFromCollection, repositoryException);
+                throw new ServiceException(Error_AddGameToCollection, ex);
             }
-            catch (Exception generalException)
+            catch (Exception ex)
             {
-                throw new ServiceException(Error_RemoveGameFromCollectionUnexpected, generalException);
+                throw new ServiceException(Error_Unexpected, ex);
             }
         }
 
-        public void DeleteCollection(int collectionId, int userId)
+        public async Task RemoveGameFromCollection(int collectionId, int gameId)
         {
             try
             {
-                collectionsRepository.DeleteCollection(collectionId, userId);
+                await collectionsRepository.RemoveGameFromCollectionAsync(collectionId, gameId);
             }
-            catch (Exception generalException)
+            catch (RepositoryException ex)
             {
-                throw new Exception(Error_DeleteCollection, generalException);
+                throw new ServiceException(Error_RemoveGameFromCollection, ex);
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceException(Error_RemoveGameFromCollectionUnexpected, ex);
             }
         }
 
-        public void CreateCollection(int userId, string collectionName, string coverPicture, bool isPublic, DateOnly createdAt)
+        public async Task DeleteCollection(int collectionId, int userId)
         {
             try
             {
-                collectionsRepository.CreateCollection(userId, collectionName, coverPicture, isPublic, createdAt);
+                await collectionsRepository.DeleteCollectionAsync(collectionId, userId);
             }
-            catch (RepositoryException repositoryException)
+            catch (Exception ex)
             {
-                throw new ServiceException(Error_CreateCollectionDataBase, repositoryException);
-            }
-            catch (Exception generalException)
-            {
-                throw new ServiceException(Error_CreateCollectionUnexpected, generalException);
+                throw new Exception(Error_DeleteCollection, ex);
             }
         }
 
-        public void UpdateCollection(int collectionId, int userId, string collectionName, string coverPicture, bool isPublic)
+        public async Task CreateCollection(int userId, string collectionName, string coverPicture, bool isPublic, DateOnly createdAt)
         {
             try
             {
-                collectionsRepository.UpdateCollection(collectionId, userId, collectionName, coverPicture, isPublic);
+                await collectionsRepository.CreateCollectionAsync(userId, collectionName, coverPicture, isPublic, createdAt);
             }
-            catch (RepositoryException repositoryException)
+            catch (RepositoryException ex)
             {
-                throw new ServiceException(Error_UpdateCollectionDataBase, repositoryException);
+                throw new ServiceException(Error_CreateCollectionDataBase, ex);
             }
-            catch (Exception generalException)
+            catch (Exception ex)
             {
-                throw new ServiceException(Error_UpdateCollectionUnexpected, generalException);
+                throw new ServiceException(Error_CreateCollectionUnexpected, ex);
             }
         }
 
-        public List<Collection> GetPublicCollectionsForUser(int userId)
+        public async Task UpdateCollection(int collectionId, int userId, string collectionName, string coverPicture, bool isPublic)
         {
             try
             {
-                var publicCollections = collectionsRepository.GetPublicCollectionsForUser(userId);
-                return publicCollections;
+                await collectionsRepository.UpdateCollectionAsync(collectionId, userId, collectionName, coverPicture, isPublic);
             }
-            catch (RepositoryException repositoryException)
+            catch (RepositoryException ex)
             {
-                throw new ServiceException(Error_RetrievePublicCollectionsDataBase, repositoryException);
+                throw new ServiceException(Error_UpdateCollectionDataBase, ex);
             }
-            catch (Exception generalException)
+            catch (Exception ex)
             {
-                throw new ServiceException(Error_RetrievePublicCollectionsUnexpected, generalException);
+                throw new ServiceException(Error_UpdateCollectionUnexpected, ex);
             }
         }
 
-        public List<OwnedGame> GetGamesNotInCollection(int collectionId, int userId)
+        public async Task<List<Collection>> GetPublicCollectionsForUser(int userId)
         {
-            var gamesNotInCollection = collectionsRepository.GetGamesNotInCollection(collectionId, userId);
-            return gamesNotInCollection;
+            try
+            {
+                return await collectionsRepository.GetPublicCollectionsForUserAsync(userId);
+            }
+            catch (RepositoryException ex)
+            {
+                throw new ServiceException(Error_RetrievePublicCollectionsDataBase, ex);
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceException(Error_RetrievePublicCollectionsUnexpected, ex);
+            }
+        }
+
+        public async Task<List<OwnedGame>> GetGamesNotInCollection(int collectionId, int userId)
+        {
+            return await collectionsRepository.GetGamesNotInCollectionAsync(collectionId, userId);
         }
     }
 }

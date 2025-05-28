@@ -21,6 +21,7 @@
 	<ItemGroup>
 		<None Remove="Pages\CollectionsForVisitorsPage.xaml" />
 	</ItemGroup>
+
 	<ItemGroup>
 		<None Remove="Pages\AchievementsPage.xaml" />
 	</ItemGroup>
@@ -68,16 +69,17 @@
   <ItemGroup>
     <ProjectReference Include="..\SteamHub.ApiContract\SteamHub.ApiContract.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Page Update="Pages\AchievementsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-<ItemGroup>
-    <Page Update="Pages\CollectionsForVisitorsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Pages\AchievementsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="Pages\CollectionsForVisitorsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
   <!--
     Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution
