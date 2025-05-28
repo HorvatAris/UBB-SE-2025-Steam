@@ -12,9 +12,9 @@ public class NewsRepository : INewsRepository
 	private readonly DataContext context;
 	public const int PAGE_SIZE = 9;
 
-	public NewsRepository(DataContext newContext)
+	public NewsRepository(DataContext context)
 	{
-		context = newContext;
+		this.context = context;
 	}
 
 	/// <summary>
@@ -194,17 +194,17 @@ public class NewsRepository : INewsRepository
 	public async Task<List<Comment>> LoadFollowingComments(int postId)
 	{
 		return await context.NewsComments
-			.Where(c => c.PostId == postId)
-			.OrderByDescending(c => c.CommentDate)
-			.Select(c => new Comment
+			.Where(comment => comment.PostId == postId)
+			.OrderByDescending(comment => comment.CommentDate)
+			.Select(comment => new Comment
 			{
 				PostId = postId,
-				CommentDate = c.CommentDate,
-				AuthorId = c.AuthorId,
-				CommentId = c.CommentId,
-				Content = c.Content,
-				NrDislikes = c.NrDislikes,
-				NrLikes = c.NrLikes
+				CommentDate = comment.CommentDate,
+				AuthorId = comment.AuthorId,
+				CommentId = comment.CommentId,
+				Content = comment.Content,
+				NrDislikes = comment.NrDislikes,
+				NrLikes = comment.NrLikes
 			})
 			.ToListAsync();
 	}
@@ -281,21 +281,21 @@ public class NewsRepository : INewsRepository
 		pageNumber = Math.Max(1, pageNumber);
 
 		var query = await context.NewsPosts
-			.Where(p => EF.Functions.Like(p.Content, $"%{searchedText}%"))
-			.OrderByDescending(p => p.UploadDate)
-			.ThenByDescending(p => p.Id)
+			.Where(post => EF.Functions.Like(post.Content, $"%{searchedText}%"))
+			.OrderByDescending(post => post.UploadDate)
+			.ThenByDescending(post => post.Id)
 			.Skip((pageNumber - 1) * PAGE_SIZE)
 			.Take(PAGE_SIZE)
-			.Select(p => new Post
+			.Select(post => new Post
 			{
-				Id = p.Id,
-				NrLikes = p.NrLikes,
-				NrDislikes = p.NrDislikes,
-				Content = p.Content,
-				ActiveUserRating = p.ActiveUserRating,
-				AuthorId = p.AuthorId,
-				NrComments = p.NrComments,
-				UploadDate = p.UploadDate
+				Id = post.Id,
+				NrLikes = post.NrLikes,
+				NrDislikes = post.NrDislikes,
+				Content = post.Content,
+				ActiveUserRating = post.ActiveUserRating,
+				AuthorId = post.AuthorId,
+				NrComments = post.NrComments,
+				UploadDate = post.UploadDate
 			})
 			.ToListAsync();
 
