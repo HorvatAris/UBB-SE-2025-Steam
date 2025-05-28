@@ -12,7 +12,7 @@ using SteamHub.Api.Context;
 namespace SteamHub.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250528111852_MainMigration")]
+    [Migration("20250528210259_MainMigration")]
     partial class MainMigration
     {
         /// <inheritdoc />
@@ -516,13 +516,36 @@ namespace SteamHub.Api.Migrations
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PostId1")
+                        .HasColumnType("int");
+
                     b.HasKey("CommentId");
 
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("PostId");
 
+                    b.HasIndex("PostId1");
+
                     b.ToTable("NewsComments");
+
+                    b.HasData(
+                        new
+                        {
+                            CommentId = 1,
+                            AuthorId = 1,
+                            CommentDate = new DateTime(2025, 5, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Content = "Thank you for the warm welcome!",
+                            PostId = 1
+                        },
+                        new
+                        {
+                            CommentId = 2,
+                            AuthorId = 2,
+                            CommentDate = new DateTime(2025, 5, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Content = "Excited to be here!",
+                            PostId = 2
+                        });
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.Feature", b =>
@@ -1798,6 +1821,28 @@ namespace SteamHub.Api.Migrations
                     b.HasIndex("AuthorId");
 
                     b.ToTable("NewsPosts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AuthorId = 1,
+                            Content = "Welcome to the new game platform! Enjoy your stay.",
+                            NrComments = 1,
+                            NrDislikes = 0,
+                            NrLikes = 30,
+                            UploadDate = new DateTime(2025, 5, 29, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AuthorId = 2,
+                            Content = "Check out the latest updates in our game library!",
+                            NrComments = 1,
+                            NrDislikes = 1,
+                            NrLikes = 34,
+                            UploadDate = new DateTime(2025, 5, 28, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.PostRatingType", b =>
@@ -2787,10 +2832,14 @@ namespace SteamHub.Api.Migrations
                         .IsRequired();
 
                     b.HasOne("SteamHub.Api.Entities.Post", "Post")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.Post", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId1");
 
                     b.Navigation("Author");
 
@@ -3029,7 +3078,7 @@ namespace SteamHub.Api.Migrations
                     b.HasOne("SteamHub.Api.Entities.Post", "Post")
                         .WithMany()
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Author");

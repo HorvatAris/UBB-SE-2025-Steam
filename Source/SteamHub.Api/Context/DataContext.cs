@@ -1615,6 +1615,11 @@ namespace SteamHub.Api.Context
 
                 entity.Ignore(c => c.NrLikes);
                 entity.Ignore(c => c.NrDislikes);
+
+				entity.HasOne(c => c.Post)
+					.WithMany()
+					.HasForeignKey(c => c.PostId)
+					.OnDelete(DeleteBehavior.Cascade);
             });
 
             // -- NewsRating mapping -----------------------------------------------------
@@ -1628,12 +1633,12 @@ namespace SteamHub.Api.Context
                 entity.HasOne(r => r.Post)
                     .WithMany()
                     .HasForeignKey(r => r.PostId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(r => r.Author)
                     .WithMany()
                     .HasForeignKey(r => r.AuthorId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // -- PasswordResetCode mapping -----------------------------------------------
@@ -2026,6 +2031,63 @@ namespace SteamHub.Api.Context
             };
 
             builder.Entity<Achievement>().HasData(achievementsSeed);
+
+            // News posts seed data
+            var newsPostsSeed = new List<Post>
+            {
+                new Post
+                {
+                    Id = 1,
+                    AuthorId = 1,
+                    Content = "Welcome to the new game platform! Enjoy your stay.",
+                    UploadDate = DateTime.Parse("2025-05-29"),
+                    NrLikes = 30,
+                    NrDislikes = 0,
+                    NrComments = 1,
+                    ActiveUserRating = false,
+
+                },
+                new Post
+                {
+                    Id = 2,
+                    AuthorId = 2,
+                    Content = "Check out the latest updates in our game library!",
+                    UploadDate = DateTime.Parse("2025-05-28"),
+                    NrLikes = 34,
+                    NrDislikes = 1,
+                    NrComments = 1,
+                    ActiveUserRating = true,
+                },
+            };
+
+            builder.Entity<Post>().HasData(newsPostsSeed);
+
+            // News comments seed data
+            var newsCommentsSeed = new List<Comment>
+            {
+                new Comment
+                {
+                    CommentId = 1,
+                    AuthorId = 1,
+                    PostId = 1,
+                    Content = "Thank you for the warm welcome!",
+                    CommentDate = DateTime.Parse("2025-05-29"),
+                    NrDislikes = 340,
+                    NrLikes = 3,
+                },
+                new Comment
+                {
+                    CommentId = 2,
+                    AuthorId = 2,
+                    PostId = 2,
+                    Content = "Excited to be here!",
+                    CommentDate = DateTime.Parse("2025-05-28"),
+                    NrDislikes = 29,
+                    NrLikes = 0,
+                },
+            };
+
+            builder.Entity<Comment>().HasData(newsCommentsSeed);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SteamHub.ApiContract.Models;
+﻿using SteamHub.Api.Context.Repositories;
+using SteamHub.ApiContract.Models;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Services.Interfaces;
 using System;
@@ -17,7 +18,7 @@ namespace SteamHub.ApiContract.Services
         private const int POSITIVE_RATING = 1;
         private const int NEGATIVE_RATING = 0;
         private const int DEFAULT_ROWS_AFFECTED_VALUE = 0;
-        private const int SUCCESSFUL_EXECUTIONS = 2;
+        private const int SUCCESSFUL_EXECUTIONS = 1;
         private const string BUTTON_CONTENT_SAVE = "Save";
         private const string BUTTON_CONTENT_POST = "Post Comment";
         private const string EMPTY_STRING = "";
@@ -85,7 +86,6 @@ namespace SteamHub.ApiContract.Services
         public async Task<bool> LikePostAsync(int postId, int userId)
         {
             int rowsAffected = DEFAULT_ROWS_AFFECTED_VALUE;
-            rowsAffected += await repository.UpdatePostLikeCount(postId);
             rowsAffected += await repository.AddRatingToPost(postId, userId, POSITIVE_RATING);
 
             if (rowsAffected == SUCCESSFUL_EXECUTIONS)
@@ -107,7 +107,6 @@ namespace SteamHub.ApiContract.Services
         {
             int rowsAffected = DEFAULT_ROWS_AFFECTED_VALUE;
 
-            rowsAffected += await repository.UpdatePostDislikeCount(postId);
             rowsAffected += await repository.AddRatingToPost(postId, userId, NEGATIVE_RATING);
 
             if (rowsAffected == SUCCESSFUL_EXECUTIONS)
@@ -140,7 +139,7 @@ namespace SteamHub.ApiContract.Services
         /// <param name="postId">Target post</param>
         /// <param name="commentContent">Contents of the comment</param>
         /// <returns>True if the executions were successful, false otherwise</returns>
-        public virtual async Task<bool> SaveCommentAsync(int postId, string commentContent, int userId)
+        public async Task<bool> SaveCommentAsync(int postId, string commentContent, int userId)
         {
             int rowsAffected = DEFAULT_ROWS_AFFECTED_VALUE;
 
@@ -155,7 +154,7 @@ namespace SteamHub.ApiContract.Services
         /// <param name="commentId">Active user's comment</param>
         /// <param name="newCommentContent">New comment's contents</param>
         /// <returns>True if the executions were successful, false otherwise</returns>
-        public virtual async Task<bool> UpdateCommentAsync(int commentId, string newCommentContent)
+        public async Task<bool> UpdateCommentAsync(int commentId, string newCommentContent, int userId)
         {
             int rowsAffected = DEFAULT_ROWS_AFFECTED_VALUE;
 
@@ -169,7 +168,7 @@ namespace SteamHub.ApiContract.Services
         /// </summary>
         /// <param name="commentId">Target comment</param>
         /// <returns>True if the executions were successful, false otherwise</returns>
-        public async Task<bool> DeleteCommentAsync(int commentId)
+        public async Task<bool> DeleteCommentAsync(int commentId, int userId)
         {
             int rowsAffected = DEFAULT_ROWS_AFFECTED_VALUE;
 
@@ -183,7 +182,7 @@ namespace SteamHub.ApiContract.Services
         /// </summary>
         /// <param name="postId">Target post</param>
         /// <returns>List of loaded comments</returns>
-        public async Task<List<Comment>> LoadNextCommentsAsync(int postId)
+        public async Task<List<Comment>> LoadNextCommentsAsync(int postId, int userId)
         {
             return await repository.LoadFollowingComments(postId);
         }
@@ -193,7 +192,7 @@ namespace SteamHub.ApiContract.Services
         /// </summary>
         /// <param name="postContent">Post's content</param>
         /// <returns>True if the executions were successful, false otherwise</returns>
-        public virtual async Task<bool> SavePostAsync(string postContent, int userId)
+        public async Task<bool> SavePostAsync(string postContent, int userId)
         {
             int rowsAffected = DEFAULT_ROWS_AFFECTED_VALUE;
 
@@ -208,7 +207,7 @@ namespace SteamHub.ApiContract.Services
         /// <param name="postId">Target post</param>
         /// <param name="newPostContent">New contents</param>
         /// <returns>True if the executions were successful, false otherwise</returns>
-        public virtual async Task<bool> UpdatePostAsync(int postId, string newPostContent)
+        public async Task<bool> UpdatePostAsync(int postId, string newPostContent, int userId)
         {
             int rowsAffected = DEFAULT_ROWS_AFFECTED_VALUE;
 
@@ -222,7 +221,7 @@ namespace SteamHub.ApiContract.Services
         /// </summary>
         /// <param name="postId">Target post</param>
         /// <returns>True if the executions were successful, false otherwise</returns>
-        public async Task<bool> DeletePostAsync(int postId)
+        public async Task<bool> DeletePostAsync(int postId, int userId)
         {
             int rowsAffected = DEFAULT_ROWS_AFFECTED_VALUE;
 
@@ -269,7 +268,7 @@ namespace SteamHub.ApiContract.Services
         {
             if (editMode)
             {
-                return await UpdateCommentAsync(commentId, await FormatAsPostAsync(commentContent));
+                return await UpdateCommentAsync(commentId, await FormatAsPostAsync(commentContent), userId);
             }
             else
             {
@@ -287,7 +286,7 @@ namespace SteamHub.ApiContract.Services
         {
             if (editMode && postContent != EMPTY_STRING)
             {
-                await UpdatePostAsync(postId, await FormatAsPostAsync(postContent));
+                await UpdatePostAsync(postId, await FormatAsPostAsync(postContent), userId);
                 return;
             }
             else

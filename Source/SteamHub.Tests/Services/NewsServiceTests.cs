@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Moq;
+    using SteamHub.Api.Context.Repositories;
     using SteamHub.ApiContract.Models;
     using SteamHub.ApiContract.Repositories;
     using SteamHub.ApiContract.Services;
@@ -132,7 +133,7 @@
                 .ReturnsAsync(1);
 
             // Act
-            var result = await newsService.UpdateCommentAsync(TestCommentId, TestCommentContent);
+            var result = await newsService.UpdateCommentAsync(TestCommentId, TestCommentContent, TestUserId);
 
             // Assert
             Assert.True(result);
@@ -147,7 +148,7 @@
                 .ReturnsAsync(1);
 
             // Act
-            var result = await newsService.DeleteCommentAsync(TestCommentId);
+            var result = await newsService.DeleteCommentAsync(TestCommentId, TestUserId);
 
             // Assert
             Assert.True(result);
@@ -168,7 +169,7 @@
                 .ReturnsAsync(expectedComments);
 
             // Act
-            var result = await newsService.LoadNextCommentsAsync(TestPostId);
+            var result = await newsService.LoadNextCommentsAsync(TestPostId, TestUserId);
 
             // Assert
             Assert.Equal(expectedComments, result);
@@ -198,7 +199,7 @@
                 .ReturnsAsync(1);
 
             // Act
-            var result = await newsService.UpdatePostAsync(TestPostId, TestPostContent);
+            var result = await newsService.UpdatePostAsync(TestPostId, TestPostContent, TestUserId);
 
             // Assert
             Assert.True(result);
@@ -213,7 +214,7 @@
                 .ReturnsAsync(1);
 
             // Act
-            var result = await newsService.DeletePostAsync(TestPostId);
+            var result = await newsService.DeletePostAsync(TestPostId, TestUserId);
 
             // Assert
             Assert.True(result);

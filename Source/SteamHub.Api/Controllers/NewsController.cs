@@ -22,9 +22,9 @@ namespace SteamHub.Api.Controllers
         }
 
         [HttpGet("{userId}/posts/{postId}/comments")]
-        public async Task<IActionResult> GetCommentsAsync([FromRoute] int postId)
+        public async Task<IActionResult> GetCommentsAsync([FromRoute] int userId, [FromRoute] int postId)
         {
-            var comments = await newsService.LoadNextCommentsAsync(postId);
+            var comments = await newsService.LoadNextCommentsAsync(postId, userId);
             return Ok(comments);
         }
 
@@ -43,16 +43,16 @@ namespace SteamHub.Api.Controllers
         }
 
         [HttpPut("{userId}/posts/{postId}")]
-        public async Task<IActionResult> UpdatePostAsync([FromRoute] int postId, [FromBody] ContentRequest request)
+        public async Task<IActionResult> UpdatePostAsync([FromRoute] int userId, [FromRoute] int postId, [FromBody] ContentRequest request)
         {
-            var result = await newsService.UpdatePostAsync(postId, request.Content);
+            var result = await newsService.UpdatePostAsync(postId, request.Content, userId);
             return Ok(result);
         }
 
         [HttpDelete("{userId}/posts/{postId}")]
-        public async Task<IActionResult> DeletePostAsync([FromRoute] int postId)
+        public async Task<IActionResult> DeletePostAsync([FromRoute] int userId, [FromRoute] int postId)
         {
-            var result = await newsService.DeletePostAsync(postId);
+            var result = await newsService.DeletePostAsync(postId, userId);
             return Ok(result);
         }
 
@@ -60,14 +60,20 @@ namespace SteamHub.Api.Controllers
         public async Task<IActionResult> LikePostAsync([FromRoute] int postId, [FromRoute] int userId)
         {
             var result = await newsService.LikePostAsync(postId, userId);
-            return Ok(result);
+            if (result)
+                return Ok("Liked successfully");
+            else
+                return Conflict("User has already rated this post.");
         }
 
         [HttpPost("{userId}/posts/{postId}/dislike")]
         public async Task<IActionResult> DislikePostAsync([FromRoute] int postId, [FromRoute] int userId)
         {
             var result = await newsService.DislikePostAsync(postId, userId);
-            return Ok(result);
+            if (result)
+                return Ok("Disliked successfully");
+            else
+                return Conflict("User has already rated this post.");
         }
 
         [HttpDelete("{userId}/posts/{postId}/rating")]
@@ -85,16 +91,16 @@ namespace SteamHub.Api.Controllers
         }
 
         [HttpPut("{userId}/comments/{commentId}")]
-        public async Task<IActionResult> UpdateCommentAsync([FromRoute] int commentId, [FromBody] ContentRequest request)
+        public async Task<IActionResult> UpdateCommentAsync([FromRoute] int userId, [FromRoute] int commentId, [FromBody] ContentRequest request)
         {
-            var result = await newsService.UpdateCommentAsync(commentId, request.Content);
+            var result = await newsService.UpdateCommentAsync(commentId, request.Content, userId);
             return Ok(result);
         }
 
         [HttpDelete("{userId}/comments/{commentId}")]
-        public async Task<IActionResult> DeleteCommentAsync([FromRoute] int commentId)
+        public async Task<IActionResult> DeleteCommentAsync([FromRoute] int userId, [FromRoute] int commentId)
         {
-            var result = await newsService.DeleteCommentAsync(commentId);
+            var result = await newsService.DeleteCommentAsync(commentId, userId);
             return Ok(result);
         }
     }

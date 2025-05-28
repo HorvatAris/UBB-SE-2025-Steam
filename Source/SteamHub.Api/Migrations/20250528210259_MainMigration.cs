@@ -745,7 +745,8 @@ namespace SteamHub.Api.Migrations
                     PostId = table.Column<int>(type: "int", nullable: false),
                     AuthorId = table.Column<int>(type: "int", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PostId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -756,6 +757,11 @@ namespace SteamHub.Api.Migrations
                         principalTable: "NewsPosts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_NewsComments_NewsPosts_PostId1",
+                        column: x => x.PostId1,
+                        principalTable: "NewsPosts",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_NewsComments_Users_AuthorId",
                         column: x => x.AuthorId,
@@ -778,7 +784,8 @@ namespace SteamHub.Api.Migrations
                         name: "FK_NewsPostRatingTypes_NewsPosts_PostId",
                         column: x => x.PostId,
                         principalTable: "NewsPosts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_NewsPostRatingTypes_Users_AuthorId",
                         column: x => x.AuthorId,
@@ -1133,6 +1140,15 @@ namespace SteamHub.Api.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "NewsPosts",
+                columns: new[] { "Id", "AuthorId", "Content", "NrComments", "NrDislikes", "NrLikes", "UploadDate" },
+                values: new object[,]
+                {
+                    { 1, 1, "Welcome to the new game platform! Enjoy your stay.", 1, 0, 30, new DateTime(2025, 5, 29, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, 2, "Check out the latest updates in our game library!", 1, 1, 34, new DateTime(2025, 5, 28, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                });
+
+            migrationBuilder.InsertData(
                 table: "OwnedGames",
                 columns: new[] { "GameId", "CoverPicture", "Description", "GameTitle", "UserId" },
                 values: new object[,]
@@ -1249,6 +1265,15 @@ namespace SteamHub.Api.Migrations
                     { 12, 19, "A visor that enhances your vision in the neon-lit battles of Cyberstrike 2077.", "https://www.motocentral.co.uk/cdn/shop/files/Ruroc-EOX-Cyberstrike_-From-Moto-Central-_-Fast-Free-UK-Delivery-257043288_1024x.jpg?v=1744036882", false, "Neon Visor", 24.99f },
                     { 13, 20, "A mighty axe for the warriors of Shadow of Valhalla.", "https://valhalla-vikings.co.uk/cdn/shop/products/il_fullxfull.3370240260_td4v.jpg?v=1679150085&width=1080", false, "Viking Axe", 44.99f },
                     { 14, 20, "A robust shield forged for the bravest of fighters in Shadow of Valhalla.", "https://www.vikingsroar.com/cdn/shop/products/d7f00df1f2c5a9059ec5dd319139da24.webp?v=1652049514", true, "Valhalla Shield", 34.99f }
+                });
+
+            migrationBuilder.InsertData(
+                table: "NewsComments",
+                columns: new[] { "CommentId", "AuthorId", "CommentDate", "Content", "PostId", "PostId1" },
+                values: new object[,]
+                {
+                    { 1, 1, new DateTime(2025, 5, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Thank you for the warm welcome!", 1, null },
+                    { 2, 2, new DateTime(2025, 5, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), "Excited to be here!", 2, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1459,6 +1484,11 @@ namespace SteamHub.Api.Migrations
                 name: "IX_NewsComments_PostId",
                 table: "NewsComments",
                 column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NewsComments_PostId1",
+                table: "NewsComments",
+                column: "PostId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NewsPostRatingTypes_AuthorId",
