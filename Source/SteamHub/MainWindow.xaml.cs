@@ -39,6 +39,7 @@ namespace SteamHub
         private SessionServiceProxy sessionService;
         private PasswordResetServiceProxy passwordResetService;
         private WalletServiceProxy walletService;
+        private ReviewServiceProxy reviewService;
         
         private AchievementsServiceProxy achievementsService;
         private readonly IHttpClientFactory _httpClientFactory;
@@ -166,19 +167,20 @@ namespace SteamHub
             this.userGameService = new UserGameServiceProxy(_httpClientFactory, loggedInUser);
             this.developerService = new DeveloperServiceProxy(_httpClientFactory, loggedInUser);
             this.walletService = new WalletServiceProxy(_httpClientFactory, loggedInUser);
+            this.reviewService = new ReviewServiceProxy(_httpClientFactory);
 
             // Hide login overlay and show main content
             LoginOverlay.Visibility = Visibility.Collapsed;
             NavView.Visibility = Visibility.Visible;
 
             // Navigate to home page
-            this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
+            this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService, this.reviewService);
         }
 
 
         public void ResetToHomePage()
         {
-            this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
+            this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService, this.reviewService);
         }
 
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -189,7 +191,7 @@ namespace SteamHub
                 switch (tag)
                 {
                     case "HomePage":
-                        this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
+                        this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService, this.reviewService);
                         break;
                     case "CartPage":
                         this.ContentFrame.Content = new CartPage(this.cartService, this.userGameService);
@@ -198,7 +200,7 @@ namespace SteamHub
                         this.ContentFrame.Content = new PointsShopPage(this.pointShopService);
                         break;
                     case "WishlistPage":
-                        this.ContentFrame.Content = new WishListView(this.userGameService, this.gameService, this.cartService);
+                        this.ContentFrame.Content = new WishListView(this.userGameService, this.gameService, this.cartService, this.reviewService);
                         break;
                     case "DeveloperModePage":
                         this.ContentFrame.Content = new DeveloperModePage(this.developerService);
