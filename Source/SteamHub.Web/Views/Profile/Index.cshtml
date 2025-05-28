@@ -1,0 +1,21 @@
+﻿@model SteamHub.Web.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = $"{Model.Username}'s Profile";
+}
+
+<h2>@Model.Username's Profile</h2>
+<img src="@Model.ProfilePhotoPath" alt="Profile Picture" style="width:128px;height:128px;" />
+<p><strong>Email:</strong> @Model.Email</p>
+<p><strong>Bio:</strong> @Model.Biography</p>
+<p><strong>Friends:</strong> @Model.FriendCount</p>
+
+<h3>Collections</h3>
+<ul>
+    @foreach (var collection in Model.GameCollections)
+    {
+        <li>@collection.CollectionName</li>
+    }
+</ul>
+
+<h3>Achievements</h3>
