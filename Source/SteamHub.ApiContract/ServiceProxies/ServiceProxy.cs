@@ -13,8 +13,8 @@ namespace SteamHub.ApiContract.ServiceProxies
     /// </summary>
     public class ServiceProxy
     {
-        protected readonly HttpClient HttpClient;
-        private string _authToken;
+        private static readonly HttpClient StaticHttpClient;
+        private static string _authToken;
 
         private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
@@ -28,24 +28,27 @@ namespace SteamHub.ApiContract.ServiceProxies
         protected static UserWithSessionDetails CurrentUser { get; private set; }
 
         /// <summary>
+        /// Initializes static members of the <see cref="ServiceProxy"/> class.
+        /// Configures a shared <see cref="HttpClient"/> with default headers and timeout.
+        /// </summary>
+        static ServiceProxy()
+        {
+            StaticHttpClient = new HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(30)
+            };
+            StaticHttpClient.DefaultRequestHeaders.Accept.Clear();
+            StaticHttpClient.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ServiceProxy"/> class.
         /// </summary>
-        /// <param name="httpClientFactory">The HTTP client factory for creating configured HTTP clients.</param>
         /// <param name="baseUrl">The base URL for API endpoints.</param>
-        public ServiceProxy(IHttpClientFactory httpClientFactory, string baseUrl = "https://localhost:7241/api/")
+        public ServiceProxy(string baseUrl = "https://localhost:7241/api/")
         {
-            if (httpClientFactory == null)
-                throw new ArgumentNullException(nameof(httpClientFactory));
-
-            HttpClient = httpClientFactory.CreateClient("SteamHubApi");
             BaseUrl = baseUrl ?? throw new ArgumentNullException(nameof(baseUrl));
-
-            // Configure the HttpClient
-            HttpClient.Timeout = TimeSpan.FromSeconds(30);
-            HttpClient.DefaultRequestHeaders.Accept.Clear();
-            HttpClient.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
-
             SetAuthTokenSafely(_authToken);
         }
 
@@ -61,14 +64,14 @@ namespace SteamHub.ApiContract.ServiceProxies
         private void SetAuthTokenSafely(string token)
         {
             if (string.IsNullOrEmpty(token)) return;
-
+            
             try
             {
-                if (HttpClient.DefaultRequestHeaders.Contains("Authorization"))
+                if (StaticHttpClient.DefaultRequestHeaders.Contains("Authorization"))
                 {
-                    HttpClient.DefaultRequestHeaders.Remove("Authorization");
+                    StaticHttpClient.DefaultRequestHeaders.Remove("Authorization");
                 }
-                HttpClient.DefaultRequestHeaders.Authorization =
+                StaticHttpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
             }
             catch (Exception ex)
@@ -87,7 +90,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await HttpClient.GetAsync(BaseUrl + endpoint).ConfigureAwait(false);
+                var response = await StaticHttpClient.GetAsync(BaseUrl + endpoint).ConfigureAwait(false);
                 return await HandleResponseAsync<T>(response).ConfigureAwait(false);
             }
             catch (HttpRequestException ex)
@@ -117,7 +120,7 @@ namespace SteamHub.ApiContract.ServiceProxies
                 Debug.WriteLine($"POST Request to {endpoint}: {json}");
 
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await HttpClient.PostAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
+                var response = await StaticHttpClient.PostAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
                 return await HandleResponseAsync<T>(response).ConfigureAwait(false);
             }
             catch (HttpRequestException ex)
@@ -147,7 +150,7 @@ namespace SteamHub.ApiContract.ServiceProxies
                 Debug.WriteLine($"POST Request to {endpoint}: {json}");
 
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await HttpClient.PostAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
+                var response = await StaticHttpClient.PostAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
                 await EnsureSuccessStatusCodeAsync(response).ConfigureAwait(false);
             }
             catch (HttpRequestException ex)
@@ -175,7 +178,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             {
                 var content = new StringContent(
                     JsonSerializer.Serialize(data, _jsonOptions), Encoding.UTF8, "application/json");
-                var response = await HttpClient.PutAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
+                var response = await StaticHttpClient.PutAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
                 return await HandleResponseAsync<T>(response).ConfigureAwait(false);
             }
             catch (HttpRequestException ex)
@@ -203,7 +206,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             {
                 var content = new StringContent(
                     JsonSerializer.Serialize(data, _jsonOptions), Encoding.UTF8, "application/json");
-                var response = await HttpClient.PutAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
+                var response = await StaticHttpClient.PutAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
                 await EnsureSuccessStatusCodeAsync(response).ConfigureAwait(false);
             }
             catch (HttpRequestException ex)
@@ -229,7 +232,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await HttpClient.DeleteAsync(BaseUrl + endpoint).ConfigureAwait(false);
+                var response = await StaticHttpClient.DeleteAsync(BaseUrl + endpoint).ConfigureAwait(false);
                 return await HandleResponseAsync<T>(response).ConfigureAwait(false);
             }
             catch (HttpRequestException ex)
@@ -255,7 +258,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await HttpClient.DeleteAsync(BaseUrl + endpoint).ConfigureAwait(false);
+                var response = await StaticHttpClient.DeleteAsync(BaseUrl + endpoint).ConfigureAwait(false);
                 await EnsureSuccessStatusCodeAsync(response).ConfigureAwait(false);
             }
             catch (HttpRequestException ex)
