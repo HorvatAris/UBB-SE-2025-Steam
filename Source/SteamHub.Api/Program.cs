@@ -80,6 +80,7 @@ builder.Services.AddScoped<IUserInventoryRepository, UserInventoryRepository>();
 builder.Services.AddScoped<IItemTradeDetailRepository, ItemTradeDetailRepository>();
 builder.Services.AddScoped<IWalletRepository, WalletRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IFriendRequestRepository, FriendRequestRepository>();
 
 
 builder.Services.AddScoped<IAchievementsRepository, AchievementsRepository>();
@@ -97,6 +98,7 @@ builder.Services.AddScoped<ITradeService, TradeService>();
 builder.Services.AddScoped<IMarketplaceService, MarketplaceService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
+// builder.Services.AddScoped<IFriendRequestService, FriendRequestService>(); // -- UNCOMMENT ONCE IFriendsService is implemented
 
 
 builder.Services.AddControllersWithViews()
