@@ -40,7 +40,7 @@
                 <NavigationViewItem Content="Friends" Tag="friends" />
                 <NavigationViewItem Icon="Scan" Content="Wallet" Tag="Wallet" />
                 <NavigationViewItem Icon="Like" Content="Achievements" Tag="AchievementsPage" />
-                
+                <NavigationViewItem Content="Add Friends" Tag="AddFriendsPage" />
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
