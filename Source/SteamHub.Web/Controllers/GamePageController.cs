@@ -32,7 +32,7 @@ namespace SteamHub.Web.Controllers
             var tags = await gameService.GetAllGameTagsAsync(game);
             var similarGames = await gameService.GetSimilarGamesAsync(game.GameId);
 
-            var vm = new GamePageViewModel
+            var game_page_view_model = new GamePageViewModel
             {
                 Game = game,
                 IsOwned = isOwned,
@@ -41,7 +41,7 @@ namespace SteamHub.Web.Controllers
                 SimilarGames = similarGames.Take(3).ToList()
             };
 
-            return View(vm);
+            return View(game_page_view_model);
         }
 
         [HttpPost]
@@ -84,9 +84,9 @@ namespace SteamHub.Web.Controllers
                 await userGameService.AddGameToWishlistAsync(userGameRequest);
                 return Json(new { success = true, message = "Game added to wishlist successfully!" });
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
+                return Json(new { success = false, message = $"An error occurred: {exception.Message}" });
             }
         }
 

@@ -33,10 +33,10 @@ namespace SteamHub.Web.Controllers
             {
                 games = filter switch
                 {
-                    "OVERWHELMINGLYPOSITIVE" => games.Where(g => g.Rating >= 4.5m).ToList(),
-                    "VERYPOSITIVE" => games.Where(g => g.Rating >= 4 && g.Rating < 4.5m).ToList(),
-                    "MIXED" => games.Where(g => g.Rating >= 2 && g.Rating < 4).ToList(),
-                    "NEGATIVE" => games.Where(g => g.Rating < 2).ToList(),
+                    "OVERWHELMINGLYPOSITIVE" => games.Where(game => game.Rating >= 4.5m).ToList(),
+                    "VERYPOSITIVE" => games.Where(game => game.Rating >= 4 && game.Rating < 4.5m).ToList(),
+                    "MIXED" => games.Where(game => game.Rating >= 2 && game.Rating < 4).ToList(),
+                    "NEGATIVE" => games.Where(game => game.Rating < 2).ToList(),
                     _ => games
                 };
             }
@@ -45,15 +45,15 @@ namespace SteamHub.Web.Controllers
             {
                 games = sort switch
                 {
-                    "PRICE_ASC" => games.OrderBy(g => g.Price).ToList(),
-                    "PRICE_DESC" => games.OrderByDescending(g => g.Price).ToList(),
-                    "RATING_DESC" => games.OrderByDescending(g => g.Rating).ToList(),
-                    "DISCOUNT_DESC" => games.OrderByDescending(g => g.Discount).ToList(),
+                    "PRICE_ASC" => games.OrderBy(game => game.Price).ToList(),
+                    "PRICE_DESC" => games.OrderByDescending(game => game.Price).ToList(),
+                    "RATING_DESC" => games.OrderByDescending(game => game.Rating).ToList(),
+                    "DISCOUNT_DESC" => games.OrderByDescending(game => game.Discount).ToList(),
                     _ => games
                 };
             }
 
-            var vm = new WishlistViewModel
+            var wish_list_view_model = new WishlistViewModel
             {
                 WishListGames = games,
                 Search = search,
@@ -61,7 +61,7 @@ namespace SteamHub.Web.Controllers
                 Sort = sort
             };
 
-            return View(vm);
+            return View(wish_list_view_model);
         }
 
         [HttpPost]

@@ -356,7 +356,7 @@ public class DeveloperService : IDeveloperService
             var game = await this.GameRepository.GetGameByIdAsync(gameId);
             return game != null; 
         }
-        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+        catch (HttpRequestException exception) when (exception.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
             return false; 
         }

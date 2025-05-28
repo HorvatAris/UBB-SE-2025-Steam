@@ -45,7 +45,7 @@ namespace SteamHub.Api.Context.Repositories
         public ChatConversation GetConversation(int user1, int user2)
         {
             var conversation = context.ChatConversations
-                .FirstOrDefault(c => (c.User1Id == user1 && c.User2Id == user2) || (c.User1Id == user2 && c.User2Id == user1));
+                .FirstOrDefault(chat_conversation => (chat_conversation.User1Id == user1 && chat_conversation.User2Id == user2) || (chat_conversation.User1Id == user2 && chat_conversation.User2Id == user1));
 
             if (conversation == null)
             {
@@ -86,16 +86,16 @@ namespace SteamHub.Api.Context.Repositories
         public List<ChatMessage> GetAllMessagesOfConversation(int conv_id)
         {
             var messages = context.ChatMessages
-                .Where(m => m.ConversationId == conv_id)
-                .OrderBy(m => m.Timestamp)
-                .Select(m => new ChatMessage
+                .Where(chat_message => chat_message.ConversationId == conv_id)
+                .OrderBy(chat_message => chat_message.Timestamp)
+                .Select(chat_message => new ChatMessage
                 {
-                    MessageId = m.MessageId,
-                    SenderId = m.SenderId,
-                    ConversationId = m.ConversationId,
-                    MessageContent = m.MessageContent,
-                    MessageFormat = m.MessageFormat,
-                    Timestamp = m.Timestamp.Ticks
+                    MessageId = chat_message.MessageId,
+                    SenderId = chat_message.SenderId,
+                    ConversationId = chat_message.ConversationId,
+                    MessageContent = chat_message.MessageContent,
+                    MessageFormat = chat_message.MessageFormat,
+                    Timestamp = chat_message.Timestamp.Ticks
                 })
                 .ToList();
 

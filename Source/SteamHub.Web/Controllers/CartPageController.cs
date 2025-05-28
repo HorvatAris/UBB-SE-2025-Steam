@@ -26,13 +26,13 @@ namespace SteamHub.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var games = await cartService.GetCartGamesAsync(this.user.UserId);
-            var model = new CartPageViewModel
+            var cart_view_model = new CartPageViewModel
             {
                 CartGames = games,
                 TotalPrice = await cartService.GetTotalSumToBePaidAsync()
             };
 
-            return View(model);
+            return View(cart_view_model);
         }
 
         [HttpPost]
@@ -71,12 +71,12 @@ namespace SteamHub.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> PaypalPayment()
         {
-            var viewModel = new PaypalPaymentViewModel
+            var paypal_view_model = new PaypalPaymentViewModel
             {
                 AmountToPay = await cartService.GetTotalSumToBePaidAsync()
             };
 
-            return View(viewModel);
+            return View(paypal_view_model);
         }
 
         [HttpPost]
@@ -115,22 +115,22 @@ namespace SteamHub.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> CreditCardPayment()
         {
-            var viewModel = new CreditCardPaymentViewModel
+            var credit_card_view_model = new CreditCardPaymentViewModel
             {
                 TotalAmount = await cartService.GetTotalSumToBePaidAsync()
             };
 
-            return View(viewModel);
+            return View(credit_card_view_model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreditCardPayment(CreditCardPaymentViewModel model)
+        public async Task<IActionResult> CreditCardPayment(CreditCardPaymentViewModel credit_card_view_model)
         {
             if (!ModelState.IsValid)
-                return View(model);
+                return View(credit_card_view_model);
 
             var processor = new CreditCardProcessor();
-            bool success = await processor.ProcessPaymentAsync(model.CardNumber, model.ExpirationDate, model.CVV, model.OwnerName);
+            bool success = await processor.ProcessPaymentAsync(credit_card_view_model.CardNumber, credit_card_view_model.ExpirationDate, credit_card_view_model.CVV, credit_card_view_model.OwnerName);
 
             if (success)
             {
@@ -144,16 +144,16 @@ namespace SteamHub.Web.Controllers
                 await userGameService.PurchaseGamesAsync(request);
                 await cartService.RemoveGamesFromCartAsync(games);
 
-                model.IsSuccess = true;
-                model.PointsEarned = userGameService.LastEarnedPoints;
-                model.Message = $"Payment successful! You earned {model.PointsEarned} points.";
+                credit_card_view_model.IsSuccess = true;
+                credit_card_view_model.PointsEarned = userGameService.LastEarnedPoints;
+                credit_card_view_model.Message = $"Payment successful! You earned {credit_card_view_model.PointsEarned} points.";
 
-                return View(model); // Stay on the same page to show success
+                return View(credit_card_view_model); // Stay on the same page to show success
             }
 
-            model.IsSuccess = false;
-            model.Message = "Payment failed. Please try again.";
-            return View(model);
+            credit_card_view_model.IsSuccess = false;
+            credit_card_view_model.Message = "Payment failed. Please try again.";
+            return View(credit_card_view_model);
         }
 
         private async Task<IActionResult> SteamWalletPayment()

@@ -6,24 +6,24 @@ namespace SteamHub.Web.Controllers
 {
     public class AchievementsController : Controller
     {
-        private readonly IAchievementsService _achievementsService;
+        private readonly IAchievementsService achievements_service;
 
         public AchievementsController(IAchievementsService achievementsService)
         {
-            _achievementsService = achievementsService;
+            achievements_service = achievementsService;
         }
         public async Task<IActionResult> Index()
         {
-            string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string user_id_string = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (!int.TryParse(userIdStr, out int userId))
+            if (!int.TryParse(user_id_string, out int userId))
             {
                 return RedirectToAction("Login", "Auth"); //  redirect to login
             }
 
-            var result = await _achievementsService.GetGroupedAchievementsForUser(userId);
+            var result = await achievements_service.GetGroupedAchievementsForUser(userId);
 
-            var vm = new AchievementsViewModel
+            var achievements_view_model = new AchievementsViewModel
             {
                 FriendshipsAchievements = result.Friendships,
                 OwnedGamesAchievements = result.OwnedGames,
@@ -35,7 +35,7 @@ namespace SteamHub.Web.Controllers
                 DeveloperAchievements = result.Developer
             };
 
-            return View(vm);
+            return View(achievements_view_model);
         }
 
         //private int GetCurrentUserId()
@@ -45,7 +45,7 @@ namespace SteamHub.Web.Controllers
         //        // First, try to get user from UserService
         //        try
         //        {
-        //            var currentUser = _userService.GetCurrentUser();
+        //            var currentUser = user_service.GetCurrentUser();
         //            if (currentUser != null)
         //            {
         //                return (int)currentUser.UserId;
@@ -70,7 +70,7 @@ namespace SteamHub.Web.Controllers
         //            // Look up user by username
         //            try
         //            {
-        //                var user = _userService.GetUserByUsername(nameClaim.Value);
+        //                var user = user_service.GetUserByUsername(nameClaim.Value);
         //                if (user != null)
         //                {
         //                    return (int)user.UserId;

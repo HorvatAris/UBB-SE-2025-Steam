@@ -39,25 +39,25 @@ namespace SteamHub.Web.Controllers
 
         // POST: /Developer/Create
         [HttpPost]
-        public async Task<IActionResult> Create(CreateGameViewModel model)
+        public async Task<IActionResult> Create(CreateGameViewModel game_view_model)
         {
             if (!ModelState.IsValid)
             {
-                //model.AllTags = (await developerService.GetAllTagsAsync()).ToList();
-                return View(model);
+                //game_view_model.AllTags = (await developerService.GetAllTagsAsync()).ToList();
+                return View(game_view_model);
             }
 
             var game = await developerService.CreateValidatedGameAsync(
-                model.GameId,
-                model.Name,
-                model.Price,
-                model.Description,
-                model.ImageUrl,
-                model.TrailerUrl,
-                model.GameplayUrl,
-                model.MinimumRequirement,
-                model.RecommendedRequirement,
-                model.Discount,
+                game_view_model.GameId,
+                game_view_model.Name,
+                game_view_model.Price,
+                game_view_model.Description,
+                game_view_model.ImageUrl,
+                game_view_model.TrailerUrl,
+                game_view_model.GameplayUrl,
+                game_view_model.MinimumRequirement,
+                game_view_model.RecommendedRequirement,
+                game_view_model.Discount,
                 new List<Tag> { new Tag { TagId = 500, Tag_name = "bagpl" } },
                 this.developerService.GetCurrentUser().UserId
 
@@ -80,7 +80,7 @@ namespace SteamHub.Web.Controllers
                    .Select(t => t.TagId)
                    .ToList();
 
-            var model = new EditGameViewModel
+            var game_view_model = new EditGameViewModel
             {
                 GameId = game.GameId.ToString(),
                 Name = game.GameTitle,
@@ -96,37 +96,37 @@ namespace SteamHub.Web.Controllers
                 SelectedTags = selectedTags
             };
 
-            return View(model);
+            return View(game_view_model);
         }
 
         //// POST: /Developer/Edit
         [HttpPost]
-        public async Task<IActionResult> Edit(EditGameViewModel model)
+        public async Task<IActionResult> Edit(EditGameViewModel game_view_model)
         {
             if (!ModelState.IsValid)
             {
-                model.AllTags = (await developerService.GetAllTagsAsync()).ToList(); // Explicit conversion to List<Tag>
+                game_view_model.AllTags = (await developerService.GetAllTagsAsync()).ToList(); // Explicit conversion to List<Tag>
 
-                return View(model);
+                return View(game_view_model);
             }
             var allTags = await developerService.GetAllTagsAsync();
             // Fix for CS1503: Convert the string GameId to an integer before passing it to the method.
-            var selectedTags = model.SelectedTags;
+            var selectedTags = game_view_model.SelectedTags;
             var selectedTagObjects = allTags
         .Where(tag => selectedTags.Contains(tag.TagId))  // Find tags that match the selected tag IDs
         .ToList();
 
             var game = developerService.ValidateInputForAddingAGame(
-                model.GameId,
-                model.Name,
-                model.Price,
-                model.Description,
-                model.ImageUrl,
-                model.TrailerUrl,
-                model.GameplayUrl,
-                model.MinimumRequirement,
-                model.RecommendedRequirement,
-                model.Discount,
+                game_view_model.GameId,
+                game_view_model.Name,
+                game_view_model.Price,
+                game_view_model.Description,
+                game_view_model.ImageUrl,
+                game_view_model.TrailerUrl,
+                game_view_model.GameplayUrl,
+                game_view_model.MinimumRequirement,
+                game_view_model.RecommendedRequirement,
+                game_view_model.Discount,
                 selectedTagObjects
             );
 
@@ -161,8 +161,8 @@ namespace SteamHub.Web.Controllers
         // GET: /Developer/Reject/5
         public async Task<IActionResult> Reject(int id)
         {
-            var model = new RejectGameViewModel { GameId = id };
-            return View(model);
+            var game_view_model = new RejectGameViewModel { GameId = id };
+            return View(game_view_model);
         }
 
         // Fix for CS1503: Convert the List<Game> to ObservableCollection<Game> before passing it to the method.
@@ -193,26 +193,26 @@ namespace SteamHub.Web.Controllers
         {
             try
             {
-                string message = await developerService.GetRejectionMessageAsync(id);
+                string rejection_message = await developerService.GetRejectionMessageAsync(id);
 
-                if (string.IsNullOrWhiteSpace(message))
+                if (string.IsNullOrWhiteSpace(rejection_message))
                 {
-                    //TempData["Error"] = "No rejection message found.";
+                    //TempData["Error"] = "No rejection rejection_message found.";
                     //return RedirectToAction("MyGames"); // or wherever makes sense
-                    message = "No rejection message available for this game.";
+                    rejection_message = "No rejection rejection_message available for this game.";
                 }
 
                 var model = new RejectionMessageViewModel
                 {
                     GameId = id,
-                    Message = message
+                    Message = rejection_message
                 };
 
                 return View(model);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                TempData["Error"] = $"Failed to get rejection message: {ex.Message}";
+                TempData["Error"] = $"Failed to get rejection rejection_message: {exception.Message}";
                 return RedirectToAction("MyGames");
             }
         }

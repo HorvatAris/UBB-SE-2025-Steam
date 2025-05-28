@@ -9,15 +9,15 @@ namespace SteamHub.Api.Context.Repositories;
 
 public class PointShopItemRepository : IPointShopItemRepository
 {
-    private readonly DataContext _context;
+    private readonly DataContext context;
 
     public PointShopItemRepository(DataContext context)
     {
-        _context = context;
+        this.context = context;
     }
     public async Task<GetPointShopItemsResponse?> GetPointShopItemsAsync()
     {
-        var pointShopItems = await _context.PointShopItems
+        var pointShopItems = await context.PointShopItems
             .Select(pointShopItem => new PointShopItemResponse
             {
                 PointShopItemId = pointShopItem.PointShopItemId,
@@ -37,7 +37,7 @@ public class PointShopItemRepository : IPointShopItemRepository
 
     public async Task<PointShopItemResponse?> GetPointShopItemByIdAsync(int id)
     {
-        var result = await _context.PointShopItems
+        var result = await context.PointShopItems
             .Where(item => item.PointShopItemId == id)
             .Select(pointShopItem => new PointShopItemResponse
             {
@@ -55,7 +55,7 @@ public class PointShopItemRepository : IPointShopItemRepository
 
     public async Task UpdatePointShopItemAsync(int itemId, UpdatePointShopItemRequest request)
     {
-        var existingPointShopItem = await _context.PointShopItems.FindAsync(itemId);
+        var existingPointShopItem = await context.PointShopItems.FindAsync(itemId);
         if (existingPointShopItem == null)
         {
             throw new Exception("PointShopItem not found");
@@ -67,7 +67,7 @@ public class PointShopItemRepository : IPointShopItemRepository
         existingPointShopItem.PointPrice = request.PointPrice;
         existingPointShopItem.ItemType = request.ItemType;
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 
     public async Task<CreatePointShopItemResponse> CreatePointShopItemAsync(CreatePointShopItemRequest request)
@@ -81,9 +81,9 @@ public class PointShopItemRepository : IPointShopItemRepository
             ItemType = request.ItemType
         };
 
-        await _context.PointShopItems.AddAsync(newPointShopItem);
+        await context.PointShopItems.AddAsync(newPointShopItem);
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return new CreatePointShopItemResponse
         {
@@ -93,13 +93,13 @@ public class PointShopItemRepository : IPointShopItemRepository
 
     public async Task DeletePointShopItemAsync(int id)
     {
-        var pointShopItem = await _context.PointShopItems.FindAsync(id);
+        var pointShopItem = await context.PointShopItems.FindAsync(id);
         if (pointShopItem == null)
         {
             throw new Exception("PointShopItem not found");
         }
-        _context.PointShopItems.Remove(pointShopItem);
-        await _context.SaveChangesAsync();
+        context.PointShopItems.Remove(pointShopItem);
+        await context.SaveChangesAsync();
     }
 
 }

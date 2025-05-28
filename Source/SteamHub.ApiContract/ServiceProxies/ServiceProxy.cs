@@ -13,7 +13,7 @@ namespace SteamHub.ApiContract.ServiceProxies
     public class ServiceProxy
     {
         private static readonly HttpClient StaticHttpClient;
-        private static string _authToken;
+        private static string auth_token;
 
         private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
@@ -48,7 +48,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         public ServiceProxy(string baseUrl = "https://localhost:7241/api/")
         {
             BaseUrl = baseUrl ?? throw new ArgumentNullException(nameof(baseUrl));
-            SetAuthTokenSafely(_authToken);
+            SetAuthTokenSafely(auth_token);
         }
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         /// </summary>
         protected void SetAuthToken(string token)
         {
-            _authToken = token;
+            auth_token = token;
             SetAuthTokenSafely(token);
         }
 

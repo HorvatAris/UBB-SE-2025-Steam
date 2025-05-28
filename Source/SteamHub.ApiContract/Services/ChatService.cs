@@ -29,10 +29,10 @@ namespace SteamHub.ApiContext.Services
         {
             this.conversation = this.chatRepository.CreateConversation(this.myId, this.targetedUserId);
             List<ChatMessage> messages = this.chatRepository.GetAllMessagesOfConversation(this.conversation.ConversationId);
-            for (int i = 0; i < messages.Count; i++)
+            for (int messages_count = 0; messages_count < messages.Count; messages_count++)
             {
-                int idx = i;
-                this.NewMessageEvent?.Invoke(this, new MessageEventArgs(messages[idx]));
+                int message_index = messages_count;
+                this.NewMessageEvent?.Invoke(this, new MessageEventArgs(messages[message_index]));
             }
         }
 

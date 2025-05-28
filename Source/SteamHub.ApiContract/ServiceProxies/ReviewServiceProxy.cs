@@ -9,8 +9,8 @@ namespace SteamHub.ApiContract.ServiceProxies
     public class ReviewServiceProxy : IReviewService
     {
         
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options = new JsonSerializerOptions{
+        private readonly HttpClient http_client;
+        private readonly JsonSerializerOptions options = new JsonSerializerOptions{
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
@@ -18,7 +18,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public ReviewServiceProxy(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
+            http_client = httpClientFactory.CreateClient("SteamHubApi");
         }
 
 
@@ -32,9 +32,9 @@ namespace SteamHub.ApiContract.ServiceProxies
                     reviewToSubmit.DateAndTimeWhenReviewWasCreated = DateTime.Now;
                 }
 
-                var response = await _httpClient.PostAsJsonAsync("/api/Review", reviewToSubmit, _options);
+                var response = await http_client.PostAsJsonAsync("/api/Review", reviewToSubmit, options);
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                return await response.Content.ReadFromJsonAsync<bool>(options);
             }
             catch (Exception)
             {
@@ -49,9 +49,9 @@ namespace SteamHub.ApiContract.ServiceProxies
                 // Update the timestamp
                 updatedReview.DateAndTimeWhenReviewWasCreated = DateTime.Now;
 
-                var response = await _httpClient.PostAsJsonAsync($"/api/Review/{updatedReview.ReviewIdentifier}", updatedReview, _options);
+                var response = await http_client.PostAsJsonAsync($"/api/Review/{updatedReview.ReviewIdentifier}", updatedReview, options);
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                return await response.Content.ReadFromJsonAsync<bool>(options);
             }
             catch (Exception)
             {
@@ -63,9 +63,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.DeleteAsync($"/api/Review/{reviewIdentifier}");
+                var response = await http_client.DeleteAsync($"/api/Review/{reviewIdentifier}");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                return await response.Content.ReadFromJsonAsync<bool>(options);
             }
             catch (Exception)
             {
@@ -77,9 +77,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Review/game/{gameIdentifier}");
+                var response = await http_client.GetAsync($"/api/Review/game/{gameIdentifier}");
                 response.EnsureSuccessStatusCode();
-                return (await response.Content.ReadFromJsonAsync<List<Review>>(_options))!;
+                return (await response.Content.ReadFromJsonAsync<List<Review>>(options))!;
             }
             catch (Exception)
             {
@@ -91,9 +91,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Review/game/{gameIdentifier}/statistics");
+                var response = await http_client.GetAsync($"/api/Review/game/{gameIdentifier}/statistics");
                 response.EnsureSuccessStatusCode();
-                var stats =  (await response.Content.ReadFromJsonAsync<ReviewStatistics>(_options))!;
+                var stats =  (await response.Content.ReadFromJsonAsync<ReviewStatistics>(options))!;
 
                 return (stats.TotalReviews, stats.PositivePercentage, stats.AverageRating);
             }
@@ -131,13 +131,13 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response =  await _httpClient.PostAsJsonAsync($"/api/Review/{reviewIdentifier}/vote", new
+                var response =  await http_client.PostAsJsonAsync($"/api/Review/{reviewIdentifier}/vote", new
                 {
                     VoteType = voteType,
                     ShouldIncrement = shouldIncrement
-                }, _options);
+                }, options);
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                return await response.Content.ReadFromJsonAsync<bool>(options);
             }
             catch (Exception)
             {

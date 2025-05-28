@@ -57,7 +57,7 @@ namespace SteamHub.ApiContext.Services
                 int walletId = await walletRepository.GetWalletIdByUserId(userId);
                 return await walletRepository.GetPointsFromWallet(walletId);
             }
-            catch (Exception ex) when (ex.Message.Contains("No wallet found"))
+            catch (Exception exception) when (exception.Message.Contains("No wallet found"))
             {
                 // No wallet found, create one
                 await CreateWallet(userId);
@@ -73,7 +73,7 @@ namespace SteamHub.ApiContext.Services
                 await walletRepository.GetWalletIdByUserId(userIdentifier);
                 // If GetWalletIdByUserId does not throw, a wallet exists.
             }
-            catch (Exception ex) when (ex.Message.Equals($"Wallet for user with ID {userIdentifier} not found.", StringComparison.OrdinalIgnoreCase) || ex.Message.Contains("not found"))
+            catch (Exception exception) when (exception.Message.Equals($"Wallet for user with ID {userIdentifier} not found.", StringComparison.OrdinalIgnoreCase) || exception.Message.Contains("not found"))
             {
                 // No wallet found, so create one
                 await walletRepository.AddNewWallet(userIdentifier);

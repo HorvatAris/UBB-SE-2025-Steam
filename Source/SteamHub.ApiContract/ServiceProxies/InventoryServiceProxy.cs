@@ -19,8 +19,8 @@ namespace SteamHub.ApiContract.ServiceProxies
     public class InventoryServiceProxy : IInventoryService
     {
         private readonly InventoryValidator inventoryValidator;
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options = new JsonSerializerOptions
+        private readonly HttpClient http_client;
+        private readonly JsonSerializerOptions options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
@@ -28,7 +28,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         public IUserDetails User { get; set; }
         public InventoryServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
+            http_client = httpClientFactory.CreateClient("SteamHubApi");
             this.User = user;
         }
 
@@ -40,7 +40,7 @@ namespace SteamHub.ApiContract.ServiceProxies
                 Item = item
             };
 
-            var response = await _httpClient.PostAsJsonAsync($"/api/Inventory/AddItemToInventory/{userId}", request);
+            var response = await http_client.PostAsJsonAsync($"/api/Inventory/AddItemToInventory/{userId}", request);
             response.EnsureSuccessStatusCode();
         }
 
@@ -80,7 +80,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task<List<Item>> GetAllItemsFromInventoryAsync(int userId)
         {
-            var response = await _httpClient.GetAsync($"/api/Inventory/All/{userId}");
+            var response = await http_client.GetAsync($"/api/Inventory/All/{userId}");
             response.EnsureSuccessStatusCode();
 
             var items = await response.Content.ReadFromJsonAsync<List<Item>>();
@@ -99,7 +99,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task<List<Game>> GetAvailableGamesAsync(List<Item> items, int userId)
         {
-            var response = await _httpClient.PostAsJsonAsync(
+            var response = await http_client.PostAsJsonAsync(
                 $"/api/Inventory/AvailableGames/{userId}",
                 items
             );
@@ -120,7 +120,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task<List<Item>> GetItemsFromInventoryAsync(Game game, int userId)
         {
-            var response = await _httpClient.PostAsJsonAsync(
+            var response = await http_client.PostAsJsonAsync(
                 $"/api/Inventory/ItemsFromGame/{userId}",
                 game
             );
@@ -145,7 +145,7 @@ namespace SteamHub.ApiContract.ServiceProxies
                 throw new ArgumentException("UserId must be positive.", nameof(userId));
             }
 
-            var response = await _httpClient.GetAsync($"/api/Inventory/UserInventory/{userId}");
+            var response = await http_client.GetAsync($"/api/Inventory/UserInventory/{userId}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -171,7 +171,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
-            var response = await _httpClient.PatchAsJsonAsync($"/api/Inventory/SellItem/{userId}", item);
+            var response = await http_client.PatchAsJsonAsync($"/api/Inventory/SellItem/{userId}", item);
 
             if (response.IsSuccessStatusCode)
             {

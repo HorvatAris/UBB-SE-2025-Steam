@@ -8,16 +8,16 @@ namespace SteamHub.Web.Controllers
     [Authorize]
     public class MarketplaceController : Controller
     {
-        private readonly IMarketplaceService _marketplaceService;
+        private readonly IMarketplaceService marketplace_service;
 
         public MarketplaceController(IMarketplaceService marketplaceService)
         {
-            _marketplaceService = marketplaceService;
+            marketplace_service = marketplaceService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var allUsers = await _marketplaceService.GetAllUsersAsync();
+            var allUsers = await marketplace_service.GetAllUsersAsync();
             var currentUsername = User.Identity?.Name;
             var currentUser = allUsers.FirstOrDefault(u => u.Username == currentUsername);
 
@@ -26,17 +26,17 @@ namespace SteamHub.Web.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            _marketplaceService.User = currentUser;
+            marketplace_service.User = currentUser;
 
-            var viewModel = new MarketplaceViewModel
+            var marketplace_view_model = new MarketplaceViewModel
             {
                 CurrentUser = currentUser,
-                Items = await _marketplaceService.GetAllListingsAsync()
+                Items = await marketplace_service.GetAllListingsAsync()
             };
 
-            viewModel.InitializeFilters();
+            marketplace_view_model.InitializeFilters();
 
-            return View(viewModel);
+            return View(marketplace_view_model);
         }
 
 
@@ -45,7 +45,7 @@ namespace SteamHub.Web.Controllers
         {
             try
             {
-                var allUsers = await _marketplaceService.GetAllUsersAsync();
+                var allUsers = await marketplace_service.GetAllUsersAsync();
                 var currentUsername = User.Identity?.Name;
                 var currentUser = allUsers.FirstOrDefault(u => u.Username == currentUsername);
 
@@ -54,9 +54,9 @@ namespace SteamHub.Web.Controllers
                     return Json(new { success = false, message = "User not authenticated." });
                 }
 
-                _marketplaceService.User = currentUser;
+                marketplace_service.User = currentUser;
 
-                var listings = await _marketplaceService.GetAllListingsAsync();
+                var listings = await marketplace_service.GetAllListingsAsync();
                 var item = listings.FirstOrDefault(i => i.ItemId == itemId && i.IsListed);
 
                 if (item == null)
@@ -64,7 +64,7 @@ namespace SteamHub.Web.Controllers
                     return Json(new { success = false, message = "Item not available." });
                 }
 
-                var success = await _marketplaceService.BuyItemAsync(item, currentUser.UserId);
+                var success = await marketplace_service.BuyItemAsync(item, currentUser.UserId);
 
                 if (success)
                 {
@@ -73,42 +73,42 @@ namespace SteamHub.Web.Controllers
 
                 return Json(new { success = false, message = "Purchase failed." });
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                return Json(new { success = false, message = $"Unexpected error: {ex.Message}" });
+                return Json(new { success = false, message = $"Unexpected error: {exception.Message}" });
             }
         }
 
         [HttpGet]
         public async Task<IActionResult> ApplyFilters(string search, string game, string type, string rarity)
         {
-            var items = await _marketplaceService.GetAllListingsAsync();
+            var items = await marketplace_service.GetAllListingsAsync();
 
-            var filtered = items.ToList();
+            var filtered_items = items.ToList();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var s = search.ToLower();
-                filtered = filtered.Where(item =>
+                filtered_items = filtered_items.Where(item =>
                     item.ItemName.ToLower().Contains(s) ||
                     item.Description.ToLower().Contains(s)).ToList();
             }
 
             if (!string.IsNullOrWhiteSpace(game))
-                filtered = filtered.Where(i => i.Game.GameTitle == game).ToList();
+                filtered_items = filtered_items.Where(i => i.Game.GameTitle == game).ToList();
 
             if (!string.IsNullOrWhiteSpace(type))
-                filtered = filtered.Where(i => i.ItemName.Split('|')[0].Trim() == type).ToList();
+                filtered_items = filtered_items.Where(i => i.ItemName.Split('|')[0].Trim() == type).ToList();
 
 
-            return Json(filtered.Select(i => new
+            return Json(filtered_items.Select(item => new
             {
-                i.ItemId,
-                i.ItemName,
-                i.Price,
-                i.ImagePath,
-                i.IsListed,
-                Game = i.Game.GameTitle
+                item.ItemId,
+                item.ItemName,
+                item.Price,
+                item.ImagePath,
+                item.IsListed,
+                Game = item.Game.GameTitle
             }));
         }
     }

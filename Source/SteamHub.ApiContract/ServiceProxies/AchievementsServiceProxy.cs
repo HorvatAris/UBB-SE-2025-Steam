@@ -13,8 +13,8 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class AchievementsServiceProxy : ServiceProxy, IAchievementsService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options = new JsonSerializerOptions
+        private readonly HttpClient http_client;
+        private readonly JsonSerializerOptions options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
@@ -23,14 +23,14 @@ namespace SteamHub.ApiContract.ServiceProxies
         public AchievementsServiceProxy(System.Net.Http.IHttpClientFactory httpClientFactory,   string baseUrl = "https://localhost:7241/api/")
             : base(baseUrl)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
+            http_client = httpClientFactory.CreateClient("SteamHubApi");
         }
        
         public async Task InitializeAchievements()
         {
             try
             {
-                await _httpClient.PostAsync("Achievements/initialize", null);
+                await http_client.PostAsync("Achievements/initialize", null);
                 //PostAsync("Achievements/initialize", null).GetAwaiter().GetResult();
             }
             catch (Exception ex)
@@ -44,14 +44,14 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Achievements/{userIdentifier}/grouped");
+                var response = await http_client.GetAsync($"/api/Achievements/{userIdentifier}/grouped");
                 response.EnsureSuccessStatusCode();
                 
                 var jsonString = await response.Content.ReadAsStringAsync();
                 System.Diagnostics.Debug.WriteLine($"Response JSON: {jsonString}"); // Log the JSON response
 
                 // Deserialize the entire response
-                var result = JsonSerializer.Deserialize<GroupedAchievementsResult>(jsonString, _options);
+                var result = JsonSerializer.Deserialize<GroupedAchievementsResult>(jsonString, options);
                 
                 if (result == null)
                 {
@@ -72,9 +72,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"Achievements/{userIdentifier}");
+                var response = await http_client.GetAsync($"Achievements/{userIdentifier}");
                 response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadFromJsonAsync<List<Achievement>>(_options);
+                var result = await response.Content.ReadFromJsonAsync<List<Achievement>>(options);
 
                 return result;
             }
@@ -88,7 +88,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await _httpClient.PostAsync($"Achievements/{userIdentifier}/unlock", null);
+                await http_client.PostAsync($"Achievements/{userIdentifier}/unlock", null);
                 //PostAsync($"Achievements/{userIdentifier}/unlock", null).GetAwaiter().GetResult();
             }
             catch (Exception ex)
@@ -102,9 +102,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response=await _httpClient.GetAsync("Achievements");
+                var response=await http_client.GetAsync("Achievements");
                 response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadFromJsonAsync<List<Achievement>>(_options);
+                var result = await response.Content.ReadFromJsonAsync<List<Achievement>>(options);
                 return result;
 
                 //return GetAsync<List<Achievement>>("Achievements").GetAwaiter().GetResult();
@@ -120,9 +120,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"Achievements/{userIdentifier}/status");
+                var response = await http_client.GetAsync($"Achievements/{userIdentifier}/status");
                 response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadFromJsonAsync<List<AchievementWithStatus>>(_options);
+                var result = await response.Content.ReadFromJsonAsync<List<AchievementWithStatus>>(options);
                 return result;
                 //return await GetAsync<List<AchievementWithStatus>>($"Achievements/{userIdentifier}/status");
             }
@@ -136,9 +136,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"Achievements/{userIdentifier}/{achievementIdentifier}/points");
+                var response = await http_client.GetAsync($"Achievements/{userIdentifier}/{achievementIdentifier}/points");
                 response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadFromJsonAsync<int>(_options);
+                var result = await response.Content.ReadFromJsonAsync<int>(options);
                 return result;
                 
             }

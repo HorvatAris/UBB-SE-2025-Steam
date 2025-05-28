@@ -12,8 +12,8 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class FeaturesServiceProxy : IFeaturesService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options = new JsonSerializerOptions
+        private readonly HttpClient http_client;
+        private readonly JsonSerializerOptions options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
@@ -21,16 +21,16 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public FeaturesServiceProxy(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
+            http_client = httpClientFactory.CreateClient("SteamHubApi");
         }
 
         public async Task<List<Feature>> GetAllFeaturesAsync(int userId)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature");
+                var response = await http_client.GetAsync($"/api/Feature");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<List<Feature>>(_options) 
+                return await response.Content.ReadFromJsonAsync<List<Feature>>(options) 
                     ?? new List<Feature>();
             }
             catch (Exception ex)
@@ -43,9 +43,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature/type/{type}");
+                var response = await http_client.GetAsync($"/api/Feature/type/{type}");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<List<Feature>>(_options) 
+                return await response.Content.ReadFromJsonAsync<List<Feature>>(options) 
                     ?? new List<Feature>();
             }
             catch (Exception ex)
@@ -58,9 +58,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature/user/{userIdentifier}");
+                var response = await http_client.GetAsync($"/api/Feature/user/{userIdentifier}");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<List<Feature>>(_options) 
+                return await response.Content.ReadFromJsonAsync<List<Feature>>(options) 
                     ?? new List<Feature>();
             }
             catch (Exception ex)
@@ -73,9 +73,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature/user/{userId}/purchased/{featureId}");
+                var response = await http_client.GetAsync($"/api/Feature/user/{userId}/purchased/{featureId}");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                return await response.Content.ReadFromJsonAsync<bool>(options);
             }
             catch (Exception)
             {
@@ -87,13 +87,13 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/Feature/equip", new
+                var response = await http_client.PostAsJsonAsync("/api/Feature/equip", new
                 {
                     UserId = userId,
                     FeatureId = featureId
-                }, _options);
+                }, options);
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                return await response.Content.ReadFromJsonAsync<bool>(options);
             }
             catch (Exception)
             {
@@ -105,13 +105,13 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/Feature/unequip", new
+                var response = await http_client.PostAsJsonAsync("/api/Feature/unequip", new
                 {
                     UserId = userIdentifier,
                     FeatureId = featureIdentifier
-                }, _options);
+                }, options);
                 response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadFromJsonAsync<FeatureResponse>(_options);
+                var result = await response.Content.ReadFromJsonAsync<FeatureResponse>(options);
                 return result?.Success ?? false;
             }
             catch (Exception ex)
@@ -124,13 +124,13 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/Feature/unequip-type", new
+                var response = await http_client.PostAsJsonAsync("/api/Feature/unequip-type", new
                 {
                     UserId = userIdentifier,
                     FeatureType = featureType
-                }, _options);
+                }, options);
                 response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadFromJsonAsync<FeatureResponse>(_options);
+                var result = await response.Content.ReadFromJsonAsync<FeatureResponse>(options);
                 return result?.Success ?? false;
             }
             catch (Exception ex)
@@ -143,13 +143,13 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/Feature/purchase", new
+                var response = await http_client.PostAsJsonAsync("/api/Feature/purchase", new
                 {
                     UserId = userIdentifier,
                     FeatureId = featureIdentifier
-                }, _options);
+                }, options);
                 response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadFromJsonAsync<FeatureResponse>(_options);
+                var result = await response.Content.ReadFromJsonAsync<FeatureResponse>(options);
                 return result?.Success ?? false;
             }
             catch (Exception ex)
@@ -162,9 +162,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature/user/{userId}/equipped");
+                var response = await http_client.GetAsync($"/api/Feature/user/{userId}/equipped");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<List<Feature>>(_options) 
+                return await response.Content.ReadFromJsonAsync<List<Feature>>(options) 
                     ?? new List<Feature>();
             }
             catch (Exception ex)
@@ -177,9 +177,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature/{featureId}");
+                var response = await http_client.GetAsync($"/api/Feature/{featureId}");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<Feature>(_options);
+                return await response.Content.ReadFromJsonAsync<Feature>(options);
             }
             catch (Exception ex)
             {
@@ -191,9 +191,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature/user/{userId}/categories");
+                var response = await http_client.GetAsync($"/api/Feature/user/{userId}/categories");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<Dictionary<string, List<Feature>>>(_options) 
+                return await response.Content.ReadFromJsonAsync<Dictionary<string, List<Feature>>>(options) 
                     ?? new Dictionary<string, List<Feature>>();
             }
             catch (Exception ex)
@@ -206,9 +206,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature/user/{userId}/preview/{featureId}");
+                var response = await http_client.GetAsync($"/api/Feature/user/{userId}/preview/{featureId}");
                 response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadFromJsonAsync<FeaturePreviewResponse>(_options);
+                var result = await response.Content.ReadFromJsonAsync<FeaturePreviewResponse>(options);
                 return (result?.ProfilePicturePath ?? "ms-appx:///Assets/default-profile.png",
                         result?.BioText ?? "No bio available",
                         result?.EquippedFeatures ?? new List<Feature>());

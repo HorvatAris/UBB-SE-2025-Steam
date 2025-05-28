@@ -5,16 +5,16 @@ using SteamHub.ApiContract.Repositories;
 namespace SteamHub.Api.Context.Repositories;
 public class ItemTradeDetailRepository : IItemTradeDetailRepository
 {
-    private readonly DataContext _context;
+    private readonly DataContext context;
 
     public ItemTradeDetailRepository(DataContext context)
     {
-        _context = context;
+        this.context = context;
     }
 
     public async Task<GetItemTradeDetailsResponse?> GetItemTradeDetailsAsync()
     {
-        var tradeDetails = await _context.ItemTradeDetails
+        var tradeDetails = await context.ItemTradeDetails
             .Select(details => new ItemTradeDetailResponse
             {
                 TradeId = details.TradeId,
@@ -31,7 +31,7 @@ public class ItemTradeDetailRepository : IItemTradeDetailRepository
 
     public async Task<ItemTradeDetailResponse?> GetItemTradeDetailAsync(int tradeId, int itemId)
     {
-        var result = await _context.ItemTradeDetails
+        var result = await context.ItemTradeDetails
             .Where(details => details.TradeId == tradeId && details.ItemId == itemId)
             .Select(details => new ItemTradeDetailResponse
             {
@@ -53,8 +53,8 @@ public class ItemTradeDetailRepository : IItemTradeDetailRepository
             IsSourceUserItem = request.IsSourceUserItem
         };
 
-        await _context.ItemTradeDetails.AddAsync(newDetail);
-        await _context.SaveChangesAsync();
+        await context.ItemTradeDetails.AddAsync(newDetail);
+        await context.SaveChangesAsync();
 
         return new CreateItemTradeDetailResponse
         {
@@ -65,13 +65,13 @@ public class ItemTradeDetailRepository : IItemTradeDetailRepository
 
     public async Task DeleteItemTradeDetailAsync(int tradeId, int itemId)
     {
-        var detail = await _context.ItemTradeDetails.FindAsync(tradeId, itemId);
+        var detail = await context.ItemTradeDetails.FindAsync(tradeId, itemId);
         if (detail == null)
         {
             throw new Exception("ItemTradeDetail not found");
         }
 
-        _context.ItemTradeDetails.Remove(detail);
-        await _context.SaveChangesAsync();
+        context.ItemTradeDetails.Remove(detail);
+        await context.SaveChangesAsync();
     }
 }

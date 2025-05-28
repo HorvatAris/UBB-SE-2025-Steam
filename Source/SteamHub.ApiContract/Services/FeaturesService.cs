@@ -65,9 +65,9 @@ namespace SteamHub.ApiContract.Services
                 }
                 return features;
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                throw new InvalidOperationException($"Failed to retrieve features for user {userIdentifier}.", ex);
+                throw new InvalidOperationException($"Failed to retrieve features for user {userIdentifier}.", exception);
             }
         }
 

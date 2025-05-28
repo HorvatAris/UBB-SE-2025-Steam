@@ -25,7 +25,7 @@ namespace SteamHub.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int? selectedUserId, int? selectedGameId, string searchText)
         {
-            var model = new InventoryViewModel();
+            var inventory_view_model = new InventoryViewModel();
 
             try
             {
@@ -33,8 +33,8 @@ namespace SteamHub.Web.Controllers
                 var currentUser = await inventoryService.GetAllUsersAsync();
                 if (currentUser == null)
                 {
-                    model.StatusMessage = "No users found.";
-                    return View(model);
+                    inventory_view_model.StatusMessage = "No users found.";
+                    return View(inventory_view_model);
                 }
 
                 // Get current user or default to first user
@@ -54,8 +54,8 @@ namespace SteamHub.Web.Controllers
                 var availableUsers = new List<IUserDetails> { currentUser };
                 if (availableUsers == null || !availableUsers.Any())
                 {
-                    model.StatusMessage = "No users available.";
-                    return View(model);
+                    inventory_view_model.StatusMessage = "No users available.";
+                    return View(inventory_view_model);
                 }
 
                 // Get selected game if any
@@ -72,26 +72,26 @@ namespace SteamHub.Web.Controllers
                     searchText
                 );
 
-                // Update model with retrieved data
-                model.SelectedUserId = currentUserId;
-                model.SelectedGameId = selectedGameId ?? 0;
-                model.SearchText = searchText ?? string.Empty;
-                model.InventoryItems = filteredItems ?? new List<Item>();
-                model.AvailableGames = availableGames;
-                model.AvailableUsers = availableUsers;
+                // Update inventory_view_model with retrieved data
+                inventory_view_model.SelectedUserId = currentUserId;
+                inventory_view_model.SelectedGameId = selectedGameId ?? 0;
+                inventory_view_model.SearchText = searchText ?? string.Empty;
+                inventory_view_model.InventoryItems = filteredItems ?? new List<Item>();
+                inventory_view_model.AvailableGames = availableGames;
+                inventory_view_model.AvailableUsers = availableUsers;
             }
             catch (Exception ex)
             {
-                model.StatusMessage = $"An error occurred: {ex.Message}";
+                inventory_view_model.StatusMessage = $"An error occurred: {ex.Message}";
             }
 
             // Set status message from TempData if it exists
             if (TempData["StatusMessage"] != null)
             {
-                model.StatusMessage = TempData["StatusMessage"].ToString();
+                inventory_view_model.StatusMessage = TempData["StatusMessage"].ToString();
             }
 
-            return View(model);
+            return View(inventory_view_model);
         }
 
         [HttpPost]

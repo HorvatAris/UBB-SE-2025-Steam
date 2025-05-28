@@ -14,19 +14,19 @@ namespace SteamHub.Api.Context.Repositories
     public class SessionRepository : ISessionRepository
     {
         private readonly DataContext context;
-        private readonly UserSession _userSession;
+        private readonly UserSession user_session;
 
         public SessionRepository(DataContext newContext)
         {
             this.context = newContext ?? throw new ArgumentNullException(nameof(context));
-            this._userSession = UserSession.Instance;
+            this.user_session = UserSession.Instance;
         }
 
         public async Task<SessionDetails> CreateSession(int userId)
         {
             // Remove any existing sessions for this user
-            var old = await context.UserSessions.Where(s => s.UserId == userId).ToListAsync();
-            context.UserSessions.RemoveRange(old);
+            var old_session = await context.UserSessions.Where(session => session.UserId == userId).ToListAsync();
+            context.UserSessions.RemoveRange(old_session);
 
             var session = new SessionDetailsDTO
             {
@@ -40,7 +40,7 @@ namespace SteamHub.Api.Context.Repositories
             await context.SaveChangesAsync();
 
             // Update the current session
-            await _userSession.UpdateSessionAsync(
+            await user_session.UpdateSessionAsync(
                 session.SessionId,
                 session.UserId,
                 session.CreatedAt,
@@ -57,14 +57,14 @@ namespace SteamHub.Api.Context.Repositories
 
         public async Task DeleteUserSessions(int userId)
         {
-            var toDelete = await context.UserSessions.Where(s => s.UserId == userId).ToListAsync();
-            context.UserSessions.RemoveRange(toDelete);
+            var session_to_delete = await context.UserSessions.Where(session => session.UserId == userId).ToListAsync();
+            context.UserSessions.RemoveRange(session_to_delete);
             await context.SaveChangesAsync();
 
             // Clear the current session if it belongs to this user
-            if (_userSession.UserId == userId)
+            if (user_session.UserId == userId)
             {
-                await _userSession.ClearSessionAsync();
+                await user_session.ClearSessionAsync();
             }
         }
 
@@ -77,9 +77,9 @@ namespace SteamHub.Api.Context.Repositories
                 await context.SaveChangesAsync();
 
                 // Clear the current session if it matches
-                if (_userSession.CurrentSessionId == sessionId)
+                if (user_session.CurrentSessionId == sessionId)
                 {
-                    await _userSession.ClearSessionAsync();
+                    await user_session.ClearSessionAsync();
                 }
             }
         }
@@ -117,9 +117,9 @@ namespace SteamHub.Api.Context.Repositories
                 return null;
 
             // Update the current session if it matches
-            if (_userSession.CurrentSessionId == sessionId)
+            if (user_session.CurrentSessionId == sessionId)
             {
-                await _userSession.UpdateSessionAsync(
+                await user_session.UpdateSessionAsync(
                     session.SessionId,
                     session.UserId,
                     session.CreatedAt,
@@ -143,26 +143,26 @@ namespace SteamHub.Api.Context.Repositories
         public async Task<List<Guid>> GetExpiredSessions()
         {
             return await context.UserSessions
-                .Where(s => s.ExpiresAt < DateTime.UtcNow)
-                .Select(s => s.SessionId)
+                .Where(session => session.ExpiresAt < DateTime.UtcNow)
+                .Select(session => session.SessionId)
                 .ToListAsync();
         }
 
         public async Task CleanupExpiredSessions()
         {
             var expired = await context.UserSessions
-                    .Where(s => s.ExpiresAt < DateTime.UtcNow)
+                    .Where(session => session.ExpiresAt < DateTime.UtcNow)
                     .ToListAsync();
             context.UserSessions.RemoveRange(expired);
             await context.SaveChangesAsync();
 
-            // Clear the current session if it's expired
-            if (_userSession.CurrentSessionId.HasValue)
+            // Clear the current session if it'session expired
+            if (user_session.CurrentSessionId.HasValue)
             {
-                var session = await GetSessionById(_userSession.CurrentSessionId.Value);
+                var session = await GetSessionById(user_session.CurrentSessionId.Value);
                 if (session == null || session.ExpiresAt <= DateTime.UtcNow)
                 {
-                    await _userSession.ClearSessionAsync();
+                    await user_session.ClearSessionAsync();
                 }
             }
         }

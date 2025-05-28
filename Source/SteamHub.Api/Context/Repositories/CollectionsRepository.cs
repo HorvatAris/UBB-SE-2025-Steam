@@ -28,41 +28,41 @@ namespace SteamHub.Api.Context.Repositories
         public List<ModelCollection> GetAllCollections(int userIdentifier)
         {
             return context.Collections
-                .Where(c => c.UserId == userIdentifier)
-                .OrderBy(c => c.CreatedAt)
-                .Select(c => new ModelCollection(c.UserId, c.CollectionName, c.CreatedAt, c.CoverPicture, c.IsPublic))
+                .Where(collection => collection.UserId == userIdentifier)
+                .OrderBy(collection => collection.CreatedAt)
+                .Select(collection => new ModelCollection(collection.UserId, collection.CollectionName, collection.CreatedAt, collection.CoverPicture, collection.IsPublic))
                 .ToList();
         }
 
         public List<ModelCollection> GetLastThreeCollectionsForUser(int userIdentifier)
         {
             return context.Collections
-                .Where(c => c.UserId == userIdentifier)
-                .OrderByDescending(c => c.CreatedAt)
+                .Where(collection => collection.UserId == userIdentifier)
+                .OrderByDescending(collection => collection.CreatedAt)
                 .Take(3)
-                .Select(c => new ModelCollection(c.UserId, c.CollectionName, c.CreatedAt, c.CoverPicture, c.IsPublic))
+                .Select(collection => new ModelCollection(collection.UserId, collection.CollectionName, collection.CreatedAt, collection.CoverPicture, collection.IsPublic))
                 .ToList();
         }
 
         public ModelCollection? GetCollectionById(int collectionIdentifier, int userIdentifier)
         {
-            var c = context.Collections
-                .Include(col => col.CollectionGames)
-                    .ThenInclude(cg => cg.OwnedGame)
-                .FirstOrDefault(col => col.CollectionId == collectionIdentifier && col.UserId == userIdentifier);
+            var collection = context.Collections
+                .Include(collection => collection.CollectionGames)
+                    .ThenInclude(collection_game => collection_game.OwnedGame)
+                .FirstOrDefault(collection => collection.CollectionId == collectionIdentifier && collection.UserId == userIdentifier);
 
-            return c == null ? null : new ModelCollection(c.UserId, c.CollectionName, c.CreatedAt, c.CoverPicture, c.IsPublic);
+            return collection == null ? null : new ModelCollection(collection.UserId, collection.CollectionName, collection.CreatedAt, collection.CoverPicture, collection.IsPublic);
         }
 
         public List<ModelOwnedGame> GetGamesInCollection(int collectionIdentifier)
         {
             return context.CollectionGames
-                .Where(cg => cg.CollectionId == collectionIdentifier)
-                .Select(cg => new ModelOwnedGame
+                .Where(collection_game => collection_game.CollectionId == collectionIdentifier)
+                .Select(collection_game => new ModelOwnedGame
                 {
-                    GameId = cg.OwnedGame.GameId,
-                    UserId = cg.OwnedGame.UserId,
-                    GameTitle = cg.OwnedGame.GameTitle
+                    GameId = collection_game.OwnedGame.GameId,
+                    UserId = collection_game.OwnedGame.UserId,
+                    GameTitle = collection_game.OwnedGame.GameTitle
                     // Add other properties as needed
                 })
                 .ToList();
@@ -71,12 +71,12 @@ namespace SteamHub.Api.Context.Repositories
         public List<ModelOwnedGame> GetGamesInCollection(int collectionId, int userId)
         {
             return context.CollectionGames
-                .Where(cg => cg.CollectionId == collectionId && cg.OwnedGame.UserId == userId)
-                .Select(cg => new ModelOwnedGame
+                .Where(collection_game => collection_game.CollectionId == collectionId && collection_game.OwnedGame.UserId == userId)
+                .Select(collection_game => new ModelOwnedGame
                 {
-                    GameId = cg.OwnedGame.GameId,
-                    UserId = cg.OwnedGame.UserId,
-                    GameTitle = cg.OwnedGame.GameTitle
+                    GameId = collection_game.OwnedGame.GameId,
+                    UserId = collection_game.OwnedGame.UserId,
+                    GameTitle = collection_game.OwnedGame.GameTitle
                     // Add other properties as needed
                 })
                 .ToList();
@@ -143,27 +143,27 @@ namespace SteamHub.Api.Context.Repositories
         public List<ModelCollection> GetPublicCollectionsForUser(int userIdentifier)
         {
             return context.Collections
-                .Where(c => c.UserId == userIdentifier && c.IsPublic)
-                .OrderBy(c => c.CollectionName)
+                .Where(collection => collection.UserId == userIdentifier && collection.IsPublic)
+                .OrderBy(collection => collection.CollectionName)
       
-                .Select(c => new ModelCollection(c.UserId, c.CollectionName, c.CreatedAt, c.CoverPicture, c.IsPublic))
+                .Select(collection => new ModelCollection(collection.UserId, collection.CollectionName, collection.CreatedAt, collection.CoverPicture, collection.IsPublic))
                 .ToList();
         }
 
         public List<ModelOwnedGame> GetGamesNotInCollection(int collectionIdentifier, int userIdentifier)
         {
             var inCollection = context.CollectionGames
-                .Where(cg => cg.CollectionId == collectionIdentifier)
-                .Select(cg => cg.GameId);
+                .Where(collection_game => collection_game.CollectionId == collectionIdentifier)
+                .Select(collection_game => collection_game.GameId);
 
             return context.OwnedGames
-                .Where(g => g.UserId == userIdentifier && !inCollection.Contains(g.GameId))
-                .OrderBy(g => g.GameTitle)
-                .Select(g => new ModelOwnedGame
+                .Where(game => game.UserId == userIdentifier && !inCollection.Contains(game.GameId))
+                .OrderBy(game => game.GameTitle)
+                .Select(game => new ModelOwnedGame
                 {
-                    GameId = g.GameId,
-                    UserId = g.UserId,
-                    GameTitle = g.GameTitle
+                    GameId = game.GameId,
+                    UserId = game.UserId,
+                    GameTitle = game.GameTitle
                     // Add other properties as needed
                 })
                 .ToList();

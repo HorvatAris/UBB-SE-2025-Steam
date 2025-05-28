@@ -28,7 +28,7 @@ namespace BusinessLayer.Repositories
 
             var list = new[]
             {
-                new SteamHub.Api.Entities.Achievement { AchievementName = "FRIENDSHIP1", Description = "You made a friend, you get a point", AchievementType = "Friendships", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new SteamHub.Api.Entities.Achievement { AchievementName = "FRIENDSHIP1", Description = "You made achievement friend, you get achievement point", AchievementType = "Friendships", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
                 new SteamHub.Api.Entities.Achievement { AchievementName = "FRIENDSHIP2", Description = "You made 5 friends, you get 3 points", AchievementType = "Friendships", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
                 new SteamHub.Api.Entities.Achievement { AchievementName = "FRIENDSHIP3", Description = "You made 10 friends, you get 5 points", AchievementType = "Friendships", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
                 new SteamHub.Api.Entities.Achievement { AchievementName = "FRIENDSHIP4", Description = "You made 50 friends, you get 10 points", AchievementType = "Friendships", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
@@ -54,7 +54,7 @@ namespace BusinessLayer.Repositories
                 new SteamHub.Api.Entities.Achievement { AchievementName = "REVIEWR3", Description = "You got 10 reviews, you get 5 points", AchievementType = "Number of Reviews Received", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
                 new SteamHub.Api.Entities.Achievement { AchievementName = "REVIEWR4", Description = "You got 50 reviews, you get 10 points", AchievementType = "Number of Reviews Received", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
 
-                new SteamHub.Api.Entities.Achievement { AchievementName = "DEVELOPER", Description = "You are a developer, you get 10 points", AchievementType = "Developer", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new SteamHub.Api.Entities.Achievement { AchievementName = "DEVELOPER", Description = "You are achievement developer, you get 10 points", AchievementType = "Developer", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
 
                 new SteamHub.Api.Entities.Achievement { AchievementName = "ACTIVITY1", Description = "You have been active for 1 year, you get 1 point", AchievementType = "Years of Activity", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
                 new SteamHub.Api.Entities.Achievement { AchievementName = "ACTIVITY2", Description = "You have been active for 2 years, you get 3 points", AchievementType = "Years of Activity", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
@@ -78,12 +78,12 @@ namespace BusinessLayer.Repositories
 
         public void UpdateAchievementIconUrl(int points, string iconUrl)
         {
-            var ach = context.Achievements.FirstOrDefault(a => a.Points == points);
-            if (ach == null)
+            var achievement = context.Achievements.FirstOrDefault(achievement => achievement.Points == points);
+            if (achievement == null)
             {
                 return;
             }
-            ach.Icon = iconUrl;
+            achievement.Icon = iconUrl;
             context.SaveChanges();
         }
         //in data context => entities
@@ -120,14 +120,14 @@ namespace BusinessLayer.Repositories
             => context.UserAchievements
                   .Where(currentUserAchievement => currentUserAchievement.UserId == userIdentifier)
                   .Include(currentUserAchievement => currentUserAchievement.Achievement)
-                  .Select(ua => new SteamHub.ApiContract.Models.Achievement
+                  .Select(user_achievement => new SteamHub.ApiContract.Models.Achievement
                   {
-                      AchievementId = ua.Achievement.AchievementId,
-                      AchievementName = ua.Achievement.AchievementName,
-                      Description = ua.Achievement.Description,
-                      AchievementType = ua.Achievement.AchievementType,
-                      Points = ua.Achievement.Points,
-                      Icon = ua.Achievement.Icon
+                      AchievementId = user_achievement.Achievement.AchievementId,
+                      AchievementName = user_achievement.Achievement.AchievementName,
+                      Description = user_achievement.Achievement.Description,
+                      AchievementType = user_achievement.Achievement.AchievementType,
+                      Points = user_achievement.Achievement.Points,
+                      Icon = user_achievement.Achievement.Icon
                   })
                   .ToList();
 
@@ -138,7 +138,7 @@ namespace BusinessLayer.Repositories
                 return;
             }
 
-            context.UserAchievements.Add(new  SteamHub.Api.Entities.UserAchievement
+            context.UserAchievements.Add(new SteamHub.Api.Entities.UserAchievement
             {
                 UserId = userIdentifier,
                 AchievementId = achievementId,
@@ -150,7 +150,7 @@ namespace BusinessLayer.Repositories
         public void RemoveAchievement(int userIdentifier, int achievementId)
         {
             var achievementForRemove = context.UserAchievements
-                        .FirstOrDefault(x => x.UserId == userIdentifier && x.AchievementId == achievementId);
+                        .FirstOrDefault(user_achievement => user_achievement.UserId == userIdentifier && user_achievement.AchievementId == achievementId);
             if (achievementForRemove == null)
             {
                 return;
@@ -162,8 +162,8 @@ namespace BusinessLayer.Repositories
         public AchievementUnlockedData GetUnlockedDataForAchievement(int userIdentifier, int achievementId)
         {
             var unlockedAchievement = context.UserAchievements
-                        .Include(x => x.Achievement)
-                        .FirstOrDefault(x => x.UserId == userIdentifier && x.AchievementId == achievementId);
+                        .Include(user_achievement => user_achievement.Achievement)
+                        .FirstOrDefault(user_achievement => user_achievement.UserId == userIdentifier && user_achievement.AchievementId == achievementId);
             if (unlockedAchievement == null)
             {
                 return null;
@@ -184,45 +184,45 @@ namespace BusinessLayer.Repositories
 
         public async Task<List<AchievementWithStatus>> GetAchievementsWithStatusForUser(int userIdentifier)
         {
-            var all = await GetAllAchievements();
+            var all_achievements = await GetAllAchievements();
             var unlockedIds = new HashSet<int>(
                 context.UserAchievements
                    .Where(currentUserAchievement => currentUserAchievement.UserId == userIdentifier)
                    .Select(userAchievement => userAchievement.AchievementId));
 
-            return all.Select(currentAchievement => new AchievementWithStatus
+            return all_achievements.Select(currentAchievement => new AchievementWithStatus
             {
                 Achievement = currentAchievement,
                 IsUnlocked = unlockedIds.Contains(currentAchievement.AchievementId),
                 UnlockedDate = unlockedIds.Contains(currentAchievement.AchievementId)
-                    ? context.UserAchievements.First(ua => ua.UserId == userIdentifier && ua.AchievementId == currentAchievement.AchievementId).UnlockedAt
+                    ? context.UserAchievements.First(user_achievement => user_achievement.UserId == userIdentifier && user_achievement.AchievementId == currentAchievement.AchievementId).UnlockedAt
                     : (DateTime?)null
             }).ToList();
         }
 
         public int GetFriendshipCount(int userIdentifier)
-            => context.Friendships.Count(f => f.UserId == userIdentifier);
+            => context.Friendships.Count(friendship => friendship.UserId == userIdentifier);
 
         public int GetNumberOfOwnedGames(int userIdentifier)
-            => context.OwnedGames.Count(og => og.UserId == userIdentifier);
+            => context.OwnedGames.Count(owned_game => owned_game.UserId == userIdentifier);
 
         public int GetNumberOfSoldGames(int userIdentifier)
-            => context.SoldGames.Count(sg => sg.UserId == userIdentifier);
+            => context.SoldGames.Count(sold_game => sold_game.UserId == userIdentifier);
 
         public int GetNumberOfReviewsGiven(int userIdentifier)
-            => context.Reviews.Count(r => r.UserIdentifier == userIdentifier);
+            => context.Reviews.Count(review => review.UserIdentifier == userIdentifier);
 
         public int GetNumberOfReviewsReceived(int userIdentifier)
-            => context.Reviews.Count(r => r.GameIdentifier == userIdentifier); // adjust if you store receiver differently
+            => context.Reviews.Count(review => review.GameIdentifier == userIdentifier); // adjust if you store receiver differently
 
         public int GetNumberOfPosts(int userIdentifier)
-            => context.NewsPosts.Count(p => p.AuthorId == userIdentifier);
+            => context.NewsPosts.Count(post => post.AuthorId == userIdentifier);
 
         public int GetYearsOfAcftivity(int userIdentifier)
         {
             var created = context.Users
-                             .Where(u => u.UserId == userIdentifier)
-                             .Select(u => u.CreatedAt)
+                             .Where(user => user.UserId == userIdentifier)
+                             .Select(user => user.CreatedAt)
                              .SingleOrDefault();
             var years = DateTime.Now.Year - created.Year;
             if (DateTime.Now.DayOfYear < created.DayOfYear)
@@ -234,16 +234,16 @@ namespace BusinessLayer.Repositories
 
         public int? GetAchievementIdByName(string achievementName)
             => context.Achievements
-                  .Where(a => a.AchievementName == achievementName)
-                  .Select(a => (int?)a.AchievementId)
+                  .Where(achievement => achievement.AchievementName == achievementName)
+                  .Select(achievement => (int?)achievement.AchievementId)
                   .SingleOrDefault();
 
         public bool IsUserDeveloper(int userIdentifier)
             => context.Users
-                  .Where(u => u.UserId == userIdentifier)
-                  .Select(u => u.UserRole==SteamHub.ApiContract.Models.Common.UserRole.Developer)
+                  .Where(user => user.UserId == userIdentifier)
+                  .Select(user => user.UserRole == SteamHub.ApiContract.Models.Common.UserRole.Developer)
                   .SingleOrDefault();
-        }
-        
+    }
+
 }
 

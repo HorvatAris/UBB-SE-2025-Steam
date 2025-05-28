@@ -8,16 +8,16 @@ namespace SteamHub.Api.Context.Repositories;
 
 public class TagRepository : ITagRepository
 {
-	private readonly DataContext _context;
+	private readonly DataContext context;
 
 	public TagRepository(DataContext context)
 	{
-		_context = context;
+		this.context = context;
 	}
 
 	public async Task<CreateTagResponse> CreateTagAsync(CreateTagRequest request)
 	{
-		var isDuplicate = await _context.Tags
+		var isDuplicate = await context.Tags
 			.AnyAsync(tag => tag.TagName == request.TagName);
 
 		if (isDuplicate)
@@ -30,9 +30,9 @@ public class TagRepository : ITagRepository
 			TagName = request.TagName
 		};
 
-		_context.Add(newTag);
+		context.Add(newTag);
 
-		await _context.SaveChangesAsync();
+		await context.SaveChangesAsync();
 
 		return new CreateTagResponse
 		{
@@ -42,7 +42,7 @@ public class TagRepository : ITagRepository
 
 	public async Task<TagNameOnlyResponse?> GetTagByIdAsync(int tagId)
 	{
-		var foundTag = await _context.Tags
+		var foundTag = await context.Tags
 			.Where(tag => tag.TagId == tagId)
 			.Select(tag => new TagNameOnlyResponse
 			{
@@ -55,7 +55,7 @@ public class TagRepository : ITagRepository
 
 	public async Task<GetTagsResponse> GetAllTagsAsync()
 	{
-		var tags = await _context.Tags
+		var tags = await context.Tags
 			.Select(tag => new TagSummaryResponse
 			{
 				TagId = tag.TagId,
@@ -71,7 +71,7 @@ public class TagRepository : ITagRepository
 
 	public async Task UpdateTagAsync(int tagId, UpdateTagRequest request)
 	{
-		var foundTag = await _context.Tags
+		var foundTag = await context.Tags
 			.Where(tag => tag.TagId == tagId)
 			.SingleOrDefaultAsync();
 
@@ -81,12 +81,12 @@ public class TagRepository : ITagRepository
 		}
 
 		foundTag.TagName = request.TagName;
-		await _context.SaveChangesAsync();
+		await context.SaveChangesAsync();
 	}
 
 	public async Task DeleteTagAsync(int tagId)
 	{
-		var foundTag = await _context.Tags
+		var foundTag = await context.Tags
 			.Where(tag => tag.TagId == tagId)
 			.SingleOrDefaultAsync();
 
@@ -95,8 +95,8 @@ public class TagRepository : ITagRepository
 			throw new ArgumentException($"Tag with id {tagId} was not found");
 		}
 
-		_context.Tags.Remove(foundTag);
+		context.Tags.Remove(foundTag);
 
-		await _context.SaveChangesAsync();
+		await context.SaveChangesAsync();
 	}
 }

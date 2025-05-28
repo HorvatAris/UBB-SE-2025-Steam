@@ -7,28 +7,28 @@ namespace SteamHub.Api.Context.Repositories
 {
     public class UserInventoryRepository : IUserInventoryRepository
     {
-        private readonly DataContext _context;
+        private readonly DataContext context;
 
         public UserInventoryRepository(DataContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task AddItemToUserInventoryAsync(ItemFromInventoryRequest request)
         {
-            var userId = await _context.Users.FindAsync(request.UserId);
+            var userId = await context.Users.FindAsync(request.UserId);
             if (userId == null)
             {
                 throw new ArgumentException("User not found");
             }
 
-            var itemId =await  _context.Items.FindAsync(request.ItemId);
+            var itemId =await  context.Items.FindAsync(request.ItemId);
             if (itemId == null)
             {
                 throw new ArgumentException("Item not found");
             }
 
-            var gameId = await _context.Games.FindAsync(request.GameId);
+            var gameId = await context.Games.FindAsync(request.GameId);
             if (gameId == null)
             {
                 throw new ArgumentException("Game not found");
@@ -43,13 +43,13 @@ namespace SteamHub.Api.Context.Repositories
                 IsActive = true
             };
 
-            await _context.UserInventories.AddAsync(userInventory);
-            await _context.SaveChangesAsync();
+            await context.UserInventories.AddAsync(userInventory);
+            await context.SaveChangesAsync();
         }
 
         public async Task<InventoryItemResponse?> GetItemFromUserInventoryAsync(int userId, int itemId)
         {
-            var currentUserInventory = await _context.UserInventories
+            var currentUserInventory = await context.UserInventories
                 .Include(userInventory => userInventory.Item)
                 .Include(userInventory => userInventory.Game)
                 .FirstOrDefaultAsync(userInventory => userInventory.UserId == userId && userInventory.ItemId == itemId);
@@ -71,7 +71,7 @@ namespace SteamHub.Api.Context.Repositories
 
         public async Task<UserInventoryResponse> GetUserInventoryAsync(int userId)
         {
-            var userInventories = await _context.UserInventories
+            var userInventories = await context.UserInventories
                 .Where(userInventory => userInventory.UserId == userId)
                 .Include(userInventory => userInventory.Item)
                 .Include(userInventory => userInventory.Game)
@@ -100,13 +100,13 @@ namespace SteamHub.Api.Context.Repositories
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
-            var currentUserInventory = await _context.UserInventories
+            var currentUserInventory = await context.UserInventories
                 .FirstOrDefaultAsync(userInventory => userInventory.UserId == request.UserId && userInventory.ItemId == request.ItemId && userInventory.GameId == request.GameId);
 
             if (currentUserInventory == null) throw new ArgumentException("Item not found in user's inventory");
 
-            _context.UserInventories.Remove(currentUserInventory);
-            await _context.SaveChangesAsync();
+            context.UserInventories.Remove(currentUserInventory);
+            await context.SaveChangesAsync();
         }
     }
 }

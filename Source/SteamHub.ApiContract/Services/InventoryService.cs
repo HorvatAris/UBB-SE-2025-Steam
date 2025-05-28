@@ -211,15 +211,15 @@ namespace SteamHub.ApiContract.Services
                 throw new ArgumentNullException(nameof(items));
             }
 
-            IEnumerable<Item> filtered = items;
+            IEnumerable<Item> filtered_items = items;
 
             // Filter out listed items (only show unlisted ones)
-            filtered = filtered.Where(item => !item.IsListed);
+            filtered_items = filtered_items.Where(item => !item.IsListed);
 
             // Filter by selected game if it's not null and not the "All Games" option
             if (selectedGame != null && selectedGame.GameTitle != "All Games")
             {
-                filtered = filtered.Where(item =>
+                filtered_items = filtered_items.Where(item =>
                     string.Equals(item.GameName, selectedGame.GameTitle, StringComparison.OrdinalIgnoreCase));
             }
 
@@ -227,14 +227,14 @@ namespace SteamHub.ApiContract.Services
             if (!string.IsNullOrWhiteSpace(searchText))
             {
                 searchText = searchText.Trim();
-                filtered = filtered.Where(item =>
+                filtered_items = filtered_items.Where(item =>
                     (!string.IsNullOrEmpty(item.ItemName) &&
                      item.ItemName.Trim().Contains(searchText, StringComparison.OrdinalIgnoreCase)) ||
                     (!string.IsNullOrEmpty(item.Description) &&
                      item.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
             }
 
-            return filtered.ToList();
+            return filtered_items.ToList();
         }
 
         public async Task<List<Game>> GetAvailableGamesAsync(List<Item> items,int userId)

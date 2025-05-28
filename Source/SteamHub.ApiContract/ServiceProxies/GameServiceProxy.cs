@@ -17,8 +17,8 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class GameServiceProxy : IGameService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options = new JsonSerializerOptions
+        private readonly HttpClient http_client;
+        private readonly JsonSerializerOptions options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
@@ -36,7 +36,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public GameServiceProxy(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
+            http_client = httpClientFactory.CreateClient("SteamHubApi");
         }
         public void ComputeTrendingScores(Collection<Game> games)
         {
@@ -124,9 +124,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var gamesResponse = await _httpClient.GetAsync("/api/Game");
+                var gamesResponse = await http_client.GetAsync("/api/Game");
                 gamesResponse.EnsureSuccessStatusCode();
-                var gamesResult = await gamesResponse.Content.ReadFromJsonAsync<Collection<Game>>(_options);
+                var gamesResult = await gamesResponse.Content.ReadFromJsonAsync<Collection<Game>>(options);
 
                 // Ensure a non-null list is returned
                 return gamesResult ?? new Collection<Game>();
@@ -159,9 +159,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var tagsResponse = await _httpClient.GetAsync("/api/Game/Tags");
+                var tagsResponse = await http_client.GetAsync("/api/Game/Tags");
                 tagsResponse.EnsureSuccessStatusCode();
-                var tagsResult = await tagsResponse.Content.ReadFromJsonAsync<Collection<Tag>>(_options);
+                var tagsResult = await tagsResponse.Content.ReadFromJsonAsync<Collection<Tag>>(options);
                 // Ensure a non-null list is returned
                 return tagsResult ?? new Collection<Tag>();
             }
@@ -191,9 +191,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var gameResponse = await _httpClient.GetAsync($"/api/Game/{gameId}");
+                var gameResponse = await http_client.GetAsync($"/api/Game/{gameId}");
                 gameResponse.EnsureSuccessStatusCode();
-                var gameResult = await gameResponse.Content.ReadFromJsonAsync<Game>(_options);
+                var gameResult = await gameResponse.Content.ReadFromJsonAsync<Game>(options);
                 // Ensure a non-null list is returned
                 return gameResult ?? new Game();
             }

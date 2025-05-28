@@ -6,15 +6,15 @@ namespace SteamHub.Api.Context.Repositories;
 
 public class StoreTransactionRepository : IStoreTransactionRepository
 {
-    private readonly DataContext _context;
+    private readonly DataContext context;
 
     public StoreTransactionRepository(DataContext context)
     {
-        _context = context;
+        this.context = context;
     }
     public async Task<GetStoreTransactionsResponse?> GetStoreTransactionsAsync()
     {
-        var storeTransactions = await _context.StoreTransactions
+        var storeTransactions = await context.StoreTransactions
             .Select(storeTransaction => new StoreTransactionResponse
             {
                 StoreTransactionId = storeTransaction.StoreTransactionId,
@@ -34,7 +34,7 @@ public class StoreTransactionRepository : IStoreTransactionRepository
 
     public async Task<StoreTransactionResponse?> GetStoreTransactionByIdAsync(int id)
     {
-        var result = await _context.StoreTransactions
+        var result = await context.StoreTransactions
             .Where(storeTransaction => storeTransaction.StoreTransactionId == id)
             .Select(storeTransaction => new StoreTransactionResponse
             {
@@ -52,7 +52,7 @@ public class StoreTransactionRepository : IStoreTransactionRepository
 
     public async Task UpdateStoreTransactionAsync(int storeTransactionId, UpdateStoreTransactionRequest request)
     {
-        var existingStoreTransaction = await _context.StoreTransactions.FindAsync(storeTransactionId);
+        var existingStoreTransaction = await context.StoreTransactions.FindAsync(storeTransactionId);
         if (existingStoreTransaction == null)
         {
             throw new Exception("StoreTransaction not found");
@@ -63,7 +63,7 @@ public class StoreTransactionRepository : IStoreTransactionRepository
         existingStoreTransaction.Amount = request.Amount;
         existingStoreTransaction.WithMoney = request.WithMoney;
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 
     public async Task<CreateStoreTransactionResponse> CreateStoreTransactionAsync(CreateStoreTransactionRequest request)
@@ -77,9 +77,9 @@ public class StoreTransactionRepository : IStoreTransactionRepository
             WithMoney = request.WithMoney
         };
 
-        await _context.StoreTransactions.AddAsync(newStoreTransaction);
+        await context.StoreTransactions.AddAsync(newStoreTransaction);
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return new CreateStoreTransactionResponse
         {
@@ -89,13 +89,13 @@ public class StoreTransactionRepository : IStoreTransactionRepository
 
     public async Task DeleteStoreTransactionAsync(int id)
     {
-        var storeTransaction = await _context.StoreTransactions.FindAsync(id);
+        var storeTransaction = await context.StoreTransactions.FindAsync(id);
         if (storeTransaction == null)
         {
             throw new Exception("StoreTransaction not found");
         }
-        _context.StoreTransactions.Remove(storeTransaction);
-        await _context.SaveChangesAsync();
+        context.StoreTransactions.Remove(storeTransaction);
+        await context.SaveChangesAsync();
     }
 
 }

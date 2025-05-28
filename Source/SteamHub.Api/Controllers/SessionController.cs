@@ -13,17 +13,17 @@ namespace SteamHub.Api.Controllers;
 [Authorize]
 public class SessionController : ControllerBase
 {
-    private readonly ISessionService _sessionService;
+    private readonly ISessionService session_service;
 
     public SessionController(ISessionService sessionService)
     {
-        _sessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
+        session_service = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
     }
 
     [HttpGet("CurrentUser")]
     public async Task<IActionResult> GetCurrentUser()
     {
-        var user = await _sessionService.GetCurrentUserAsync();
+        var user = await session_service.GetCurrentUserAsync();
         if (user == null)
             return NotFound("No active session found");
 
@@ -33,20 +33,20 @@ public class SessionController : ControllerBase
     [HttpGet("IsLoggedIn")]
     public async Task<IActionResult> IsLoggedIn()
     {
-        return Ok(await _sessionService.IsUserLoggedInAsync());
+        return Ok(await session_service.IsUserLoggedInAsync());
     }
 
     [HttpPost("Logout")]
     public async Task<IActionResult> Logout()
     {
-        await _sessionService.EndSessionAsync();
+        await session_service.EndSessionAsync();
         return Ok();
     }
         
     [HttpGet("Current")]
     public async Task<IActionResult> GetCurrentSession()
     {
-        var session = await _sessionService.GetCurrentSessionDetailsAsync();
+        var session = await session_service.GetCurrentSessionDetailsAsync();
         if (session == null)
             return NotFound("No active session found");
 
@@ -56,21 +56,21 @@ public class SessionController : ControllerBase
     [HttpGet("Validate/{sessionId}")]
     public async Task<IActionResult> ValidateSession(Guid sessionId)
     {
-        return Ok(await _sessionService.ValidateSessionAsync(sessionId));
+        return Ok(await session_service.ValidateSessionAsync(sessionId));
     }
 
     [HttpPost("Cleanup")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CleanupExpiredSessions()
     {
-        await _sessionService.CleanupExpiredSessionsAsync();
+        await session_service.CleanupExpiredSessionsAsync();
         return Ok();
     }
 
     [HttpGet("{sessionId}")]
     public async Task<IActionResult> GetSessionDetails(Guid sessionId)
     {
-        var session = await _sessionService.GetCurrentSessionDetailsAsync();
+        var session = await session_service.GetCurrentSessionDetailsAsync();
         if (session == null)
             return NotFound("Session not found");
 

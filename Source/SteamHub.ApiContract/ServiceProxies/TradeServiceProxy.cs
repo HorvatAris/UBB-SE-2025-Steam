@@ -21,8 +21,8 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class TradeServiceProxy : ITradeService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options = new JsonSerializerOptions
+        private readonly HttpClient http_client;
+        private readonly JsonSerializerOptions options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
@@ -30,7 +30,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public TradeServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
+            http_client = httpClientFactory.CreateClient("SteamHubApi");
             this.user = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
 
@@ -80,7 +80,7 @@ namespace SteamHub.ApiContract.ServiceProxies
                 trade.TradeStatus = "Pending";
 
             // Use PostAsJsonAsync to send the Trade object as JSON in the request body
-            var response = await _httpClient.PostAsJsonAsync($"/api/Trade", trade);
+            var response = await http_client.PostAsJsonAsync($"/api/Trade", trade);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -144,7 +144,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PatchAsJsonAsync($"/api/Trade/Decline", trade);
+                var response = await http_client.PatchAsJsonAsync($"/api/Trade/Decline", trade);
                 response.EnsureSuccessStatusCode();
             }
             catch (Exception ex)
@@ -157,10 +157,10 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Trade/Active/{userId}");
+                var response = await http_client.GetAsync($"/api/Trade/Active/{userId}");
                 response.EnsureSuccessStatusCode(); // Ensure successful status code
 
-                var result = await response.Content.ReadFromJsonAsync<List<ItemTrade>>(_options);
+                var result = await response.Content.ReadFromJsonAsync<List<ItemTrade>>(options);
 
                 return result ?? new List<ItemTrade>();
             }
@@ -180,10 +180,10 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Trade/History/{userId}");
+                var response = await http_client.GetAsync($"/api/Trade/History/{userId}");
                 response.EnsureSuccessStatusCode(); // Ensure successful status code
 
-                var result = await response.Content.ReadFromJsonAsync<List<ItemTrade>>(_options);
+                var result = await response.Content.ReadFromJsonAsync<List<ItemTrade>>(options);
 
                 return result ?? new List<ItemTrade>();
             }
@@ -198,10 +198,10 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Trade/Inventory/{userId}");
+                var response = await http_client.GetAsync($"/api/Trade/Inventory/{userId}");
                 response.EnsureSuccessStatusCode(); // Ensure successful status code
 
-                var result = await response.Content.ReadFromJsonAsync<List<Item>>(_options);
+                var result = await response.Content.ReadFromJsonAsync<List<Item>>(options);
 
                 return result ?? new List<Item>();
             }
@@ -217,7 +217,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             try
             {
                 var content = new StringContent(string.Empty);
-                var response = await _httpClient.PatchAsync($"/api/Trade/Complete/{tradeId}", content);
+                var response = await http_client.PatchAsync($"/api/Trade/Complete/{tradeId}", content);
                 response.EnsureSuccessStatusCode();
             }
             catch (Exception ex)
@@ -230,7 +230,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PatchAsJsonAsync($"/api/Trade/TransferItem", tradeRequest);
+                var response = await http_client.PatchAsJsonAsync($"/api/Trade/TransferItem", tradeRequest);
                 response.EnsureSuccessStatusCode();
             }
             catch (Exception ex)
@@ -243,7 +243,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PatchAsJsonAsync($"/api/Trade/Update", trade);
+                var response = await http_client.PatchAsJsonAsync($"/api/Trade/Update", trade);
                 response.EnsureSuccessStatusCode();
             }
             catch (Exception ex)

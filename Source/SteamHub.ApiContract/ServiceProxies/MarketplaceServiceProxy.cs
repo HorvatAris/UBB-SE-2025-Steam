@@ -16,8 +16,8 @@ namespace SteamHub.ApiContract.ServiceProxies
     public class MarketplaceServiceProxy : IMarketplaceService
     {
         public IUserDetails User { get; set; }
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options = new JsonSerializerOptions
+        private readonly HttpClient http_client;
+        private readonly JsonSerializerOptions options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
@@ -25,7 +25,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public MarketplaceServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
+            http_client = httpClientFactory.CreateClient("SteamHubApi");
             this.User = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
 
@@ -38,7 +38,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync($"api/Marketplace/BuyItem/{userId}", item);
+                var response = await http_client.PostAsJsonAsync($"api/Marketplace/BuyItem/{userId}", item);
                 response.EnsureSuccessStatusCode();
                 return true;
             }
@@ -52,10 +52,10 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try 
             {
-                var response = await _httpClient.GetAsync("api/Marketplace/Listings");
+                var response = await http_client.GetAsync("api/Marketplace/Listings");
                 response.EnsureSuccessStatusCode();
                 var content = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<Item>>(content, _options) ?? new List<Item>();
+                return JsonSerializer.Deserialize<List<Item>>(content, options) ?? new List<Item>();
             }
             catch (Exception ex)
             {
@@ -67,10 +67,10 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync("api/Marketplace/Users");
+                var response = await http_client.GetAsync("api/Marketplace/Users");
                 response.EnsureSuccessStatusCode();
                 var content = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<User>>(content, _options) ?? new List<User>();
+                return JsonSerializer.Deserialize<List<User>>(content, options) ?? new List<User>();
             }
             catch (Exception ex)
             {
@@ -82,10 +82,10 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"api/Marketplace/Listings/{userId}/Game/{gameId}");
+                var response = await http_client.GetAsync($"api/Marketplace/Listings/{userId}/Game/{gameId}");
                 response.EnsureSuccessStatusCode();
                 var content = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<Item>>(content, _options) ?? new List<Item>();
+                return JsonSerializer.Deserialize<List<Item>>(content, options) ?? new List<Item>();
             }
             catch (Exception ex)
             {
@@ -102,7 +102,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PutAsync($"api/Marketplace/UpdateListing/{gameId}/{itemId}", null);
+                var response = await http_client.PutAsync($"api/Marketplace/UpdateListing/{gameId}/{itemId}", null);
                 response.EnsureSuccessStatusCode();
             }
             catch (Exception ex)
@@ -114,7 +114,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PutAsync($"api/Marketplace/SwitchListingStatus/{gameId}/{itemId}", null);
+                var response = await http_client.PutAsync($"api/Marketplace/SwitchListingStatus/{gameId}/{itemId}", null);
                 response.EnsureSuccessStatusCode();
             }
             catch (Exception ex)

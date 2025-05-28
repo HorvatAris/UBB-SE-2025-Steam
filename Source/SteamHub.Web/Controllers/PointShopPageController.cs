@@ -11,22 +11,22 @@ namespace SteamHub.Web.Controllers
     [Authorize]
     public class PointShopPageController : Controller
     {
-        private readonly IPointShopService _pointShopService;
+        private readonly IPointShopService pointshop_service;
         private static ObservableCollection<PointShopTransaction> transactionHistory = new ObservableCollection<PointShopTransaction>();
 
         public PointShopPageController(IPointShopService pointShopService)
         {
-            _pointShopService = pointShopService;
+            pointshop_service = pointShopService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var user = _pointShopService.GetCurrentUser();
-            var shopItems = await _pointShopService.GetAvailableItemsAsync(user);
-            var userItems = await _pointShopService.GetUserItemsAsync(user.UserId);
+            var user = pointshop_service.GetCurrentUser();
+            var shopItems = await pointshop_service.GetAvailableItemsAsync(user);
+            var userItems = await pointshop_service.GetUserItemsAsync(user.UserId);
 
 
-            var viewModel = new PointShopViewModel
+            var pointshop_view_model = new PointShopViewModel
             {
                 User = user,
                 ShopItems = shopItems,
@@ -34,13 +34,13 @@ namespace SteamHub.Web.Controllers
                 TransactionHistory = transactionHistory.ToList(),
             };
 
-            return View(viewModel);
+            return View(pointshop_view_model);
         }
 
         [HttpGet]
         public IActionResult GetUserPoints()
         {
-            var user = _pointShopService.GetCurrentUser();
+            var user = pointshop_service.GetCurrentUser();
             return Json(new { points = user.PointsBalance });
         }
 
@@ -48,8 +48,8 @@ namespace SteamHub.Web.Controllers
         public async Task<IActionResult> PurchaseItem([FromQuery]int itemId)
         {
             Console.WriteLine($"Received itemId: {itemId}");
-            var user = _pointShopService.GetCurrentUser();
-            var shopItems = await _pointShopService.GetAvailableItemsAsync(user);
+            var user = pointshop_service.GetCurrentUser();
+            var shopItems = await pointshop_service.GetAvailableItemsAsync(user);
             var selectedItem = shopItems.FirstOrDefault(item => item.ItemIdentifier == itemId);
 
             if (selectedItem == null)
@@ -64,7 +64,7 @@ namespace SteamHub.Web.Controllers
                     PointShopItemId = selectedItem.ItemIdentifier,
                     UserId = user.UserId
                 };
-                await _pointShopService.PurchaseItemAsync(request);
+                await pointshop_service.PurchaseItemAsync(request);
                 var newTransaction = new PointShopTransaction(
                     transactionHistory.Count + 1,
                     selectedItem.Name,
@@ -86,8 +86,8 @@ namespace SteamHub.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ToggleActivation(int id)
         {
-            var user = _pointShopService.GetCurrentUser();
-            var userItems = await _pointShopService.GetUserItemsAsync(user.UserId);
+            var user = pointshop_service.GetCurrentUser();
+            var userItems = await pointshop_service.GetUserItemsAsync(user.UserId);
             var selectedItem = userItems.FirstOrDefault(item => item.ItemIdentifier == id);
 
             if (selectedItem == null)
@@ -105,12 +105,12 @@ namespace SteamHub.Web.Controllers
                 };
                 if (selectedItem.IsActive)
                 {
-                    await _pointShopService.DeactivateItemAsync(request);
+                    await pointshop_service.DeactivateItemAsync(request);
                     return Json(new { success = true, message = $"{selectedItem.Name} has been deactivated." });
                 }
                 else
                 {
-                    await _pointShopService.ActivateItemAsync(request);
+                    await pointshop_service.ActivateItemAsync(request);
                     return Json(new { success = true, message = $"{selectedItem.Name} has been activated." });
                 }
             }
@@ -123,8 +123,8 @@ namespace SteamHub.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ApplyFilters(string search, string type, int maxPrice)
         {
-            var user = _pointShopService.GetCurrentUser();
-            var allItems = await _pointShopService.GetAvailableItemsAsync(user);
+            var user = pointshop_service.GetCurrentUser();
+            var allItems = await pointshop_service.GetAvailableItemsAsync(user);
 
             var filteredItems = allItems
                 .Where(item =>
@@ -146,8 +146,8 @@ namespace SteamHub.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMaxPrice()
         {
-            var user = _pointShopService.GetCurrentUser();
-            var allItems = await _pointShopService.GetAvailableItemsAsync(user);
+            var user = pointshop_service.GetCurrentUser();
+            var allItems = await pointshop_service.GetAvailableItemsAsync(user);
 
             var maxPrice = allItems.Max(item => item.PointPrice);
 
@@ -157,8 +157,8 @@ namespace SteamHub.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetInventory()
         {
-            var user = _pointShopService.GetCurrentUser();
-            var userItems = await _pointShopService.GetUserItemsAsync(user.UserId);
+            var user = pointshop_service.GetCurrentUser();
+            var userItems = await pointshop_service.GetUserItemsAsync(user.UserId);
 
             return Json(userItems.Select(item => new
             {
@@ -173,7 +173,7 @@ namespace SteamHub.Web.Controllers
         [HttpGet]
         public IActionResult GetTransactionHistory()
         {
-            var user = _pointShopService.GetCurrentUser();
+            var user = pointshop_service.GetCurrentUser();
             var userTransactions = transactionHistory.Where(t => t.UserId == user.UserId).ToList();
             return Json(userTransactions);
         }

@@ -10,26 +10,26 @@ namespace SteamHub.Web.Controllers
 	[Authorize]
 	public class ActiveTradesController : Controller
 	{
-		private readonly IUserService _userService;
-		private readonly ITradeService _tradeService;
+		private readonly IUserService user_service;
+		private readonly ITradeService trade_service;
 
 		public ActiveTradesController(IUserService userService, ITradeService tradeService)
 		{
-			_userService = userService;
-			_tradeService = tradeService;
+			user_service = userService;
+			trade_service = tradeService;
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> Index()
 		{
-			var currentUser = _tradeService.GetCurrentUser();
+			var currentUser = trade_service.GetCurrentUser();
 			if (currentUser == null)
 				return RedirectToAction("Login", "Account");
 
-			var users = await _userService.GetAllUsersAsync();
-			var activeTrades = await _tradeService.GetActiveTradesAsync(currentUser.UserId);
+			var users = await user_service.GetAllUsersAsync();
+			var activeTrades = await trade_service.GetActiveTradesAsync(currentUser.UserId);
 
-			var viewModel = new ActiveTradesViewModel
+			var trades_view_model = new ActiveTradesViewModel
 			{
 				CurrentUserId = currentUser.UserId,
 				Users = users.Select(user => new SelectListItem
@@ -41,15 +41,15 @@ namespace SteamHub.Web.Controllers
 				CanAcceptOrDeclineTrade = true // Simplified assumption
 			};
 
-			return View(viewModel);
+			return View(trades_view_model);
 		}
 
 		[HttpPost]
 		public async Task<IActionResult> LoadUserActiveTrades(ActiveTradesViewModel model)
 		{
-			var users = await _userService.GetAllUsersAsync();
+			var users = await user_service.GetAllUsersAsync();
 			var trades = model.CurrentUserId.HasValue
-				? await _tradeService.GetActiveTradesAsync(model.CurrentUserId.Value)
+				? await trade_service.GetActiveTradesAsync(model.CurrentUserId.Value)
 				: new List<ItemTrade>();
 
 			model.Users = users.Select(user => new SelectListItem
@@ -67,8 +67,8 @@ namespace SteamHub.Web.Controllers
 		[HttpPost]
 		public async Task<IActionResult> RespondToTrade(int TradeId, string action)
 		{
-			var currentUser = _tradeService.GetCurrentUser();
-			var trades = await _tradeService.GetActiveTradesAsync(currentUser.UserId);
+			var currentUser = trade_service.GetCurrentUser();
+			var trades = await trade_service.GetActiveTradesAsync(currentUser.UserId);
 			var trade = trades.FirstOrDefault(trade => trade.TradeId == TradeId);
 
 			if (trade == null)
@@ -77,11 +77,11 @@ namespace SteamHub.Web.Controllers
 			if (action == "Accept")
 			{
 				bool isSourceUser = trade.SourceUser.UserId == currentUser.UserId;
-				await _tradeService.AcceptTradeAsync(trade, isSourceUser);
+				await trade_service.AcceptTradeAsync(trade, isSourceUser);
 			}
 			else if (action == "Decline")
 			{
-				_tradeService.DeclineTradeRequest(trade); 
+				trade_service.DeclineTradeRequest(trade); 
 			}
 
 			return RedirectToAction("Index", "ActiveTrades");

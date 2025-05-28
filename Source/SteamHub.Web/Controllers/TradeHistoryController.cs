@@ -9,26 +9,26 @@ namespace SteamHub.Web.Controllers
 	[Authorize]
 	public class TradeHistoryController : Controller
 	{
-		private readonly IUserService _userService;
-		private readonly ITradeService _tradeService;
+		private readonly IUserService user_service;
+		private readonly ITradeService trade_service;
 
 		public TradeHistoryController(IUserService userService, ITradeService tradeService)
 		{
-			_userService = userService;
-			_tradeService = tradeService;
+			user_service = userService;
+			trade_service = tradeService;
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> Index()
 		{
-			var currentUser = _tradeService.GetCurrentUser();
+			var currentUser = trade_service.GetCurrentUser();
 			if (currentUser == null)
 				return RedirectToAction("Login", "Account");
 
-			var allUsers = await _userService.GetAllUsersAsync();
-			var history = await _tradeService.GetTradeHistoryAsync(currentUser.UserId);
+			var allUsers = await user_service.GetAllUsersAsync();
+			var history = await trade_service.GetTradeHistoryAsync(currentUser.UserId);
 
-			var viewModel = new TradeHistoryViewModel
+			var trade_history_view_model = new TradeHistoryViewModel
 			{
 				CurrentUserId = currentUser.UserId,
 				Users = allUsers.Select(user => new SelectListItem
@@ -39,27 +39,27 @@ namespace SteamHub.Web.Controllers
 				TradeHistory = history.Select(tradeHistory => tradeHistory.ToTradeHistoryViewModelDetails()).ToList()
 			};
 
-			return View(viewModel);
+			return View(trade_history_view_model);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> LoadUserTradeHistory(TradeHistoryViewModel model)
+		public async Task<IActionResult> LoadUserTradeHistory(TradeHistoryViewModel trade_history_view_model)
 		{
-			var allUsers = await _userService.GetAllUsersAsync();
+			var allUsers = await user_service.GetAllUsersAsync();
 
-			var history = model.CurrentUserId.HasValue
-				? await _tradeService.GetTradeHistoryAsync(model.CurrentUserId.Value)
+			var history = trade_history_view_model.CurrentUserId.HasValue
+				? await trade_service.GetTradeHistoryAsync(trade_history_view_model.CurrentUserId.Value)
 				: new List<ApiContract.Models.ItemTrade.ItemTrade>();
 
-			model.Users = allUsers.Select(user => new SelectListItem
+			trade_history_view_model.Users = allUsers.Select(user => new SelectListItem
 			{
 				Value = user.UserId.ToString(),
 				Text = user.Username
 			}).ToList();
 
-			model.TradeHistory = history.Select(tradeHistory => tradeHistory.ToTradeHistoryViewModelDetails()).ToList();
+			trade_history_view_model.TradeHistory = history.Select(tradeHistory => tradeHistory.ToTradeHistoryViewModelDetails()).ToList();
 
-			return View("Index", model);
+			return View("Index", trade_history_view_model);
 		}
 	}
 }

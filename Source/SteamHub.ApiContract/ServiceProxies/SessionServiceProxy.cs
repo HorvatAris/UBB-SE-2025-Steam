@@ -10,8 +10,8 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class SessionServiceProxy : ISessionService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options = new JsonSerializerOptions
+        private readonly HttpClient http_client;
+        private readonly JsonSerializerOptions options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
@@ -19,7 +19,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public SessionServiceProxy(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
+            http_client = httpClientFactory.CreateClient("SteamHubApi");
         }
 
         /// <inheritdoc />
@@ -27,9 +27,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/Session/Create", user, _options);
+                var response = await http_client.PostAsJsonAsync("/api/Session/Create", user, options);
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<Guid>(_options);
+                return await response.Content.ReadFromJsonAsync<Guid>(options);
             }
             catch (Exception exception)
             {
@@ -43,7 +43,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsync("/api/Session/Logout", null);
+                var response = await http_client.PostAsync("/api/Session/Logout", null);
                 response.EnsureSuccessStatusCode();
             }
             catch (Exception exception)
@@ -57,9 +57,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync("/api/Session/CurrentUser");
+                var response = await http_client.GetAsync("/api/Session/CurrentUser");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<User>(_options);
+                return await response.Content.ReadFromJsonAsync<User>(options);
             }
             catch (Exception exception)
             {
@@ -73,9 +73,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync("/api/Session/IsLoggedIn");
+                var response = await http_client.GetAsync("/api/Session/IsLoggedIn");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                return await response.Content.ReadFromJsonAsync<bool>(options);
             }
             catch (Exception exception)
             {
@@ -89,9 +89,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Session/{sessionId}");
+                var response = await http_client.GetAsync($"/api/Session/{sessionId}");
                 response.EnsureSuccessStatusCode();
-                var sessionDetails = await response.Content.ReadFromJsonAsync<UserWithSessionDetails>(_options);
+                var sessionDetails = await response.Content.ReadFromJsonAsync<UserWithSessionDetails>(options);
                 if (sessionDetails != null)
                 {
                     // Handle session restoration logic here
@@ -108,7 +108,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsync("/api/Session/Cleanup", null);
+                var response = await http_client.PostAsync("/api/Session/Cleanup", null);
                 response.EnsureSuccessStatusCode();
             }
             catch (Exception exception)
@@ -122,9 +122,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Session/Validate/{sessionId}");
+                var response = await http_client.GetAsync($"/api/Session/Validate/{sessionId}");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                return await response.Content.ReadFromJsonAsync<bool>(options);
             }
             catch (Exception exception)
             {
@@ -138,9 +138,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync("/api/Session/Current");
+                var response = await http_client.GetAsync("/api/Session/Current");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<SessionDetails>(_options);
+                return await response.Content.ReadFromJsonAsync<SessionDetails>(options);
             }
             catch (Exception exception)
             {

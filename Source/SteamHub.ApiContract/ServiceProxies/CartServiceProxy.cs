@@ -17,8 +17,8 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class CartServiceProxy : ICartService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options = new JsonSerializerOptions
+        private readonly HttpClient http_client;
+        private readonly JsonSerializerOptions options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
@@ -26,7 +26,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public CartServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
+            http_client = httpClientFactory.CreateClient("SteamHubApi");
             this.user = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
 
@@ -37,7 +37,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/Cart/AddToCart", gameRequest);
+                var response = await http_client.PostAsJsonAsync("/api/Cart/AddToCart", gameRequest);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -57,10 +57,10 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Cart/{userId}");
+                var response = await http_client.GetAsync($"/api/Cart/{userId}");
                 response.EnsureSuccessStatusCode(); // Ensure successful status code
 
-                var result = await response.Content.ReadFromJsonAsync<List<Game>>(_options);
+                var result = await response.Content.ReadFromJsonAsync<List<Game>>(options);
 
                 var gameIds = result
                     .Select(currentGame => currentGame.GameId)
@@ -78,9 +78,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Cart/Purchased/{userId}");
+                var response = await http_client.GetAsync($"/api/Cart/Purchased/{userId}");
                 response.EnsureSuccessStatusCode(); // Ensure successful status code
-                var purchasedGames = await response.Content.ReadFromJsonAsync<List<Game>>(_options);
+                var purchasedGames = await response.Content.ReadFromJsonAsync<List<Game>>(options);
 
                 return purchasedGames ?? new List<Game>();
             }
@@ -95,9 +95,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Cart/{userId}");
+                var response = await http_client.GetAsync($"/api/Cart/{userId}");
                 response.EnsureSuccessStatusCode(); // Ensure successful status code
-                var games = await response.Content.ReadFromJsonAsync<List<Game>>(_options);
+                var games = await response.Content.ReadFromJsonAsync<List<Game>>(options);
                
                 return games ?? new List<Game>();
             }
@@ -146,7 +146,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PatchAsJsonAsync("/api/Cart/RemoveFromCart", gameRequest);
+                var response = await http_client.PatchAsJsonAsync("/api/Cart/RemoveFromCart", gameRequest);
                 response.EnsureSuccessStatusCode(); // Ensure successful status code
             }
             catch (Exception exception)

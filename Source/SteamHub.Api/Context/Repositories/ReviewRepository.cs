@@ -18,23 +18,23 @@ namespace SteamHub.Api.Context.Repositories
         public async Task<List<Review>> FetchAllReviewsByGameId(int gameId)
         {
             return await context.Reviews
-                .Where(r => r.GameIdentifier == gameId || gameId == 0)
-                .OrderByDescending(r => r.DateAndTimeWhenReviewWasCreated)
-                .Select(r => new Review
+                .Where(review => review.GameIdentifier == gameId || gameId == 0)
+                .OrderByDescending(review => review.DateAndTimeWhenReviewWasCreated)
+                .Select(review => new Review
                 {
-                    ReviewIdentifier = r.ReviewIdentifier,
-                    ReviewTitleText = r.ReviewTitleText,
-                    ReviewContentText = r.ReviewContentText,
-                    IsRecommended = r.IsRecommended,
-                    NumericRatingGivenByUser = r.NumericRatingGivenByUser,
-                    TotalHelpfulVotesReceived = r.TotalHelpfulVotesReceived,
-                    TotalFunnyVotesReceived = r.TotalFunnyVotesReceived,
-                    TotalHoursPlayedByReviewer = r.TotalHelpfulVotesReceived,
-                    UserIdentifier = r.UserIdentifier,
-                    DateAndTimeWhenReviewWasCreated = r.DateAndTimeWhenReviewWasCreated,
-                    GameIdentifier = r.GameIdentifier,
-                    Username = r.User.Username,
-                    TitleOfGame = r.Game.Name
+                    ReviewIdentifier = review.ReviewIdentifier,
+                    ReviewTitleText = review.ReviewTitleText,
+                    ReviewContentText = review.ReviewContentText,
+                    IsRecommended = review.IsRecommended,
+                    NumericRatingGivenByUser = review.NumericRatingGivenByUser,
+                    TotalHelpfulVotesReceived = review.TotalHelpfulVotesReceived,
+                    TotalFunnyVotesReceived = review.TotalFunnyVotesReceived,
+                    TotalHoursPlayedByReviewer = review.TotalHelpfulVotesReceived,
+                    UserIdentifier = review.UserIdentifier,
+                    DateAndTimeWhenReviewWasCreated = review.DateAndTimeWhenReviewWasCreated,
+                    GameIdentifier = review.GameIdentifier,
+                    Username = review.User.Username,
+                    TitleOfGame = review.Game.Name
                 }).ToListAsync();
         }
 
@@ -59,20 +59,20 @@ namespace SteamHub.Api.Context.Repositories
             return await context.SaveChangesAsync() > 0;
         }
 
-        // Update an existing review based on its ID
+        // Update an existing_review review based on its ID
         public async Task<bool> UpdateExistingReviewInDatabase(Review reviewToUpdate)
         {
-            var existing = context.Reviews.FirstOrDefault(r => r.ReviewIdentifier == reviewToUpdate.ReviewIdentifier);
-            if (existing == null)
+            var existing_review = context.Reviews.FirstOrDefault(r => r.ReviewIdentifier == reviewToUpdate.ReviewIdentifier);
+            if (existing_review == null)
             {
                 return false;
             }
-            existing.ReviewTitleText = reviewToUpdate.ReviewTitleText;
-            existing.ReviewContentText = reviewToUpdate.ReviewContentText;
-            existing.IsRecommended = reviewToUpdate.IsRecommended;
-            existing.NumericRatingGivenByUser = reviewToUpdate.NumericRatingGivenByUser;
-            existing.TotalHoursPlayedByReviewer = reviewToUpdate.TotalHoursPlayedByReviewer;
-            existing.DateAndTimeWhenReviewWasCreated = reviewToUpdate.DateAndTimeWhenReviewWasCreated;
+            existing_review.ReviewTitleText = reviewToUpdate.ReviewTitleText;
+            existing_review.ReviewContentText = reviewToUpdate.ReviewContentText;
+            existing_review.IsRecommended = reviewToUpdate.IsRecommended;
+            existing_review.NumericRatingGivenByUser = reviewToUpdate.NumericRatingGivenByUser;
+            existing_review.TotalHoursPlayedByReviewer = reviewToUpdate.TotalHoursPlayedByReviewer;
+            existing_review.DateAndTimeWhenReviewWasCreated = reviewToUpdate.DateAndTimeWhenReviewWasCreated;
 
             return await context.SaveChangesAsync() > 0;
         }
@@ -80,12 +80,12 @@ namespace SteamHub.Api.Context.Repositories
         // Delete a review by its ID
         public async Task<bool> DeleteReviewFromDatabaseById(int reviewIdToDelete)
         {
-            var toRemove = await context.Reviews.FindAsync(reviewIdToDelete);
-            if (toRemove == null)
+            var reviewToRemove = await context.Reviews.FindAsync(reviewIdToDelete);
+            if (reviewToRemove == null)
             {
                 return false;
             }
-            context.Reviews.Remove(toRemove);
+            context.Reviews.Remove(reviewToRemove);
             return await context.SaveChangesAsync() > 0;
         }
 
@@ -151,13 +151,13 @@ namespace SteamHub.Api.Context.Repositories
         public async Task<(int TotalReviews, int TotalPositiveRecommendations, double AverageRatingValue)> RetrieveReviewStatisticsForGame(int gameId)
         {
             var stats =await context.Reviews
-                .Where(r => r.GameIdentifier == gameId)
-                .GroupBy(r => 1)
-                .Select(g => new
+                .Where(review => review.GameIdentifier == gameId)
+                .GroupBy(review => 1)
+                .Select(game => new
                 {
-                    TotalReviews = g.Count(),
-                    TotalPositiveRecommendations = g.Count(r => r.IsRecommended),
-                    AverageRatingValue = g.Average(r => r.NumericRatingGivenByUser)
+                    TotalReviews = game.Count(),
+                    TotalPositiveRecommendations = game.Count(r => r.IsRecommended),
+                    AverageRatingValue = game.Average(r => r.NumericRatingGivenByUser)
                 })
                 .FirstOrDefaultAsync();
 
