@@ -179,7 +179,7 @@ namespace SteamHub.ApiContract.Services
                 {
                     UserName = currentUser.Username,
                     Email = currentUser.Email,
-                    WalletBalance = (decimal)(currentUser.WalletBalance - item.Price),
+                    WalletBalance = currentUser.WalletBalance - (decimal)item.Price,
                     PointsBalance = currentUser.PointsBalance,
                     UserRole = currentUser.UserRole,
                 });

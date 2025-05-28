@@ -1,4 +1,5 @@
 ﻿using SteamHub.ApiContract.Models;
+using SteamHub.ApiContract.Models.Game;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Services.Interfaces;
 
@@ -7,27 +8,50 @@ namespace SteamHub.ApiContract.Services
     public class ReviewService : IReviewService
     {
         private readonly IReviewRepository reviewRepository;
+        private readonly IGameRepository _gameRepository;
 
-        public ReviewService(IReviewRepository newReviewRepository)
+        public ReviewService(IReviewRepository newReviewRepository, IGameRepository gameRepository)
         {
             reviewRepository = newReviewRepository ?? throw new ArgumentNullException(nameof(newReviewRepository));
+            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         }
 
         public async Task<bool> SubmitReview(Review reviewToSubmit)
         {
             reviewToSubmit.DateAndTimeWhenReviewWasCreated = DateTime.Now;
-            return await reviewRepository.InsertNewReviewIntoDatabase(reviewToSubmit);
+            var insertNewReviewIntoDatabase = await reviewRepository.InsertNewReviewIntoDatabase(reviewToSubmit);
+            if (insertNewReviewIntoDatabase)
+            {
+                await UpdateGameRating(reviewToSubmit.GameIdentifier);
+            }
+            return insertNewReviewIntoDatabase;
         }
 
         public async Task<bool> EditReview(Review updatedReview)
         {
             updatedReview.DateAndTimeWhenReviewWasCreated = DateTime.Now;
-            return await reviewRepository.UpdateExistingReviewInDatabase(updatedReview);
+            var updated = await reviewRepository.UpdateExistingReviewInDatabase(updatedReview);
+            if (updated)
+            {
+                await UpdateGameRating(updatedReview.GameIdentifier);
+            }
+            return updated;
         }
 
         public async Task<bool> DeleteReview(int reviewIdentifier)
         {
-            return await reviewRepository.DeleteReviewFromDatabaseById(reviewIdentifier);
+            var deletedReview = await reviewRepository.GetReviewById(reviewIdentifier);
+            if (deletedReview == null)
+            {
+                return false;
+            }
+            var deleted = await reviewRepository.DeleteReviewFromDatabaseById(reviewIdentifier);
+            if (deleted)
+            {
+                await UpdateGameRating(deletedReview.GameIdentifier);
+            }
+            return deleted;
+            
         }
 
         public async Task<List<Review>> GetAllReviewsForAGame(int gameIdentifier)
@@ -73,6 +97,16 @@ namespace SteamHub.ApiContract.Services
         {
             updatedReview.ReviewIdentifier = reviewId;
             return EditReview(updatedReview);
+        }
+
+        private async Task UpdateGameRating(int gameId)
+        {
+            var (total, positive, avg) = await GetReviewStatisticsForGame(gameId);
+            var updatedGame = new UpdateGameRequest()
+            {
+                Rating = (decimal?)avg,
+            };
+            await _gameRepository.UpdateGameAsync(gameId, updatedGame);
         }
     }
 }
