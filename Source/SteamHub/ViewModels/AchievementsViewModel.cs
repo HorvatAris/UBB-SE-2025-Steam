@@ -56,7 +56,7 @@ namespace SteamHub.ViewModels
         {
             this.achievementsService = achievementsService ?? throw new ArgumentNullException(nameof(achievementsService));
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            BackToProfileCommand = new RelayCommand(BackToProfile);
+           // BackToProfileCommand = new RelayCommand(BackToProfile);
             _ = InitializeAsync();
         }
 
@@ -164,7 +164,7 @@ namespace SteamHub.ViewModels
             }
         }
 
-        public IRelayCommand BackToProfileCommand { get; private set; }
+        //public IRelayCommand BackToProfileCommand { get; private set; }
 
         private void BackToProfile()
         {

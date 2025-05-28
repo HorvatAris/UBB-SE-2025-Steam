@@ -156,7 +156,7 @@ namespace SteamHub
             this.user = loggedInUser;
 
             // Initialize services that require the logged-in user
-            this.achievementsService = new AchievementsServiceProxy(_httpClientFactory);
+            this.achievementsService = new AchievementsServiceProxy();
             this.tradeService = new TradeServiceProxy(_httpClientFactory, loggedInUser);
             this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory, loggedInUser);
             this.pointShopService = new PointShopServiceProxy(_httpClientFactory, loggedInUser);
@@ -166,7 +166,7 @@ namespace SteamHub
             this.userGameService = new UserGameServiceProxy(_httpClientFactory, loggedInUser);
             this.developerService = new DeveloperServiceProxy(_httpClientFactory, loggedInUser);
             this.friendsService = new FriendServiceProxy();
-            this.achievementsService = new AchievementsServiceProxy(_httpClientFactory);
+            this.achievementsService = new AchievementsServiceProxy();
             this.collectionServiceProxy = new CollectionsServiceProxy();
             this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
             this.walletService = new WalletServiceProxy(_httpClientFactory, loggedInUser);
