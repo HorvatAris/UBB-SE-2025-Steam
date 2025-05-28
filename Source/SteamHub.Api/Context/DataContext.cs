@@ -260,7 +260,7 @@ namespace SteamHub.Api.Context
                     Price = 24.99m,
                     MinimumRequirements = "4GB RAM, 2.5GHz Processor, GTX 580",
                     RecommendedRequirements = "8GB RAM, 3.0GHz Processor, GTX 680",
-                    StatusId = GameStatusEnum.Rejected,
+                    StatusId = GameStatusEnum.Approved,
                     RejectMessage = "Minimum requirements are too high",
                     Rating = 4.2m,
                     NumberOfRecentPurchases = 0,
@@ -2091,6 +2091,55 @@ namespace SteamHub.Api.Context
             };
 
             builder.Entity<Achievement>().HasData(achievementsSeed);
+
+            var reviewsSeed = new List<Review>
+            {
+                new Review
+                {
+                    ReviewIdentifier = 1,
+                    ReviewTitleText = "Amazing Game!",
+                    ReviewContentText = "Risk of Rain 2 is a blast to play with friends. Highly recommended.",
+                    IsRecommended = true,
+                    NumericRatingGivenByUser = (double)4.5m,
+                    TotalHelpfulVotesReceived = 10,
+                    TotalFunnyVotesReceived = 2,
+                    TotalHoursPlayedByReviewer = 50,
+                    DateAndTimeWhenReviewWasCreated = new DateTime(2024, 5, 1),
+                    UserIdentifier = 4, // AliceJ
+                    GameIdentifier = 1  // Risk of Rain 2
+                },
+                new Review
+                {
+                    ReviewIdentifier = 2,
+                    ReviewTitleText = "Not my style",
+                    ReviewContentText = "Cyberstrike 2077 is too scary for me, but my friends love it.",
+                    IsRecommended = false,
+                    NumericRatingGivenByUser = (double)2.5m,
+                    TotalHelpfulVotesReceived = 3,
+                    TotalFunnyVotesReceived = 1,
+                    TotalHoursPlayedByReviewer = 8,
+                    DateAndTimeWhenReviewWasCreated = new DateTime(2024, 5, 2),
+                    UserIdentifier = 5, // LiamG
+                    GameIdentifier = 19  // Dead by Daylight
+                },
+                new Review
+                {
+                    ReviewIdentifier = 3,
+                    ReviewTitleText = "Classic",
+                    ReviewContentText = "Mario brings back the nostalgia with modern graphics.",
+                    IsRecommended = true,
+                    NumericRatingGivenByUser = (double)5.0m,
+                    TotalHelpfulVotesReceived = 15,
+                    TotalFunnyVotesReceived = 4,
+                    TotalHoursPlayedByReviewer = 120,
+                    DateAndTimeWhenReviewWasCreated = new DateTime(2024, 5, 3),
+                    UserIdentifier = 6, // SophieW
+                    GameIdentifier = 5  // Mario
+                }
+            };
+
+            builder.Entity<Review>().HasData(reviewsSeed);
+
         }
     }
 }
