@@ -31,6 +31,15 @@ namespace BusinessLayer.Repositories
             return context.Users.Find(userId);
         }
 
+        public void UpdateProfileBio(int userId, string bio)
+        {
+            var existing = context.Users.SingleOrDefault(user => user.UserId == userId)
+                ?? throw new RepositoryException($"Profile with user ID {userId} not found.");
+            existing.Bio = bio;
+            existing.LastModified = DateTime.UtcNow;
+            context.SaveChanges();
+        }
+
         public User UpdateUser(User user)
         {
             var existing = context.Users.Find(user.UserId)
@@ -41,6 +50,45 @@ namespace BusinessLayer.Repositories
             existing.IsDeveloper = user.IsDeveloper;
             context.SaveChanges();
             return existing;
+        }
+
+        public async Task UpdateProfilePicture(int userId, string localImagePath)
+        {
+            string imgurClientId = "bbf48913b385d7b";
+            var existing = context.UserProfiles.SingleOrDefault(up => up.UserId == userId)
+                ?? throw new RepositoryException($"Profile with user ID {userId} not found.");
+
+            string imageUrl = await UploadImageToImgurAsync(localImagePath, imgurClientId);
+
+            existing.ProfilePicture = imageUrl;
+            existing.LastModified = DateTime.UtcNow;
+            context.SaveChanges();
+        }
+
+        private async Task<string> UploadImageToImgurAsync(string imagePath, string clientId)
+        {
+            using var client = new HttpClient();
+            using var form = new MultipartFormDataContent();
+            using var image = new ByteArrayContent(File.ReadAllBytes(imagePath));
+
+            image.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+            form.Add(image, "image");
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Client-ID", clientId);
+
+            var response = await client.PostAsync("https://api.imgur.com/3/image", form);
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new RepositoryException("Imgur upload failed: " + json);
+            }
+
+            var link = System.Text.Json.JsonDocument.Parse(json)
+                        .RootElement.GetProperty("data")
+                        .GetProperty("link").GetString();
+
+            return link ?? throw new RepositoryException("Imgur returned null link.");
         }
 
         public User CreateUser(User user)

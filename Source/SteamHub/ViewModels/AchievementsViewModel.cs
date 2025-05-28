@@ -10,7 +10,6 @@ using SteamHub.ApiContract.Models;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Services.Interfaces;
 
-
 namespace SteamHub.ViewModels
 {
     public partial class AchievementsViewModel : ObservableObject
@@ -18,56 +17,75 @@ namespace SteamHub.ViewModels
         private static AchievementsViewModel achievementsViewModelInstance;
         private readonly IAchievementsService achievementsService;
         private readonly IUserService userService;
-        private readonly IUserDetails currentUser;
+        private User currentUser;
        
         [ObservableProperty]
-        private ObservableCollection<AchievementWithStatus> allAchievements = new ObservableCollection<AchievementWithStatus>();
+        private ObservableCollection<AchievementWithStatus> allAchievements = new();
 
         [ObservableProperty]
-        private ObservableCollection<AchievementWithStatus> friendshipsAchievements = new ObservableCollection<AchievementWithStatus>();
+        private ObservableCollection<AchievementWithStatus> friendshipsAchievements = new();
 
         [ObservableProperty]
-        private ObservableCollection<AchievementWithStatus> ownedGamesAchievements = new ObservableCollection<AchievementWithStatus>();
+        private ObservableCollection<AchievementWithStatus> ownedGamesAchievements = new();
 
         [ObservableProperty]
-        private ObservableCollection<AchievementWithStatus> soldGamesAchievements = new ObservableCollection<AchievementWithStatus>();
+        private ObservableCollection<AchievementWithStatus> soldGamesAchievements = new();
 
         [ObservableProperty]
-        private ObservableCollection<AchievementWithStatus> yearsOfActivityAchievements = new ObservableCollection<AchievementWithStatus>();
+        private ObservableCollection<AchievementWithStatus> yearsOfActivityAchievements = new();
 
         [ObservableProperty]
-        private ObservableCollection<AchievementWithStatus> numberOfPostsAchievements = new ObservableCollection<AchievementWithStatus>();
+        private ObservableCollection<AchievementWithStatus> numberOfPostsAchievements = new();
 
         [ObservableProperty]
-        private ObservableCollection<AchievementWithStatus> numberOfReviewsGivenAchievements = new ObservableCollection<AchievementWithStatus>();
+        private ObservableCollection<AchievementWithStatus> numberOfReviewsGivenAchievements = new();
 
         [ObservableProperty]
-        private ObservableCollection<AchievementWithStatus> numberOfReviewsReceivedAchievements = new ObservableCollection<AchievementWithStatus>();
+        private ObservableCollection<AchievementWithStatus> numberOfReviewsReceivedAchievements = new();
 
         [ObservableProperty]
-        private ObservableCollection<AchievementWithStatus> developerAchievements = new ObservableCollection<AchievementWithStatus>();
+        private ObservableCollection<AchievementWithStatus> developerAchievements = new();
 
-        //public static AchievementsViewModel Instance
-        //{
-        //    get
-        //    {
-        //        if (achievementsViewModelInstance == null)
-        //        {
-        //            //achievementsViewModelInstance = new AchievementsViewModel(App.AchievementsService, App.UserService);
-        //            var aService = CallConvThiscall.
-        //            achievementsViewModelInstance = new AchievementsViewModel();
-                        
-        //        }
-        //        return achievementsViewModelInstance;
-        //    }
-        //}
+        [ObservableProperty]
+        private bool isLoading;
+
+        [ObservableProperty]
+        private string errorMessage;
 
         public AchievementsViewModel(IAchievementsService achievementsService, IUserService userService)
         {
             this.achievementsService = achievementsService ?? throw new ArgumentNullException(nameof(achievementsService));
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            this.currentUser = this.userService.GetCurrentUser();
             BackToProfileCommand = new RelayCommand(BackToProfile);
+            _ = InitializeAsync();
+        }
+
+        private async Task InitializeAsync()
+        {
+            try
+            {
+                isLoading = true;
+                errorMessage = string.Empty;
+                currentUser = await userService.GetCurrentUserAsync();
+                if (currentUser != null)
+                {
+                    await LoadAchievementsAsync();
+                }
+                else
+                {
+                    errorMessage = "Failed to get current user";
+                    System.Diagnostics.Debug.WriteLine("Failed to get current user during initialization");
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = "Error initializing achievements";
+                System.Diagnostics.Debug.WriteLine($"Error in InitializeAsync: {ex.Message}");
+            }
+            finally
+            {
+                isLoading = false;
+            }
         }
 
         [RelayCommand]
@@ -75,8 +93,20 @@ namespace SteamHub.ViewModels
         {
             try
             {
+                if (currentUser == null)
+                {
+                    currentUser = await userService.GetCurrentUserAsync();
+                    if (currentUser == null)
+                    {
+                        errorMessage = "Failed to get current user";
+                        return;
+                    }
+                }
+
+                isLoading = true;
+                errorMessage = string.Empty;
                 System.Diagnostics.Debug.WriteLine("Starting LoadAchievementsAsync in ViewModel");
-                var userId = this.currentUser.UserId;
+                var userId = currentUser.UserId;
                 System.Diagnostics.Debug.WriteLine($"Current UserId: {userId}");
 
                 // Get grouped achievements (no logic in ViewModel)
@@ -116,6 +146,7 @@ namespace SteamHub.ViewModels
                 }
                 catch (Exception ex)
                 {
+                    errorMessage = "Error assigning achievements to collections";
                     System.Diagnostics.Debug.WriteLine($"Error assigning achievements to collections: {ex}");
                     System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
                     throw;
@@ -123,17 +154,25 @@ namespace SteamHub.ViewModels
             }
             catch (Exception ex)
             {
+                errorMessage = "Error loading achievements";
                 System.Diagnostics.Debug.WriteLine($"Error in LoadAchievementsAsync: {ex}");
                 System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-                throw; // Re-throw to be handled by the page
+            }
+            finally
+            {
+                isLoading = false;
             }
         }
-        public IRelayCommand BackToProfileCommand { get; }
+
+        public IRelayCommand BackToProfileCommand { get; private set; }
 
         private void BackToProfile()
         {
-            int currentUserId = this.currentUser.UserId;
-            //NavigationService.Instance.Navigate(typeof(ProfilePage), currentUserId);
+            if (currentUser != null)
+            {
+                int currentUserId = currentUser.UserId;
+                //NavigationService.Instance.Navigate(typeof(ProfilePage), currentUserId);
+            }
         }
     }
 }
