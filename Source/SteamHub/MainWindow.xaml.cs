@@ -42,6 +42,7 @@ namespace SteamHub
         
         private FeaturesServiceProxy featuresService;
         private WalletServiceProxy walletService;
+        private FriendRequestServiceProxy friendRequestService;
         private AchievementsServiceProxy achievementsService;
         private CollectionsServiceProxy collectionServiceProxy;
         
@@ -136,6 +137,7 @@ namespace SteamHub
                     this.userGameService = null;
                     this.developerService = null;
                     this.friendsService = null;
+                    this.friendRequestService = null;
 
                     // Show login page
                     ShowLoginPage();
@@ -204,7 +206,8 @@ namespace SteamHub
                 this.achievementsService = new AchievementsServiceProxy();
                 this.collectionServiceProxy = new CollectionsServiceProxy();
                 this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
-                this.walletService = new WalletServiceProxy(_httpClientFactory, user);
+                this.walletService = new WalletServiceProxy(user);
+                this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory,user);
 
                 Debug.WriteLine("User services initialized successfully");
             }
