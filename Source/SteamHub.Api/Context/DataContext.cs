@@ -2089,8 +2089,25 @@ namespace SteamHub.Api.Context
                 new Achievement { AchievementId = 4, AchievementName = "FRIENDSHIP4", Description = "You made 50 friends, you get 10 points", AchievementType = "Friendships", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
                 new Achievement { AchievementId = 5, AchievementName = "FRIENDSHIP5", Description = "You made 100 friends, you get 15 points", AchievementType = "Friendships", Points = 15, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" }
             };
+            var firendshipSeed = new List<Friendship>
+            {
+                // Friendships for User 5 (LiamG)
+                new Friendship {FriendshipId = 1, UserId = 5, FriendId = 1}, // Friends with GabeN
+                new Friendship {FriendshipId = 2, UserId = 5, FriendId = 2}, // Friends with MattN
+                new Friendship {FriendshipId = 3, UserId = 5, FriendId = 3}, // Friends with JohnC
+                new Friendship {FriendshipId = 4, UserId = 5, FriendId = 4}, // Friends with AliceJ
+                new Friendship {FriendshipId = 5, UserId = 5, FriendId = 6}, // Friends with SophieW
+                new Friendship {FriendshipId = 6, UserId = 5, FriendId = 7}, // Friends with NoahS
+                new Friendship {FriendshipId = 7, UserId = 5, FriendId = 8}, // Friends with EmilyB
+
+                // Other friendships to maintain network
+                new Friendship {FriendshipId = 8, UserId = 4, FriendId = 6},
+                new Friendship {FriendshipId = 9, UserId = 4, FriendId = 7},
+                new Friendship {FriendshipId = 10, UserId = 6, FriendId = 7}
+            };
 
             builder.Entity<Achievement>().HasData(achievementsSeed);
+            builder.Entity<Friendship>().HasData(firendshipSeed);
         }
     }
 }

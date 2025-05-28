@@ -19,23 +19,41 @@ namespace SteamHub.Api.Context.Repositories
         {
             try
             {
-                var query = from f in context.Friendships
-                            join u in context.Users on
-                                (f.FriendId == userIdentifier ? f.UserId : f.FriendId) equals u.UserId
-                            join p in context.UserProfiles on
-                                (f.FriendId == userIdentifier ? f.UserId : f.FriendId) equals p.UserId
-                            where f.UserId == userIdentifier || f.FriendId == userIdentifier
-                            orderby u.Username
-                            select new Friendship
-                            {
-                                FriendshipId = f.FriendshipId,
-                                UserId = f.UserId,
-                                FriendId = f.FriendId,
-                                FriendUsername = u.Username,
-                                FriendProfilePicture = p.profilePhotoPath
-                            };
+                // Get all friendships where user is UserId
+                var friendships = await context.Friendships.Where(f => f.UserId == userIdentifier)
+                    .ToListAsync();
 
-                return await query.ToListAsync();
+                // Get all friend IDs
+                var friendIds = friendships.Select(f => f.FriendId).ToList();
+
+                // Get all user profiles for the friends
+                var userProfiles = await context.UserProfiles
+                    .Where(p => friendIds.Contains(p.UserId))
+                    .Include(p => p.User)
+                    .ToListAsync();
+
+                // Create result list
+                var result = new List<Friendship>();
+
+                // Match friendships with user profiles
+                foreach (var friendship in friendships)
+                {
+                    var userProfile = userProfiles.FirstOrDefault(p => p.UserId == friendship.FriendId);
+                    if (userProfile != null)
+                    {
+                        result.Add(new Friendship
+                        {
+                            FriendshipId = friendship.FriendshipId,
+                            UserId = friendship.UserId,
+                            FriendId = friendship.FriendId,
+                            FriendUsername = userProfile.User.Username,
+                            FriendProfilePicture = userProfile.profilePhotoPath
+                        });
+                    }
+                }
+
+                // Sort by username
+                return result.OrderBy(f => f.FriendUsername).ToList();
             }
             catch (Exception ex)
             {

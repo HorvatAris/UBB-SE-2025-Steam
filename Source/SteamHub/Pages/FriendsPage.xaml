@@ -20,38 +20,38 @@
                     Padding="12"
                     Margin="8"
                     Width="240">
-                    <StackPanel Spacing="12">
-                        <!-- Profile Picture -->
-                        <Image Source="{Binding FriendProfilePicture}"
+                <StackPanel Spacing="12">
+                    <!-- Profile Picture -->
+                    <Image Source="{Binding FriendProfilePicture}"
                            Stretch="UniformToFill"
                            Height="120"
                            Width="120"
                            HorizontalAlignment="Center"/>
 
-                        <!-- Username -->
-                        <TextBlock Text="{Binding FriendUsername}"
+                    <!-- Username -->
+                    <TextBlock Text="{Binding FriendUsername}"
                                Style="{ThemeResource BodyStrongTextBlockStyle}"
                                TextWrapping="NoWrap"
                                TextTrimming="CharacterEllipsis"
                                TextAlignment="Center"/>
 
-                        <!-- Action Buttons -->
-                        <StackPanel Orientation="Horizontal" 
+                    <!-- Action Buttons -->
+                    <StackPanel Orientation="Horizontal" 
                                 HorizontalAlignment="Center"
                                 Spacing="8">
-                            <Button Content="View"
+                        <Button Content="View"
                                 Command="{Binding ViewFriendCommand}"
                                 CommandParameter="{Binding FriendId}"
                                 Style="{StaticResource AccentButtonStyle}"
                                 MinWidth="80"/>
 
-                            <Button Content="Chat"
+                        <Button Content="Chat"
                                 Command="{Binding ChatFriendCommand}"
                                 CommandParameter="{Binding FriendId}"
                                 Style="{StaticResource AccentButtonStyle}"
                                 MinWidth="80"/>
 
-                            <Button Content="Remove"
+                        <Button Content="Remove"
                                 Command="{Binding DataContext.RemoveFriendshipCommand, ElementName=PageRoot}"
                                 CommandParameter="{Binding FriendshipId}"
                                 Style="{StaticResource AccentButtonStyle}"
@@ -60,61 +60,61 @@
 
 
                     </StackPanel>
-                    </StackPanel>
-                </Border>
-            </DataTemplate>
-        </Page.Resources>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </Page.Resources>
 
-        <Grid x:Name="PageRoot"
+    <Grid x:Name="PageRoot"
           Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <!-- Header Section -->
+        <!-- Header Section -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20" Spacing="12">
 
             <TextBlock Text="FRIENDS" 
                        FontSize="30" 
                        FontWeight="Bold"
                        VerticalAlignment="Center"/>
-            </StackPanel>
+        </StackPanel>
 
-            <!-- Loading and Error Indicators -->
-            <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <ProgressRing IsActive="{Binding IsLoading}"
+        <!-- Loading and Error Indicators -->
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <ProgressRing IsActive="{Binding IsLoading}"
                           Width="50" 
                           Height="50"
                           Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-                <TextBlock Text="{Binding ErrorMessage}"
+            <TextBlock Text="{Binding ErrorMessage}"
                        Foreground="{ThemeResource SystemFillColorCriticalBrush}"
                        TextWrapping="Wrap"
                        TextAlignment="Center"
                        Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
-            </StackPanel>
+        </StackPanel>
 
-            <!-- Friends List -->
-            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="20" Spacing="20">
-                    <TextBlock Text="MY FRIENDS" 
+        <!-- Friends List -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20" Spacing="20">
+                <TextBlock Text="MY FRIENDS" 
                            FontSize="20" 
                            FontWeight="Bold"/>
 
-                    <!-- Using ItemsWrapGrid instead of WrapPanel -->
-                    <ItemsControl ItemsSource="{Binding Friendships}"
+                <!-- Using ItemsWrapGrid instead of WrapPanel -->
+                <ItemsControl ItemsSource="{Binding Friendships}"
                               ItemTemplate="{StaticResource FriendItemTemplate}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <ItemsWrapGrid Orientation="Horizontal" 
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid Orientation="Horizontal" 
                                           MaximumRowsOrColumns="3"
                                           HorizontalAlignment="Center"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </StackPanel>
-            </ScrollViewer>
-        </Grid>
-    </Page>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

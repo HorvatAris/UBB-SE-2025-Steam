@@ -22,6 +22,12 @@ namespace SteamHub.Pages
             this.InitializeComponent();
             ViewModel = new FriendsViewModel(friendsService);
             this.DataContext = ViewModel;
+            this.InitAsync();
+
+        }
+        private async void InitAsync()
+        {
+            await ViewModel.InitializeAsync();
         }
 
         private void FriendsPage_Loaded(object sender, RoutedEventArgs e)
