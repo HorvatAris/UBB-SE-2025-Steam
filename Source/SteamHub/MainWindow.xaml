@@ -38,10 +38,23 @@
                 <NavigationViewItem Icon="List" Content="Inventory" Tag="inventory" />
                 <NavigationViewItem Icon="Switch" Content="Trading" Tag="trading" />
                 <NavigationViewItem Content="Friends" Tag="friends" />
-
+                <NavigationViewItem Icon="Scan" Content="Wallet" Tag="Wallet" />
+                <NavigationViewItem Icon="Like" Content="Achievements" Tag="AchievementsPage" />
+                
             </NavigationView.MenuItems>
+
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Content="Logout" Tag="Logout" Icon="LeaveChat" Tapped="LogoutButton_Click"/>
+            </NavigationView.FooterMenuItems>
 
             <Frame x:Name="ContentFrame" />
         </NavigationView>
+
+        <!-- Login Overlay -->
+        <Grid x:Name="LoginOverlay" 
+              Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+              Visibility="Visible">
+            <Frame x:Name="LoginFrame" Navigated="LoginFrame_Navigated"/>
+        </Grid>
     </Grid>
 </Window>

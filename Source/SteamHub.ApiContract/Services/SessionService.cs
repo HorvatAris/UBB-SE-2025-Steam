@@ -1,4 +1,5 @@
 ﻿using System;
+using SteamHub.ApiContract.Models.Common;
 using SteamHub.ApiContract.Models.Session;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Repositories;
@@ -6,81 +7,76 @@ using SteamHub.ApiContract.Services.Interfaces;
 
 namespace SteamHub.ApiContract.Services
 {
-    /// <summary>
-    /// Manages user session lifecycle, including creation, validation, restoration, and cleanup.
-    /// </summary>
     public class SessionService : ISessionService
     {
         private readonly ISessionRepository _sessionRepository;
-        private readonly IUserRepository _userRepository;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SessionService"/> class.
-        /// </summary>
-        /// <param name="sessionRepository">Repository for session persistence operations.</param>
-        /// <param name="userRepository">Repository for retrieving user details.</param>
-        public SessionService(ISessionRepository sessionRepository, IUserRepository userRepository)
+        public SessionService(ISessionRepository sessionRepository)
         {
             _sessionRepository = sessionRepository ?? throw new ArgumentNullException(nameof(sessionRepository));
-            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
-        /// <inheritdoc />
-        public Guid CreateNewSession(User user)
+        public async Task<Guid> CreateNewSessionAsync(User user)
         {
-            _sessionRepository.DeleteUserSessions(user.UserId);
-            var sessionDetails = _sessionRepository.CreateSession(user.UserId);
-
-            UserSession.Instance.UpdateSession(
-                sessionDetails.SessionId,
-                user.UserId,
-                sessionDetails.CreatedAt,
-                sessionDetails.ExpiresAt);
-
+            var sessionDetails = await _sessionRepository.CreateSession(user.UserId);
             return sessionDetails.SessionId;
         }
 
-        /// <inheritdoc />
-        public void EndSession()
+        public async Task EndSessionAsync()
         {
             var currentSessionId = UserSession.Instance.CurrentSessionId;
             if (currentSessionId.HasValue)
             {
-                _sessionRepository.DeleteSession(currentSessionId.Value);
+                await _sessionRepository.DeleteSession(currentSessionId.Value);
                 UserSession.Instance.ClearSession();
             }
         }
 
-        /// <inheritdoc />
-        public User GetCurrentUser()
+        public async Task<User?> GetCurrentUserAsync()
         {
-            if (!UserSession.Instance.IsSessionValid())
+            if (!UserSession.Instance.CurrentSessionId.HasValue)
+                return null;
+
+            var isValid = await ValidateSessionAsync(UserSession.Instance.CurrentSessionId.Value);
+            if (!isValid)
             {
-                if (UserSession.Instance.CurrentSessionId.HasValue)
-                {
-                    _sessionRepository.DeleteSession(UserSession.Instance.CurrentSessionId.Value);
-                    UserSession.Instance.ClearSession();
-                }
+                UserSession.Instance.ClearSession();
                 return null;
             }
 
-            return _userRepository.GetUserById(UserSession.Instance.UserId);
+            var userWithSession = await _sessionRepository.GetUserFromSession(UserSession.Instance.CurrentSessionId.Value);
+            if (userWithSession == null)
+            {
+                UserSession.Instance.ClearSession();
+                return null;
+            }
+
+            return new User
+            {
+                UserId = userWithSession.UserId,
+                Username = userWithSession.Username,
+                Email = userWithSession.Email,
+                UserRole = userWithSession.Developer ? UserRole.Developer : UserRole.User
+            };
         }
 
-        /// <inheritdoc />
-        public bool IsUserLoggedIn()
-            => UserSession.Instance.IsSessionValid();
-
-        /// <inheritdoc />
-        public void RestoreSessionFromDatabase(Guid sessionId)
+        public async Task<bool> IsUserLoggedInAsync()
         {
-            var sessionDetails = _sessionRepository.GetSessionById(sessionId);
+            if (!UserSession.Instance.CurrentSessionId.HasValue)
+                return false;
+
+            return await ValidateSessionAsync(UserSession.Instance.CurrentSessionId.Value);
+        }
+
+        public async Task RestoreSessionFromDatabaseAsync(Guid sessionId)
+        {
+            var sessionDetails = await _sessionRepository.GetSessionById(sessionId);
             if (sessionDetails == null)
                 return;
 
-            if (DateTime.Now > sessionDetails.ExpiresAt)
+            if (DateTime.UtcNow > sessionDetails.ExpiresAt)
             {
-                _sessionRepository.DeleteSession(sessionId);
+                await _sessionRepository.DeleteSession(sessionId);
                 return;
             }
 
@@ -91,21 +87,36 @@ namespace SteamHub.ApiContract.Services
                 sessionDetails.ExpiresAt);
         }
 
-        /// <summary>
-        /// Deletes all expired sessions and clears the current session if it is expired.
-        /// </summary>
-        public void CleanupExpiredSessions()
+        public async Task CleanupExpiredSessionsAsync()
         {
-            var expiredSessionIds = _sessionRepository.GetExpiredSessions();
+            var expiredSessionIds = await _sessionRepository.GetExpiredSessions();
             foreach (var expiredSessionId in expiredSessionIds)
             {
-                _sessionRepository.DeleteSession(expiredSessionId);
+                await _sessionRepository.DeleteSession(expiredSessionId);
             }
 
-            if (UserSession.Instance.CurrentSessionId.HasValue && !UserSession.Instance.IsSessionValid())
+            if (UserSession.Instance.CurrentSessionId.HasValue)
             {
-                UserSession.Instance.ClearSession();
+                var isValid = await ValidateSessionAsync(UserSession.Instance.CurrentSessionId.Value);
+                if (!isValid)
+                {
+                    UserSession.Instance.ClearSession();
+                }
             }
+        }
+
+        public async Task<bool> ValidateSessionAsync(Guid sessionId)
+        {
+            var session = await _sessionRepository.GetSessionById(sessionId);
+            return session != null && session.ExpiresAt > DateTime.UtcNow;
+        }
+
+        public async Task<SessionDetails?> GetCurrentSessionDetailsAsync()
+        {
+            if (!UserSession.Instance.CurrentSessionId.HasValue)
+                return null;
+
+            return await _sessionRepository.GetSessionById(UserSession.Instance.CurrentSessionId.Value);
         }
     }
 }
