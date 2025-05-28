@@ -46,10 +46,11 @@ namespace SteamHub.Api.Context
 
         // Added From other team
         public DbSet<SessionDetails> UserSessions { get; set; }
-        
+
         public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
 
         public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Achievement> Achievements { get; set; }
         public DbSet<ChatConversation> ChatConversations { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
@@ -84,13 +85,13 @@ namespace SteamHub.Api.Context
             {
                 optionsBuilder.UseSqlServer(configuration.GetConnectionString("Default"));
             }
-            
-            
-        }  
+
+
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-           var tagSeed = new List<Tag>
+            var tagSeed = new List<Tag>
             {
                 new Tag { TagId = 1, TagName = "Rogue-Like" },
                 new Tag { TagId = 2, TagName = "Third-Person Shooter" },
@@ -136,9 +137,7 @@ namespace SteamHub.Api.Context
                     Password = passwords[0],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = "https://i.imgur.com/vixhhkC.jpeg",
-                    Bio = "Gaming enthusiast and software developer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    ProfilePicture = ""
                 },
                 new User
                 {
@@ -151,9 +150,7 @@ namespace SteamHub.Api.Context
                     Password = passwords[1],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = "",
-                    Bio = "Game developer and tech lover",
-                    LastModified = new DateTime(2024, 1, 1)
+                    ProfilePicture = ""
                 },
                 new User
                 {
@@ -166,9 +163,7 @@ namespace SteamHub.Api.Context
                     Password = passwords[2],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = "",
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    ProfilePicture = ""
                 },
                 new User
                 {
@@ -181,9 +176,7 @@ namespace SteamHub.Api.Context
                     Password = passwords[3],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = "",
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    ProfilePicture = ""
                 },
                 new User
                 {
@@ -196,9 +189,7 @@ namespace SteamHub.Api.Context
                     Password = passwords[4],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = "",
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    ProfilePicture = ""
                 },
                 new User
                 {
@@ -211,9 +202,7 @@ namespace SteamHub.Api.Context
                     Password = passwords[5],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = "",
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    ProfilePicture = ""
                 },
                 new User
                 {
@@ -226,9 +215,7 @@ namespace SteamHub.Api.Context
                     Password = passwords[6],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = "",
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    ProfilePicture = ""
                 },
                 new User
                 {
@@ -241,9 +228,7 @@ namespace SteamHub.Api.Context
                     Password = passwords[7],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = "",
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
+                    ProfilePicture = ""
                 }
             };
 
@@ -710,7 +695,7 @@ namespace SteamHub.Api.Context
                             new { GamesGameId = gameSeed[18].GameId, TagsTagId = tagSeed[5].TagId },   // Action
                             new { GamesGameId = gameSeed[18].GameId, TagsTagId = tagSeed[13].TagId },  // RPG
                             new { GamesGameId = gameSeed[18].GameId, TagsTagId = tagSeed[15].TagId },  // Action RPG
-    
+
                             // Shadow of Valhalla
                             new { GamesGameId = gameSeed[19].GameId, TagsTagId = tagSeed[15].TagId }  // Action RPG
                         ));
@@ -719,8 +704,8 @@ namespace SteamHub.Api.Context
                 .HasOne(item => item.Game)
                 .WithMany(game => game.Items)
                 .HasForeignKey(item => item.CorrespondingGameId);
-            
-            var itemsSeed =  new List<Item>
+
+            var itemsSeed = new List<Item>
             {
                 // Items for Counter-Strike 2
                 new Item
@@ -879,7 +864,7 @@ namespace SteamHub.Api.Context
             };
             builder.Entity<Item>().HasData(itemsSeed);
 
-              
+
             var pointShopItemsSeed = new List<PointShopItem>
             {
                 new PointShopItem {
@@ -1033,7 +1018,7 @@ namespace SteamHub.Api.Context
                .HasForeignKey(userGames => userGames.GameId)
                .OnDelete(DeleteBehavior.Cascade);
 
-           var usersGamesSeed = new List<UsersGames>
+            var usersGamesSeed = new List<UsersGames>
             {
                 new UsersGames
                 {
@@ -1346,7 +1331,7 @@ namespace SteamHub.Api.Context
             // Configure entities here
 
             // -- ReviewsUser mapping ---------------------------------------------------
-            
+
 
             // -- SoldGame mapping --------------------------------------------------------
             builder.Entity<SoldGame>(entity =>
@@ -1812,6 +1797,27 @@ namespace SteamHub.Api.Context
                       .HasForeignKey(cg => cg.CollectionId);
             });
 
+            // -- UserProfile mapping --------------------------------------------------------
+            builder.Entity<UserProfile>(entity =>
+            {
+                entity.HasKey(up => up.ProfileId);
+                entity.Property(up => up.ProfileId)
+                    .ValueGeneratedOnAdd();
+                entity.Property(up => up.UserId)
+                    .IsRequired();
+                entity.Property(up => up.Bio);
+                entity.Property(up => up.LastModified)
+                    .HasDefaultValueSql("GETDATE()");
+
+                entity.HasOne(up => up.User)
+                    .WithOne()
+                    .HasForeignKey<UserProfile>(up => up.UserId);
+
+                entity.Ignore(up => up.Email);
+                entity.Ignore(up => up.Username);
+                entity.Ignore(up => up.ProfilePicture);
+            });
+
             // -- Wallet mapping --------------------------------------------------------
             builder.Entity<Wallet>(entity =>
             {
@@ -1849,12 +1855,6 @@ namespace SteamHub.Api.Context
                     .WithOne(r => r.User)
                     .HasForeignKey(r => r.UserIdentifier)
                     .OnDelete(DeleteBehavior.NoAction);
-
-                // UserProfile
-                entity.Property(up => up.Bio);
-                entity.Property(up => up.LastModified)
-                    .HasDefaultValueSql("GETDATE()");
-                entity.Ignore(up => up.ProfilePicture);
 
                 entity.HasMany(u => u.NewsPosts)
                     .WithOne(p => p.Author)
@@ -1966,17 +1966,82 @@ namespace SteamHub.Api.Context
                       .OnDelete(DeleteBehavior.Restrict);
             });
 
+
+
+            // UserProfiles seed data
+            var userProfilesSeed = new List<UserProfile>
+            {
+                new UserProfile
+                {
+                    ProfileId = 1,
+                    UserId = 1,
+                    Bio = "Gaming enthusiast and software developer",
+                    LastModified = new DateTime(2024, 1, 1)
+                },
+                new UserProfile
+                {
+                    ProfileId = 2,
+                    UserId = 2,
+                    Bio = "Game developer and tech lover",
+                    LastModified = new DateTime(2024, 1, 1)
+                },
+                new UserProfile
+                {
+                    ProfileId = 3,
+                    UserId = 3,
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
+                },
+                new UserProfile
+                {
+                    ProfileId = 4,
+                    UserId = 4,
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
+                },
+                new UserProfile
+                {
+                    ProfileId = 5,
+                    UserId = 5,
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
+                },
+                new UserProfile
+                {
+                    ProfileId = 6,
+                    UserId = 6,
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
+                },
+                new UserProfile
+                {
+                    ProfileId = 7,
+                    UserId = 7,
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
+                },
+                new UserProfile
+                {
+                    ProfileId = 8,
+                    UserId = 8,
+                    Bio = "Casual gamer and streamer",
+                    LastModified = new DateTime(2024, 1, 1)
+                }
+            };
+
+            builder.Entity<UserProfile>().HasData(userProfilesSeed);
+
             // Wallets seed data
             var walletsSeed = new List<Wallet>
             {
-                new Wallet { WalletId = 1, UserId = 1, Points = 10, Balance = 200m },
-                new Wallet { WalletId = 2, UserId = 2, Points = 10, Balance = 200m },
-                new Wallet { WalletId = 3, UserId = 3, Points = 10, Balance = 200m },
-                new Wallet { WalletId = 4, UserId = 4, Points = 10, Balance = 200m },
-                new Wallet { WalletId = 5, UserId = 5, Points = 10, Balance = 200m },
-                new Wallet { WalletId = 6, UserId = 6, Points = 10, Balance = 200m },
-                new Wallet { WalletId = 7, UserId = 7, Points = 10, Balance = 200m },
-                new Wallet { WalletId = 8, UserId = 8, Points = 10, Balance = 200m }
+                new Wallet { WalletId = 1, UserId = 1, Points = 6000, Balance = 500m },
+                new Wallet { WalletId = 2, UserId = 2, Points = 5000, Balance = 420m },
+                new Wallet { WalletId = 3, UserId = 3, Points = 5000, Balance = 390m },
+                new Wallet { WalletId = 4, UserId = 4, Points = 6000, Balance = 780m },
+                new Wallet { WalletId = 5, UserId = 5, Points = 7000, Balance = 5500m },
+                new Wallet { WalletId = 6, UserId = 6, Points = 6000, Balance = 950m },
+                new Wallet { WalletId = 7, UserId = 7, Points = 4000, Balance = 3300m },
+                new Wallet { WalletId = 8, UserId = 8, Points = 5000, Balance = 1100m }
             };
 
             builder.Entity<Wallet>().HasData(walletsSeed);
@@ -2021,13 +2086,47 @@ namespace SteamHub.Api.Context
             builder.Entity<OwnedGame>().HasData(ownedGamesSeed);
 
             // Achievements seed data
-            var achievementsSeed = new List<Achievement>
+          var achievementsSeed = new List<Achievement>
             {
                 new Achievement { AchievementId = 1, AchievementName = "FRIENDSHIP1", Description = "You made a friend, you get a point", AchievementType = "Friendships", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
                 new Achievement { AchievementId = 2, AchievementName = "FRIENDSHIP2", Description = "You made 5 friends, you get 3 points", AchievementType = "Friendships", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
                 new Achievement { AchievementId = 3, AchievementName = "FRIENDSHIP3", Description = "You made 10 friends, you get 5 points", AchievementType = "Friendships", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
                 new Achievement { AchievementId = 4, AchievementName = "FRIENDSHIP4", Description = "You made 50 friends, you get 10 points", AchievementType = "Friendships", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new Achievement { AchievementId = 5, AchievementName = "FRIENDSHIP5", Description = "You made 100 friends, you get 15 points", AchievementType = "Friendships", Points = 15, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" }
+                new Achievement { AchievementId = 5, AchievementName = "FRIENDSHIP5", Description = "You made 100 friends, you get 15 points", AchievementType = "Friendships", Points = 15, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new Achievement { AchievementId=6, AchievementName = "OWNEDGAMES1", Description = "You own 1 game, you get 1 point", AchievementType = "Owned Games", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+                new Achievement { AchievementId=7,AchievementName = "OWNEDGAMES2", Description = "You own 5 games, you get 3 points", AchievementType = "Owned Games", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
+
+            };
+            var firendshipSeed = new List<Friendship>
+            {
+                // Friendships for User 5 (LiamG)
+                new Friendship {FriendshipId = 1, UserId = 5, FriendId = 1}, // Friends with GabeN
+                new Friendship {FriendshipId = 2, UserId = 5, FriendId = 2}, // Friends with MattN
+                new Friendship {FriendshipId = 3, UserId = 5, FriendId = 3}, // Friends with JohnC
+                new Friendship {FriendshipId = 4, UserId = 5, FriendId = 4}, // Friends with AliceJ
+                new Friendship {FriendshipId = 5, UserId = 5, FriendId = 6}, // Friends with SophieW
+                new Friendship {FriendshipId = 6, UserId = 5, FriendId = 7}, // Friends with NoahS
+                new Friendship {FriendshipId = 7, UserId = 5, FriendId = 8}, // Friends with EmilyB
+
+                // Other friendships to maintain network
+                new Friendship {FriendshipId = 8, UserId = 4, FriendId = 6},
+                new Friendship {FriendshipId = 9, UserId = 4, FriendId = 7},
+                new Friendship {FriendshipId = 10, UserId = 6, FriendId = 7},
+                new Friendship {FriendshipId = 11, UserId = 1, FriendId = 5},
+                new Friendship {FriendshipId = 12, UserId = 2, FriendId = 5},
+                new Friendship {FriendshipId = 13, UserId = 3, FriendId = 5},
+                new Friendship {FriendshipId = 14, UserId = 4, FriendId = 5},
+                new Friendship {FriendshipId = 15, UserId = 6, FriendId = 5},
+                new Friendship {FriendshipId = 16, UserId = 7, FriendId = 5},
+                new Friendship {FriendshipId = 17, UserId = 8, FriendId = 5},
+                new Friendship {FriendshipId = 22, UserId = 1, FriendId = 2},
+                new Friendship {FriendshipId = 18, UserId = 1, FriendId = 3},
+                new Friendship {FriendshipId = 19, UserId = 2, FriendId = 3},
+                new Friendship {FriendshipId = 20, UserId = 3, FriendId = 4},
+                new Friendship {FriendshipId = 21, UserId = 6, FriendId = 8},
+
+
+
             };
 
             builder.Entity<Achievement>().HasData(achievementsSeed);
@@ -2088,6 +2187,7 @@ namespace SteamHub.Api.Context
             };
 
             builder.Entity<Comment>().HasData(newsCommentsSeed);
+            builder.Entity<Friendship>().HasData(firendshipSeed);
         }
     }
 }

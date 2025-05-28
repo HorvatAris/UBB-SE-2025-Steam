@@ -61,6 +61,10 @@ namespace SteamHub.Web.Services
             if (httpContext == null)
                 throw new InvalidOperationException("HttpContext is null. Ensure the IHttpContextAccessor is properly configured.");
 
+            // Store wallet and points balance in session
+            httpContext.Session.SetString("WalletBalance", user.WalletBalance.ToString(CultureInfo.InvariantCulture));
+            httpContext.Session.SetString("PointsBalance", user.PointsBalance.ToString(CultureInfo.InvariantCulture));
+
             await httpContext.SignInAsync("SteamHubAuth", principal);
             return true;
         }
@@ -85,6 +89,10 @@ namespace SteamHub.Web.Services
             var httpContext = httpContextAccessor.HttpContext;
             if (httpContext == null)
                 throw new InvalidOperationException("HttpContext is null. Ensure the IHttpContextAccessor is properly configured.");
+
+            // Clear session data
+            httpContext.Session.Remove("WalletBalance");
+            httpContext.Session.Remove("PointsBalance");
 
             await httpContext.SignOutAsync("SteamHubAuth");
         }

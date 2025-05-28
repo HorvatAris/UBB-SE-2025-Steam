@@ -105,5 +105,45 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<Friendship>> GetAllFriendshipsAsync(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveFriendAsync(int friendshipIdentifier)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetFriendshipCountAsync(int userIdentifier)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> AreUsersFriendsAsync(int userIdentifier1, int userIdentifier2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int?> GetFriendshipIdentifierAsync(int userIdentifier1, int userIdentifier2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddFriendAsync(int userIdentifier, int friendIdentifier)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> AddFriendByUsernameAsync(string user1Username, string user2Username, string friendEmail, string friendProfilePhotoPath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Models.User.User GetUser()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,0 +1,56 @@
+@model List<SteamHub.ApiContract.Models.Friendship>
+@{
+    ViewData["Title"] = "Friends";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">FRIENDS</h1>
+        </div>
+    </div>
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+
+    <div class="row">
+        <div class="col">
+            <h2 class="h3 mb-4">MY FRIENDS</h2>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var friendship in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <img src="@friendship.FriendProfilePicture" class="card-img-top" alt="@friendship.FriendUsername's profile picture" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">@friendship.FriendUsername</h5>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a asp-controller="Profile" asp-action="Index" asp-route-id="@friendship.FriendId" class="btn btn-primary">View</a>
+                            <a href="#" class="btn btn-primary" onclick="openChat(@friendship.FriendId)">Chat</a>
+                            <form asp-controller="FriendsPage" asp-action="RemoveFriend" method="post" class="d-inline">
+                                <input type="hidden" name="friendshipId" value="@friendship.FriendshipId" />
+                                <button type="submit" class="btn btn-danger">Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openChat(friendId) {
+            // Implement chat functionality
+            console.log('Opening chat with friend:', friendId);
+        }
+    </script>
+} 

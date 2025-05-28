@@ -8,16 +8,8 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class WalletServiceProxy : ServiceProxy, IWalletService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options = new JsonSerializerOptions
+        public WalletServiceProxy(IUserDetails user, string baseUrl = "https://localhost:7241/api/") : base(baseUrl)
         {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-        };
-
-        public WalletServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user)
-        {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
             this.user = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
 
