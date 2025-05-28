@@ -78,6 +78,10 @@ namespace SteamHub.ViewModels
                 CollectionOfGameReviews.Clear();
                 foreach (var review in reviews)
                 {
+                    if (review.GameIdentifier != gameIdentifier)
+                    {
+                        continue;
+                    }
                     CollectionOfGameReviews.Add(review);
                 }
 

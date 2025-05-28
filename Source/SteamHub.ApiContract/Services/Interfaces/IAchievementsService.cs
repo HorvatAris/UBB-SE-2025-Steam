@@ -9,7 +9,7 @@ namespace SteamHub.ApiContract.Services.Interfaces
     public interface IAchievementsService
     {
         Task InitializeAchievements();
-        Task<GroupedAchievementsResult> GetGroupedAchievementsForUser(int userIdentifier);
+        Task<Models.GroupedAchievementsResult> GetGroupedAchievementsForUser(int userIdentifier);
         Task<List<Achievement>> GetAchievementsForUser(int userIdentifier);
         Task UnlockAchievementForUser(int userIdentifier);
         Task<List<Achievement>> GetAllAchievements();

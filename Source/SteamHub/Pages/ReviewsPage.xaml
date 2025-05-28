@@ -9,7 +9,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:SteamHub.ApiContract.Models"
     xmlns:converters="using:SteamHub.Converters"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    RequestedTheme="Default"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}">
 
     <Page.Resources>
         <converters:ImagePathToImageSourceConverter x:Key="ImagePathToImageSourceConverter"/>
@@ -23,7 +26,7 @@
         <StackPanel Padding="20" Spacing="15">
             <!-- Game Info -->
             <StackPanel Orientation="Horizontal" Spacing="15">
-                <Image Source="{Binding Game.ImagePath, Converter={StaticResource ImagePathToImageSourceConverter}}" Width="120" Height="160" />
+                <Image Source="{Binding GameImagePath, Converter={StaticResource ImagePathToImageSourceConverter}}" Width="120" Height="160" />
                 <StackPanel>
                     <TextBlock Text="Release Date: March 20, 2024" FontWeight="Bold" />
                     <TextBlock Text="Review Statistics:" Margin="0,10,0,0"/>
@@ -51,7 +54,6 @@
             <!-- Write Review Panel -->
             <StackPanel x:Name="ReviewPanel"
                 Visibility="Collapsed"
-                Background="#1e1e1e"
                 Padding="20"
                 Spacing="12"
                 CornerRadius="12"
@@ -128,7 +130,6 @@
                     <DataTemplate x:DataType="models:Review">
                         <Border BorderBrush="#444"
                              BorderThickness="1"
-                             Background="#1a1a1a"
                              CornerRadius="12"
                              Padding="16"
                              Margin="10">
@@ -145,17 +146,14 @@
                                     <StackPanel>
                                         <TextBlock Text="{Binding UserName}"
                                             FontWeight="Bold"
-                                            FontSize="14"
-                                            Foreground="White" />
+                                            FontSize="14" />
                                         <TextBlock Text="{Binding DateAndTimeWhenReviewWasCreated, Converter={StaticResource RelativeTimeConverter}}"
-                                            FontSize="12"
-                                            Foreground="#999"/>
+                                            FontSize="12"/>
                                     </StackPanel>
                                 </StackPanel>
 
                                 <!--  Hours Played -->
-                                <TextBlock FontSize="12"
-                                    Foreground="#888"   
+                                <TextBlock FontSize="12" 
                                     Text="{Binding TotalHoursPlayedByReviewer, Converter={StaticResource HoursPlayedToTextConverter}}"
                                     Visibility="{Binding TotalHoursPlayedByReviewer, Converter={StaticResource IntToVisibilityConverter}}" />
 

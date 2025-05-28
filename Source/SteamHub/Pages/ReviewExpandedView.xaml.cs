@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Navigation;
 using SteamHub.ApiContract.Models;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ViewModels;
+using System.Threading.Tasks;
 
 namespace SteamHub.Pages
 {
@@ -15,13 +16,14 @@ namespace SteamHub.Pages
         {
             this.InitializeComponent();
             ViewModel = new ReviewViewModel(reviewService);
+            this.DataContext = ViewModel;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.Parameter is int gameId)
             {
-                this.ViewModel.LoadReviewsForGame(gameId);
+                await this.ViewModel.LoadReviewsForGame(gameId);
             }
         }
 
@@ -39,6 +41,7 @@ namespace SteamHub.Pages
                 e.AddedItems[0] is ComboBoxItem { Content: string sortOption })
             {
                 ViewModel.ApplySortinOption(sortOption);
+                //ViewModel.LoadReviewsForGame(ViewModel.CurrentGameId);
             }
         }
 
@@ -48,6 +51,7 @@ namespace SteamHub.Pages
                 e.AddedItems[0] is ComboBoxItem { Content: string filterOption })
             {
                 ViewModel.ApplyReccomendationFilter(filterOption);
+                //ViewModel.LoadReviewsForGame(ViewModel.CurrentGameId);
             }
         }
 

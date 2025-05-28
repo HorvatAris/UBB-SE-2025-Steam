@@ -6,20 +6,10 @@ using SteamHub.ApiContract.Services.Interfaces;
 
 namespace SteamHub.ApiContract.ServiceProxies
 {
-    public class ReviewServiceProxy : IReviewService
+    public class ReviewServiceProxy : ServiceProxy, IReviewService
     {
         
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options = new JsonSerializerOptions{
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-        };
-
-
-        public ReviewServiceProxy(IHttpClientFactory httpClientFactory)
-        {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
-        }
+        public ReviewServiceProxy(string baseUrl = "https://localhost:7241") : base(baseUrl){}
 
 
         public async Task<bool> SubmitReview(Review reviewToSubmit)
@@ -32,9 +22,8 @@ namespace SteamHub.ApiContract.ServiceProxies
                     reviewToSubmit.DateAndTimeWhenReviewWasCreated = DateTime.Now;
                 }
 
-                var response = await _httpClient.PostAsJsonAsync("/api/Review", reviewToSubmit, _options);
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                return await PostAsync<bool>("/api/Review", reviewToSubmit);
+
             }
             catch (Exception)
             {
@@ -49,9 +38,8 @@ namespace SteamHub.ApiContract.ServiceProxies
                 // Update the timestamp
                 updatedReview.DateAndTimeWhenReviewWasCreated = DateTime.Now;
 
-                var response = await _httpClient.PostAsJsonAsync($"/api/Review/{updatedReview.ReviewIdentifier}", updatedReview, _options);
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                return await PutAsync<bool>($"/api/Review/{updatedReview.ReviewIdentifier}", updatedReview);
+                
             }
             catch (Exception)
             {
@@ -63,9 +51,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.DeleteAsync($"/api/Review/{reviewIdentifier}");
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                return await DeleteAsync<bool>($"/api/Review/{reviewIdentifier}");
             }
             catch (Exception)
             {
@@ -75,25 +61,14 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task<List<Review>> GetAllReviewsForAGame(int gameIdentifier)
         {
-            try
-            {
-                var response = await _httpClient.GetAsync($"/api/Review/game/{gameIdentifier}");
-                response.EnsureSuccessStatusCode();
-                return (await response.Content.ReadFromJsonAsync<List<Review>>(_options))!;
-            }
-            catch (Exception)
-            {
-                return new List<Review>();
-            }
+            return await GetAsync<List<Review>>($"/api/Review/game/{gameIdentifier}");
         }
 
         public async Task<(int TotalReviews, double PositivePercentage, double AverageRating)> GetReviewStatisticsForGame(int gameIdentifier)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Review/game/{gameIdentifier}/statistics");
-                response.EnsureSuccessStatusCode();
-                var stats =  (await response.Content.ReadFromJsonAsync<ReviewStatistics>(_options))!;
+                var stats = await GetAsync<ReviewStatistics>($"/api/Review/game/{gameIdentifier}/statistics");
 
                 return (stats.TotalReviews, stats.PositivePercentage, stats.AverageRating);
             }
@@ -131,13 +106,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response =  await _httpClient.PostAsJsonAsync($"/api/Review/{reviewIdentifier}/vote", new
+                return await PostAsync<bool>($"/api/Review/{reviewIdentifier}/vote", new
                 {
                     VoteType = voteType,
                     ShouldIncrement = shouldIncrement
-                }, _options);
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                });
             }
             catch (Exception)
             {

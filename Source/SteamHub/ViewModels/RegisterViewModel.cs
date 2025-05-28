@@ -94,7 +94,7 @@ public partial class RegisterViewModel : ObservableObject
             }
 
             // Ensure email and username are unique
-            UserService.ValidateUserAndEmail(Email, Username);
+            await UserService.ValidateUserAndEmailAsync(Email, Username);
 
             // Validate the password
             if (Password != ConfirmPassword)
@@ -117,7 +117,7 @@ public partial class RegisterViewModel : ObservableObject
                 UserRole = IsDeveloper ? UserRole.Developer : UserRole.User
             };
 
-            var createdUser = UserService.CreateUser(user);
+            var createdUser = await UserService.CreateUserAsync(user);
 
             if (createdUser != null)
             {

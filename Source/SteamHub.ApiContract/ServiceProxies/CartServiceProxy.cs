@@ -139,7 +139,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public float GetUserFunds()
         {
-            return this.user.WalletBalance;
+            return (float)this.user.WalletBalance;
         }
 
         public async Task RemoveGameFromCartAsync(UserGameRequest gameRequest)
