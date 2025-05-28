@@ -25,5 +25,6 @@ namespace SteamHub.ApiContract.Repositories
 
         Task RemoveWallet(int userId);
         Task BuyWithMoney(decimal amount, int userId);
+        Task BuyWithPoints(int amount, int userId);
     }
 }
