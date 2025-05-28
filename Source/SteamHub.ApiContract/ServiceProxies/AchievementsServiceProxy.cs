@@ -33,11 +33,11 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task<GroupedAchievementsResult> GetGroupedAchievementsForUser(int userIdentifier)
+        public async Task<Models.GroupedAchievementsResult> GetGroupedAchievementsForUser(int userIdentifier)
         {
             try
             {
-                return await GetAsync<GroupedAchievementsResult>($"Achievements/{userIdentifier}/grouped");
+                return await GetAsync<Models.GroupedAchievementsResult>($"Achievements/{userIdentifier}/grouped");
             }
             catch (Exception ex)
             {
