@@ -44,14 +44,5 @@ namespace SteamHub.Pages
             ViewModel = new LoginViewModel(this.Frame, userService, onLoginSuccess);
             this.DataContext = ViewModel;
         }
-
-        /// <summary>
-        /// Handles the Forgot Password button click event.
-        /// Navigates to the ForgotPasswordPage.
-        /// </summary>
-        private void ForgotPassword_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(ForgotPasswordPage));
-        }
     }
 }

@@ -92,6 +92,16 @@ namespace BusinessLayer.Repositories.Fakes
             // throw error
         }
 
+        public void UpdateProfileBio(int userId, string bio)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateProfilePicture(int user_id, string picture)
+        {
+            throw new NotImplementedException();
+        }
+
         public User UpdateUser(User user)
         {
             return user;

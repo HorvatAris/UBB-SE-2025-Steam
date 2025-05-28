@@ -12,7 +12,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Models.Common;
-using SteamHub.ApiContract.Proxies;
 using SteamHub.ApiContract.Services;
 using SteamHub.ApiContract.ServiceProxies;
 using SteamHub.Pages;
@@ -37,10 +36,12 @@ namespace SteamHub
         private TradeServiceProxy tradeService;
         private UserServiceProxy userService;
         private SessionServiceProxy sessionService;
-        private PasswordResetServiceProxy passwordResetService;
-        private WalletServiceProxy walletService;
+        private FriendServiceProxy friendsService;
         private FeaturesServiceProxy featuresService;
+        private WalletServiceProxy walletService;
         private AchievementsServiceProxy achievementsService;
+        private CollectionsServiceProxy collectionServiceProxy;
+        
         private readonly IHttpClientFactory _httpClientFactory;
 
         public MainWindow()
@@ -67,7 +68,6 @@ namespace SteamHub
 
             this.userService = new UserServiceProxy(_httpClientFactory);
             this.sessionService = new SessionServiceProxy(_httpClientFactory);
-            this.passwordResetService = new PasswordResetServiceProxy();
 
             // Start with login page
             ShowLoginPage();
@@ -167,6 +167,10 @@ namespace SteamHub
             this.cartService = new CartServiceProxy(_httpClientFactory, loggedInUser);
             this.userGameService = new UserGameServiceProxy(_httpClientFactory, loggedInUser);
             this.developerService = new DeveloperServiceProxy(_httpClientFactory, loggedInUser);
+            this.friendsService = new FriendServiceProxy();
+            this.achievementsService = new AchievementsServiceProxy(_httpClientFactory);
+            this.collectionServiceProxy = new CollectionsServiceProxy();
+            this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
             this.walletService = new WalletServiceProxy(_httpClientFactory, loggedInUser);
 
             // Hide login overlay and show main content
@@ -218,6 +222,9 @@ namespace SteamHub
                         break;
                     case "RegisterPage":
                         ShowRegisterPage();
+                        break;
+                    case "profile":
+                        this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService,this.collectionServiceProxy, achievementsService, this.user);
                         break;
                     case "ForgotPasswordPage":
                         ShowLoginPage();

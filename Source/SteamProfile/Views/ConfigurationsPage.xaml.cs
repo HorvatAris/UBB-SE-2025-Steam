@@ -16,7 +16,7 @@ using SteamProfile.Views.ConfigurationsView;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-namespace SteamProfile.Views
+namespace SteamHub.Pages
 {
     public sealed partial class ConfigurationsPage : Page
     {
@@ -29,7 +29,7 @@ namespace SteamProfile.Views
 
         private void ConfigurationsPage_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel = new ConfigurationsViewModel(this.Frame, App.UserService);
+            ViewModel = new ConfigurationsViewModel(this.Frame, SteamHub.App.UserService);
             this.DataContext = ViewModel;
         }
     }

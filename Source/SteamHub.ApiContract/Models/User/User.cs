@@ -52,6 +52,10 @@ namespace SteamHub.ApiContract.Models.User
 
         public string ProfilePicture { get; set; }
 
+        public string ProfilePicturePath;
+        public string? Bio { get; set; }
+        public DateTime LastModified { get; set; }
+
         public bool IsDeveloper => UserRole == UserRole.Developer;
 
         public DateTime CreatedAt { get; set; }

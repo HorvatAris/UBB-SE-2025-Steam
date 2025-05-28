@@ -20,7 +20,7 @@ namespace SteamHub.ApiContract.Repositories
         /// </summary>
         /// <param name="id">The user ID.</param>
         /// <returns>The user response or null if not found.</returns>
-        Task<UserResponse?> GetUserByIdAsync(int id);
+        Task<User?> GetUserByIdAsync(int id);
 
         /// <summary>
         /// Retrieves all users asynchronously.
@@ -36,92 +36,99 @@ namespace SteamHub.ApiContract.Repositories
         Task UpdateUserAsync(int userId, UpdateUserRequest request);
 
         /// <summary>
-        /// Retrieves all users synchronously.
+        /// Retrieves all users asynchronously.
         /// </summary>
         /// <returns>A list of user DTOs.</returns>
-        List<User> GetAllUsers();
+        Task<List<User>> GetAllUsersAsync();
 
         /// <summary>
-        /// Retrieves a user by ID synchronously.
-        /// </summary>
-        /// <param name="userId">The user ID.</param>
-        /// <returns>The user DTO or null if not found.</returns>
-        User? GetUserById(int userId);
-
-        /// <summary>
-        /// Updates an existing user synchronously.
+        /// Updates an existing user asynchronously.
         /// </summary>
         /// <param name="user">The user DTO with updated values.</param>
         /// <returns>The updated user DTO.</returns>
-        User UpdateUser(User user);
+        Task<User> UpdateUserAsync(User user);
 
         /// <summary>
-        /// Creates a new user synchronously.
+        /// Creates a new user asynchronously.
         /// </summary>
         /// <param name="user">The user DTO to create.</param>
         /// <returns>The created user DTO, including assigned ID.</returns>
-        User CreateUser(User user);
+        Task<User> CreateUserAsync(User user);
 
         /// <summary>
-        /// Deletes a user by ID.
+        /// Deletes a user by ID asynchronously.
         /// </summary>
         /// <param name="userId">The ID of the user to delete.</param>
-        void DeleteUser(int userId);
+        Task DeleteUserAsync(int userId);
 
         /// <summary>
-        /// Verifies credentials by email or username.
+        /// Verifies credentials by email or username asynchronously.
         /// </summary>
         /// <param name="emailOrUsername">The email or username to verify.</param>
         /// <returns>The user DTO or null if not found.</returns>
-        User? VerifyCredentials(string emailOrUsername);
+        Task<User?> VerifyCredentialsAsync(string emailOrUsername);
 
         /// <summary>
-        /// Retrieves a user by email.
+        /// Retrieves a user by email asynchronously.
         /// </summary>
         /// <param name="email">The email address.</param>
         /// <returns>The user DTO or null if not found.</returns>
-        User? GetUserByEmail(string email);
+        Task<User?> GetUserByEmailAsync(string email);
 
         /// <summary>
-        /// Retrieves a user by username.
+        /// Retrieves a user by username asynchronously.
         /// </summary>
         /// <param name="username">The username.</param>
         /// <returns>The user DTO or null if not found.</returns>
-        User? GetUserByUsername(string username);
+        Task<User?> GetUserByUsernameAsync(string username);
 
         /// <summary>
-        /// Checks if an email or username already exists.
+        /// Checks if an email or username already exists asynchronously.
         /// </summary>
         /// <param name="email">Email to check.</param>
         /// <param name="username">Username to check.</param>
         /// <returns>A code indicating which field exists or null if none.</returns>
-        string CheckUserExists(string email, string username);
+        Task<string> CheckUserExistsAsync(string email, string username);
 
         /// <summary>
-        /// Changes a user's email address.
+        /// Changes a user's email address asynchronously.
         /// </summary>
         /// <param name="userId">The user ID.</param>
         /// <param name="newEmail">The new email address.</param>
-        void ChangeEmail(int userId, string newEmail);
+        Task ChangeEmailAsync(int userId, string newEmail);
 
         /// <summary>
-        /// Changes a user's password.
+        /// Changes a user's password asynchronously.
         /// </summary>
         /// <param name="userId">The user ID.</param>
         /// <param name="newPassword">The new password hash.</param>
-        void ChangePassword(int userId, string newPassword);
+        Task ChangePasswordAsync(int userId, string newPassword);
 
         /// <summary>
-        /// Changes a user's username.
+        /// Changes a user's username asynchronously.
         /// </summary>
         /// <param name="userId">The user ID.</param>
         /// <param name="newUsername">The new username.</param>
-        void ChangeUsername(int userId, string newUsername);
+        Task ChangeUsernameAsync(int userId, string newUsername);
 
         /// <summary>
-        /// Updates the last login timestamp for a user.
+        /// Updates the last login timestamp for a user asynchronously.
         /// </summary>
         /// <param name="userId">The user ID.</param>
-        void UpdateLastLogin(int userId);
+        Task UpdateLastLoginAsync(int userId);
+
+        /// <summary>
+        /// Updates the bio of the user asynchronously.
+        /// </summary>
+        /// <param name="bio">Bio to update.</param>
+        /// <param name="userId">The user ID.</param>
+        Task UpdateProfileBioAsync(int userId, string bio);
+
+        /// <summary>
+        /// Updates the profile picture of the user asynchronously.
+        /// </summary>
+        /// <param name="userId">The user ID.</param>
+        /// <param name="localImagePath">The local path to the image file.</param>
+        Task UpdateProfilePictureAsync(int userId, string localImagePath);
     }
 }

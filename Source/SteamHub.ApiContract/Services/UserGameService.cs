@@ -12,7 +12,6 @@ using SteamHub.ApiContract.Models.Game;
 using SteamHub.ApiContract.Models.Tag;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Models.UsersGames;
-using SteamHub.ApiContract.Proxies;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Services;
 using SteamHub.ApiContract.Services.Interfaces;
@@ -165,7 +164,7 @@ public class UserGameService : IUserGameService
 
         var updateUserRequest = new UpdateUserRequest
         {
-            UserName = user.UserName,
+            UserName = user.Username,
             Email = user.Email,
             WalletBalance = user.WalletBalance,
             PointsBalance = user.PointsBalance,
