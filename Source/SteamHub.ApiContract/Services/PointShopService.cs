@@ -122,7 +122,7 @@ namespace SteamHub.ApiContract.Services
 
                 await this.UserPointShopItemInventoryRepository.PurchaseItemAsync(purchaseRequest);
 
-                user.PointsBalance -= (float)item.PointPrice;
+                user.PointsBalance -= (int)item.PointPrice;
 
                 // Update the user's points balance in the database
                 var updateUserRequest = new UpdateUserRequest
