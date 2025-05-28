@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SteamHub.ApiContract.Models.User;
@@ -9,16 +8,15 @@ using SteamHub.ApiContract.Services.Interfaces;
 
 namespace SteamHub.ViewModels
 {
-    public partial class WalletViewModel : ObservableObject
+    public partial class WalletViewModel : BaseViewModel
     {
         private readonly IWalletService walletService;
-        private readonly IUserDetails user;
 
-        public WalletViewModel(IWalletService walletService) 
+        public WalletViewModel(IWalletService walletService, IUserService userService, User currentUser) 
+            : base(userService, currentUser)
         {
             this.walletService = walletService ?? throw new ArgumentNullException(nameof(walletService));
-            this.user = walletService.GetUser();
-            RefreshWalletData();
+            Debug.WriteLine($"WalletViewModel initialized for user: {currentUser.Username}");
         }
 
         [ObservableProperty]
@@ -27,28 +25,85 @@ namespace SteamHub.ViewModels
         [ObservableProperty]
         private int points;
 
-        private int walletId;
+        [ObservableProperty]
+        private bool isLoading;
 
-        public string BalanceText
-        {
-            get { return $"${Balance:F2}"; }
-        }
+        [ObservableProperty]
+        private string errorMessage;
 
-        public string PointsText
-        {
-            get { return $"{Points} points"; }
-        }
+        public string BalanceText => $"${Balance:F2}";
+        public string PointsText => $"{Points} points";
 
         partial void OnBalanceChanged(decimal value)
         {
             OnPropertyChanged(nameof(BalanceText));
         }
 
-        [RelayCommand]
-        public async void RefreshWalletData()
+        partial void OnPointsChanged(int value)
         {
-            Balance = await walletService.GetBalance(user.UserId);
-            Points = await walletService.GetPoints(user.UserId);
+            OnPropertyChanged(nameof(PointsText));
+        }
+
+        protected override void OnUserChanged()
+        {
+            base.OnUserChanged();
+            Debug.WriteLine($"User changed in WalletViewModel - refreshing wallet data for user: {CurrentUser.Username}");
+            _ = RefreshWalletDataAsync();
+        }
+
+        public async Task InitializeAsync()
+        {
+            try
+            {
+                IsLoading = true;
+                ErrorMessage = string.Empty;
+
+                Debug.WriteLine($"Starting WalletViewModel initialization for user: {CurrentUser.Username}");
+                await RefreshWalletDataAsync();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = "Error loading wallet data. Please try again.";
+                Debug.WriteLine($"Error in InitializeAsync: {ex.Message}");
+                Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        [RelayCommand]
+        public async Task RefreshWalletDataAsync()
+        {
+            try
+            {
+                IsLoading = true;
+                ErrorMessage = string.Empty;
+
+                Debug.WriteLine($"Refreshing wallet data for user: {CurrentUser.Username} (ID: {CurrentUser.UserId})");
+                
+                // Make parallel API calls for better performance
+                var balanceTask = walletService.GetBalance(CurrentUser.UserId);
+                var pointsTask = walletService.GetPoints(CurrentUser.UserId);
+
+                await Task.WhenAll(balanceTask, pointsTask);
+
+                Balance = await balanceTask;
+                Points = await pointsTask;
+
+                Debug.WriteLine($"Wallet refreshed for {CurrentUser.Username} - Balance: {Balance}, Points: {Points}");
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = "Error refreshing wallet data";
+                Debug.WriteLine($"Error in RefreshWalletDataAsync: {ex.Message}");
+                Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         [RelayCommand]
@@ -59,8 +114,25 @@ namespace SteamHub.ViewModels
                 return;
             }
 
-            await walletService.AddMoney(amount, user.UserId);
-            RefreshWalletData();
+            try
+            {
+                IsLoading = true;
+                ErrorMessage = string.Empty;
+                
+                Debug.WriteLine($"Adding {amount:C} to wallet for user: {CurrentUser.Username} (ID: {CurrentUser.UserId})");
+                await walletService.AddMoney(amount, CurrentUser.UserId);
+                await RefreshWalletDataAsync();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = "Error adding funds";
+                Debug.WriteLine($"Error in AddFunds: {ex.Message}");
+                Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
     }
 }
