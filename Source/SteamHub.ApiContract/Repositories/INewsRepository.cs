@@ -6,16 +6,16 @@ using System.Collections.Generic;
 
 public interface INewsRepository
 {
-	int AddCommentToPost(int postId, string commentContent, int userId, DateTime commentDate);
-	int AddPostToDatabase(int userId, string postContent, DateTime postDate);
-	int AddRatingToPost(int postId, int userId, int ratingType);
-	int DeleteCommentFromDatabase(int commentId);
-	int DeletePostFromDatabase(int postId);
-	List<Comment> LoadFollowingComments(int postId);
-	List<Post> LoadFollowingPosts(int pageNumber, int userId, string seachedText);
-	int RemoveRatingFromPost(int postId, int userId);
-	int UpdateComment(int commentId, string commentContent);
-	int UpdatePost(int postId, string postContent);
-	int UpdatePostDislikeCount(int postId);
-	int UpdatePostLikeCount(int postId);
+	Task<int> AddCommentToPost(int postId, string commentContent, int userId, DateTime commentDate);
+	Task<int> AddPostToDatabase(int userId, string postContent, DateTime postDate);
+	Task<int> AddRatingToPost(int postId, int userId, int ratingType);
+	Task<int> DeleteCommentFromDatabase(int commentId);
+	Task<int> DeletePostFromDatabase(int postId);
+	Task<List<Comment>> LoadFollowingComments(int postId);
+	Task<List<Post>> LoadFollowingPosts(int pageNumber, int userId, string seachedText);
+	Task<int> RemoveRatingFromPost(int postId, int userId);
+	Task<int> UpdateComment(int commentId, string commentContent);
+	Task<int> UpdatePost(int postId, string postContent);
+	Task<int> UpdatePostDislikeCount(int postId);
+	Task<int> UpdatePostLikeCount(int postId);
 }

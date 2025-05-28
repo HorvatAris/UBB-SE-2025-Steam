@@ -23,15 +23,16 @@ public class NewsRepository : INewsRepository
 	/// <param name="postId">Post that has to be updated given by its id</param>
 	/// <returns>The result of the update (successful or not)</returns>
 	/// <exception cref="Exception">Throw an error if the connection or the query execution failed</exception>
-	public int UpdatePostLikeCount(int postId)
+	public async Task<int> UpdatePostLikeCount(int postId)
 	{
 		var post = context.NewsPosts.Find(postId);
-		if (post == null)
+		if (post is null)
 		{
 			return 0;
 		}
 		post.NrLikes++;
-		return context.SaveChanges();
+
+		return await context.SaveChangesAsync();
 	}
 
 	/// <summary>
@@ -40,16 +41,18 @@ public class NewsRepository : INewsRepository
 	/// <param name="postId">Post that has to be updated given by its id</param>
 	/// <returns>The result of the update (successful or not)</returns>
 	/// <exception cref="Exception">Throw an error if the connection or the query execution failed</exception>
-	public int UpdatePostDislikeCount(int postId)
+	public async Task<int> UpdatePostDislikeCount(int postId)
 	{
 		var post = context.NewsPosts.Find(postId);
-		if (post == null)
+
+		if (post is null)
 		{
 			return 0;
 		}
 
 		post.NrDislikes++;
-		return context.SaveChanges();
+
+		return await context.SaveChangesAsync();
 	}
 
 	/// <summary>
@@ -60,16 +63,16 @@ public class NewsRepository : INewsRepository
 	/// <param name="ratingType">Type of the rating (negative/positive)</param>
 	/// <returns>The result of the query execution</returns>
 	/// <exception cref="Exception">Throw an error if the connection or the execution failed</exception>
-	public int AddRatingToPost(int postId, int userId, int ratingType)
+	public async Task<int> AddRatingToPost(int postId, int userId, int ratingType)
 	{
-		var rating = new PostRatingType
+		var rating = new Entities.PostRatingType
 		{
 			PostId = postId,
 			AuthorId = userId,
 			RatingType = ratingType == 1 ? true : false
 		};
 		context.NewsPostRatingTypes.Add(rating);
-		return context.SaveChanges();
+		return await context.SaveChangesAsync();
 	}
 
 	/// <summary>
@@ -79,7 +82,7 @@ public class NewsRepository : INewsRepository
 	/// <param name="userId">Author of the rating</param>
 	/// <returns>The result of the execution</returns>
 	/// <exception cref="Exception">Throw an error if the connection or the execution failed</exception>
-	public int RemoveRatingFromPost(int postId, int userId)
+	public async Task<int> RemoveRatingFromPost(int postId, int userId)
 	{
 		var rating = context.NewsPostRatingTypes.Find(postId, userId);
 		if (rating == null)
@@ -102,7 +105,7 @@ public class NewsRepository : INewsRepository
 		}
 
 		context.NewsPostRatingTypes.Remove(rating);
-		return context.SaveChanges();
+		return await context.SaveChangesAsync();
 	}
 
 	/// <summary>
@@ -114,7 +117,7 @@ public class NewsRepository : INewsRepository
 	/// <param name="commentDate">Date the comment is published</param>
 	/// <returns>The result of the execution</returns>
 	/// <exception cref="Exception">Throw an error if the connection or the execution failed</exception>
-	public int AddCommentToPost(int postId, string commentContent, int userId, DateTime commentDate)
+	public async Task<int> AddCommentToPost(int postId, string commentContent, int userId, DateTime commentDate)
 	{
 		var comment = new Entities.Comment
 		{
@@ -135,7 +138,7 @@ public class NewsRepository : INewsRepository
 		post.NrComments++;
 
 		context.NewsComments.Add(comment);
-		return context.SaveChanges();
+		return await context.SaveChangesAsync();
 	}
 
 	/// <summary>
@@ -145,7 +148,7 @@ public class NewsRepository : INewsRepository
 	/// <param name="commentContent">New contents of the comment</param>
 	/// <returns>The query execution result</returns>
 	/// <exception cref="Exception">Throw an error if the connection or execution failed</exception>
-	public int UpdateComment(int commentId, string commentContent)
+	public async Task<int> UpdateComment(int commentId, string commentContent)
 	{
 		var comment = context.NewsComments.Find(commentId);
 		if (comment == null)
@@ -154,7 +157,7 @@ public class NewsRepository : INewsRepository
 		}
 
 		comment.Content = commentContent;
-		return context.SaveChanges();
+		return await context.SaveChangesAsync();
 	}
 
 	/// <summary>
@@ -163,7 +166,7 @@ public class NewsRepository : INewsRepository
 	/// <param name="commentId">Target comment</param>
 	/// <returns>The result of the execution</returns>
 	/// <exception cref="Exception">Throw an error if the connection or the execution failed</exception>
-	public int DeleteCommentFromDatabase(int commentId)
+	public async Task<int> DeleteCommentFromDatabase(int commentId)
 	{
 		var comment = context.NewsComments.Find(commentId);
 		if (comment == null)
@@ -179,7 +182,7 @@ public class NewsRepository : INewsRepository
 		}
 
 		context.NewsComments.Remove(comment);
-		return context.SaveChanges();
+		return await context.SaveChangesAsync();
 	}
 
 	/// <summary>
