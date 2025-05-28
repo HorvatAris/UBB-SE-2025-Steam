@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SteamHub.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class MainMigration : Migration
+    public partial class MainMigr : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -998,7 +998,9 @@ namespace SteamHub.Api.Migrations
                     { 2, "FRIENDSHIP2", "Friendships", "You made 5 friends, you get 3 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 3 },
                     { 3, "FRIENDSHIP3", "Friendships", "You made 10 friends, you get 5 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 5 },
                     { 4, "FRIENDSHIP4", "Friendships", "You made 50 friends, you get 10 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 10 },
-                    { 5, "FRIENDSHIP5", "Friendships", "You made 100 friends, you get 15 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 15 }
+                    { 5, "FRIENDSHIP5", "Friendships", "You made 100 friends, you get 15 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 15 },
+                    { 6, "OWNEDGAMES1", "Owned Games", "You own 1 game, you get 1 point", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 1 },
+                    { 7, "OWNEDGAMES2", "Owned Games", "You own 5 games, you get 3 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 3 }
                 });
 
             migrationBuilder.InsertData(
