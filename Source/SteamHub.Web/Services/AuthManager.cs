@@ -16,15 +16,17 @@ namespace SteamHub.Web.Services
         private readonly HttpClient httpClient;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly ISessionService _sessionService;
+        private readonly IUserService userService;
 
         /// <summary>
         /// Constructs the AuthManager with HTTP client factory, HTTP context accessor, and session service.
         /// </summary>
-        public AuthManager(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor, ISessionService sessionService)
+        public AuthManager(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor, ISessionService sessionService, IUserService userService)
         {
             this.httpClient = httpClientFactory.CreateClient("SteamHubApi");
             this.httpContextAccessor = httpContextAccessor;
             _sessionService = sessionService;
+            this.userService = userService;
         }
 
         /// <inheritdoc />
@@ -41,6 +43,8 @@ namespace SteamHub.Web.Services
 
             var userForSession = new User { UserId = content.User.UserId };
             Guid sessionId = await _sessionService.CreateNewSessionAsync(userForSession);
+            // TEMPORARY: have to look if the other things are even needed
+            await this.userService.LoginAsync(emailOrUsername, password);
 
             var user = content.User;
             var claims = new List<Claim>

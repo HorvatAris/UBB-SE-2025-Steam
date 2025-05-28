@@ -88,7 +88,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                EnsureAuthorized();
+                // EnsureAuthorized();
                 return await GetAsync<User>($"User/{userId}");
             }
             catch

@@ -50,7 +50,7 @@ namespace SteamHub.Web.Controllers
                 Email = user.Email,
                 ProfilePhotoPath = user?.ProfilePicture ?? "/images/default-profile.png",
                 Biography = user?.Bio ?? "",
-                FriendCount = friendsService.GetFriendshipCount(userId),
+                FriendCount = 0, // friendsService.GetFriendshipCount(userId),
                 GameCollections = collections
             };
 
