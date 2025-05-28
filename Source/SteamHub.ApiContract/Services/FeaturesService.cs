@@ -128,11 +128,11 @@ namespace SteamHub.ApiContract.Services
                 throw new InvalidOperationException(validationResult.errorMessage);
             }
 
-            /* await userService.GetUserByIdentifier(userIdentifier);
+            var user = userService.GetUserByIdentifier(userIdentifier);
             if (user == null)
             {
                 throw new InvalidOperationException("User not found.");
-            }*/
+            }
 
             var balance = 0;// await walletService.GetBalanceAsync();
             if (balance < feature.Value)

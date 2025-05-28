@@ -39,7 +39,7 @@ namespace SteamHub
         private SessionServiceProxy sessionService;
         private PasswordResetServiceProxy passwordResetService;
         private WalletServiceProxy walletService;
-        
+        private FeaturesServiceProxy featuresService;
         private AchievementsServiceProxy achievementsService;
         private readonly IHttpClientFactory _httpClientFactory;
 
@@ -132,6 +132,7 @@ namespace SteamHub
                     this.cartService = null;
                     this.userGameService = null;
                     this.developerService = null;
+                    this.featuresService = null;
 
                     // Show login page
                     ShowLoginPage();
@@ -157,6 +158,7 @@ namespace SteamHub
 
             // Initialize services that require the logged-in user
             this.achievementsService = new AchievementsServiceProxy(_httpClientFactory);
+            this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
             this.tradeService = new TradeServiceProxy(_httpClientFactory, loggedInUser);
             this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory, loggedInUser);
             this.pointShopService = new PointShopServiceProxy(_httpClientFactory, loggedInUser);
@@ -174,7 +176,6 @@ namespace SteamHub
             // Navigate to home page
             this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
         }
-
 
         public void ResetToHomePage()
         {
@@ -223,6 +224,9 @@ namespace SteamHub
                         break;
                     case "AchievementsPage":
                         this.ContentFrame.Content = new AchievementsPage(this.userService, this.achievementsService);
+                        break;
+                    case "FeaturesPage":
+                        this.ContentFrame.Content = new FeaturesPage(this.featuresService, this.userService);
                         break;
                     case "Wallet":
                         this.ContentFrame.Navigate(typeof(WalletPage), this.walletService);
