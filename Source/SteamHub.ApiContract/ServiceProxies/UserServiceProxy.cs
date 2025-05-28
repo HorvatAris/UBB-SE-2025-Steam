@@ -72,11 +72,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public User GetUserByIdentifier(int userId)
+        public async Task<User> GetUserByIdentifierAsync(int userId)
         {
             try
             {
-                return GetAsync<User>($"User/{userId}").GetAwaiter().GetResult();
+                return await GetAsync<User>($"User/{userId}");
             }
             catch
             {
@@ -85,11 +85,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public User GetUserByEmail(string email)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
             try
             {
-                return GetAsync<User>($"User/email/{email}").GetAwaiter().GetResult();
+                return await GetAsync<User>($"User/email/{email}");
             }
             catch
             {
@@ -98,11 +98,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public User GetUserByUsername(string username)
+        public async Task<User> GetUserByUsernameAsync(string username)
         {
             try
             {
-                return GetAsync<User>($"User/username/{username}").GetAwaiter().GetResult();
+                return await GetAsync<User>($"User/username/{username}");
             }
             catch
             {
@@ -111,11 +111,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public void ValidateUserAndEmail(string email, string username)
+        public async Task ValidateUserAndEmailAsync(string email, string username)
         {
             try
             {
-                PostSync("User/validate", new { Email = email, Username = username });
+                await PostAsync("User/validate", new { Email = email, Username = username });
             }
             catch (Exception ex)
             {
@@ -124,11 +124,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public User CreateUser(User user)
+        public async Task<User> CreateUserAsync(User user)
         {
             try
             {
-                return PostSync<User>("User", user);
+                return await PostAsync<User>("User", user);
             }
             catch (Exception ex)
             {
@@ -137,11 +137,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public User UpdateUser(User user)
+        public async Task<User> UpdateUserAsync(User user)
         {
             try
             {
-                return PutAsync<User>($"User/{user.UserId}", user).GetAwaiter().GetResult();
+                return await PutAsync<User>($"User/{user.UserId}", user);
             }
             catch (Exception ex)
             {
@@ -150,11 +150,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public void DeleteUser(int userId)
+        public async Task DeleteUserAsync(int userId)
         {
             try
             {
-                DeleteAsync<object>($"User/{userId}").GetAwaiter().GetResult();
+                await DeleteAsync<object>($"User/{userId}");
             }
             catch (Exception ex)
             {
@@ -163,12 +163,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public bool AcceptChanges(int userId, string givenPassword)
+        public async Task<bool> AcceptChangesAsync(int userId, string givenPassword)
         {
             try
             {
-                return PostAsync<bool>($"User/{userId}/verify", new { Password = givenPassword })
-                    .GetAwaiter().GetResult();
+                return await PostAsync<bool>($"User/{userId}/verify", new { Password = givenPassword });
             }
             catch
             {
@@ -177,11 +176,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public void UpdateUserEmail(int userId, string newEmail)
+        public async Task UpdateUserEmailAsync(int userId, string newEmail)
         {
             try
             {
-                PutAsync<User>($"User/{userId}/email", new { Email = newEmail }).GetAwaiter().GetResult();
+                await PutAsync<User>($"User/{userId}/email", new { Email = newEmail });
             }
             catch (Exception ex)
             {
@@ -190,11 +189,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public void UpdateUserPassword(int userId, string newPassword)
+        public async Task UpdateUserPasswordAsync(int userId, string newPassword)
         {
             try
             {
-                PutAsync<User>($"User/{userId}/password", new { Password = newPassword }).GetAwaiter().GetResult();
+                await PutAsync<User>($"User/{userId}/password", new { Password = newPassword });
             }
             catch (Exception ex)
             {
@@ -203,11 +202,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public void UpdateUserUsername(int userId, string newUsername)
+        public async Task UpdateUserUsernameAsync(int userId, string newUsername)
         {
             try
             {
-                PutAsync<User>($"User/{userId}/username", new { Username = newUsername }).GetAwaiter().GetResult();
+                await PutAsync<User>($"User/{userId}/username", new { Username = newUsername });
             }
             catch (Exception ex)
             {
@@ -216,7 +215,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public User? GetCurrentUser()
+        public async Task<User?> GetCurrentUserAsync()
         {
             try
             {
@@ -238,17 +237,17 @@ namespace SteamHub.ApiContract.ServiceProxies
                 request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
                 Debug.WriteLine("Sending request to /api/Session/CurrentUser");
-                var response = _httpClient.SendAsync(request).GetAwaiter().GetResult();
+                var response = await _httpClient.SendAsync(request);
                 Debug.WriteLine($"Response status code: {response.StatusCode}");
                 
                 if (!response.IsSuccessStatusCode)
                 {
-                    var errorContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    var errorContent = await response.Content.ReadAsStringAsync();
                     Debug.WriteLine($"Failed to get current user. Status: {response.StatusCode}, Error: {errorContent}");
                     return null;
                 }
 
-                var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                var content = await response.Content.ReadAsStringAsync();
                 Debug.WriteLine($"Response content: {content}");
 
                 var user = JsonSerializer.Deserialize<User>(content, _jsonOptions);
@@ -279,15 +278,15 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public bool IsUserLoggedIn()
+        public async Task<bool> IsUserLoggedInAsync()
         {
             try
             {
-                var response = _httpClient.GetAsync("/api/Session/IsLoggedIn").GetAwaiter().GetResult();
+                var response = await _httpClient.GetAsync("/api/Session/IsLoggedIn");
                 if (!response.IsSuccessStatusCode)
                     return false;
 
-                return response.Content.ReadFromJsonAsync<bool>(_jsonOptions).GetAwaiter().GetResult();
+                return await response.Content.ReadFromJsonAsync<bool>(_jsonOptions);
             }
             catch (Exception ex)
             {
@@ -297,11 +296,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public bool UpdateUserUsername(string username, string currentPassword)
+        public async Task<bool> UpdateUserUsernameAsync(string username, string currentPassword)
         {
             try
             {
-                PostAsync("User/updateUsername", new { Username = username, CurrentPassword = currentPassword }).GetAwaiter().GetResult();
+                await PostAsync("User/updateUsername", new { Username = username, CurrentPassword = currentPassword });
                 return true;
             }
             catch
@@ -311,11 +310,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public bool UpdateUserPassword(string password, string currentPassword)
+        public async Task<bool> UpdateUserPasswordAsync(string password, string currentPassword)
         {
             try
             {
-                PostAsync("User/updatePassword", new { Password = password, CurrentPassword = currentPassword }).GetAwaiter().GetResult();
+                await PostAsync("User/updatePassword", new { Password = password, CurrentPassword = currentPassword });
                 return true;
             }
             catch
@@ -325,11 +324,11 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public bool UpdateUserEmail(string email, string currentPassword)
+        public async Task<bool> UpdateUserEmailAsync(string email, string currentPassword)
         {
             try
             {
-                PostAsync("User/updateEmail", new { Email = email, CurrentPassword = currentPassword }).GetAwaiter().GetResult();
+                await PostAsync("User/updateEmail", new { Email = email, CurrentPassword = currentPassword });
                 return true;
             }
             catch
@@ -339,16 +338,28 @@ namespace SteamHub.ApiContract.ServiceProxies
         }
 
         /// <inheritdoc/>
-        public bool VerifyUserPassword(string password)
+        public async Task<bool> VerifyUserPasswordAsync(string password)
         {
             try
             {
-                return PostAsync<bool>("User/verifyPassword", new { Password = password }).GetAwaiter().GetResult();
+                return await PostAsync<bool>("User/verifyPassword", new { Password = password });
             }
             catch
             {
                 return false;
             }
+        }
+
+        public async Task UpdateProfilePictureAsync(int userId, string profilePicturePath)
+        {
+            // IMPLEMENT
+            await Task.CompletedTask;
+        }
+
+        public async Task UpdateProfileBioAsync(int userId, string profileBio)
+        {
+            // IMPLEMENT
+            await Task.CompletedTask;
         }
 
         /// <inheritdoc/>

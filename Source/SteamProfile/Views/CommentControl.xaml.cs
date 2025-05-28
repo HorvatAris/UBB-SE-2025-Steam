@@ -104,7 +104,7 @@ namespace SteamProfile.Views
         {
             // Map the Comment entity to CommentDisplay
             var user = App.UserService.GetUserByIdentifier(commentModel.AuthorId);
-            var profile = App.UserProfileRepository.GetUserProfileByUserId(commentModel.AuthorId);
+            var profile = App.UserRepository.GetUserById(commentModel.AuthorId);
 
             var display = new ForumComment
             {

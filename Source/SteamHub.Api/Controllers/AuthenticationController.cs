@@ -92,7 +92,7 @@ public class AuthenticationController : ControllerBase
         User newUser;
         try
         {
-            newUser = userService.CreateUser(new User
+            newUser = await userService.CreateUserAsync(new SteamHub.ApiContract.Models.User.User
             {
                 Username = request.Username,
                 Email = request.Email,
