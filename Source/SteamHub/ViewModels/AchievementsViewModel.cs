@@ -69,6 +69,7 @@ namespace SteamHub.ViewModels
             this.currentUser = this.userService.GetCurrentUser();
             BackToProfileCommand = new RelayCommand(BackToProfile);
         }
+
         [RelayCommand]
         public async Task LoadAchievementsAsync()
         {

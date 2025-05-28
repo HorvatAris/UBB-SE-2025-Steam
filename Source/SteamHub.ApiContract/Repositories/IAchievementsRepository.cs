@@ -15,14 +15,14 @@ namespace SteamHub.ApiContract.Repositories
         AchievementUnlockedData GetUnlockedDataForAchievement(int userId, int achievementId);
         Task<bool> IsAchievementUnlocked(int userId, int achievementId);
         Task<List<AchievementWithStatus>> GetAchievementsWithStatusForUser(int userId);
-        int GetNumberOfSoldGames(int userId);
-        int GetFriendshipCount(int userId);
-        int GetNumberOfOwnedGames(int userId);
-        int GetNumberOfReviewsGiven(int userId);
-        int GetNumberOfReviewsReceived(int userId);
-        int GetNumberOfPosts(int userId);
-        int GetYearsOfAcftivity(int userId); // Note: Typo preserved to match original code
-        int? GetAchievementIdByName(string achievementName);
-        bool IsUserDeveloper(int userId);
+        Task<int> GetNumberOfSoldGames(int userId);
+        Task<int> GetFriendshipCount(int userId);
+        Task<int> GetNumberOfOwnedGames(int userId);
+        Task<int> GetNumberOfReviewsGiven(int userId);
+        Task<int> GetNumberOfReviewsReceived(int userId);
+        Task<int> GetNumberOfPosts(int userId);
+        Task<int> GetYearsOfAcftivity(int userId); // Note: Typo preserved to match original code
+        Task<int?> GetAchievementIdByName(string achievementName);
+        Task <bool> IsUserDeveloper(int userId);
     }
 }

@@ -165,18 +165,18 @@ namespace SteamHub.ApiContract.Services
         {
             try
             {
-                int numberOfSoldGames = achievementsRepository.GetNumberOfSoldGames(userId);
-                int numberOfFriends = achievementsRepository.GetFriendshipCount(userId);
-                int numberOfOwnedGames = achievementsRepository.GetNumberOfOwnedGames(userId);
-                int numberOfReviewsGiven = achievementsRepository.GetNumberOfReviewsGiven(userId);
-                int numberOfReviewsReceived = achievementsRepository.GetNumberOfReviewsReceived(userId);
-                int numberOfPosts = achievementsRepository.GetNumberOfPosts(userId);
-                int yearsOfActivity = achievementsRepository.GetYearsOfAcftivity(userId);
-                bool isDeveloper = achievementsRepository.IsUserDeveloper(userId);
+                int numberOfSoldGames = await achievementsRepository.GetNumberOfSoldGames(userId);
+                int numberOfFriends = await achievementsRepository.GetFriendshipCount(userId);
+                int numberOfOwnedGames = await achievementsRepository.GetNumberOfOwnedGames(userId);
+                int numberOfReviewsGiven = await achievementsRepository.GetNumberOfReviewsGiven(userId);
+                int numberOfReviewsReceived = await achievementsRepository.GetNumberOfReviewsReceived(userId);
+                int numberOfPosts = await achievementsRepository.GetNumberOfPosts(userId);
+                int yearsOfActivity = await achievementsRepository.GetYearsOfAcftivity(userId);
+                bool isDeveloper = await achievementsRepository.IsUserDeveloper(userId);
 
                 if (numberOfFriends == MilestoneLevel1 || numberOfFriends == MilestoneLevel5 || numberOfFriends == MilestoneLevel10 || numberOfFriends == MilestoneLevel50 || numberOfFriends == MilestoneLevel100)
                 {
-                    int? achievementId = GetAchievementIdByTypeAndCount(Categories.Friendships, numberOfFriends);
+                    int? achievementId = await GetAchievementIdByTypeAndCount(Categories.Friendships, numberOfFriends);
                     System.Diagnostics.Debug.WriteLine($"Achievement ID for friendships with count {numberOfFriends}: {achievementId}");
                     if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
@@ -187,7 +187,7 @@ namespace SteamHub.ApiContract.Services
 
                 if (numberOfOwnedGames == MilestoneLevel1 || numberOfOwnedGames == MilestoneLevel5 || numberOfOwnedGames == MilestoneLevel10 || numberOfOwnedGames == MilestoneLevel50)
                 {
-                    int? achievementId = GetAchievementIdByTypeAndCount(Categories.OwnedGames, numberOfOwnedGames);
+                    int? achievementId = await GetAchievementIdByTypeAndCount(Categories.OwnedGames, numberOfOwnedGames);
                     System.Diagnostics.Debug.WriteLine($"Achievement ID for owned games with count {numberOfOwnedGames}: {achievementId}");
                     if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
@@ -198,7 +198,7 @@ namespace SteamHub.ApiContract.Services
 
                 if (numberOfSoldGames == MilestoneLevel1 || numberOfSoldGames == MilestoneLevel5 || numberOfSoldGames == MilestoneLevel10 || numberOfSoldGames == MilestoneLevel50)
                 {
-                    int? achievementId = GetAchievementIdByTypeAndCount(Categories.SoldGames, numberOfSoldGames);
+                    int? achievementId = await GetAchievementIdByTypeAndCount(Categories.SoldGames, numberOfSoldGames);
                     System.Diagnostics.Debug.WriteLine($"Achievement ID for sold games with count {numberOfSoldGames}: {achievementId}");
                     if (achievementId.HasValue && !await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
@@ -209,7 +209,7 @@ namespace SteamHub.ApiContract.Services
 
                 if (numberOfReviewsGiven == MilestoneLevel1 || numberOfReviewsGiven == MilestoneLevel5 || numberOfReviewsGiven == MilestoneLevel10 || numberOfReviewsGiven == MilestoneLevel50)
                 {
-                    int? achievementId = GetAchievementIdByTypeAndCount(Categories.NumberOfReviewsGiven, numberOfReviewsGiven);
+                    int? achievementId = await GetAchievementIdByTypeAndCount(Categories.NumberOfReviewsGiven, numberOfReviewsGiven);
                     System.Diagnostics.Debug.WriteLine($"Achievement ID for reviews given with count {numberOfReviewsGiven}: {achievementId}");
                     if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
@@ -220,7 +220,7 @@ namespace SteamHub.ApiContract.Services
 
                 if (numberOfReviewsReceived == MilestoneLevel1 || numberOfReviewsReceived == MilestoneLevel5 || numberOfReviewsReceived == MilestoneLevel10 || numberOfReviewsReceived == MilestoneLevel50)
                 {
-                    int? achievementId = GetAchievementIdByTypeAndCount(Categories.NumberOfReviewsReceived, numberOfReviewsReceived);
+                    int? achievementId = await GetAchievementIdByTypeAndCount(Categories.NumberOfReviewsReceived, numberOfReviewsReceived);
                     System.Diagnostics.Debug.WriteLine($"Achievement ID for reviews received with count {numberOfReviewsReceived}: {achievementId}");
                     if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
@@ -231,7 +231,7 @@ namespace SteamHub.ApiContract.Services
 
                 if (numberOfPosts == MilestoneLevel1 || numberOfPosts == MilestoneLevel5 || numberOfPosts == MilestoneLevel10 || numberOfPosts == MilestoneLevel50)
                 {
-                    int? achievementId = GetAchievementIdByTypeAndCount(Categories.NumberOfPosts, numberOfPosts);
+                    int? achievementId = await GetAchievementIdByTypeAndCount(Categories.NumberOfPosts, numberOfPosts);
                     System.Diagnostics.Debug.WriteLine($"Achievement ID for posts with count {numberOfPosts}: {achievementId}");
                     if (achievementId.HasValue && ! await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
@@ -241,7 +241,7 @@ namespace SteamHub.ApiContract.Services
                 }
                 if (yearsOfActivity == MilestoneLevel1 || yearsOfActivity == MilestoneLevel2 || yearsOfActivity == MilestoneLevel3 || yearsOfActivity == MilestoneLevel4)
                 {
-                    int? achievementId = GetAchievementIdByTypeAndCount(Categories.YearsOfActivity, yearsOfActivity);
+                    int? achievementId = await GetAchievementIdByTypeAndCount(Categories.YearsOfActivity, yearsOfActivity);
                     System.Diagnostics.Debug.WriteLine($"Achievement ID for years of activity with count {yearsOfActivity}: {achievementId}");
                     if (achievementId.HasValue && !await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
@@ -252,7 +252,7 @@ namespace SteamHub.ApiContract.Services
 
                 if (isDeveloper)
                 {
-                    int? achievementId = GetAchievementIdByTypeAndCount(Categories.Developer, MilestoneLevel1);
+                    int? achievementId = await GetAchievementIdByTypeAndCount(Categories.Developer, MilestoneLevel1);
                     if (achievementId.HasValue && !await achievementsRepository.IsAchievementUnlocked(userId, achievementId.Value))
                     {
                         await achievementsRepository.UnlockAchievement(userId, achievementId.Value);
@@ -289,150 +289,150 @@ namespace SteamHub.ApiContract.Services
             }
         }
 
-        public int? GetAchievementIdByTypeAndCount(string type, int achievementsCount)
+        public async Task<int?> GetAchievementIdByTypeAndCount(string type, int achievementsCount)
         {
             if (type == Categories.Friendships)
             {
                 if (achievementsCount == MilestoneLevel1)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.FRIENDSHIP1);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.FRIENDSHIP1);
                 }
                 else if (achievementsCount == MilestoneLevel5)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.FRIENDSHIP2);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.FRIENDSHIP2);
                 }
                 else if (achievementsCount == MilestoneLevel10)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.FRIENDSHIP3);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.FRIENDSHIP3);
                 }
                 else if (achievementsCount == MilestoneLevel50)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.FRIENDSHIP4);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.FRIENDSHIP4);
                 }
                 else if (achievementsCount == MilestoneLevel100)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.FRIENDSHIP5);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.FRIENDSHIP5);
                 }
             }
             else if (type == Categories.OwnedGames)
             {
                 if (achievementsCount == MilestoneLevel1)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.OWNEDGAMES1);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.OWNEDGAMES1);
                 }
                 else if (achievementsCount == MilestoneLevel5)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.OWNEDGAMES2);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.OWNEDGAMES2);
                 }
                 else if (achievementsCount == MilestoneLevel10)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.OWNEDGAMES3);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.OWNEDGAMES3);
                 }
                 else if (achievementsCount == MilestoneLevel50)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.OWNEDGAMES4);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.OWNEDGAMES4);
                 }
             }
             else if (type == Categories.SoldGames)
             {
                 if (achievementsCount == MilestoneLevel1)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.SOLDGAMES1);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.SOLDGAMES1);
                 }
                 else if (achievementsCount == MilestoneLevel5)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.SOLDGAMES2);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.SOLDGAMES2);
                 }
                 else if (achievementsCount == MilestoneLevel10)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.SOLDGAMES3);
+                    return  await achievementsRepository.GetAchievementIdByName(AchievementNames.SOLDGAMES3);
                 }
                 else if (achievementsCount == MilestoneLevel50)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.SOLDGAMES4);
+                    return await  achievementsRepository.GetAchievementIdByName(AchievementNames.SOLDGAMES4);
                 }
             }
             else if (type == Categories.NumberOfReviewsGiven)
             {
                 if (achievementsCount == MilestoneLevel1)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEW1);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEW1);
                 }
                 else if (achievementsCount == MilestoneLevel5)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEW2);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEW2);
                 }
                 else if (achievementsCount == MilestoneLevel10)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEW3);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEW3);
                 }
                 else if (achievementsCount == MilestoneLevel50)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEW4);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEW4);
                 }
             }
             else if (type == Categories.NumberOfReviewsReceived)
             {
                 if (achievementsCount == MilestoneLevel1)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEWR1);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEWR1);
                 }
                 else if (achievementsCount == MilestoneLevel5)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEWR2);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEWR2);
                 }
                 else if (achievementsCount == MilestoneLevel10)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEWR3);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEWR3);
                 }
                 else if (achievementsCount == MilestoneLevel50)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEWR4);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.REVIEWR4);
                 }
             }
             else if (type == Categories.YearsOfActivity)
             {
                 if (achievementsCount == MilestoneLevel1)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.ACTIVITY1);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.ACTIVITY1);
                 }
                 else if (achievementsCount == MilestoneLevel2)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.ACTIVITY2);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.ACTIVITY2);
                 }
                 else if (achievementsCount == MilestoneLevel3)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.ACTIVITY3);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.ACTIVITY3);
                 }
                 else if (achievementsCount == MilestoneLevel4)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.ACTIVITY4);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.ACTIVITY4);
                 }
             }
             else if (type == Categories.NumberOfPosts)
             {
                 if (achievementsCount == MilestoneLevel1)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.POSTS1);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.POSTS1);
                 }
                 else if (achievementsCount == MilestoneLevel5)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.POSTS2);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.POSTS2);
                 }
                 else if (achievementsCount == MilestoneLevel10)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.POSTS3);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.POSTS3);
                 }
                 else if (achievementsCount == MilestoneLevel50)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.POSTS4);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.POSTS4);
                 }
             }
             else if (type == Categories.Developer)
             {
                 if (achievementsCount == MilestoneLevel1)
                 {
-                    return achievementsRepository.GetAchievementIdByName(AchievementNames.DEVELOPER);
+                    return await achievementsRepository.GetAchievementIdByName(AchievementNames.DEVELOPER);
                 }
             }
 
