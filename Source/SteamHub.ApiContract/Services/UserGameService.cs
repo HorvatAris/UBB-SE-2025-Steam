@@ -12,7 +12,6 @@ using SteamHub.ApiContract.Models.Game;
 using SteamHub.ApiContract.Models.Tag;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Models.UsersGames;
-using SteamHub.ApiContract.Proxies;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Services;
 using SteamHub.ApiContract.Services.Interfaces;
@@ -35,12 +34,13 @@ public class UserGameService : IUserGameService
     private const int ValueToIncrementPositionWith = 1;
 
 
-    public UserGameService(IUserRepository userRepository, IUsersGamesRepository userGameRepository, IGameRepository gameRepository, ITagRepository tagRepository)
+    public UserGameService(IUserRepository userRepository, IUsersGamesRepository userGameRepository, IGameRepository gameRepository, ITagRepository tagRepository, IWalletRepository walletRepository)
     {
         this.UserRepository = userRepository;
         this.UserGameRepository = userGameRepository;
         this.GameRepository = gameRepository;
         this.TagRepository = tagRepository;
+        this.WalletRepository = walletRepository;
     }
 
     // Property to track points earned in the last purchase
@@ -54,6 +54,8 @@ public class UserGameService : IUserGameService
     private IGameRepository GameRepository { get; set; }
 
     private ITagRepository TagRepository { get; set; }
+
+    private IWalletRepository WalletRepository { get; set; }
 
     public async Task RemoveGameFromWishlistAsync(UserGameRequest gameRequest)
     {
@@ -138,7 +140,7 @@ public class UserGameService : IUserGameService
 
         // Track user's points before purchase
         var user = await this.UserRepository.GetUserByIdAsync(purchaseRequest.UserId);
-        float pointsBalanceBefore = user.PointsBalance;
+        var pointsBalanceBefore = await this.WalletRepository.GetPointsFromWallet(purchaseRequest.UserId);
 
         // Purchase games
         foreach (var game in purchaseRequest.Games)
@@ -149,29 +151,32 @@ public class UserGameService : IUserGameService
                 GameId = game.GameId,
             };
             if (purchaseRequest.IsWalletPayment)
-                user.WalletBalance = user.WalletBalance - (float)game.Price;
+            {
+                await this.WalletRepository.BuyWithMoney(game.Price, user.UserId);
+            }
             await this.UserGameRepository.PurchaseGameAsync(request);
-
-            // await this.UserGameServiceProxy.RemoveFromWishlistAsync(request);
         }
 
         decimal totalSpent = purchaseRequest.Games.Sum(g => g.Price);
         int pointsToAward = (int)(totalSpent * 121);
-        user.PointsBalance += pointsToAward;
+
+        await this.WalletRepository.AddPointsToWallet(pointsToAward, user.UserId);
 
         // Calculate earned points by comparing balances
-        float pointsBalanceAfter = user.PointsBalance;
+        float pointsBalanceAfter = await this.WalletRepository.GetPointsFromWallet(user.UserId);
         this.LastEarnedPoints = (int)(pointsBalanceAfter - pointsBalanceBefore);
 
         var updateUserRequest = new UpdateUserRequest
         {
-            UserName = user.UserName,
+            UserName = user.Username,
             Email = user.Email,
-            WalletBalance = user.WalletBalance,
-            PointsBalance = user.PointsBalance,
+            WalletBalance = (decimal)(user.WalletBalance - (float)totalSpent),
+            PointsBalance = user.PointsBalance + pointsToAward,
+            UserRole = user.UserRole,
         };
 
         await this.UserRepository.UpdateUserAsync(user.UserId, updateUserRequest);
+
         return pointsToAward;
     }
 

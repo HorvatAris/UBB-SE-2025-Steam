@@ -14,7 +14,6 @@ namespace SteamHub.ApiContract.Services
     using SteamHub.ApiContract.Models.Item;
     using SteamHub.ApiContract.Models.User;
     using SteamHub.ApiContract.Models.UserInventory;
-    using SteamHub.ApiContract.Proxies;
     using SteamHub.ApiContract.Repositories;
     using SteamHub.ApiContract.Services;
     using SteamHub.ApiContract.Services.Interfaces;
@@ -180,10 +179,10 @@ namespace SteamHub.ApiContract.Services
 
             var userUpdateRequest = new UpdateUserRequest
             {
-                UserName = user.UserName,
+                UserName = user.Username,
                 Email = user.Email,
                 UserRole = user.UserRole,
-                WalletBalance = user.WalletBalance + item.Price,
+                WalletBalance = (decimal)(user.WalletBalance + item.Price),
                 PointsBalance = user.PointsBalance,
             };
 

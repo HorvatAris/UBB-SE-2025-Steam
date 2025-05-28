@@ -1,4 +1,4 @@
-﻿using SteamHub.ApiContract.Models;
+using SteamHub.ApiContract.Models;
 using SteamHub.ApiContract.Models.User;
 using System;
 using System.Collections.Generic;
