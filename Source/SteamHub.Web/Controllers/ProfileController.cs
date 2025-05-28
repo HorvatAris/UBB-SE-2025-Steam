@@ -38,7 +38,10 @@ namespace SteamHub.Web.Controllers
             }
 
             var user = userService.GetUserByIdentifierAsync(userId).Result;
-            if (user == null)
+            // FIX: CurrentUser is null, these are 100% Problems with web login
+            // var currentUser = userService.GetCurrentUserAsync().Result;
+            var currentUser = user;
+            if (user == null || currentUser == null)
                 return NotFound();
 
             var collections = collectionsService.GetLastThreeCollectionsForUser(userId).Result;
@@ -48,9 +51,11 @@ namespace SteamHub.Web.Controllers
                 UserIdentifier = user.UserId,
                 Username = user.Username,
                 Email = user.Email,
+                IsProfileOwner = user.UserId == currentUser.UserId,
+                IsDeveloper = user.IsDeveloper,
                 ProfilePhotoPath = user?.ProfilePicture ?? "/images/default-profile.png",
                 Biography = user?.Bio ?? "",
-                FriendCount = 0, // friendsService.GetFriendshipCount(userId),
+                FriendCount = friendsService.GetFriendshipCountAsync(userId).Result,
                 GameCollections = collections
             };
 

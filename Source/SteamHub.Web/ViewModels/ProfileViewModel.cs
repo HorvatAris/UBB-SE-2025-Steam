@@ -20,7 +20,8 @@ namespace SteamHub.Web.ViewModels
         public string ErrorMessage { get; set; }
         public AchievementWithStatus FriendshipsAchievement { get; set; }
         // Add more achievement properties as needed
-
+        public bool IsProfileOwner { get; set; }
+        public bool IsDeveloper { get; set; }
         // Equipped features
         public string EquippedFrameSource { get; set; }
         public string EquippedHatSource { get; set; }
