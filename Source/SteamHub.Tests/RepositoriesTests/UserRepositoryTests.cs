@@ -8,12 +8,11 @@ using SteamHub.Api.Context.Repositories;
 using SteamHub.Api.Entities;
 using SteamHub.ApiContract.Models.User;
 
-using EntityRoleEnum = SteamHub.Api.Entities.RoleEnum;
-using ContractRoleEnum = SteamHub.ApiContract.Models.User.RoleEnum;
 using User = SteamHub.Api.Entities.User;
 
 using Xunit;
 using SteamHub.ApiContract.Models.User;
+using SteamHub.ApiContract.Models.Common;
 
 namespace SteamHub.Tests.Repositories
 {
@@ -41,18 +40,18 @@ namespace SteamHub.Tests.Repositories
                 new User
                 {
                     UserId = 1,
-                    UserName = "Alice",
+                    Username = "Alice",
                     Email = "alice@example.com",
-                    RoleId = EntityRoleEnum.User,
+                    UserRole = UserRole.User,
                     WalletBalance = (float)100.0m,
                     PointsBalance = 500
                 },
                 new User
                 {
                     UserId = 2,
-                    UserName = "Bob",
+                    Username = "Bob",
                     Email = "bob@example.com",
-                    RoleId = EntityRoleEnum.Developer,
+                    UserRole = UserRole.Developer,
                     WalletBalance = (float)200.0m,
                     PointsBalance = 1000
                 }
@@ -82,7 +81,7 @@ namespace SteamHub.Tests.Repositories
             var result = await _repository.GetUserByIdAsync(1);
 
             Assert.NotNull(result);
-            Assert.Equal("Alice", result.UserName);
+            Assert.Equal("Alice", result.Username);
         }
 
         [Fact]
@@ -103,7 +102,7 @@ namespace SteamHub.Tests.Repositories
             {
                 UserName = "Charlie",
                 Email = "charlie@example.com",
-                Role = ContractRoleEnum.Developer,
+                UserRole = UserRole.Developer,
                 WalletBalance = (float)50.0m,
                 PointsBalance = 250
             };
@@ -112,7 +111,7 @@ namespace SteamHub.Tests.Repositories
 
             Assert.NotNull(response);
             var newUser = await _mockContext.Users.FindAsync(response.UserId);
-            Assert.Equal("Charlie", newUser.UserName);
+            Assert.Equal("Charlie", newUser.Username);
         }
 
         [Fact]
@@ -122,7 +121,7 @@ namespace SteamHub.Tests.Repositories
             {
                 UserName = "Alice Updated",
                 Email = "alice.updated@example.com",
-                Role = ContractRoleEnum.User,
+                UserRole = UserRole.User,
                 WalletBalance = (float)150.0m,
                 PointsBalance = 750
             };
@@ -130,9 +129,9 @@ namespace SteamHub.Tests.Repositories
             await _repository.UpdateUserAsync(1, request);
             var updatedUser = await _mockContext.Users.FindAsync(1);
 
-            Assert.Equal("Alice Updated", updatedUser.UserName);
+            Assert.Equal("Alice Updated", updatedUser.Username);
             Assert.Equal("alice.updated@example.com", updatedUser.Email);
-            Assert.Equal((int)ContractRoleEnum.User, (int)updatedUser.RoleId);
+            Assert.Equal((int)UserRole.User, (int)updatedUser.UserRole);
         }
 
         [Fact]
@@ -142,7 +141,7 @@ namespace SteamHub.Tests.Repositories
             {
                 UserName = "Ghost",
                 Email = "ghost@example.com",
-                Role = ContractRoleEnum.User,
+                UserRole = UserRole.User,
                 WalletBalance = 0,
                 PointsBalance = 0
             };
