@@ -10,7 +10,7 @@ public class UpdateUserRequest
 
     public decimal WalletBalance { get; set; }
 
-    public float PointsBalance { get; set; }
+    public int PointsBalance { get; set; }
 
     public UserRole UserRole { get; set; }
 }

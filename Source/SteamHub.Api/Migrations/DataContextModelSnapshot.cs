@@ -531,11 +531,16 @@ namespace SteamHub.Api.Migrations
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PostId1")
+                        .HasColumnType("int");
+
                     b.HasKey("CommentId");
 
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("PostId");
+
+                    b.HasIndex("PostId1");
 
                     b.ToTable("NewsComments");
                 });
@@ -3033,10 +3038,14 @@ namespace SteamHub.Api.Migrations
                         .IsRequired();
 
                     b.HasOne("SteamHub.Api.Entities.Post", "Post")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.Post", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId1");
 
                     b.Navigation("Author");
 
@@ -3283,7 +3292,7 @@ namespace SteamHub.Api.Migrations
                     b.HasOne("SteamHub.Api.Entities.Post", "Post")
                         .WithMany()
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Author");

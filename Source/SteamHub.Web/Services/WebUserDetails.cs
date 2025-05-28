@@ -8,8 +8,8 @@ namespace SteamHub.Web.Services;
 public class WebUserDetails : IUserDetails
 {
     private readonly IHttpContextAccessor httpContextAccessor;
-    private float _walletBalance;
-    private float _pointsBalance;
+    private decimal _walletBalance;
+    private int _pointsBalance;
 
     public WebUserDetails(IHttpContextAccessor httpContextAccessor)
     {
@@ -22,12 +22,12 @@ public class WebUserDetails : IUserDetails
         var walletStr = httpContextAccessor.HttpContext?.Session.GetString("WalletBalance");
         var pointsStr = httpContextAccessor.HttpContext?.Session.GetString("PointsBalance");
 
-        if (float.TryParse(walletStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var wallet))
+        if (decimal.TryParse(walletStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var wallet))
         {
             _walletBalance = wallet;
         }
 
-        if (float.TryParse(pointsStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var points))
+        if (int.TryParse(pointsStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var points))
         {
             _pointsBalance = points;
         }
@@ -35,7 +35,7 @@ public class WebUserDetails : IUserDetails
 
     public int UserId => int.Parse(GetClaimValue(ClaimTypes.NameIdentifier)!);
 
-    public float PointsBalance
+    public int PointsBalance
     {
         get => _pointsBalance;
         set
@@ -51,7 +51,7 @@ public class WebUserDetails : IUserDetails
     public string Password => GetClaimValue(ClaimTypes.Hash)!;
     public string Email => GetClaimValue(ClaimTypes.Email)!;
 
-    public float WalletBalance
+    public decimal WalletBalance
     {
         get => _walletBalance;
         set

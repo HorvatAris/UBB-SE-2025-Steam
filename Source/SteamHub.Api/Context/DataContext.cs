@@ -1600,6 +1600,11 @@ namespace SteamHub.Api.Context
 
                 entity.Ignore(c => c.NrLikes);
                 entity.Ignore(c => c.NrDislikes);
+
+				entity.HasOne(c => c.Post)
+					.WithMany()
+					.HasForeignKey(c => c.PostId)
+					.OnDelete(DeleteBehavior.Cascade);
             });
 
             // -- NewsRating mapping -----------------------------------------------------
@@ -1613,12 +1618,12 @@ namespace SteamHub.Api.Context
                 entity.HasOne(r => r.Post)
                     .WithMany()
                     .HasForeignKey(r => r.PostId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(r => r.Author)
                     .WithMany()
                     .HasForeignKey(r => r.AuthorId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // -- PasswordResetCode mapping -----------------------------------------------

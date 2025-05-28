@@ -23,4 +23,10 @@
     <ProjectReference Include="..\SteamHub.ApiContract\SteamHub.ApiContract.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AdditionalFiles Include="Views\Reviews\Create.cshtml" />
+    <AdditionalFiles Include="Views\Reviews\Edit.cshtml" />
+    <AdditionalFiles Include="Views\Reviews\Index.cshtml" />
+  </ItemGroup>
+
 </Project>
