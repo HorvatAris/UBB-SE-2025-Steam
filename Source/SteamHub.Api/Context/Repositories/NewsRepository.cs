@@ -332,7 +332,7 @@ public class NewsRepository : INewsRepository
 
 		foreach (var post in query)
 		{
-			var rating = context.NewsPostRatingTypes.Find(post.Id, userId);
+			var rating = await context.NewsPostRatingTypes.FindAsync(post.Id, userId);
 			post.ActiveUserRating = rating != null ? rating.RatingType : null;
 		}
 		return query;
