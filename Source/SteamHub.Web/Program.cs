@@ -30,6 +30,7 @@ builder.Services.AddScoped<IInventoryService, InventoryServiceProxy>();
 builder.Services.AddScoped<ITradeService, TradeServiceProxy>();
 builder.Services.AddScoped<IMarketplaceService, MarketplaceServiceProxy>();
 builder.Services.AddScoped<IAchievementsService, AchievementsServiceProxy>();
+builder.Services.AddScoped<IWalletService, WalletServiceProxy>();
 
 var apiBaseUri = new Uri(builder.Configuration["ApiSettings:BaseUrl"]!);
 
