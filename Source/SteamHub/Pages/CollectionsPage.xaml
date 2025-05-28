@@ -137,13 +137,9 @@
                         </DataTemplate>  
                     </ItemsControl.ItemTemplate>  
                 </ItemsControl>  
-            </ScrollViewer>  
+            </ScrollViewer>
 
-            <ProgressRing IsActive="{Binding IsLoading}"  
-                         Width="50"  
-                         Height="50"  
-                         HorizontalAlignment="Center"  
-                         VerticalAlignment="Center"/>  
+            <Frame x:Name="ContentFrame" Grid.Row="3"/>
         </Grid>  
     </Grid>  
 </Page>

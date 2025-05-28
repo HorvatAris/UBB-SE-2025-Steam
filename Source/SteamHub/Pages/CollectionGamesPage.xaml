@@ -14,7 +14,8 @@
 
     <Grid x:Name="RootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">  
         <Grid.Resources>  
-            <converters:GameCountToStringConverter x:Key="GameCountToStringConverter"/>  
+            <converters:GameCountToStringConverter x:Key="GameCountToStringConverter"/>
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <DataTemplate x:Key="GameItemTemplate" x:DataType="models:OwnedGame">  
                 <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"  
                         CornerRadius="8"  
@@ -211,6 +212,9 @@
                    Foreground="{ThemeResource SystemFillColorCriticalBrush}"  
                    HorizontalAlignment="Center"  
                    VerticalAlignment="Center"  
-                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>  
-    </Grid>  
+                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+        <Frame x:Name="ContentFrame" Grid.Row="3"/>
+
+    </Grid>
+
 </Page> 

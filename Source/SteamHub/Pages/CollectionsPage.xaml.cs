@@ -47,11 +47,13 @@ namespace SteamHub.Pages
 
         private CollectionsViewModel collectionsViewModel;
         private UsersViewModel usersViewModel;
-
+        private readonly ICollectionsService collectionsService;
+        private readonly IUserService userService;
         public CollectionsPage(ICollectionsService collectionsService, IUserService userService)
         {
             this.InitializeComponent();
-
+            this.collectionsService = collectionsService;
+            this.userService = userService;
             collectionsViewModel = new CollectionsViewModel(collectionsService , userService);
             LoadCollectionsAsync();
 
@@ -78,12 +80,9 @@ namespace SteamHub.Pages
         {
             if (sender is Button button && button.CommandParameter is Collection collection)
             {
-                // Safe cast and null-check
-                if ((MainWindow)SteamHub.App.MainWindow is MainWindow mainWindow)
-                {
-                    var frame = ((MainWindow)SteamHub.App.MainWindow).MainContentFrame;
-                    frame.Navigate(typeof(CollectionGamesPage), (collection.CollectionId, collection.CollectionName));
-                }
+                // Example: assuming you have access to the required services
+                var collectionGamesPage = new CollectionGamesPage(collectionsService, userService);
+                ContentFrame.Content = collectionGamesPage;
             }
         }
 

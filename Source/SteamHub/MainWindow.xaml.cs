@@ -269,6 +269,8 @@ namespace SteamHub
                         break;
 					case "CollectionsPage":
                         this.ContentFrame.Content = new CollectionsPage(this.collectionServiceProxy , this.userService);
+                        //this.ContentFrame.Navigate(typeof(CollectionsPage), (this.collectionServiceProxy, this.userService));
+
                         break;
                     default:
                         Debug.WriteLine($"Unknown page tag: {tag}");
