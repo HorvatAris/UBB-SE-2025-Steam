@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SteamHub.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class MainMigration : Migration
+    public partial class MainMIgration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -716,7 +716,8 @@ namespace SteamHub.Api.Migrations
                     PostId = table.Column<int>(type: "int", nullable: false),
                     AuthorId = table.Column<int>(type: "int", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PostId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -727,6 +728,11 @@ namespace SteamHub.Api.Migrations
                         principalTable: "NewsPosts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_NewsComments_NewsPosts_PostId1",
+                        column: x => x.PostId1,
+                        principalTable: "NewsPosts",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_NewsComments_Users_AuthorId",
                         column: x => x.AuthorId,
@@ -749,7 +755,8 @@ namespace SteamHub.Api.Migrations
                         name: "FK_NewsPostRatingTypes_NewsPosts_PostId",
                         column: x => x.PostId,
                         principalTable: "NewsPosts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_NewsPostRatingTypes_Users_AuthorId",
                         column: x => x.AuthorId,
@@ -1032,7 +1039,9 @@ namespace SteamHub.Api.Migrations
                     { 2, "FRIENDSHIP2", "Friendships", "You made 5 friends, you get 3 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 3 },
                     { 3, "FRIENDSHIP3", "Friendships", "You made 10 friends, you get 5 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 5 },
                     { 4, "FRIENDSHIP4", "Friendships", "You made 50 friends, you get 10 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 10 },
-                    { 5, "FRIENDSHIP5", "Friendships", "You made 100 friends, you get 15 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 15 }
+                    { 5, "FRIENDSHIP5", "Friendships", "You made 100 friends, you get 15 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 15 },
+                    { 6, "OWNEDGAMES1", "Owned Games", "You own 1 game, you get 1 point", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 1 },
+                    { 7, "OWNEDGAMES2", "Owned Games", "You own 5 games, you get 3 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -1153,7 +1162,19 @@ namespace SteamHub.Api.Migrations
                     { 7, 8, 5, null },
                     { 8, 6, 4, null },
                     { 9, 7, 4, null },
-                    { 10, 7, 6, null }
+                    { 10, 7, 6, null },
+                    { 11, 5, 1, null },
+                    { 12, 5, 2, null },
+                    { 13, 5, 3, null },
+                    { 14, 5, 4, null },
+                    { 15, 5, 6, null },
+                    { 16, 5, 7, null },
+                    { 17, 5, 8, null },
+                    { 18, 3, 1, null },
+                    { 19, 3, 2, null },
+                    { 20, 4, 3, null },
+                    { 21, 8, 6, null },
+                    { 22, 2, 1, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1230,14 +1251,14 @@ namespace SteamHub.Api.Migrations
                 columns: new[] { "WalletId", "Balance", "Points", "UserId" },
                 values: new object[,]
                 {
-                    { 1, 200m, 10, 1 },
-                    { 2, 200m, 10, 2 },
-                    { 3, 200m, 10, 3 },
-                    { 4, 200m, 10, 4 },
-                    { 5, 200m, 10, 5 },
-                    { 6, 200m, 10, 6 },
-                    { 7, 200m, 10, 7 },
-                    { 8, 200m, 10, 8 }
+                    { 1, 500m, 6000, 1 },
+                    { 2, 420m, 5000, 2 },
+                    { 3, 390m, 5000, 3 },
+                    { 4, 780m, 6000, 4 },
+                    { 5, 5500m, 7000, 5 },
+                    { 6, 950m, 6000, 6 },
+                    { 7, 3300m, 4000, 7 },
+                    { 8, 1100m, 5000, 8 }
                 });
 
             migrationBuilder.InsertData(
@@ -1535,6 +1556,11 @@ namespace SteamHub.Api.Migrations
                 name: "IX_NewsComments_PostId",
                 table: "NewsComments",
                 column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NewsComments_PostId1",
+                table: "NewsComments",
+                column: "PostId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NewsPostRatingTypes_AuthorId",

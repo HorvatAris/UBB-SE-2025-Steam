@@ -12,8 +12,8 @@ using SteamHub.Api.Context;
 namespace SteamHub.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250528213105_MainMigration")]
-    partial class MainMigration
+    [Migration("20250528220053_MainMIgration")]
+    partial class MainMIgration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -312,6 +312,24 @@ namespace SteamHub.Api.Migrations
                             Description = "You made 100 friends, you get 15 points",
                             Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
                             Points = 15
+                        },
+                        new
+                        {
+                            AchievementId = 6,
+                            AchievementName = "OWNEDGAMES1",
+                            AchievementType = "Owned Games",
+                            Description = "You own 1 game, you get 1 point",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                            Points = 1
+                        },
+                        new
+                        {
+                            AchievementId = 7,
+                            AchievementName = "OWNEDGAMES2",
+                            AchievementType = "Owned Games",
+                            Description = "You own 5 games, you get 3 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                            Points = 3
                         });
                 });
 
@@ -516,11 +534,16 @@ namespace SteamHub.Api.Migrations
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PostId1")
+                        .HasColumnType("int");
+
                     b.HasKey("CommentId");
 
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("PostId");
+
+                    b.HasIndex("PostId1");
 
                     b.ToTable("NewsComments");
                 });
@@ -870,6 +893,78 @@ namespace SteamHub.Api.Migrations
                         {
                             FriendshipId = 10,
                             FriendId = 7,
+                            UserId = 6
+                        },
+                        new
+                        {
+                            FriendshipId = 11,
+                            FriendId = 5,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            FriendshipId = 12,
+                            FriendId = 5,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            FriendshipId = 13,
+                            FriendId = 5,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            FriendshipId = 14,
+                            FriendId = 5,
+                            UserId = 4
+                        },
+                        new
+                        {
+                            FriendshipId = 15,
+                            FriendId = 5,
+                            UserId = 6
+                        },
+                        new
+                        {
+                            FriendshipId = 16,
+                            FriendId = 5,
+                            UserId = 7
+                        },
+                        new
+                        {
+                            FriendshipId = 17,
+                            FriendId = 5,
+                            UserId = 8
+                        },
+                        new
+                        {
+                            FriendshipId = 22,
+                            FriendId = 2,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            FriendshipId = 18,
+                            FriendId = 3,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            FriendshipId = 19,
+                            FriendId = 3,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            FriendshipId = 20,
+                            FriendId = 4,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            FriendshipId = 21,
+                            FriendId = 8,
                             UserId = 6
                         });
                 });
@@ -2787,57 +2882,57 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             WalletId = 1,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 500m,
+                            Points = 6000,
                             UserId = 1
                         },
                         new
                         {
                             WalletId = 2,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 420m,
+                            Points = 5000,
                             UserId = 2
                         },
                         new
                         {
                             WalletId = 3,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 390m,
+                            Points = 5000,
                             UserId = 3
                         },
                         new
                         {
                             WalletId = 4,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 780m,
+                            Points = 6000,
                             UserId = 4
                         },
                         new
                         {
                             WalletId = 5,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 5500m,
+                            Points = 7000,
                             UserId = 5
                         },
                         new
                         {
                             WalletId = 6,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 950m,
+                            Points = 6000,
                             UserId = 6
                         },
                         new
                         {
                             WalletId = 7,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 3300m,
+                            Points = 4000,
                             UserId = 7
                         },
                         new
                         {
                             WalletId = 8,
-                            Balance = 200m,
-                            Points = 10,
+                            Balance = 1100m,
+                            Points = 5000,
                             UserId = 8
                         });
                 });
@@ -2946,10 +3041,14 @@ namespace SteamHub.Api.Migrations
                         .IsRequired();
 
                     b.HasOne("SteamHub.Api.Entities.Post", "Post")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.Post", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId1");
 
                     b.Navigation("Author");
 
@@ -3196,7 +3295,7 @@ namespace SteamHub.Api.Migrations
                     b.HasOne("SteamHub.Api.Entities.Post", "Post")
                         .WithMany()
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Author");
