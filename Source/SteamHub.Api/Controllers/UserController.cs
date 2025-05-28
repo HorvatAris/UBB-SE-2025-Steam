@@ -236,7 +236,6 @@ namespace SteamHub.Api.Controllers
         }
 
         [HttpPost("updatePFP")]
-        [Authorize]
         public async Task<IActionResult> UpdatePFP([FromBody] PFPChangeRequest request)
         {
             var user = await userService.GetCurrentUserAsync();
@@ -245,7 +244,7 @@ namespace SteamHub.Api.Controllers
                 return Unauthorized();
             }
 
-            var result = await userService.UpdateProfilePictureAsync(request.ProfilePicutre);
+            var result = await userService.UpdateProfilePictureAsync(request.ProfilePicture);
             if (result)
             {
                 return Ok();
@@ -275,7 +274,7 @@ namespace SteamHub.Api.Controllers
 
     public class PFPChangeRequest
     {
-        public string ProfilePicutre { get; set; }
+        public string ProfilePicture { get; set; }
     }
 
     public class EmailUpdateRequest

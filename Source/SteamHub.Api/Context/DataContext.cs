@@ -1849,7 +1849,7 @@ namespace SteamHub.Api.Context
                 entity.Property(up => up.Bio);
                 entity.Property(up => up.LastModified)
                     .HasDefaultValueSql("GETDATE()");
-                entity.Ignore(up => up.ProfilePicture);
+                entity.Property(up => up.ProfilePicture);
 
                 entity.HasMany(u => u.NewsPosts)
                     .WithOne(p => p.Author)
