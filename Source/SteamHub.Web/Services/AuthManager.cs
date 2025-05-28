@@ -40,7 +40,7 @@ namespace SteamHub.Web.Services
                 return false;
 
             var userForSession = new User { UserId = content.User.UserId };
-            Guid sessionId = _sessionService.CreateNewSession(userForSession);
+            Guid sessionId = await _sessionService.CreateNewSessionAsync(userForSession);
 
             var user = content.User;
             var claims = new List<Claim>
