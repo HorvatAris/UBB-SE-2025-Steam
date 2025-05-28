@@ -182,7 +182,7 @@ namespace SteamHub.ApiContract.Services
                 UserName = user.Username,
                 Email = user.Email,
                 UserRole = user.UserRole,
-                WalletBalance = user.WalletBalance + item.Price,
+                WalletBalance = (decimal)(user.WalletBalance + item.Price),
                 PointsBalance = user.PointsBalance,
             };
 
