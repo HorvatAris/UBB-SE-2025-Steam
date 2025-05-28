@@ -23,6 +23,7 @@ namespace SteamHub.ViewModels
         [RelayCommand]
         private void NavigateToFeatures()
         {
+            //  Change like the rest
             frame.Navigate(typeof(FeaturesPage));
         }
 
@@ -42,7 +43,7 @@ namespace SteamHub.ViewModels
         [RelayCommand]
         private void NavigateToAccountSettings()
         {
-            frame.Navigate(typeof(AccountSettingsPage));
+            frame.Content = new AccountSettingsPage(this.frame, this.userService);
         }
     }
 }

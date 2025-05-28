@@ -52,6 +52,6 @@ namespace SteamHub.ApiContract.Services.Interfaces
         Task<List<User>> GetAllUsersAsync();
 
         Task<bool> UpdateProfilePictureAsync(string profilePicturePath);
-        Task UpdateProfileBioAsync(int userId, string profileBio);
+        Task<bool> UpdateProfileBioAsync(string profileBio);
     }
 }

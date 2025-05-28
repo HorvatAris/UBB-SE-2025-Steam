@@ -120,7 +120,7 @@ namespace SteamHub.ViewModels
                     // Save new description if changed
                     if (Description != originalDescription)
                     {
-                        await App.UserService.UpdateProfileBioAsync(userIdentifier, Description);
+                        await userService.UpdateProfileBioAsync(Description);
                         originalDescription = Description;
                         changesMade = true;
                     }

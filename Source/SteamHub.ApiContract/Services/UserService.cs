@@ -165,7 +165,11 @@ namespace SteamHub.ApiContract.Services
             return true;
         }
 
-        public async Task UpdateProfileBioAsync(int userId, string profileBio) 
-            => await userRepository.UpdateProfileBioAsync(userId, profileBio);
+        public async Task<bool> UpdateProfileBioAsync(string profileBio)
+        {
+            var currentUser = await GetCurrentUserAsync();
+            await userRepository.UpdateProfileBioAsync(currentUser.UserId, profileBio);
+            return true;
+        }
     }
 }

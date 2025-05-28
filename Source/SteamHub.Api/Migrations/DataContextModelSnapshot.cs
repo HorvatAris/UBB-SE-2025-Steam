@@ -2129,6 +2129,11 @@ namespace SteamHub.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PointsBalance")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
                     b.Property<string>("ProfilePicture")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2139,6 +2144,11 @@ namespace SteamHub.Api.Migrations
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("WalletBalance")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
 
                     b.HasKey("UserId");
 
@@ -2154,9 +2164,11 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
+                            PointsBalance = 6000,
                             ProfilePicture = "https://i.imgur.com/vixhhkC.jpeg",
                             UserRole = 1,
-                            Username = "GabeN"
+                            Username = "GabeN",
+                            WalletBalance = 500m
                         },
                         new
                         {
@@ -2167,9 +2179,11 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG",
+                            PointsBalance = 5000,
                             ProfilePicture = "",
                             UserRole = 1,
-                            Username = "MattN"
+                            Username = "MattN",
+                            WalletBalance = 420m
                         },
                         new
                         {
@@ -2180,9 +2194,11 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq",
+                            PointsBalance = 5000,
                             ProfilePicture = "",
                             UserRole = 1,
-                            Username = "JohnC"
+                            Username = "JohnC",
+                            WalletBalance = 390m
                         },
                         new
                         {
@@ -2193,9 +2209,11 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6",
+                            PointsBalance = 6000,
                             ProfilePicture = "",
                             UserRole = 0,
-                            Username = "AliceJ"
+                            Username = "AliceJ",
+                            WalletBalance = 780m
                         },
                         new
                         {
@@ -2206,9 +2224,11 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a",
+                            PointsBalance = 7000,
                             ProfilePicture = "",
                             UserRole = 0,
-                            Username = "LiamG"
+                            Username = "LiamG",
+                            WalletBalance = 5500m
                         },
                         new
                         {
@@ -2219,9 +2239,11 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y",
+                            PointsBalance = 6000,
                             ProfilePicture = "",
                             UserRole = 0,
-                            Username = "SophieW"
+                            Username = "SophieW",
+                            WalletBalance = 950m
                         },
                         new
                         {
@@ -2232,9 +2254,11 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu",
+                            PointsBalance = 4000,
                             ProfilePicture = "",
                             UserRole = 0,
-                            Username = "NoahS"
+                            Username = "NoahS",
+                            WalletBalance = 3300m
                         },
                         new
                         {
@@ -2245,9 +2269,11 @@ namespace SteamHub.Api.Migrations
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC",
+                            PointsBalance = 5000,
                             ProfilePicture = "",
                             UserRole = 0,
-                            Username = "EmilyB"
+                            Username = "EmilyB",
+                            WalletBalance = 1100m
                         });
                 });
 

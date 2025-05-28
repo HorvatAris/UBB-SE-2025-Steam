@@ -380,7 +380,6 @@ namespace SteamHub.ApiContract.ServiceProxies
             try
             {
                 EnsureAuthorized();
-                // IMPLEMENT
                 await PostAsync("User/updatePFP", new { ProfilePicture = profilePicturePath });
                 return true;
             }
@@ -390,13 +389,13 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task UpdateProfileBioAsync(int userId, string profileBio)
+        public async Task<bool> UpdateProfileBioAsync(string profileBio)
         {
             try
             {
                 EnsureAuthorized();
-                // IMPLEMENT
-                await Task.CompletedTask;
+                await PostAsync("User/updateBio", new { Bio = profileBio });
+                return true;
             }
             catch (Exception ex)
             {
