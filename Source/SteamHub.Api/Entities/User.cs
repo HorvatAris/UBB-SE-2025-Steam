@@ -22,6 +22,10 @@ namespace SteamHub.Api.Entities
         
         public DateTime? LastLogin { get; set; }
 
+        public decimal WalletBalance { get; set; }
+
+        public int PointsBalance { get; set; }
+
         public Wallet Wallet { get; set; }
 
         public string ProfilePicture { get; set; }

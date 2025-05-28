@@ -30,12 +30,15 @@ namespace SteamHub.ApiContract.Services
         private const int InitialIndexUserItems = 0;
         private const string FilterTypeAll = "All";
 
-        public PointShopService(IPointShopItemRepository pointShopItemRepository, IUserPointShopItemInventoryRepository userPointShopItemInventoryRepository, IUserRepository userRepository)
+        public PointShopService(IPointShopItemRepository pointShopItemRepository, IUserPointShopItemInventoryRepository userPointShopItemInventoryRepository, IUserRepository userRepository, IWalletRepository walletRepository)
         {
             this.PointShopItemRepository = pointShopItemRepository;
             this.UserPointShopItemInventoryRepository = userPointShopItemInventoryRepository;
             this.UserRepository = userRepository;
+            this.WalletRepository = walletRepository;
         }
+
+        public IWalletRepository WalletRepository { get; set; }
 
         public IPointShopItemRepository PointShopItemRepository { get; set; }
 
@@ -126,12 +129,14 @@ namespace SteamHub.ApiContract.Services
                 {
                     UserName = user.Username,
                     Email = user.Email,
-                    WalletBalance = user.WalletBalance,
+                    WalletBalance = (decimal)user.WalletBalance,
                     PointsBalance = user.PointsBalance,
                     UserRole = user.UserRole,
                 };
 
                 await this.UserRepository.UpdateUserAsync(user.UserId, updateUserRequest);
+
+                await this.WalletRepository.BuyWithPoints((int)item.PointPrice, user.UserId);
             }
             catch (Exception exception)
             {
