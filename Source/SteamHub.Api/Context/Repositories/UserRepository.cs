@@ -30,8 +30,6 @@ namespace SteamHub.Api.Context.Repositories
                 Username = userEntity.Username,
                 Password = userEntity.Password,
                 Email = userEntity.Email,
-                WalletBalance = userEntity.WalletBalance,
-                PointsBalance = userEntity.PointsBalance,
                 UserRole = userEntity.UserRole,
                 CreatedAt = userEntity.CreatedAt,
                 LastLogin = userEntity.LastLogin,
@@ -62,8 +60,6 @@ namespace SteamHub.Api.Context.Repositories
         {
             userEntity.Username = userDto.Username;
             userEntity.Email = userDto.Email;
-            userEntity.WalletBalance = userDto.WalletBalance;
-            userEntity.PointsBalance = userDto.PointsBalance;
             userEntity.UserRole = userDto.UserRole;
         }
 
@@ -78,8 +74,6 @@ namespace SteamHub.Api.Context.Repositories
                     Password = userEntity.Password,
                     Email = userEntity.Email,
                     UserRole = userEntity.UserRole,
-                    WalletBalance = userEntity.WalletBalance,
-                    PointsBalance = userEntity.PointsBalance,
                     CreatedAt = userEntity.CreatedAt,
                     LastLogin = userEntity.LastLogin,
                     ProfilePicture = userEntity.ProfilePicture,
@@ -109,8 +103,6 @@ namespace SteamHub.Api.Context.Repositories
                 Email = request.Email,
                 Password = PasswordHasher.HashPassword(request.Password),
                 UserRole = request.UserRole,
-                WalletBalance = request.WalletBalance,
-                PointsBalance = request.PointsBalance,
                 ProfilePicture = request.ProfilePicture,
                 CreatedAt = DateTime.UtcNow
             };
@@ -129,8 +121,6 @@ namespace SteamHub.Api.Context.Repositories
             existingUserEntity.Username = request.UserName;
             existingUserEntity.Email = request.Email;
             existingUserEntity.UserRole = request.UserRole;
-            existingUserEntity.WalletBalance = request.WalletBalance;
-            existingUserEntity.PointsBalance = request.PointsBalance;
 
             await dataContext.SaveChangesAsync();
         }
