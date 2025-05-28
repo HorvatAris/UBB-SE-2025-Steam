@@ -1,5 +1,4 @@
-﻿using SteamHub.Api.Context.Repositories;
-using SteamHub.ApiContract.Models;
+﻿using SteamHub.ApiContract.Models;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Services.Interfaces;
 using System;
