@@ -26,10 +26,9 @@ namespace SteamHub.Api.Context.Repositories
                 // Get all friend IDs
                 var friendIds = friendships.Select(f => f.FriendId).ToList();
 
-                // Get all user profiles for the friends
-                var userProfiles = await context.UserProfiles
+                // Get all users for the friends
+                var users = await context.Users
                     .Where(p => friendIds.Contains(p.UserId))
-                    .Include(p => p.User)
                     .ToListAsync();
 
                 // Create result list
@@ -38,16 +37,16 @@ namespace SteamHub.Api.Context.Repositories
                 // Match friendships with user profiles
                 foreach (var friendship in friendships)
                 {
-                    var userProfile = userProfiles.FirstOrDefault(p => p.UserId == friendship.FriendId);
-                    if (userProfile != null)
+                    var user = users.FirstOrDefault(p => p.UserId == friendship.FriendId);
+                    if (user != null)
                     {
                         result.Add(new Friendship
                         {
                             FriendshipId = friendship.FriendshipId,
                             UserId = friendship.UserId,
                             FriendId = friendship.FriendId,
-                            FriendUsername = userProfile.User.Username,
-                            FriendProfilePicture = userProfile.profilePhotoPath
+                            FriendUsername = user.Username,
+                            FriendProfilePicture = user.ProfilePicture,
                         });
                     }
                 }
