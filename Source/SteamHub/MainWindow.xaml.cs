@@ -39,6 +39,7 @@ namespace SteamHub
         private SessionServiceProxy sessionService;
         private PasswordResetServiceProxy passwordResetService;
         private WalletServiceProxy walletService;
+        private FriendRequestServiceProxy friendRequestService;
         
         private AchievementsServiceProxy achievementsService;
         private readonly IHttpClientFactory _httpClientFactory;
@@ -132,6 +133,7 @@ namespace SteamHub
                     this.cartService = null;
                     this.userGameService = null;
                     this.developerService = null;
+                    this.friendRequestService = null;
 
                     // Show login page
                     ShowLoginPage();
@@ -166,6 +168,7 @@ namespace SteamHub
             this.userGameService = new UserGameServiceProxy(_httpClientFactory, loggedInUser);
             this.developerService = new DeveloperServiceProxy(_httpClientFactory, loggedInUser);
             this.walletService = new WalletServiceProxy(_httpClientFactory, loggedInUser);
+            this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory, loggedInUser);
 
             // Hide login overlay and show main content
             LoginOverlay.Visibility = Visibility.Collapsed;
