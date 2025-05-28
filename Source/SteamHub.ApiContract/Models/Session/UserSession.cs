@@ -8,9 +8,14 @@ public sealed class UserSession
     private static UserSession? instance;
     private static readonly object LockObject = new object();
     private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+    private static readonly TimeSpan _semaphoreTimeout = TimeSpan.FromSeconds(5);
 
     private UserSession()
     {
+        CurrentSessionId = null;
+        UserId = 0;
+        CreatedAt = DateTime.MinValue;
+        ExpiresAt = DateTime.MinValue;
     }
 
     public static UserSession Instance
@@ -33,102 +38,154 @@ public sealed class UserSession
     public DateTime CreatedAt { get; private set; }
     public DateTime ExpiresAt { get; private set; }
 
-    public async Task UpdateSessionAsync(Guid sessionId, int userId, DateTime createdTime, DateTime expireTime)
+    public async Task<bool> UpdateSessionAsync(Guid sessionId, int userId, DateTime createdTime, DateTime expireTime)
     {
-        await _semaphore.WaitAsync();
-        try
+        if (await _semaphore.WaitAsync(_semaphoreTimeout))
         {
-            CurrentSessionId = sessionId;
-            UserId = userId;
-            CreatedAt = createdTime;
-            ExpiresAt = expireTime;
+            try
+            {
+                CurrentSessionId = sessionId;
+                UserId = userId;
+                CreatedAt = createdTime;
+                ExpiresAt = expireTime;
+                return true;
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
-        finally
-        {
-            _semaphore.Release();
-        }
+        return false;
     }
 
-    public async Task ClearSessionAsync()
+    public async Task<bool> ClearSessionAsync()
     {
-        await _semaphore.WaitAsync();
-        try
+        if (await _semaphore.WaitAsync(_semaphoreTimeout))
         {
-            CurrentSessionId = null;
-            UserId = 0;
-            CreatedAt = DateTime.MinValue;
-            ExpiresAt = DateTime.MinValue;
+            try
+            {
+                CurrentSessionId = null;
+                UserId = 0;
+                CreatedAt = DateTime.MinValue;
+                ExpiresAt = DateTime.MinValue;
+                return true;
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
-        finally
-        {
-            _semaphore.Release();
-        }
+        return false;
     }
 
     public async Task<bool> IsSessionValidAsync()
     {
-        await _semaphore.WaitAsync();
-        try
+        if (await _semaphore.WaitAsync(_semaphoreTimeout))
         {
-            return CurrentSessionId.HasValue && 
-                   UserId > 0 && 
-                   CreatedAt != DateTime.MinValue && 
-                   ExpiresAt != DateTime.MinValue && 
-                   DateTime.UtcNow < ExpiresAt;
+            try
+            {
+                return CurrentSessionId.HasValue && 
+                       UserId > 0 && 
+                       CreatedAt != DateTime.MinValue && 
+                       ExpiresAt != DateTime.MinValue && 
+                       DateTime.UtcNow < ExpiresAt;
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
-        finally
-        {
-            _semaphore.Release();
-        }
+        return false;
     }
 
-    // For backward compatibility
-    public void UpdateSession(Guid sessionId, int userId, DateTime createdTime, DateTime expireTime)
+    // For backward compatibility - consider these methods deprecated
+    public bool UpdateSession(Guid sessionId, int userId, DateTime createdTime, DateTime expireTime)
     {
-        _semaphore.Wait();
-        try
+        if (_semaphore.Wait(_semaphoreTimeout))
         {
-            CurrentSessionId = sessionId;
-            UserId = userId;
-            CreatedAt = createdTime;
-            ExpiresAt = expireTime;
+            try
+            {
+                CurrentSessionId = sessionId;
+                UserId = userId;
+                CreatedAt = createdTime;
+                ExpiresAt = expireTime;
+                return true;
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
-        finally
-        {
-            _semaphore.Release();
-        }
+        return false;
     }
 
-    public void ClearSession()
+    public bool ClearSession()
     {
-        _semaphore.Wait();
-        try
+        if (_semaphore.Wait(_semaphoreTimeout))
         {
-            CurrentSessionId = null;
-            UserId = 0;
-            CreatedAt = DateTime.MinValue;
-            ExpiresAt = DateTime.MinValue;
+            try
+            {
+                CurrentSessionId = null;
+                UserId = 0;
+                CreatedAt = DateTime.MinValue;
+                ExpiresAt = DateTime.MinValue;
+                return true;
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
-        finally
-        {
-            _semaphore.Release();
-        }
+        return false;
     }
 
     public bool IsSessionValid()
     {
-        _semaphore.Wait();
-        try
+        if (_semaphore.Wait(_semaphoreTimeout))
         {
-            return CurrentSessionId.HasValue && 
-                   UserId > 0 && 
-                   CreatedAt != DateTime.MinValue && 
-                   ExpiresAt != DateTime.MinValue && 
-                   DateTime.UtcNow < ExpiresAt;
+            try
+            {
+                return CurrentSessionId.HasValue && 
+                       UserId > 0 && 
+                       CreatedAt != DateTime.MinValue && 
+                       ExpiresAt != DateTime.MinValue && 
+                       DateTime.UtcNow < ExpiresAt;
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
-        finally
-        {
-            _semaphore.Release();
-        }
+        return false;
     }
+
+    public async Task<SessionInfo> GetSessionInfoAsync()
+    {
+        if (await _semaphore.WaitAsync(_semaphoreTimeout))
+        {
+            try
+            {
+                return new SessionInfo
+                {
+                    SessionId = CurrentSessionId,
+                    UserId = UserId,
+                    CreatedAt = CreatedAt,
+                    ExpiresAt = ExpiresAt
+                };
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+        throw new TimeoutException("Could not acquire lock to read session info");
+    }
+}
+
+public class SessionInfo
+{
+    public Guid? SessionId { get; set; }
+    public int UserId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime ExpiresAt { get; set; }
 }
