@@ -185,10 +185,12 @@ namespace BusinessLayer.Repositories
         public async Task<List<AchievementWithStatus>> GetAchievementsWithStatusForUser(int userIdentifier)
         {
             var all = await GetAllAchievements();
-            var unlockedIds = new HashSet<int>(
-                context.UserAchievements
-                   .Where(currentUserAchievement => currentUserAchievement.UserId == userIdentifier)
-                   .Select(userAchievement => userAchievement.AchievementId));
+            var unlockedIdList = await context.UserAchievements
+                .Where(currentUserAchievement => currentUserAchievement.UserId == userIdentifier)
+                .Select(userAchievement => userAchievement.AchievementId)
+                .ToListAsync();
+
+            var unlockedIds = new HashSet<int>(unlockedIdList);
 
             return all.Select(currentAchievement => new AchievementWithStatus
             {
@@ -200,30 +202,32 @@ namespace BusinessLayer.Repositories
             }).ToList();
         }
 
-        public int GetFriendshipCount(int userIdentifier)
-            => context.Friendships.Count(f => f.UserId == userIdentifier);
 
-        public int GetNumberOfOwnedGames(int userIdentifier)
-            => context.OwnedGames.Count(og => og.UserId == userIdentifier);
+        public async Task<int> GetFriendshipCount(int userIdentifier)
+            => await context.Friendships.CountAsync(f => f.UserId == userIdentifier);
 
-        public int GetNumberOfSoldGames(int userIdentifier)
-            => context.SoldGames.Count(sg => sg.UserId == userIdentifier);
+        public async Task<int> GetNumberOfOwnedGames(int userIdentifier)
+            => await context.OwnedGames.CountAsync(og => og.UserId == userIdentifier);
 
-        public int GetNumberOfReviewsGiven(int userIdentifier)
-            => context.Reviews.Count(r => r.UserIdentifier == userIdentifier);
+        public async Task<int> GetNumberOfSoldGames(int userIdentifier)
+            => await context.SoldGames.CountAsync(sg => sg.UserId == userIdentifier);
 
-        public int GetNumberOfReviewsReceived(int userIdentifier)
-            => context.Reviews.Count(r => r.GameIdentifier == userIdentifier); // adjust if you store receiver differently
+        public async Task<int> GetNumberOfReviewsGiven(int userIdentifier)
+            => await context.Reviews.CountAsync(r => r.UserIdentifier == userIdentifier);
 
-        public int GetNumberOfPosts(int userIdentifier)
-            => context.NewsPosts.Count(p => p.AuthorId == userIdentifier);
+        public async Task<int> GetNumberOfReviewsReceived(int userIdentifier)
+            => await context.Reviews.CountAsync(r => r.GameIdentifier == userIdentifier); // adjust if you store receiver differently
 
-        public int GetYearsOfAcftivity(int userIdentifier)
+        public async Task<int> GetNumberOfPosts(int userIdentifier)
+            => await context.NewsPosts.CountAsync(p => p.AuthorId == userIdentifier);
+
+        public async Task<int> GetYearsOfAcftivity(int userIdentifier)
         {
-            var created = context.Users
+            var created = await context.Users
                              .Where(u => u.UserId == userIdentifier)
                              .Select(u => u.CreatedAt)
-                             .SingleOrDefault();
+                             .SingleOrDefaultAsync(); // Fixed: Use SingleOrDefaultAsync instead of SingleOrDefault
+
             var years = DateTime.Now.Year - created.Year;
             if (DateTime.Now.DayOfYear < created.DayOfYear)
             {
@@ -232,17 +236,20 @@ namespace BusinessLayer.Repositories
             return years;
         }
 
-        public int? GetAchievementIdByName(string achievementName)
-            => context.Achievements
-                  .Where(a => a.AchievementName == achievementName)
-                  .Select(a => (int?)a.AchievementId)
-                  .SingleOrDefault();
+        public async Task<int?> GetAchievementIdByName(string achievementName)
+            => await context.Achievements
+        .Where(a => a.AchievementName == achievementName)
+        .Select(a => (int?)a.AchievementId)
+        .SingleOrDefaultAsync();
 
-        public bool IsUserDeveloper(int userIdentifier)
-            => context.Users
-                  .Where(u => u.UserId == userIdentifier)
-                  .Select(u => u.UserRole==SteamHub.ApiContract.Models.Common.UserRole.Developer)
-                  .SingleOrDefault();
+
+        public async Task<bool> IsUserDeveloper(int userIdentifier)
+        {
+            return await context.Users
+                .Where(u => u.UserId == userIdentifier)
+                .Select(u => u.UserRole == SteamHub.ApiContract.Models.Common.UserRole.Developer)
+                .SingleOrDefaultAsync(); // Fixed: Use SingleOrDefaultAsync instead of SingleOrDefault
+        }
         }
         
 }
