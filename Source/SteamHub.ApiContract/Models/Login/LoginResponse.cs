@@ -1,4 +1,5 @@
 ﻿using SteamHub.ApiContract.Models.User;
+using SteamHub.ApiContract.Models.Session;
 
 namespace SteamHub.ApiContract.Models.Login
 {

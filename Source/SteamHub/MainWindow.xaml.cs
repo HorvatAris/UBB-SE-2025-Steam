@@ -17,6 +17,8 @@ using SteamHub.ApiContract.ServiceProxies;
 using SteamHub.Pages;
 using SteamHub.Web;
 using SteamHub.ViewModels;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace SteamHub
 {
@@ -153,43 +155,76 @@ namespace SteamHub
 
         private void OnLoginSuccess(User loggedInUser)
         {
-            this.user = loggedInUser;
-
-            // Initialize services that require the logged-in user
-            this.achievementsService = new AchievementsServiceProxy(_httpClientFactory);
-            this.tradeService = new TradeServiceProxy(_httpClientFactory, loggedInUser);
-            this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory, loggedInUser);
-            this.pointShopService = new PointShopServiceProxy(_httpClientFactory, loggedInUser);
-            this.inventoryService = new InventoryServiceProxy(_httpClientFactory, loggedInUser);
-            this.gameService = new GameServiceProxy(_httpClientFactory);
-            this.cartService = new CartServiceProxy(_httpClientFactory, loggedInUser);
-            this.userGameService = new UserGameServiceProxy(_httpClientFactory, loggedInUser);
-            this.developerService = new DeveloperServiceProxy(_httpClientFactory, loggedInUser);
-            this.friendsService = new FriendServiceProxy();
-            this.achievementsService = new AchievementsServiceProxy(_httpClientFactory);
-            this.collectionServiceProxy = new CollectionsServiceProxy();
-            this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
-            this.walletService = new WalletServiceProxy(_httpClientFactory, loggedInUser);
-
-            // Hide login overlay and show main content
-            LoginOverlay.Visibility = Visibility.Collapsed;
-            NavView.Visibility = Visibility.Visible;
-
-            // Navigate to home page
-            this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
-        }
-
-
-        public void ResetToHomePage()
-        {
-            this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
-        }
-
-        private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
-        {
-            if (args.SelectedItemContainer != null)
+            try
             {
-                var tag = args.SelectedItemContainer.Tag.ToString();
+                if (loggedInUser == null)
+                {
+                    throw new ArgumentNullException(nameof(loggedInUser));
+                }
+
+                this.user = loggedInUser;
+                Debug.WriteLine($"Login successful for user: {loggedInUser.Username}");
+
+                // Initialize services that require the logged-in user
+                InitializeUserServices(loggedInUser);
+
+                // Hide login overlay and show main content
+                LoginOverlay.Visibility = Visibility.Collapsed;
+                NavView.Visibility = Visibility.Visible;
+
+                // Navigate to home page
+                NavigateToPage("HomePage");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in OnLoginSuccess: {ex.Message}");
+                ShowErrorDialog("Login Error", $"Failed to initialize application: {ex.Message}");
+            }
+        }
+
+        private void InitializeUserServices(User user)
+        {
+            Debug.WriteLine("Initializing user services...");
+            
+            try
+            {
+                this.achievementsService = new AchievementsServiceProxy(_httpClientFactory);
+                this.tradeService = new TradeServiceProxy(_httpClientFactory, user);
+                this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory, user);
+                this.pointShopService = new PointShopServiceProxy(_httpClientFactory, user);
+                this.inventoryService = new InventoryServiceProxy(_httpClientFactory, user);
+                this.gameService = new GameServiceProxy(_httpClientFactory);
+                this.cartService = new CartServiceProxy(_httpClientFactory, user);
+                this.userGameService = new UserGameServiceProxy(_httpClientFactory, user);
+                this.developerService = new DeveloperServiceProxy(_httpClientFactory, user);
+                this.friendsService = new FriendServiceProxy();
+                this.achievementsService = new AchievementsServiceProxy(_httpClientFactory);
+                this.collectionServiceProxy = new CollectionsServiceProxy();
+                this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
+                this.walletService = new WalletServiceProxy(_httpClientFactory, user);
+
+                Debug.WriteLine("User services initialized successfully");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error initializing services: {ex.Message}");
+                throw new Exception("Failed to initialize user services", ex);
+            }
+        }
+
+        private void NavigateToPage(string tag)
+        {
+            try
+            {
+                if (user == null)
+                {
+                    Debug.WriteLine("Cannot navigate: No user is logged in");
+                    ShowLoginPage();
+                    return;
+                }
+
+                Debug.WriteLine($"Navigating to page: {tag}");
+
                 switch (tag)
                 {
                     case "HomePage":
@@ -216,12 +251,6 @@ namespace SteamHub
                     case "trading":
                         this.ContentFrame.Content = new TradingPage(this.tradeService, this.userService, this.gameService);
                         break;
-                    case "LoginPage":
-                        ShowLoginPage();
-                        break;
-                    case "RegisterPage":
-                        ShowRegisterPage();
-                        break;
                     case "profile":
                         this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService,this.collectionServiceProxy, achievementsService, this.user);
                         break;
@@ -232,11 +261,61 @@ namespace SteamHub
                         ShowLoginPage();
                         break;
                     case "AchievementsPage":
-                        this.ContentFrame.Content = new AchievementsPage(this.userService, this.achievementsService);
+                        this.ContentFrame.Content = new AchievementsPage(this.achievementsService, this.userService, this.user);
                         break;
                     case "Wallet":
-                        this.ContentFrame.Navigate(typeof(WalletPage), this.walletService);
-                        break;   
+                        this.ContentFrame.Navigate(typeof(WalletPage), (this.walletService, this.userService, this.user));
+                        break;
+                    default:
+                        Debug.WriteLine($"Unknown page tag: {tag}");
+                        break;
+                }
+
+                Debug.WriteLine($"Successfully navigated to {tag}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Navigation error: {ex.Message}");
+                ShowErrorDialog("Navigation Error", $"Failed to navigate to page: {ex.Message}");
+            }
+        }
+
+        private async Task ShowErrorDialog(string title, string message)
+        {
+            var dialog = new ContentDialog
+            {
+                Title = title,
+                Content = message,
+                CloseButtonText = "OK",
+                XamlRoot = this.Content.XamlRoot
+            };
+            await dialog.ShowAsync();
+        }
+
+        private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+            if (args.SelectedItemContainer != null)
+            {
+                var tag = args.SelectedItemContainer.Tag.ToString();
+                
+                if (tag == "LoginPage" || tag == "RegisterPage" || tag == "ForgotPasswordPage")
+                {
+                    switch (tag)
+                    {
+                        case "LoginPage":
+                            ShowLoginPage();
+                            break;
+                        case "RegisterPage":
+                            ShowRegisterPage();
+                            break;
+                        case "ForgotPasswordPage":
+                            ShowLoginPage();
+                            break;
+                    }
+                }
+                else
+                {
+                    NavigateToPage(tag);
                 }
             }
 
@@ -244,6 +323,11 @@ namespace SteamHub
             {
                 this.NavView.SelectedItem = null;
             }
+        }
+
+        public void ResetToHomePage()
+        {
+            NavigateToPage("HomePage");
         }
     }
 }
