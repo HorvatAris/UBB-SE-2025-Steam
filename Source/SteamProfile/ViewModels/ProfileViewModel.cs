@@ -22,19 +22,18 @@ namespace SteamProfile.ViewModels
     public partial class ProfileViewModel : ObservableObject
     {
         private static ProfileViewModel profileViewModelInstance;
-        private UserProfile userProfile;
+        private User user;
         private readonly FriendRequestViewModel friendRequestViewModel;
         private readonly IUserService userService;
         private readonly IFriendsService friendsService;
         private readonly DispatcherQueue dispatcherQueue;
-        private readonly IUserProfilesRepository userProfileRepository;
         private readonly IFeaturesService featuresService;
         private readonly IAchievementsService achievementsService;
 
         public ProfileViewModel()
         {
             // Initialize userProfile to prevent null reference exceptions
-            userProfile = new UserProfile();
+            user = new User();
 
             // Get the FriendRequestViewModel from the service container
             try
@@ -50,17 +49,17 @@ namespace SteamProfile.ViewModels
 
         public string Username
         {
-            get => userProfile?.Username ?? string.Empty;
+            get => user?.Username ?? string.Empty;
             set
             {
-                if (userProfile == null)
+                if (user == null)
                 {
-                    userProfile = new UserProfile();
+                    user = new User();
                 }
 
-                if (userProfile.Username != value)
+                if (user.Username != value)
                 {
-                    userProfile.Username = value;
+                    user.Username = value;
                     OnPropertyChanged();
                 }
             }
@@ -68,17 +67,17 @@ namespace SteamProfile.ViewModels
 
         public string Email
         {
-            get => userProfile?.Email ?? string.Empty;
+            get => user?.Email ?? string.Empty;
             set
             {
-                if (userProfile == null)
+                if (user == null)
                 {
-                    userProfile = new UserProfile();
+                    user = new User();
                 }
 
-                if (userProfile.Email != value)
+                if (user.Email != value)
                 {
-                    userProfile.Email = value;
+                    user.Email = value;
                     OnPropertyChanged();
                 }
             }
@@ -86,17 +85,17 @@ namespace SteamProfile.ViewModels
 
         public string ProfilePhotoPath
         {
-            get => userProfile?.ProfilePicture ?? string.Empty;
+            get => user?.ProfilePicture ?? string.Empty;
             set
             {
-                if (userProfile == null)
+                if (user == null)
                 {
-                    userProfile = new UserProfile();
+                    user = new User();
                 }
 
-                if (userProfile.ProfilePicture != value)
+                if (user.ProfilePicture != value)
                 {
-                    userProfile.ProfilePicture = value;
+                    user.ProfilePicture = value;
                     OnPropertyChanged();
                 }
             }
@@ -246,7 +245,6 @@ namespace SteamProfile.ViewModels
             IUserService userService,
             IFriendsService friendsService,
             DispatcherQueue dispatcherQueue,
-            IUserProfilesRepository userProfileRepository,
             ICollectionsRepository gameCollectionsRepository,
             IFeaturesService featuresService,
             IAchievementsService achievementsService)
@@ -256,25 +254,23 @@ namespace SteamProfile.ViewModels
                 throw new InvalidOperationException("ProfileViewModel is already initialized");
             }
 
-            profileViewModelInstance = new ProfileViewModel(userService, friendsService, dispatcherQueue, userProfileRepository, gameCollectionsRepository, featuresService, achievementsService);
+            profileViewModelInstance = new ProfileViewModel(userService, friendsService, dispatcherQueue, gameCollectionsRepository, featuresService, achievementsService);
         }
 
         public ProfileViewModel(
             IUserService userService,
             IFriendsService friendsService,
             DispatcherQueue dispatcherQueue,
-            IUserProfilesRepository userProfileRepository,
             ICollectionsRepository gameCollectionsRepository,
             IFeaturesService featuresService,
             IAchievementsService achievementsService)
         {
             // Initialize userProfile to prevent null reference exceptions
-            userProfile = new UserProfile();
+            user = new User();
 
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.friendsService = friendsService ?? throw new ArgumentNullException(nameof(friendsService));
             this.dispatcherQueue = dispatcherQueue ?? throw new ArgumentNullException(nameof(dispatcherQueue));
-            this.userProfileRepository = userProfileRepository ?? throw new ArgumentNullException(nameof(userProfileRepository));
             ProfileViewModel.gameCollectionsRepository = (CollectionsRepository)(gameCollectionsRepository ?? throw new ArgumentNullException(nameof(gameCollectionsRepository)));
             this.featuresService = featuresService ?? throw new ArgumentNullException(nameof(featuresService));
             this.achievementsService = achievementsService ?? throw new ArgumentNullException(nameof(achievementsService));
@@ -348,20 +344,6 @@ namespace SteamProfile.ViewModels
                 // Continue with rest of the method only if we successfully got a user
                 try
                 {
-                    UserProfile userProfile = null;
-                    try
-                    {
-                        // Get user profile (optional - can proceed without)
-                        userProfile = userProfileRepository.GetUserProfileByUserId(currentUser.UserId);
-                        Debug.WriteLine($"Retrieved profile ID: {userProfile?.ProfileId.ToString() ?? "null"}");
-                    }
-                    catch (Exception exception)
-                    {
-                        Debug.WriteLine($"Error getting user profile: {exception.Message}");
-
-                        // Continue without profile info
-                    }
-
                     var currentUserId = userService.GetCurrentUser().UserId;
                     var isFriend = await Task.Run(() => friendsService.AreUsersFriends(currentUserId, user_id));
 
@@ -396,27 +378,27 @@ namespace SteamProfile.ViewModels
 
                             Debug.WriteLine($"Current user {Username} ; isProfileOwner = {isProfileOwner} ; isFriend = {IsFriend}");
                             // Profile info from UserProfiles table
-                            if (userProfile != null)
+                            if (user != null)
                             {
-                                biography = userProfile.Bio ?? string.Empty;
+                                biography = user.Bio ?? string.Empty;
                                 // Set the string property for backward compatibility
                                 // Handle different types of image sources
-                                if (userProfile.ProfilePicture != null)
+                                if (user.ProfilePicture != null)
                                 {
-                                    if (userProfile.ProfilePicture.StartsWith("http://") || userProfile.ProfilePicture.StartsWith("https://"))
+                                    if (user.ProfilePicture.StartsWith("http://") || user.ProfilePicture.StartsWith("https://"))
                                     {
                                         // Web URL - use as-is for BitmapImage
-                                        ProfilePicture = userProfile.ProfilePicture;
+                                        ProfilePicture = user.ProfilePicture;
                                     }
-                                    else if (userProfile.ProfilePicture.StartsWith("ms-appx:///"))
+                                    else if (user.ProfilePicture.StartsWith("ms-appx:///"))
                                     {
                                         // Already has ms-appx prefix
-                                        ProfilePicture = userProfile.ProfilePicture;
+                                        ProfilePicture = user.ProfilePicture;
                                     }
                                     else
                                     {
                                         // Local asset - add ms-appx prefix
-                                        ProfilePicture = $"ms-appx:///{userProfile.ProfilePicture}";
+                                        ProfilePicture = $"ms-appx:///{user.ProfilePicture}";
                                     }
                                 }
                                 else
@@ -756,7 +738,7 @@ namespace SteamProfile.ViewModels
         [RelayCommand]
         private void Configuration()
         {
-            NavigationService.Instance.Navigate(typeof(Views.ConfigurationsPage));
+            NavigationService.Instance.Navigate(typeof(SteamHub.Pages.ConfigurationsPage));
         }
 
         [RelayCommand]

@@ -90,13 +90,4 @@ public partial class LoginViewModel : ObservableObject
     {
         loginViewFrame.Navigate(typeof(RegisterPage));
     }
-
-    /// <summary>
-    /// Navigates the user to the forgot password page.
-    /// </summary>
-    [RelayCommand]
-    private void NavigateToForgotPassword()
-    {
-        loginViewFrame.Navigate(typeof(ForgotPasswordPage));
-    }
 }
