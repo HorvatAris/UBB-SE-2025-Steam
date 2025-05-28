@@ -745,7 +745,8 @@ namespace SteamHub.Api.Migrations
                     PostId = table.Column<int>(type: "int", nullable: false),
                     AuthorId = table.Column<int>(type: "int", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PostId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -756,6 +757,11 @@ namespace SteamHub.Api.Migrations
                         principalTable: "NewsPosts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_NewsComments_NewsPosts_PostId1",
+                        column: x => x.PostId1,
+                        principalTable: "NewsPosts",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_NewsComments_Users_AuthorId",
                         column: x => x.AuthorId,
@@ -778,7 +784,8 @@ namespace SteamHub.Api.Migrations
                         name: "FK_NewsPostRatingTypes_NewsPosts_PostId",
                         column: x => x.PostId,
                         principalTable: "NewsPosts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_NewsPostRatingTypes_Users_AuthorId",
                         column: x => x.AuthorId,
@@ -1461,6 +1468,11 @@ namespace SteamHub.Api.Migrations
                 name: "IX_NewsComments_PostId",
                 table: "NewsComments",
                 column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NewsComments_PostId1",
+                table: "NewsComments",
+                column: "PostId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NewsPostRatingTypes_AuthorId",

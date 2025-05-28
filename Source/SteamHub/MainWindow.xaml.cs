@@ -68,7 +68,7 @@ namespace SteamHub
 
             _httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
 
-            this.userService = new UserServiceProxy(_httpClientFactory);
+            this.userService = new UserServiceProxy();
             this.sessionService = new SessionServiceProxy(_httpClientFactory);
 
             // Start with login page
@@ -189,7 +189,7 @@ namespace SteamHub
             try
             {
                 this.achievementsService = new AchievementsServiceProxy();
-                this.tradeService = new TradeServiceProxy(_httpClientFactory, user);
+                this.tradeService = new TradeServiceProxy(user);
                 this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory, user);
                 this.pointShopService = new PointShopServiceProxy(_httpClientFactory, user);
                 this.inventoryService = new InventoryServiceProxy(_httpClientFactory, user);
@@ -201,7 +201,7 @@ namespace SteamHub
                 this.achievementsService = new AchievementsServiceProxy();
                 this.collectionServiceProxy = new CollectionsServiceProxy();
                 this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
-                this.walletService = new WalletServiceProxy(_httpClientFactory, user);
+                this.walletService = new WalletServiceProxy(user);
 
                 Debug.WriteLine("User services initialized successfully");
             }
