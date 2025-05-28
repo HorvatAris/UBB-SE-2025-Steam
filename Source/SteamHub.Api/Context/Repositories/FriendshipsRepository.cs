@@ -20,9 +20,11 @@ namespace SteamHub.Api.Context.Repositories
             try
             {
                 var query = from f in context.Friendships
-                            join u in context.Users on f.FriendId equals u.UserId
-                            join p in context.UserProfiles on f.FriendId equals p.UserId
-                            where f.UserId == userIdentifier
+                            join u in context.Users on
+                                (f.FriendId == userIdentifier ? f.UserId : f.FriendId) equals u.UserId
+                            join p in context.UserProfiles on
+                                (f.FriendId == userIdentifier ? f.UserId : f.FriendId) equals p.UserId
+                            where f.UserId == userIdentifier || f.FriendId == userIdentifier
                             orderby u.Username
                             select new Friendship
                             {
