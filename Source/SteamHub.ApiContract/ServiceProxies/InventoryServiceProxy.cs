@@ -25,11 +25,9 @@ namespace SteamHub.ApiContract.ServiceProxies
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
-        public IUserDetails User { get; set; }
-        public InventoryServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user)
+        public InventoryServiceProxy(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient("SteamHubApi");
-            this.User = user;
         }
 
         public async Task AddItemToInventoryAsync(Game game, Item item, int userId)
@@ -85,16 +83,6 @@ namespace SteamHub.ApiContract.ServiceProxies
 
             var items = await response.Content.ReadFromJsonAsync<List<Item>>();
             return items ?? new List<Item>();
-        }
-
-        public IUserDetails GetAllUsers()
-        {
-            return this.User;
-        }
-
-        public async Task<IUserDetails> GetAllUsersAsync()
-        {
-            return await Task.FromResult(this.User);
         }
 
         public async Task<List<Game>> GetAvailableGamesAsync(List<Item> items, int userId)

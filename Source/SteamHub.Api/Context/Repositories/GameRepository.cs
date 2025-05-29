@@ -55,6 +55,7 @@ public class GameRepository : IGameRepository
     public async Task<GameDetailedResponse?> GetGameByIdAsync(int id)
     {
         var currentGame = await context.Games
+            .AsNoTracking()
             .Include(game => game.Tags)
             .Include(game => game.Publisher)
             .Include(game => game.Status)
@@ -65,7 +66,9 @@ public class GameRepository : IGameRepository
 
     public Task<List<GameDetailedResponse>> GetGamesAsync(GetGamesRequest parameters)
     {
-        IQueryable<Game> query = context.Games;
+        IQueryable<Game> query = context.Games
+            .AsNoTracking();
+            
         if (parameters.StatusIs != null)
         {
             query = query.Where(game => game.StatusId == parameters.StatusIs);
@@ -208,7 +211,10 @@ public class GameRepository : IGameRepository
 
         var tagIdSet = new HashSet<int>(tagIds.Where(tagId => currentGame.Tags.All(tag => tag.TagId != tagId)));
 
-        var tags = await context.Tags.Where(tag => tagIdSet.Contains(tag.TagId)).ToListAsync();
+        var tags = await context.Tags
+            .AsNoTracking()
+            .Where(tag => tagIdSet.Contains(tag.TagId))
+            .ToListAsync();
 
         foreach (var tag in tags)
         {
@@ -257,7 +263,10 @@ public class GameRepository : IGameRepository
 
         var tagIdSet = new HashSet<int>(tagIds);
 
-        var tags = await this.context.Tags.Where(tag => tagIdSet.Contains(tag.TagId)).ToListAsync();
+        var tags = await this.context.Tags
+            .AsNoTracking()
+            .Where(tag => tagIdSet.Contains(tag.TagId))
+            .ToListAsync();
 
         currentGame.Tags.Clear();
         foreach (var tag in tags)
