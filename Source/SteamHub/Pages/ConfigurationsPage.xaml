@@ -26,10 +26,10 @@
                     Style="{ThemeResource AccentButtonStyle}"
                     HorizontalAlignment="Center"
                     Width="200"/> -->
-            <Button Content="Account Settings"
+            <!--<Button Content="Account Settings"
                     Command="{Binding NavigateToAccountSettingsCommand}"
                     HorizontalAlignment="Center" 
-                    Width="200"/>
+                    Width="200"/> -->
             <Button Content="Modify Profile"
                     Command="{Binding NavigateToProfileSettingsCommand}"
                     HorizontalAlignment="Center" 
