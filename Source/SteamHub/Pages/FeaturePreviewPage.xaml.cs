@@ -23,7 +23,7 @@ namespace SteamHub.Pages
             this.featuresService = featuresService;
             this.userService = userService;
             this.frame = frame;
-            this.currentUser = userService.GetCurrentUserAsync().Result;
+            this.currentUser = user;
             ViewModel = new FeaturesViewModel(featuresService, userService, currentUser, frame);
             ViewModel.SelectedFeature = feature;
             // OnNavigatedTo(null);
