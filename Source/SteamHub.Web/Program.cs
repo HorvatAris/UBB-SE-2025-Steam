@@ -21,6 +21,7 @@ builder.Services.AddScoped<IUserDetails, WebUserDetails>();
 
 builder.Services.AddScoped<ISessionService, SessionServiceProxy>();
 builder.Services.AddScoped<IAuthManager, AuthManager>();
+builder.Services.AddScoped<IForumService, ForumServiceProxy>();
 builder.Services.AddScoped<IUserService, UserServiceProxy>();
 builder.Services.AddScoped<IGameService, GameServiceProxy>();
 builder.Services.AddScoped<IUserGameService, UserGameServiceProxy>();
