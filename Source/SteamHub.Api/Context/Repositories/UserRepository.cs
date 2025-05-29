@@ -118,11 +118,13 @@ namespace SteamHub.Api.Context.Repositories
 
         public async Task<List<User>> GetAllUsersAsync()
         {
-            return dataContext.Users
+            var users = dataContext.Users
                 .AsNoTracking()
                 .OrderBy(userEntity => userEntity.Username)
                 .Select(MapEntityToUserDto)
                 .ToList();
+            
+            return await Task.FromResult(users);
         }
 
         public async Task<User> UpdateUserAsync(User userDto)

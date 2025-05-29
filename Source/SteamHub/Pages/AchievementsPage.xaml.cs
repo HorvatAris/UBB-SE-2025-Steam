@@ -31,11 +31,11 @@ namespace SteamHub.Pages
         private readonly AchievementsViewModel achievementsViewModel;
         private bool _isInitialized = false;
 
-        public AchievementsPage(IAchievementsService achievementService, IUserService userService, User loggedInUser)
+        public AchievementsPage(IAchievementsService achievementService, IUserService userService)
         {
             Debug.WriteLine("AchievementsPage constructor called");
             this.InitializeComponent();
-            achievementsViewModel = new AchievementsViewModel(achievementService, userService, loggedInUser);
+            achievementsViewModel = new AchievementsViewModel(achievementService, userService);
             DataContext = achievementsViewModel;
 
             // Subscribe to the Loaded event

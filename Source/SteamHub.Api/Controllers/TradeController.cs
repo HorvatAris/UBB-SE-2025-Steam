@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SteamHub.Api.Context;
 using SteamHub.ApiContract.Models.ItemTrade;
@@ -7,6 +8,7 @@ using System.Diagnostics;
 
 namespace SteamHub.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TradeController : ControllerBase

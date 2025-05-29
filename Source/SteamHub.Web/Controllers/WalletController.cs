@@ -9,15 +9,17 @@ namespace SteamHub.Web.Controllers
 	public class WalletController : Controller
 	{
 		private readonly IWalletService _walletService;
+		private readonly IUserService _userService;
 
-		public WalletController(IWalletService walletService)
+		public WalletController(IWalletService walletService, IUserService userService)
 		{
 			_walletService = walletService ?? throw new ArgumentNullException(nameof(walletService));
-		}
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+        }
 
 		public async Task<IActionResult> Index()
 		{
-			var viewModel = new WalletViewModel(_walletService);
+			var viewModel = new WalletViewModel(_walletService, _userService);
 			await viewModel.RefreshWalletData();
 			return View(viewModel);
 		}
@@ -32,7 +34,8 @@ namespace SteamHub.Web.Controllers
 				{
 					try
 					{
-						await _walletService.AddMoney(viewModel.AmountToAdd.Value, _walletService.GetUser().UserId);
+						var currentUser = await _userService.GetCurrentUserAsync();
+                        await _walletService.AddMoney(viewModel.AmountToAdd.Value, currentUser.UserId);
 						TempData["SuccessMessage"] = $"Successfully added ${viewModel.AmountToAdd:F2} to your wallet using {viewModel.SelectedPaymentMethod}.";
 						return RedirectToAction(nameof(Index));
 					}
@@ -47,7 +50,7 @@ namespace SteamHub.Web.Controllers
 				}
 			}
 
-			var freshViewModel = new WalletViewModel(_walletService);
+			var freshViewModel = new WalletViewModel(_walletService, _userService);
 			await freshViewModel.RefreshWalletData();
 			freshViewModel.AmountToAdd = viewModel.AmountToAdd;
 			freshViewModel.SelectedPaymentMethod = viewModel.SelectedPaymentMethod;
