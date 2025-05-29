@@ -3,21 +3,30 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using SteamHub.ViewModels;
 using SteamHub.ApiContract.Models.User;
+using SteamHub.ApiContract.Services.Interfaces;
+using System.Runtime.CompilerServices;
 
 namespace SteamHub.Pages
 {
     public sealed partial class FeaturePreviewPage : Page
     {
         public FeaturesViewModel ViewModel { get; }
+        private IUserService userService;
+        private IFeaturesService featuresService;
+        private User currentUser;
+        private Frame frame;
 
-        public FeaturePreviewPage()
+        public FeaturePreviewPage(IUserService userService, IFeaturesService featuresService, Frame frame, FeatureDisplay feature)
         {
             this.InitializeComponent();
             // Inject real services and user
-            var featuresService = App.FeaturesService;
-            var userService = App.UserService;
-            var currentUser = App.CurrentUser;
-            ViewModel = new FeaturesViewModel(featuresService, userService, currentUser);
+            this.featuresService = featuresService;
+            this.userService = userService;
+            this.frame = frame;
+            this.currentUser = userService.GetCurrentUserAsync().Result;
+            ViewModel = new FeaturesViewModel(featuresService, userService, currentUser, frame);
+            ViewModel.SelectedFeature = feature;
+            // OnNavigatedTo(null);
             this.DataContext = ViewModel;
         }
 
@@ -32,9 +41,9 @@ namespace SteamHub.Pages
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Frame.CanGoBack)
+            if (frame.CanGoBack)
             {
-                Frame.GoBack();
+                frame.Content = new FeaturesPage(featuresService, userService, this.currentUser, frame);
             }
         }
     }

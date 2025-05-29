@@ -69,14 +69,16 @@ namespace SteamHub.ViewModels
         public int FeaturesCount => AllFeatures?.Count ?? 0;
 
         public string FeaturesCountLabel => $"Features count: {FeaturesCount}";
+        public Frame frame;
 
-        public FeaturesViewModel(IFeaturesService featuresService, IUserService userService, User currentUser)
+        public FeaturesViewModel(IFeaturesService featuresService, IUserService userService, User currentUser, Frame frame)
             : base(userService, currentUser)
         {
             this.featuresService = featuresService;
             this._userService = userService;
             this._currentUser = currentUser;
             this.previewEquippedFeatures = new ObservableCollection<Feature>();
+            this.frame = frame;
             // Hardcoded features for testing
             AllFeatures = new ObservableCollection<FeatureDisplay>
             {
@@ -217,7 +219,7 @@ namespace SteamHub.ViewModels
                 System.Diagnostics.Debug.WriteLine($"Error unequipping feature: {ex}");
             }
         }
-
+        /*
         [RelayCommand]
         public async Task PreviewFeatureAsync(FeatureDisplay feature)
         {
@@ -227,10 +229,9 @@ namespace SteamHub.ViewModels
                 await UpdatePreviewAsync();
                 
                 // Navigate to preview page
-                var frame = App.MainWindow.Content as Frame;
                 if (frame != null)
                 {
-                    frame.Navigate(typeof(FeaturePreviewPage), feature);
+                    frame.Content = new FeaturePreviewPage(userService,featuresService, frame, feature);
                 }
                 else
                 {
@@ -242,7 +243,7 @@ namespace SteamHub.ViewModels
                 ErrorMessage = "Failed to preview feature. Please try again later.";
                 System.Diagnostics.Debug.WriteLine($"Error previewing feature: {ex}");
             }
-        }
+        }*/
 
         public async Task UpdatePreviewAsync()
         {
@@ -275,12 +276,12 @@ namespace SteamHub.ViewModels
             }
         }
 
+        [RelayCommand]
         public void PreviewFeature(FeatureDisplay featureDisplay)
         {
-            var frame = (App.MainWindow.Content as Frame);
             if (frame != null && featureDisplay != null)
             {
-                frame.Navigate(typeof(SteamHub.Pages.FeaturePreviewPage), featureDisplay);
+                frame.Content = new SteamHub.Pages.FeaturePreviewPage(this._userService, this.featuresService, frame, featureDisplay);
             }
         }
     }

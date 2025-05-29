@@ -8,20 +8,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
     <Grid Padding="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
         <!-- Header -->
         <TextBlock 
             Text="Features List" 
             FontSize="24"
             FontWeight="Bold"
             Margin="0,0,0,10"/>
-
         <!-- Features Table List -->
         <ListView 
             x:Name="FeaturesPageRoot"
@@ -39,12 +36,16 @@
                         <!-- Feature Name -->
                         <TextBlock Grid.Column="0" Text="{Binding Feature.Name}" FontSize="18" VerticalAlignment="Center"/>
                         <!-- Preview Button -->
-                        <Button Grid.Column="1" Content="Preview" Margin="10,0" Command="{Binding DataContext.PreviewFeatureCommand, ElementName=FeaturesPageRoot}" CommandParameter="{Binding}"/>
+                        <Button Grid.Column="1" Content="Preview" Margin="10,0" 
+                                Command="{Binding DataContext.PreviewFeatureCommand, ElementName=FeaturesPageRoot}" 
+                                CommandParameter="{Binding}"/>
                         <!-- Purchase Button -->
-                        <Button Grid.Column="2" Content="Purchase" Margin="10,0" Command="{Binding DataContext.PurchaseFeatureCommand, ElementName=FeaturesPageRoot}" CommandParameter="{Binding}"/>
+                        <Button Grid.Column="2" Content="Purchase" Margin="10,0" 
+                                Command="{Binding DataContext.PurchaseFeatureCommand, ElementName=FeaturesPageRoot}" 
+                                CommandParameter="{Binding}"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
     </Grid>
-</Page> 
+</Page>

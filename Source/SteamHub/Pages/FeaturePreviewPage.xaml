@@ -31,7 +31,7 @@
             <TextBlock 
                 Grid.Column="1"
                 Text="Feature Preview" 
-                Style="{StaticResource TitleLargeTextBlockStyle}"
+                Style="{StaticResource TitleTextBlockStyle}"
                 VerticalAlignment="Center"/>
         </Grid>
 
@@ -56,7 +56,7 @@
             <StackPanel Grid.Column="1" Margin="20,0,0,0">
                 <TextBlock 
                     Text="{x:Bind ViewModel.SelectedFeature.Feature.Name}"
-                    Style="{StaticResource TitleLargeTextBlockStyle}"
+                    Style="{StaticResource TitleTextBlockStyle}"
                     Margin="0,0,0,10"/>
 
                 <TextBlock 
@@ -67,7 +67,7 @@
 
                 <TextBlock 
                     Text="Type:"
-                    Style="{StaticResource TitleMediumTextBlockStyle}"
+                    Style="{StaticResource SubtitleTextBlockStyle}"
                     FontWeight="Bold"
                     Margin="0,0,0,10"/>
 
@@ -78,7 +78,7 @@
 
                 <TextBlock 
                     Text="Value:"
-                    Style="{StaticResource TitleMediumTextBlockStyle}"
+                    Style="{StaticResource SubtitleTextBlockStyle}"
                     FontWeight="Bold"
                     Margin="0,0,0,10"/>
 
@@ -89,7 +89,7 @@
 
                 <TextBlock 
                     Text="Preview"
-                    Style="{StaticResource TitleMediumTextBlockStyle}"
+                    Style="{StaticResource SubtitleTextBlockStyle}"
                     Margin="0,0,0,10"/>
 
                 <Border 
@@ -101,7 +101,7 @@
                             Text="{x:Bind ViewModel.PreviewBioText}"
                             Style="{StaticResource BodyTextBlockStyle}"
                             TextWrapping="Wrap"/>
-                        
+
                         <ItemsControl 
                             ItemsSource="{x:Bind ViewModel.PreviewEquippedFeatures}"
                             Margin="0,20,0,0">
@@ -129,9 +129,8 @@
                     Command="{x:Bind ViewModel.PurchaseFeatureCommand}"
                     CommandParameter="{x:Bind ViewModel.SelectedFeature}"
                     Margin="0,20,0,0"
-                    HorizontalAlignment="Left"
-                    Visibility="{x:Bind ViewModel.SelectedFeature.IsPurchased, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                    HorizontalAlignment="Left"/>
             </StackPanel>
         </Grid>
     </Grid>
-</Page> 
+</Page>

@@ -11,12 +11,13 @@ namespace SteamHub.Pages
     {
         public FeaturesViewModel ViewModel { get; }
 
-        public FeaturesPage(IFeaturesService featuresService, IUserService userService, User currentUser)
+        public FeaturesPage(IFeaturesService featuresService, IUserService userService, User currentUser, Frame frame)
         {
             this.InitializeComponent();
-            ViewModel = new FeaturesViewModel(featuresService, userService, currentUser);
+            ViewModel = new FeaturesViewModel(featuresService, userService, currentUser, frame);
             this.DataContext = ViewModel;
             ViewModel.LoadFeaturesAsync();
+            // OnNavigatedTo(null);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

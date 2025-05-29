@@ -260,7 +260,7 @@ namespace SteamHub
                         this.ContentFrame.Content = new AchievementsPage(this.achievementsService, this.userService, this.user);
                         break;
                     case "FeaturesPage":
-                        this.ContentFrame.Content = new FeaturesPage(this.featuresService, this.userService, this.user);
+                        this.ContentFrame.Content = new FeaturesPage(this.featuresService, this.userService, this.user, this.ContentFrame);
                         break;
                     case "Wallet":
                         this.ContentFrame.Navigate(typeof(WalletPage), (this.walletService, this.userService, this.user));
