@@ -14,7 +14,6 @@ namespace SteamHub.ApiContract.Services
     using SteamHub.ApiContract.Models.Item;
     using SteamHub.ApiContract.Models.User;
     using SteamHub.ApiContract.Models.UserInventory;
-    using SteamHub.ApiContract.Proxies;
     using SteamHub.ApiContract.Repositories;
     using SteamHub.ApiContract.Services;
     using SteamHub.ApiContract.Services.Interfaces;
@@ -130,17 +129,6 @@ namespace SteamHub.ApiContract.Services
             return filteredItems;
         }
 
-        public IUserDetails GetAllUsers()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IUserDetails> GetAllUsersAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-
         public async Task<bool> SellItemAsync(Item item, int userId)
         {
             // Validate that the item is sellable.
@@ -180,10 +168,10 @@ namespace SteamHub.ApiContract.Services
 
             var userUpdateRequest = new UpdateUserRequest
             {
-                UserName = user.UserName,
+                UserName = user.Username,
                 Email = user.Email,
                 UserRole = user.UserRole,
-                WalletBalance = user.WalletBalance + item.Price,
+                WalletBalance = user.WalletBalance + (decimal)item.Price,
                 PointsBalance = user.PointsBalance,
             };
 

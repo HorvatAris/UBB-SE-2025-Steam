@@ -16,10 +16,12 @@ namespace SteamHub.Web.Controllers
     public class InventoryController : Controller
     {
         private readonly IInventoryService inventoryService;
+        private readonly IUserService userService;
 
-        public InventoryController(IInventoryService inventoryService)
+        public InventoryController(IInventoryService inventoryService, IUserService userService)
         {
             this.inventoryService = inventoryService;
+            this.userService = userService;
         }
 
         [HttpGet]
@@ -30,7 +32,7 @@ namespace SteamHub.Web.Controllers
             try
             {
                 // Get all users
-                var currentUser = await inventoryService.GetAllUsersAsync();
+                var currentUser = await userService.GetCurrentUserAsync();
                 if (currentUser == null)
                 {
                     model.StatusMessage = "No users found.";

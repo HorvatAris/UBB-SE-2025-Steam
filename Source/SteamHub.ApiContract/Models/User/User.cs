@@ -44,13 +44,17 @@ namespace SteamHub.ApiContract.Models.User
 
         public string Email { get; set; }
 
-        public float WalletBalance { get; set; }
+        public decimal WalletBalance { get; set; }
 
-        public float PointsBalance { get; set; }
+        public int PointsBalance { get; set; }
 
         public UserRole UserRole { get; set; }
 
         public string ProfilePicture { get; set; }
+
+        public string ProfilePicturePath { get; set; } = string.Empty;
+        public string? Bio { get; set; }
+        public DateTime LastModified { get; set; }
 
         public bool IsDeveloper => UserRole == UserRole.Developer;
 

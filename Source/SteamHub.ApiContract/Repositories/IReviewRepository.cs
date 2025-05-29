@@ -14,7 +14,10 @@ namespace SteamHub.ApiContract.Repositories
 
         Task<bool> ToggleVoteForReview(int reviewIdToVoteOn, string voteTypeAsStringEitherHelpfulOrFunny, bool shouldIncrementVoteCount);
 
-        Task<(int TotalReviews, int TotalPositiveRecommendations, double AverageRatingValue)>
+        Task<(int TotalReviews, int TotalPositiveRecommendations, double AverageRatingValue)> 
             RetrieveReviewStatisticsForGame(int gameIdToFetchStatsFor);
+        
+        Task<Review?> GetReviewById(int reviewId);
+        
     }
 }

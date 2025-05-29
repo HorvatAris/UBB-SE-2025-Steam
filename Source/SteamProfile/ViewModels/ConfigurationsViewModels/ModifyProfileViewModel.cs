@@ -32,11 +32,11 @@ namespace SteamProfile.ViewModels.ConfigurationsViewModels
 
         private void LoadUserProfile()
         {
-            var userProfile = App.UserProfileRepository.GetUserProfileByUserId(userIdentifier);
-            if (userProfile != null)
+            var user = App.UserRepository.GetUserById(userIdentifier);
+            if (user != null)
             {
-                originalImagePath = userProfile.ProfilePicture ?? string.Empty;
-                originalDescription = userProfile.Bio ?? string.Empty;
+                originalImagePath = user.ProfilePicture ?? string.Empty;
+                originalDescription = user.Bio ?? string.Empty;
 
                 // Set current values
                 SelectedImagePath = originalImagePath;
@@ -82,7 +82,7 @@ namespace SteamProfile.ViewModels.ConfigurationsViewModels
                 // Save new picture if changed
                 if (selectedImageFile != null && SelectedImagePath != originalImagePath)
                 {
-                    App.UserProfileRepository.UpdateProfilePicture(userIdentifier, selectedImageFile.Path);
+                    App.UserRepository.UpdateProfilePicture(userIdentifier, selectedImageFile.Path);
                     originalImagePath = SelectedImagePath;
                     changesMade = true;
                 }
@@ -90,7 +90,7 @@ namespace SteamProfile.ViewModels.ConfigurationsViewModels
                 // Save new description if changed
                 if (Description != originalDescription)
                 {
-                    App.UserProfileRepository.UpdateProfileBio(userIdentifier, Description);
+                    App.UserRepository.UpdateProfileBio(userIdentifier, Description);
                     originalDescription = Description;
                     changesMade = true;
                 }

@@ -13,7 +13,6 @@ namespace SteamProfileWeb.Controllers
     {
         private readonly IUserService userService;
         private readonly IFriendsService friendsService;
-        private readonly IUserProfilesRepository userProfileRepository;
         private readonly ICollectionsRepository collectionsRepository;
         private readonly IFeaturesService featuresService;
         private readonly IAchievementsService achievementsService;
@@ -21,14 +20,12 @@ namespace SteamProfileWeb.Controllers
         public ProfileController(
             IUserService userService,
             IFriendsService friendsService,
-            IUserProfilesRepository userProfileRepository,
             ICollectionsRepository collectionsRepository,
             IFeaturesService featuresService,
             IAchievementsService achievementsService)
         {
             this.userService = userService;
             this.friendsService = friendsService;
-            this.userProfileRepository = userProfileRepository;
             this.collectionsRepository = collectionsRepository;
             this.featuresService = featuresService;
             this.achievementsService = achievementsService;
@@ -46,7 +43,6 @@ namespace SteamProfileWeb.Controllers
             if (user == null)
                 return NotFound();
 
-            var userProfile = userProfileRepository.GetUserProfileByUserId(userId);
             var collections = collectionsRepository.GetLastThreeCollectionsForUser(userId);
 
             var vm = new ProfileViewModel
@@ -54,8 +50,8 @@ namespace SteamProfileWeb.Controllers
                 UserIdentifier = user.UserId,
                 Username = user.Username,
                 Email = user.Email,
-                ProfilePhotoPath = userProfile?.ProfilePicture ?? "/images/default-profile.png",
-                Biography = userProfile?.Bio ?? "",
+                ProfilePhotoPath = user?.ProfilePicture ?? "/images/default-profile.png",
+                Biography = user?.Bio ?? "",
                 FriendCount = friendsService.GetFriendshipCount(userId),
                 GameCollections = collections
             };

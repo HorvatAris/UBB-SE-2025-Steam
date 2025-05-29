@@ -11,7 +11,6 @@ namespace SteamHub.ApiContract.Services
     using SteamHub.ApiContract.Models.Item;
     using SteamHub.ApiContract.Models.User;
     using SteamHub.ApiContract.Models.UserInventory;
-    using SteamHub.ApiContract.Proxies;
     using SteamHub.ApiContract.Repositories;
     using SteamHub.ApiContract.Services.Interfaces;
 
@@ -178,9 +177,9 @@ namespace SteamHub.ApiContract.Services
                 currentUserId,
                 new UpdateUserRequest
                 {
-                    UserName = currentUser.UserName,
+                    UserName = currentUser.Username,
                     Email = currentUser.Email,
-                    WalletBalance = currentUser.WalletBalance - item.Price,
+                    WalletBalance = currentUser.WalletBalance - (decimal)item.Price,
                     PointsBalance = currentUser.PointsBalance,
                     UserRole = currentUser.UserRole,
                 });

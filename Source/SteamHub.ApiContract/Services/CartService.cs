@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using SteamHub.ApiContract.Models.Game;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Models.UsersGames;
-using SteamHub.ApiContract.Proxies;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Services;
 using SteamHub.ApiContract.Services.Interfaces;

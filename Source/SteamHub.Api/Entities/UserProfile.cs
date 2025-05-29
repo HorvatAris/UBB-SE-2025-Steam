@@ -22,6 +22,6 @@ namespace SteamHub.Api.Entities
         [NotMapped]
         public string Email { get; set; } = string.Empty;
         [NotMapped]
-        private string profilePhotoPath = string.Empty;
+        public string profilePhotoPath = string.Empty;
     }
 }

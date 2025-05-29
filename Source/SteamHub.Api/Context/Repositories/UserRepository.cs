@@ -30,39 +30,30 @@ namespace SteamHub.Api.Context.Repositories
                 Username = userEntity.Username,
                 Password = userEntity.Password,
                 Email = userEntity.Email,
-                WalletBalance = userEntity.WalletBalance,
-                PointsBalance = userEntity.PointsBalance,
                 UserRole = userEntity.UserRole,
                 CreatedAt = userEntity.CreatedAt,
                 LastLogin = userEntity.LastLogin,
                 ProfilePicture = userEntity.ProfilePicture,
-                
-                // This for later
-                //UserAchievements = userEntity.UserAchievements.Select(ua => new UserAchievement
-                //{
-                //    UserId = ua.UserId,
-                //    AchievementId = ua.AchievementId,
-                //    UnlockedAt = ua.UnlockedAt
-                //}).ToList(),
-                //SoldGames = userEntity.SoldGames.Select(sg => new SoldGame
-                //{
-                //    SoldGameId = sg.SoldGameId,
-                //    GameId = sg.GameId,
-                //    UserId = sg.UserId,
-                //    SoldDate = sg.SoldDate,
-                //}).ToList()
+                Bio = userEntity.Bio ?? string.Empty,
+                LastModified = userEntity.LastModified,
+                WalletBalance = userEntity.WalletBalance,
+                PointsBalance = userEntity.PointsBalance
             };
 
             return user;
         }
 
-        private static void ApplyUserDtoToEntity(UserDTO userEntity, User userDto)
+        private static void ApplyUserDtoToEntity(UserDTO userDTO, User userEntity)
         {
-            userEntity.Username = userDto.Username;
-            userEntity.Email = userDto.Email;
-            userEntity.WalletBalance = userDto.WalletBalance;
-            userEntity.PointsBalance = userDto.PointsBalance;
-            userEntity.UserRole = userDto.UserRole;
+            userDTO.Username = userEntity.Username;
+            userDTO.Email = userEntity.Email;
+            userDTO.UserRole = userEntity.UserRole;
+            userDTO.Password = userEntity.Password;
+            userDTO.ProfilePicture = userEntity.ProfilePicture;
+            userDTO.Bio = string.Empty;
+            userDTO.CreatedAt = userEntity.CreatedAt;
+            userDTO.PointsBalance = userEntity.PointsBalance;
+            userDTO.WalletBalance = userEntity.WalletBalance;
         }
 
         public async Task<GetUsersResponse?> GetUsersAsync()
@@ -76,38 +67,27 @@ namespace SteamHub.Api.Context.Repositories
                     Password = userEntity.Password,
                     Email = userEntity.Email,
                     UserRole = userEntity.UserRole,
-                    WalletBalance = userEntity.WalletBalance,
-                    PointsBalance = userEntity.PointsBalance,
                     CreatedAt = userEntity.CreatedAt,
                     LastLogin = userEntity.LastLogin,
-                    ProfilePicture = userEntity.ProfilePicture
+                    ProfilePicture = userEntity.ProfilePicture,
+                    Bio = userEntity.Bio ?? string.Empty,
+                    LastChanged = userEntity.LastModified,
+                    WalletBalance = userEntity.WalletBalance,
+                    PointsBalance = userEntity.PointsBalance
                 })
                 .ToListAsync();
 
             return new GetUsersResponse { Users = userResponses };
         }
 
-        public async Task<UserResponse?> GetUserByIdAsync(int userId)
+        public async Task<User?> GetUserByIdAsync(int userId)
         {
-            var userResponse = await dataContext.Users
+            var userEntity = await dataContext.Users
                 .AsNoTracking()
                 .Where(userEntity => userEntity.UserId == userId)
-                .Select(userEntity => new UserResponse
-                {
-                    UserId = userEntity.UserId,
-                    UserName = userEntity.Username,
-                    Password = userEntity.Password,
-                    Email = userEntity.Email,
-                    UserRole = userEntity.UserRole,
-                    WalletBalance = userEntity.WalletBalance,
-                    PointsBalance = userEntity.PointsBalance,
-                    CreatedAt = userEntity.CreatedAt,
-                    LastLogin = userEntity.LastLogin,
-                    ProfilePicture = userEntity.ProfilePicture
-                })
                 .SingleOrDefaultAsync();
 
-            return userResponse;
+            return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
         public async Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request)
@@ -118,8 +98,6 @@ namespace SteamHub.Api.Context.Repositories
                 Email = request.Email,
                 Password = PasswordHasher.HashPassword(request.Password),
                 UserRole = request.UserRole,
-                WalletBalance = request.WalletBalance,
-                PointsBalance = request.PointsBalance,
                 ProfilePicture = request.ProfilePicture,
                 CreatedAt = DateTime.UtcNow
             };
@@ -139,86 +117,87 @@ namespace SteamHub.Api.Context.Repositories
             existingUserEntity.Email = request.Email;
             existingUserEntity.UserRole = request.UserRole;
             existingUserEntity.WalletBalance = request.WalletBalance;
-            existingUserEntity.PointsBalance = request.PointsBalance;
+            existingUserEntity.PointsBalance = (int)request.PointsBalance;
 
             await dataContext.SaveChangesAsync();
         }
 
-        public List<User> GetAllUsers()
+        public async Task<List<User>> GetAllUsersAsync()
         {
-            return dataContext.Users
+            var users = dataContext.Users
                 .AsNoTracking()
                 .OrderBy(userEntity => userEntity.Username)
                 .Select(MapEntityToUserDto)
                 .ToList();
+            
+            return await Task.FromResult(users);
         }
 
-        public User? GetUserById(int userId)
+        public async Task<User> UpdateUserAsync(User userDto)
         {
-            var userEntity = dataContext.Users.Find(userId);
-            return userEntity == null ? null : MapEntityToUserDto(userEntity);
-        }
-
-        public User UpdateUser(User userDto)
-        {
-            var existingUserEntity = dataContext.Users.Find(userDto.UserId)
+            var existingUserEntity = await dataContext.Users.FindAsync(userDto.UserId)
                 ?? throw new KeyNotFoundException($"User {userDto.UserId} not found.");
 
             ApplyUserDtoToEntity(existingUserEntity, userDto);
-            dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
 
             return MapEntityToUserDto(existingUserEntity);
         }
 
-        public User CreateUser(User userDto)
+        public async Task<User> CreateUserAsync(User userDto)
         {
             var newUserEntity = new UserDTO();
             ApplyUserDtoToEntity(newUserEntity, userDto);
 
-            dataContext.Users.Add(newUserEntity);
-            dataContext.SaveChanges();
+            await dataContext.Users.AddAsync(newUserEntity);
+            await dataContext.SaveChangesAsync();
 
             return MapEntityToUserDto(newUserEntity);
         }
 
-        public void DeleteUser(int userId)
+        public async Task DeleteUserAsync(int userId)
         {
-            var userEntity = dataContext.Users.Find(userId);
+            var userEntity = await dataContext.Users.FindAsync(userId);
             if (userEntity != null)
             {
                 dataContext.Users.Remove(userEntity);
-                dataContext.SaveChanges();
+                await dataContext.SaveChangesAsync();
             }
         }
 
-        public User? VerifyCredentials(string emailOrUsername)
+        public async Task<User?> VerifyCredentialsAsync(string emailOrUsername)
         {
-            var userEntity = dataContext.Users.SingleOrDefault(
-                user => user.Username == emailOrUsername || user.Email == emailOrUsername);
+            var userEntity = await dataContext.Users
+                .AsNoTracking()
+                .SingleOrDefaultAsync(user => user.Username == emailOrUsername || user.Email == emailOrUsername);
 
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
-        public User? GetUserByEmail(string email)
+        public async Task<User?> GetUserByEmailAsync(string email)
         {
-            var userEntity = dataContext.Users.SingleOrDefault(user => user.Email == email);
+            var userEntity = await dataContext.Users
+                .AsNoTracking()
+                .SingleOrDefaultAsync(user => user.Email == email);
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
-        public User? GetUserByUsername(string username)
+        public async Task<User?> GetUserByUsernameAsync(string username)
         {
-            var userEntity = dataContext.Users.SingleOrDefault(user => user.Username == username);
+            var userEntity = await dataContext.Users
+                .AsNoTracking()
+                .SingleOrDefaultAsync(user => user.Username == username);
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
-        public string CheckUserExists(string email, string username)
+        public async Task<string> CheckUserExistsAsync(string email, string username)
         {
-            if (dataContext.Users.Any(user => user.Email == email))
+            if (await dataContext.Users.AnyAsync(user => user.Email == email))
             {
                 return "EMAIL_EXISTS";
             }
 
-            if (dataContext.Users.Any(user => user.Username == username))
+            if (await dataContext.Users.AnyAsync(user => user.Username == username))
             {
                 return "USERNAME_EXISTS";
             }
@@ -226,40 +205,52 @@ namespace SteamHub.Api.Context.Repositories
             return null;
         }
 
-        public void ChangeEmail(int userId, string newEmail)
+        public async Task ChangeEmailAsync(int userId, string newEmail)
         {
-            var userEntity = dataContext.Users.Find(userId)
+            var userEntity = await dataContext.Users.FindAsync(userId)
                 ?? throw new KeyNotFoundException($"User {userId} not found.");
-
             userEntity.Email = newEmail;
-            dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
         }
 
-        public void ChangePassword(int userId, string newPassword)
+        public async Task ChangePasswordAsync(int userId, string newPassword)
         {
-            var userEntity = dataContext.Users.Find(userId)
+            var userEntity = await dataContext.Users.FindAsync(userId)
                 ?? throw new KeyNotFoundException($"User {userId} not found.");
-
             userEntity.Password = PasswordHasher.HashPassword(newPassword);
-            dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
         }
 
-        public void ChangeUsername(int userId, string newUsername)
+        public async Task ChangeUsernameAsync(int userId, string newUsername)
         {
-            var userEntity = dataContext.Users.Find(userId)
+            var userEntity = await dataContext.Users.FindAsync(userId)
                 ?? throw new KeyNotFoundException($"User {userId} not found.");
-
             userEntity.Username = newUsername;
-            dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
         }
 
-        public void UpdateLastLogin(int userId)
+        public async Task UpdateLastLoginAsync(int userId)
         {
-            var userEntity = dataContext.Users.Find(userId)
+            var userEntity = await dataContext.Users.FindAsync(userId)
                 ?? throw new KeyNotFoundException($"User {userId} not found.");
-
             userEntity.LastLogin = DateTime.UtcNow;
-            dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateProfileBioAsync(int userId, string bio)
+        {
+            var userEntity = await dataContext.Users.FindAsync(userId)
+                ?? throw new KeyNotFoundException($"User {userId} not found.");
+            userEntity.Bio = bio;
+            await dataContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateProfilePictureAsync(int userId, string picturePath)
+        {
+            var userEntity = await dataContext.Users.FindAsync(userId)
+                ?? throw new KeyNotFoundException($"User {userId} not found.");
+            userEntity.ProfilePicture = picturePath;
+            await dataContext.SaveChangesAsync();
         }
     }
 }

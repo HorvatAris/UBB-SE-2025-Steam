@@ -15,6 +15,8 @@ using Microsoft.UI.Xaml.Navigation;
 using SteamHub.ViewModels;
 using SteamHub.ApiContract.Services.Interfaces;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using SteamHub.ApiContract.Models.User;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -29,9 +31,9 @@ namespace SteamHub.Pages
         private readonly AchievementsViewModel achievementsViewModel;
         private bool _isInitialized = false;
 
-        public AchievementsPage(IUserService userService, IAchievementsService achievementService)
+        public AchievementsPage(IAchievementsService achievementService, IUserService userService)
         {
-            System.Diagnostics.Debug.WriteLine("AchievementsPage constructor called");
+            Debug.WriteLine("AchievementsPage constructor called");
             this.InitializeComponent();
             achievementsViewModel = new AchievementsViewModel(achievementService, userService);
             DataContext = achievementsViewModel;
@@ -83,6 +85,18 @@ namespace SteamHub.Pages
 
             await achievementsViewModel.LoadAchievementsAsync();
             System.Diagnostics.Debug.WriteLine("LoadAchievementsAsync completed");
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            Debug.WriteLine("AchievementsPage OnNavigatedTo called");
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            Debug.WriteLine("AchievementsPage OnNavigatedFrom called");
         }
     }
 }
