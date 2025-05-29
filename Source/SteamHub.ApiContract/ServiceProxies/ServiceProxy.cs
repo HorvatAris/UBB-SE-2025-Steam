@@ -139,6 +139,44 @@ namespace SteamHub.ApiContract.ServiceProxies
             return HandleResponseSync<T>(response);
         }
 
+        /// <summary>
+        /// Sends a PATCH request with JSON content synchronously and deserializes the JSON response.
+        /// </summary>
+        protected T PatchSync<T>(string endpoint, object data)
+        {
+            try
+            {
+                var content = new StringContent(
+                    JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
+                var request = new HttpRequestMessage(new HttpMethod("PATCH"), BaseUrl + endpoint)
+                {
+                    Content = content
+                };
+                var response = Task.Run(() => StaticHttpClient.SendAsync(request)).GetAwaiter().GetResult();
+                return HandleResponseSync<T>(response);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"PATCH Error for {endpoint}: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Sends a PATCH request with JSON content synchronously without expecting a response body.
+        /// </summary>
+        protected void PatchSync(string endpoint, object data)
+        {
+            var content = new StringContent(
+                JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), BaseUrl + endpoint)
+            {
+                Content = content
+            };
+            var response = Task.Run(() => StaticHttpClient.SendAsync(request)).GetAwaiter().GetResult();
+            EnsureSuccessStatusCodeSync(response);
+        }
+
         #endregion
 
         #region Asynchronous HTTP Methods
@@ -168,8 +206,13 @@ namespace SteamHub.ApiContract.ServiceProxies
         /// </summary>
         protected async Task PostAsync(string endpoint, object data)
         {
+            // this is mostly for debugging purposes
+            string jsonPayload = JsonSerializer.Serialize(data, new JsonSerializerOptions
+            {
+                WriteIndented = true // for easier debugging
+            });
             var content = new StringContent(
-                JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
+                jsonPayload, Encoding.UTF8, "application/json");
             var response = await StaticHttpClient.PostAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
             await EnsureSuccessStatusCodeAsync(response).ConfigureAwait(false);
         }
@@ -192,6 +235,36 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             var response = await StaticHttpClient.DeleteAsync(BaseUrl + endpoint).ConfigureAwait(false);
             return await HandleResponseAsync<T>(response).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Sends a PATCH request with JSON content asynchronously and deserializes the JSON response.
+        /// </summary>
+        protected async Task<T> PatchAsync<T>(string endpoint, object data)
+        {
+            var content = new StringContent(
+                JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), BaseUrl + endpoint)
+            {
+                Content = content
+            };
+            var response = await StaticHttpClient.SendAsync(request).ConfigureAwait(false);
+            return await HandleResponseAsync<T>(response).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Sends a PATCH request with JSON content asynchronously without expecting a response body.
+        /// </summary>
+        protected async Task PatchAsync(string endpoint, object data)
+        {
+            var content = new StringContent(
+                JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), BaseUrl + endpoint)
+            {
+                Content = content
+            };
+            var response = await StaticHttpClient.SendAsync(request).ConfigureAwait(false);
+            await EnsureSuccessStatusCodeAsync(response).ConfigureAwait(false);
         }
 
         #endregion

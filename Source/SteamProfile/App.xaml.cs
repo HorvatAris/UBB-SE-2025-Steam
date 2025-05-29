@@ -87,9 +87,6 @@ namespace SteamProfile
             var sessionRepository = new SessionRepository(dataContext);
             Services[typeof(ISessionRepository)] = sessionRepository;
 
-            var userProfilesRepository = new UserProfilesRepository(dataContext);
-            Services[typeof(IUserProfilesRepository)] = userProfilesRepository;
-
             var walletRepository = new WalletRepository(dataContext);
             Services[typeof(IWalletRepository)] = walletRepository;
 
@@ -154,7 +151,7 @@ namespace SteamProfile
 
             Services[typeof(ICollectionsService)] = new CollectionsService(collectionsRepository);
 
-            var featuresService = new FeaturesService(featureRepository, userService, userProfilesRepository, walletService);
+            var featuresService = new FeaturesService(featureRepository, userService, walletService);
             Services[typeof(IFeaturesService)] = featuresService;
 
             Services[typeof(INewsService)] = new NewsService(GetService<INewsRepository>(), GetService<IUserService>());
@@ -198,9 +195,6 @@ namespace SteamProfile
 
             var passwordResetRepository = new PasswordResetRepository(dataContext);
             Services[typeof(IPasswordResetRepository)] = passwordResetRepository;
-
-            var userProfilesRepository = new UserProfilesRepository(dataContext);
-            Services[typeof(IUserProfilesRepository)] = userProfilesRepository;
 
             var collectionsRepository = new CollectionsRepository(dataContext);
             Services[typeof(ICollectionsRepository)] = collectionsRepository;
@@ -257,7 +251,6 @@ namespace SteamProfile
 
         public static IPasswordResetService PasswordResetService { get; private set; }
         public static ISessionService SessionService { get; private set; }
-        public static IUserProfilesRepository UserProfileRepository { get; private set; }
         public static ICollectionsRepository CollectionsRepository { get; private set; }
         public static PasswordResetRepository PasswordResetRepository { get; private set; }
         public static IUsersRepository UserRepository { get; private set; }
@@ -286,7 +279,6 @@ namespace SteamProfile
 
             // EF-Core repositories
             UserRepository = GetService<IUsersRepository>();
-            UserProfileRepository = (UserProfilesRepository)GetService<IUserProfilesRepository>();
             PasswordResetRepository = (PasswordResetRepository)GetService<IPasswordResetRepository>();
             CollectionsRepository = GetService<ICollectionsRepository>();
             ChatRepository = GetService<IChatRepository>();
@@ -318,7 +310,6 @@ namespace SteamProfile
             var navigationService = NavigationService.Instance;
             UserService = GetService<IUserService>();
             UserRepository = GetService<IUsersRepository>();
-            UserProfileRepository = (UserProfilesRepository)GetService<IUserProfilesRepository>();
             PasswordResetRepository = (PasswordResetRepository)GetService<IPasswordResetRepository>();
             CollectionsRepository = GetService<ICollectionsRepository>();
             ChatRepository = GetService<IChatRepository>();

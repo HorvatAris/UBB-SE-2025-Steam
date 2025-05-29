@@ -18,7 +18,6 @@ namespace SteamHub.ApiContract.Services
     using SteamHub.ApiContract.Models.PointShopItem;
     using SteamHub.ApiContract.Models.User;
     using SteamHub.ApiContract.Models.UserPointShopItemInventory;
-    using SteamHub.ApiContract.Proxies;
     using SteamHub.ApiContract.Repositories;
     using SteamHub.ApiContract.Services;
     using SteamHub.ApiContract.Services.Interfaces;
@@ -31,12 +30,15 @@ namespace SteamHub.ApiContract.Services
         private const int InitialIndexUserItems = 0;
         private const string FilterTypeAll = "All";
 
-        public PointShopService(IPointShopItemRepository pointShopItemRepository, IUserPointShopItemInventoryRepository userPointShopItemInventoryRepository, IUserRepository userRepository)
+        public PointShopService(IPointShopItemRepository pointShopItemRepository, IUserPointShopItemInventoryRepository userPointShopItemInventoryRepository, IUserRepository userRepository, IWalletRepository walletRepository)
         {
             this.PointShopItemRepository = pointShopItemRepository;
             this.UserPointShopItemInventoryRepository = userPointShopItemInventoryRepository;
             this.UserRepository = userRepository;
+            this.WalletRepository = walletRepository;
         }
+
+        public IWalletRepository WalletRepository { get; set; }
 
         public IPointShopItemRepository PointShopItemRepository { get; set; }
 
@@ -95,7 +97,7 @@ namespace SteamHub.ApiContract.Services
             try
             {
                 PointShopItemResponse item = await this.PointShopItemRepository.GetPointShopItemByIdAsync(itemRequest.PointShopItemId);
-                UserResponse user = await this.UserRepository.GetUserByIdAsync(itemRequest.UserId);
+                User user = await this.UserRepository.GetUserByIdAsync(itemRequest.UserId);
 
                 if (item == null)
                 {
@@ -120,19 +122,21 @@ namespace SteamHub.ApiContract.Services
 
                 await this.UserPointShopItemInventoryRepository.PurchaseItemAsync(purchaseRequest);
 
-                user.PointsBalance -= (float)item.PointPrice;
+                user.PointsBalance -= (int)item.PointPrice;
 
                 // Update the user's points balance in the database
                 var updateUserRequest = new UpdateUserRequest
                 {
-                    UserName = user.UserName,
+                    UserName = user.Username,
                     Email = user.Email,
-                    WalletBalance = user.WalletBalance,
+                    WalletBalance = (decimal)user.WalletBalance,
                     PointsBalance = user.PointsBalance,
                     UserRole = user.UserRole,
                 };
 
                 await this.UserRepository.UpdateUserAsync(user.UserId, updateUserRequest);
+
+                await this.WalletRepository.BuyWithPoints((int)item.PointPrice, user.UserId);
             }
             catch (Exception exception)
             {

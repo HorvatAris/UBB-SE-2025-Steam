@@ -45,6 +45,7 @@
         public async Task<GetItemTradesResponse?> GetItemTradesAsync()
         {
             var trades = await context.ItemTrades
+                .AsNoTracking()
                 .Include(trade => trade.SourceUser)
                 .Include(trade => trade.DestinationUser)
                 .Include(trade => trade.GameOfTrade)
@@ -71,6 +72,7 @@
         public async Task<ItemTradeResponse?> GetItemTradeByIdAsync(int id)
         {
             var itemTrade = await context.ItemTrades
+                .AsNoTracking()
                 .Where(trade => trade.TradeId == id)
                 .Select(trade => new ItemTradeResponse
                 {

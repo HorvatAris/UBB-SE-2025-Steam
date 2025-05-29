@@ -1,4 +1,4 @@
-﻿using SteamHub.ApiContract.Models;
+using SteamHub.ApiContract.Models;
 using SteamHub.ApiContract.Models.User;
 using System;
 using System.Collections.Generic;
@@ -14,6 +14,5 @@ namespace SteamHub.ApiContract.Services.Interfaces
         public Task<int?> GetFriendshipIdentifierAsync(int userIdentifier1, int userIdentifier2);
         public Task AddFriendAsync(int userIdentifier, int friendIdentifier);
         public Task<bool> AddFriendByUsernameAsync(string user1Username, string user2Username, string friendEmail, string friendProfilePhotoPath);
-        User GetUser();
     }
 }

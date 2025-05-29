@@ -17,11 +17,17 @@ namespace SteamHub.Pages
     {
         public FriendsViewModel ViewModel { get; }
 
-        public FriendsPage(IFriendsService friendsService)
+        public FriendsPage(IFriendsService friendsService, IUserService userService)
         {
             this.InitializeComponent();
-            ViewModel = new FriendsViewModel(friendsService);
+            ViewModel = new FriendsViewModel(friendsService, userService);
             this.DataContext = ViewModel;
+            this.InitAsync();
+
+        }
+        private async void InitAsync()
+        {
+            await ViewModel.InitializeAsync();
         }
 
         private void FriendsPage_Loaded(object sender, RoutedEventArgs e)

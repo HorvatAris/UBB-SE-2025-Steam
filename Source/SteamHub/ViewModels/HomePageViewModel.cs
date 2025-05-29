@@ -25,6 +25,7 @@ public class HomePageViewModel : INotifyPropertyChanged
     private readonly IGameService gameService;
     private readonly IUserGameService userGameService;
     private readonly ICartService cartService;
+    private readonly IReviewService reviewService;
 
     private string searchFilterText;
     private int ratingFilter;
@@ -33,11 +34,12 @@ public class HomePageViewModel : INotifyPropertyChanged
     private ObservableCollection<string> selectedTags;
     private IUserDetails user;
 
-    public HomePageViewModel(IGameService gameService, IUserGameService userGameService, ICartService cartService)
+    public HomePageViewModel(IGameService gameService, IUserGameService userGameService, ICartService cartService, IReviewService reviewService)
     {
         this.gameService = gameService;
         this.userGameService = userGameService;
         this.cartService = cartService;
+        this.reviewService = reviewService;
         this.user = this.userGameService.GetUser();
         this.SearchedOrFilteredGames = new ObservableCollection<Game>();
         this.TrendingGames = new ObservableCollection<Game>();
@@ -184,7 +186,7 @@ public class HomePageViewModel : INotifyPropertyChanged
     {
         if (parentFrame != null && selectedGame != null)
         {
-            var gamePage = new GamePage(this.gameService, this.cartService, this.userGameService, selectedGame);
+            var gamePage = new GamePage(this.gameService, this.cartService, this.userGameService, this.reviewService, selectedGame);
             parentFrame.Content = gamePage;
         }
     }

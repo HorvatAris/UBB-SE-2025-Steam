@@ -16,20 +16,22 @@ using SteamProfile.Views.ConfigurationsView;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-namespace SteamProfile.Views
+namespace SteamHub.Pages
 {
     public sealed partial class ConfigurationsPage : Page
     {
         public ConfigurationsViewModel ViewModel { get; private set; }
-        public ConfigurationsPage()
+        private readonly UserService userService;
+        public ConfigurationsPage(UserService userService)
         {
             this.InitializeComponent();
             this.Loaded += ConfigurationsPage_Loaded;
+            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         private void ConfigurationsPage_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel = new ConfigurationsViewModel(this.Frame, App.UserService);
+            ViewModel = new ConfigurationsViewModel(this.Frame, userService);
             this.DataContext = ViewModel;
         }
     }

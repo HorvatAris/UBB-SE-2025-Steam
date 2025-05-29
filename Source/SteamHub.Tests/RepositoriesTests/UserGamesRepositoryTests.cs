@@ -12,6 +12,8 @@ using SteamHub.ApiContract.Models.UsersGames;
 using Xunit;
 using SteamHub.ApiContract.Models.Game;
 
+using SteamHub.ApiContract.Models.Common;
+
 namespace SteamHub.Tests.RepositoriesTests
 {
     public class UsersGamesRepositoryTests : IDisposable
@@ -39,18 +41,22 @@ namespace SteamHub.Tests.RepositoriesTests
         new User
         {
             UserId = 1,
-            UserName = "Alice",
+            Username = "Alice",
             Email = "alice@example.com",
-            RoleId = RoleEnum.User,
+            Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
+            ProfilePicture = "",
+            UserRole = UserRole.User,
             WalletBalance = (float)100.0m,
             PointsBalance = 500
         },
         new User
         {
             UserId = 2,
-            UserName = "Bob",
+            Username = "Bob",
             Email = "bob@example.com",
-            RoleId = RoleEnum.Developer,
+            Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
+            ProfilePicture = "",
+            UserRole = UserRole.Developer,
             WalletBalance = (float) 200.0m,
             PointsBalance = 1000
         }

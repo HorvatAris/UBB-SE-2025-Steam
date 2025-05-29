@@ -5,7 +5,6 @@ using SteamHub.ApiContract.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SteamHub.ApiContract.Proxies;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ApiContract.Models.Common;
@@ -15,71 +14,98 @@ namespace SteamHub.ApiContract.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository userRepository;
+        private readonly IWalletRepository walletRepository;
         private readonly ISessionRepository sessionRepository;
 
-        public UserService(IUserRepository userRepository, ISessionRepository sessionRepository)
+        public UserService(IUserRepository userRepository, ISessionRepository sessionRepository, IWalletRepository walletRepository)
         {
             this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             this.sessionRepository = sessionRepository ?? throw new ArgumentNullException(nameof(sessionRepository));
+            this.walletRepository = walletRepository;
         }
 
-        public List<User> GetAllUsers()
-            => userRepository.GetAllUsers();
-
-        public User GetUserByIdentifier(int userId)
-            => userRepository.GetUserById(userId);
-
-        public User GetUserByEmail(string email)
-            => userRepository.GetUserByEmail(email);
-
-        public User? GetUserByUsername(string username)
-            => userRepository.GetUserByUsername(username);
-
-        public void ValidateUserAndEmail(string email, string username)
+        public async Task<User> GetUserByIdentifierAsync(int userId)
         {
-            var errorType = userRepository.CheckUserExists(email, username);
-            if (errorType == "EMAIL_EXISTS") throw new EmailAlreadyExistsException(email);
-            if (errorType == "USERNAME_EXISTS") throw new UsernameAlreadyTakenException(username);
+            return await userRepository.GetUserByIdAsync(userId);
         }
 
-        public User CreateUser(User user)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            ValidateUserAndEmail(user.Email, user.Username);
+            return await userRepository.GetUserByEmailAsync(email);
+        }
+
+        public async Task<User?> GetUserByUsernameAsync(string username)
+        {
+            return await userRepository.GetUserByUsernameAsync(username);
+        }
+
+        public async Task ValidateUserAndEmailAsync(string email, string username)
+        {
+            var errorType = await userRepository.CheckUserExistsAsync(email, username);
+            if (errorType == "EMAIL_EXISTS")
+            {
+                throw new EmailAlreadyExistsException(email);
+            }
+
+            if (errorType == "USERNAME_EXISTS")
+            {
+                throw new UsernameAlreadyTakenException(username);
+            }
+        }
+
+        public async Task<User> CreateUserAsync(User user)
+        {
+            await ValidateUserAndEmailAsync(user.Email, user.Username);
+            
+            // Ensure required fields are set
             user.Password = PasswordHasher.HashPassword(user.Password);
-            return userRepository.CreateUser(user);
+            user.CreatedAt = DateTime.UtcNow;
+            user.LastModified = DateTime.UtcNow;
+            user.UserRole = user.UserRole;
+                        
+            var createdUser = await userRepository.CreateUserAsync(user);
+            await walletRepository.AddNewWallet(createdUser.UserId);
+
+            return createdUser;
         }
 
-        public User UpdateUser(User user)
-            => userRepository.UpdateUser(user);
+        public async Task<User> UpdateUserAsync(User user)
+            => await userRepository.UpdateUserAsync(user);
 
-        public void DeleteUser(int userId)
+        public async Task DeleteUserAsync(int userId)
         {
-            sessionRepository.DeleteUserSessions(userId).Wait();
-            userRepository.DeleteUser(userId);
+            await sessionRepository.DeleteUserSessions(userId);
+            await userRepository.DeleteUserAsync(userId);
         }
 
-        public bool AcceptChanges(int userId, string givenPassword)
+        public async Task<bool> AcceptChangesAsync(int userId, string givenPassword)
         {
-            var user = userRepository.GetUserById(userId);
+            var user = await userRepository.GetUserByIdAsync(userId);
             return PasswordHasher.VerifyPassword(givenPassword, user.Password);
         }
 
-        public void UpdateUserEmail(int userId, string newEmail)
-            => userRepository.ChangeEmail(userId, newEmail);
+        public async Task UpdateUserEmailAsync(int userId, string newEmail)
+        {
+            await userRepository.ChangeEmailAsync(userId, newEmail);
+        }
 
-        public void UpdateUserPassword(int userId, string newPassword)
-            => userRepository.ChangePassword(userId, newPassword);
+        public async Task UpdateUserPasswordAsync(int userId, string newPassword)
+        {
+            await userRepository.ChangePasswordAsync(userId, newPassword);
+        }
 
-        public void UpdateUserUsername(int userId, string newUsername)
-            => userRepository.ChangeUsername(userId, newUsername);
+        public async Task UpdateUserUsernameAsync(int userId, string newUsername)
+        {
+            await userRepository.ChangeUsernameAsync(userId, newUsername);
+        }
 
         public async Task<User?> LoginAsync(string emailOrUsername, string password)
         {
-            var user = userRepository.VerifyCredentials(emailOrUsername);
+            var user = await userRepository.VerifyCredentialsAsync(emailOrUsername);
             if (user != null && PasswordHasher.VerifyPassword(password, user.Password))
             {
                 var sessionDetails = await sessionRepository.CreateSession(user.UserId);
-                userRepository.UpdateLastLogin(user.UserId);
+                await userRepository.UpdateLastLoginAsync(user.UserId);
                 return user;
             }
             return null;
@@ -87,20 +113,20 @@ namespace SteamHub.ApiContract.Services
 
         public async Task LogoutAsync()
         {
-            var currentUser = GetCurrentUser();
+            var currentUser = await GetCurrentUserAsync();
             if (currentUser != null)
             {
                 await sessionRepository.DeleteUserSessions(currentUser.UserId);
             }
         }
 
-        public User? GetCurrentUser()
+        public async Task<User?> GetCurrentUserAsync()
         {
             var sessionId = UserSession.Instance.CurrentSessionId;
             if (!sessionId.HasValue)
                 return null;
 
-            var userWithSession = sessionRepository.GetUserFromSession(sessionId.Value).Result;
+            var userWithSession = await sessionRepository.GetUserFromSession(sessionId.Value);
             if (userWithSession == null)
                 return null;
 
@@ -113,65 +139,67 @@ namespace SteamHub.ApiContract.Services
             };
         }
 
-        public bool IsUserLoggedIn()
+        public async Task<bool> IsUserLoggedInAsync()
         {
             var sessionId = UserSession.Instance.CurrentSessionId;
             if (!sessionId.HasValue)
                 return false;
 
-            var session = sessionRepository.GetSessionById(sessionId.Value).Result;
+            var session = await sessionRepository.GetSessionById(sessionId.Value);
             return session != null && session.ExpiresAt > DateTime.UtcNow;
         }
-        
-        public bool UpdateUserUsername(string username, string currentPassword)
+
+        public async Task<bool> UpdateUserUsernameAsync(string username, string currentPassword)
         {
-            if (!VerifyUserPassword(currentPassword)) return false;
-            userRepository.ChangeUsername(GetCurrentUser().UserId, username);
+            if (!await VerifyUserPasswordAsync(currentPassword)) 
+                return false;
+            var currentUser = await GetCurrentUserAsync();
+            await UpdateUserUsernameAsync(currentUser.UserId, username);
             return true;
         }
 
-        public bool UpdateUserPassword(string newPassword, string currentPassword)
+        public async Task<bool> UpdateUserPasswordAsync(string newPassword, string currentPassword)
         {
-            if (!VerifyUserPassword(currentPassword)) return false;
-            userRepository.ChangePassword(GetCurrentUser().UserId, newPassword);
+            if (!await VerifyUserPasswordAsync(currentPassword)) 
+                return false;
+            var currentUser = await GetCurrentUserAsync();
+            await UpdateUserPasswordAsync(currentUser.UserId, newPassword);
             return true;
         }
 
-        public bool UpdateUserEmail(string newEmail, string currentPassword)
+        public async Task<bool> UpdateUserEmailAsync(string newEmail, string currentPassword)
         {
-            if (!VerifyUserPassword(currentPassword)) return false;
-            userRepository.ChangeEmail(GetCurrentUser().UserId, newEmail);
+            if (!await VerifyUserPasswordAsync(currentPassword)) 
+                return false;
+            var currentUser = await GetCurrentUserAsync();
+            await UpdateUserEmailAsync(currentUser.UserId, newEmail);
             return true;
         }
 
-        public bool VerifyUserPassword(string password)
+        public async Task<bool> VerifyUserPasswordAsync(string password)
         {
-            var currentEmail = GetCurrentUser().Email;
-            var user = userRepository.VerifyCredentials(currentEmail);
+            var currentUser = await GetCurrentUserAsync();
+            var user = await userRepository.VerifyCredentialsAsync(currentUser.Email);
             return user != null && PasswordHasher.VerifyPassword(password, user.Password);
         }
 
         public async Task<List<User>> GetAllUsersAsync()
         {
-            var dto = await this.userRepository.GetUsersAsync();
-            var result = new List<User>();
-            foreach (var u in dto.Users)
-            {
-                result.Add(new User
-                {
-                    UserId = u.UserId,
-                    Username = u.UserName,
-                    Password = u.Password,
-                    Email = u.Email,
-                    WalletBalance = u.WalletBalance,
-                    PointsBalance = u.PointsBalance,
-                    UserRole = u.UserRole,
-                    CreatedAt = u.CreatedAt,
-                    LastLogin = u.LastLogin,
-                    ProfilePicture = u.ProfilePicture,
-                });   
-            }
-            return result;
+            return await userRepository.GetAllUsersAsync();
+        }
+
+        public async Task<bool> UpdateProfilePictureAsync(int userId, string profilePicturePath)
+        {
+            var currentUser = await GetCurrentUserAsync();
+            await userRepository.UpdateProfilePictureAsync(currentUser.UserId, profilePicturePath);
+            return true;
+        }
+
+        public async Task<bool> UpdateProfileBioAsync(int userId, string profileBio)
+        {
+            var currentUser = await GetCurrentUserAsync();
+            await userRepository.UpdateProfileBioAsync(currentUser.UserId, profileBio);
+            return true;
         }
     }
 }

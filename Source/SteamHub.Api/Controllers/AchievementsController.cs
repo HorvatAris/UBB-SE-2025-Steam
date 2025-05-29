@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using SteamHub.ApiContract.Services.Interfaces;
+using System.Threading.Tasks;
 
 
 namespace SteamWebApi.Controllers
@@ -37,10 +38,10 @@ namespace SteamWebApi.Controllers
             return Ok(groupedAchievements);
         }
 
-        [HttpGet("{userId}/status")]
-        public IActionResult GetAchievementsWithStatusForUser(int userId)
+        [HttpGet("user/{userId}/status")]
+        public async Task<IActionResult> GetAchievementsWithStatusForUser([FromRoute] int userId)
         {
-            var achievementsWithStatus = achievementsService.GetAchievementsWithStatusForUser(userId);
+            var achievementsWithStatus =await  achievementsService.GetAchievementsWithStatusForUser(userId);
             return Ok(achievementsWithStatus);
         }
 

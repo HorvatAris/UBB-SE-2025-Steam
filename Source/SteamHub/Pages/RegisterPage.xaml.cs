@@ -16,6 +16,11 @@ namespace SteamHub.Pages
         private IUserService UserService { get; set; }
 
         /// <summary>
+        /// Gets or sets the navigation frame used for page navigation.
+        /// </summary>
+        private readonly Frame navigationFrame;
+
+        /// <summary>
         /// Gets the ViewModel used for data binding on this page.
         /// </summary>
         public RegisterViewModel ViewModel { get; private set; }
@@ -23,9 +28,11 @@ namespace SteamHub.Pages
         /// <summary>
         /// Initializes a new instance of the <see cref="RegisterPage"/> class.
         /// </summary>
+        /// <param name="navigationFrame">The frame used for navigation between login/register pages.</param>
         /// <param name="userService">The user service injected via dependency injection.</param>
-        public RegisterPage(IUserService userService)
+        public RegisterPage(Frame navigationFrame, IUserService userService)
         {
+            this.navigationFrame = navigationFrame;
             UserService = userService;
             this.InitializeComponent();
 
@@ -39,7 +46,7 @@ namespace SteamHub.Pages
         /// </summary>
         private void RegisterPage_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel = new RegisterViewModel(this.Frame, UserService);
+            ViewModel = new RegisterViewModel(navigationFrame, UserService);
             this.DataContext = ViewModel;
         }
     }

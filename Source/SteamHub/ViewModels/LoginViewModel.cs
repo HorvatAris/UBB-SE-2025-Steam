@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.Pages;
 using SteamHub.ApiContract.Models.User;
+using SteamHub.ApiContract.Models.Session;
 
 namespace SteamHub.ViewModels;
 
@@ -15,7 +17,7 @@ namespace SteamHub.ViewModels;
 public partial class LoginViewModel : ObservableObject
 {
     private readonly IUserService userService;
-    private readonly Frame loginViewFrame;
+    private readonly Frame navigationFrame;
     private readonly Action<User> onLoginSuccess;
 
     /// <summary>
@@ -37,15 +39,21 @@ public partial class LoginViewModel : ObservableObject
     private string errorMessage;
 
     /// <summary>
+    /// Gets or sets whether the login is in progress.
+    /// </summary>
+    [ObservableProperty]
+    private bool isLoading;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="LoginViewModel"/> class.
     /// </summary>
-    /// <param name="frame">The frame used for navigation.</param>
+    /// <param name="navigationFrame">The frame used for navigation.</param>
     /// <param name="userService">Service for authenticating users.</param>
     /// <param name="onLoginSuccess">Action to invoke on successful login.</param>
-    public LoginViewModel(Frame frame, IUserService userService, Action<User> onLoginSuccess)
+    public LoginViewModel(Frame navigationFrame, IUserService userService, Action<User> onLoginSuccess)
     {
         this.userService = userService;
-        this.loginViewFrame = frame;
+        this.navigationFrame = navigationFrame;
         this.onLoginSuccess = onLoginSuccess;
     }
 
@@ -58,6 +66,7 @@ public partial class LoginViewModel : ObservableObject
     {
         try
         {
+            IsLoading = true;
             ErrorMessage = string.Empty;
 
             if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
@@ -66,19 +75,41 @@ public partial class LoginViewModel : ObservableObject
                 return;
             }
 
-            var user = await userService.LoginAsync(Username, Password);
-            if (user != null)
+            Debug.WriteLine($"Attempting login for user: {Username}");
+            var loginResult = await userService.LoginAsync(Username, Password);
+
+            if (loginResult != null)
             {
-                onLoginSuccess?.Invoke(user);
+                Debug.WriteLine($"Login successful for user: {loginResult.Username}");
+
+                // // Get a fresh copy of the user data to ensure we have the most up-to-date information
+                // var currentUser = await userService.GetCurrentUserAsync();
+                // if (currentUser == null)
+                // {
+                //     Debug.WriteLine("Failed to get current user after login");
+                //     ErrorMessage = "Login failed: Could not retrieve user data";
+                //     return;
+                // }
+
+                //Debug.WriteLine($"Successfully retrieved current user data for: {currentUser.Username}");
+                Debug.WriteLine("Notifying MainWindow of successful login");
+                onLoginSuccess?.Invoke(loginResult);
             }
             else
             {
+                Debug.WriteLine("Login failed: Invalid credentials");
                 ErrorMessage = "Invalid username or password.";
             }
         }
         catch (Exception ex)
         {
+            Debug.WriteLine($"Login error: {ex.Message}");
+            Debug.WriteLine($"Stack trace: {ex.StackTrace}");
             ErrorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 
@@ -88,15 +119,15 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand]
     private void NavigateToRegister()
     {
-        loginViewFrame.Navigate(typeof(RegisterPage));
-    }
-
-    /// <summary>
-    /// Navigates the user to the forgot password page.
-    /// </summary>
-    [RelayCommand]
-    private void NavigateToForgotPassword()
-    {
-        loginViewFrame.Navigate(typeof(ForgotPasswordPage));
+        if (navigationFrame != null)
+        {
+            // Create the RegisterPage with required parameters and set it as content
+            var registerPage = new RegisterPage(navigationFrame, userService);
+            navigationFrame.Content = registerPage;
+        }
+        else
+        {
+            Debug.WriteLine("Navigation frame is null - cannot navigate to register page");
+        }
     }
 }

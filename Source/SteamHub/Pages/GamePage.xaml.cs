@@ -32,15 +32,18 @@ namespace SteamHub.Pages
     /// </summary>
     public sealed partial class GamePage : Page
     {
+        private readonly IReviewService _reviewService;
         public GamePage(
             IGameService gameService,
             ICartService cartService,
             IUserGameService userGameService,
+            IReviewService reviewService,
             Game game = null)
         {
             this.InitializeComponent();
+            this._reviewService = reviewService;
 
-            this.ViewModel = new GamePageViewModel(gameService, cartService, userGameService);
+            this.ViewModel = new GamePageViewModel(gameService, cartService, userGameService, reviewService);
 
             this.DataContext = this.ViewModel;
 
@@ -113,6 +116,36 @@ namespace SteamHub.Pages
                 this.ViewModel.GetSimilarGames(game, frame);
             }
         }
+
+        private void ViewReviewsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var parent = this.Parent;
+
+            while (parent != null && !(parent is Frame) && !(parent is ContentControl))
+            {
+                parent = (parent as FrameworkElement)?.Parent;
+            }
+
+            if (parent is Frame parentFrame && this._reviewService != null && this.ViewModel.Game != null)
+            {
+                var reviewsPage = new ReviewsPage(this._reviewService);
+                parentFrame.Content = reviewsPage;
+
+                reviewsPage.NavigateToGameReviews(this.ViewModel.Game.GameId);
+            }
+            else if (parent is ContentControl parentContent && this._reviewService != null && this.ViewModel.Game != null)
+            {
+                var reviewsPage = new ReviewsPage(this._reviewService);
+                parentContent.Content = reviewsPage;
+
+                reviewsPage.NavigateToGameReviews(this.ViewModel.Game.GameId);
+            }
+            else
+            {
+                Debug.WriteLine("Cannot show ReviewsPage: Parent, ReviewService, or Game is null.");
+            }
+        }
+
 
         private void ShowNotification(string title, string subtitle)
         {

@@ -19,7 +19,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="Pages\AchievementsPage.xaml" />
+		<None Remove="Pages\CollectionsForVisitorsPage.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Remove="Pages\AchievementsPage.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -52,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.0.230907" />
     <PackageReference Include="Google.Apis" Version="1.69.0" />
     <PackageReference Include="Google.Protobuf" Version="3.30.2" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
@@ -66,7 +70,35 @@
     <ProjectReference Include="..\SteamHub.ApiContract\SteamHub.ApiContract.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Content Update="Assets\Collections\allgames.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Collections\chill.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Collections\image.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Collections\pets.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Collections\shooters.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Collections\sports.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Collections\xmas.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="Pages\AchievementsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+<ItemGroup>
+    <Page Update="Pages\CollectionsForVisitorsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
