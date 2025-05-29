@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ApiContract.Repositories.Interfaces;
-using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Models;
 
 namespace SteamHub.ApiContract.Services
@@ -32,7 +29,7 @@ namespace SteamHub.ApiContract.Services
             }
         }
 
-        public void Initialize(IForumService instance)
+        public Task InitializeAsync(IForumService instance)
         {
             if (instance == null)
             {
@@ -42,6 +39,7 @@ namespace SteamHub.ApiContract.Services
             {
                 GetForumServiceInstance = instance;
             }
+            return Task.CompletedTask;
         }
 
         public ForumService(IForumRepository repository)
@@ -49,59 +47,60 @@ namespace SteamHub.ApiContract.Services
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public int GetCurrentUserId()
+        public Task<int> GetCurrentUserIdAsync()
         {
-            return 1;
-        }
-#nullable enable
-        public List<ForumPost> GetPagedPosts(uint pageNumber, uint pageSize, bool positiveScoreOnly = false, int? gameId = null, string? filter = null)
-        {
-            return repository.GetPagedPosts(pageNumber, pageSize, positiveScoreOnly, gameId, filter);
+            // Replace with real user logic if needed
+            return Task.FromResult(1);
         }
 
-        public List<ForumPost> GetTopPosts(TimeSpanFilter filter)
+        public async Task<List<ForumPost>> GetPagedPostsAsync(uint pageNumber, uint pageSize, bool positiveScoreOnly = false, int? gameId = null, string? filter = null)
         {
-            return repository.GetTopPosts(filter);
+            return await repository.GetPagedPostsAsync(pageNumber, pageSize, positiveScoreOnly, gameId, filter);
         }
 
-        public int GetPostCount(bool positiveScoreOnly = false, int? gameId = null, string? filter = null)
+        public async Task<List<ForumPost>> GetTopPostsAsync(TimeSpanFilter filter)
         {
-            return repository.GetPostCount(positiveScoreOnly, gameId, filter);
+            return await repository.GetTopPostsAsync(filter);
         }
 
-        public void VoteOnPost(int postId, int voteValue)
+        public async Task<int> GetPostCountAsync(bool positiveScoreOnly = false, int? gameId = null, string? filter = null)
         {
-            repository.VoteOnPost(postId, voteValue, (int)GetCurrentUserId());
+            return await repository.GetPostCountAsync(positiveScoreOnly, gameId, filter);
         }
 
-        public void VoteOnComment(int commentId, int voteValue)
+        public async Task VoteOnPostAsync(int postId, int voteValue)
         {
-            repository.VoteOnComment(commentId, voteValue, (int)GetCurrentUserId());
+            await repository.VoteOnPostAsync(postId, voteValue, await GetCurrentUserIdAsync());
         }
 
-        public List<ForumComment> GetComments(int postId)
+        public async Task VoteOnCommentAsync(int commentId, int voteValue)
         {
-            return repository.GetComments(postId);
+            await repository.VoteOnCommentAsync(commentId, voteValue, await GetCurrentUserIdAsync());
         }
 
-        public void DeleteComment(int commentId)
+        public async Task<List<ForumComment>> GetCommentsAsync(int postId)
         {
-            repository.DeleteComment(commentId);
+            return await repository.GetCommentsAsync(postId);
         }
 
-        public void CreateComment(string body, int postId, string date)
+        public async Task DeleteCommentAsync(int commentId)
         {
-            repository.CreateComment(body, postId, date, (int)GetCurrentUserId());
+            await repository.DeleteCommentAsync(commentId);
         }
 
-        public void DeletePost(int postId)
+        public async Task CreateCommentAsync(string body, int postId, string date)
         {
-            repository.DeletePost(postId);
+            await repository.CreateCommentAsync(body, postId, date, await GetCurrentUserIdAsync());
         }
 
-        public void CreatePost(string title, string body, string date, int? gameId)
+        public async Task DeletePostAsync(int postId)
         {
-            repository.CreatePost(title, body, (int)GetCurrentUserId(), date, gameId);
+            await repository.DeletePostAsync(postId);
+        }
+
+        public async Task CreatePostAsync(string title, string body, string date, int? gameId)
+        {
+            await repository.CreatePostAsync(title, body, await GetCurrentUserIdAsync(), date, gameId);
         }
     }
 }
