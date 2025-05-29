@@ -36,21 +36,19 @@
                 </NavigationViewItem>
                 <NavigationViewItem Icon="Shop" Content="Marketplace" Tag="marketplace" />
                 <NavigationViewItem Icon="List" Content="Inventory" Tag="inventory" />
-                <NavigationViewItem Content="News" Tag="NewsPage">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE8A5;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Icon="Account" Content="Profile" Tag="profile" />
                 <NavigationViewItem Icon="Switch" Content="Trading" Tag="trading" />
-                <NavigationViewItem Icon="AddFriend" Content="Friends" Tag="friends" />
-                <NavigationViewItem Icon="Scan" Content="Wallet" Tag="Wallet" />
+                <NavigationViewItem Icon="Account" Content="Profile" Tag="profile" />
+                <NavigationViewItem Icon="People" Content="Friends" Tag="friends" />
+                <NavigationViewItem Icon="AddFriend" Content="Add Friends" Tag="AddFriendsPage" />
                 <NavigationViewItem Icon="Like" Content="Achievements" Tag="AchievementsPage" />
                 <NavigationViewItem Icon="NewFolder" Content="News" Tag="NewsPage" />
+                <NavigationViewItem Icon="Library" Content="Collections" Tag="CollectionsPage" />
+                <NavigationViewItem Icon="Scan" Content="Wallet" Tag="Wallet" />
 
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
+                <NavigationViewItem Icon="Setting" Content="Settings" Tag="profileSettings"/>
                 <NavigationViewItem Content="Logout" Tag="Logout" Icon="LeaveChat" Tapped="LogoutButton_Click"/>
             </NavigationView.FooterMenuItems>
 

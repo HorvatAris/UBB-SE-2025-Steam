@@ -8,7 +8,6 @@ using System.Diagnostics;
 
 namespace SteamHub.Api.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TradeController : ControllerBase

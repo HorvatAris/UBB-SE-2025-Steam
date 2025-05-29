@@ -23,6 +23,7 @@ namespace SteamHub.ViewModels
     public partial class MarketplaceViewModel : INotifyPropertyChanged
     {
         private IMarketplaceService marketplaceService;
+        private IUserService userService;
         private ObservableCollection<Item> items;
         private string searchText;
         private string selectedGame;
@@ -37,9 +38,10 @@ namespace SteamHub.ViewModels
         private ObservableCollection<string> availableTypes;
         private ObservableCollection<string> availableRarities;
 
-        public MarketplaceViewModel(IMarketplaceService marketplaceService)
+        public MarketplaceViewModel(IMarketplaceService marketplaceService, IUserService userService)
         {
             this.marketplaceService = marketplaceService;
+            this.userService = userService;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -159,7 +161,6 @@ namespace SteamHub.ViewModels
                 if (this.currentUser != value)
                 {
                     this.currentUser = value;
-                    this.marketplaceService.User = value;
                     this.OnPropertyChanged();
                     this.OnPropertyChanged(nameof(this.CanBuyItem));
                 }
@@ -234,7 +235,7 @@ namespace SteamHub.ViewModels
 
         private async Task LoadUsersAsync()
         {
-            this.CurrentUser = this.marketplaceService.User;
+            this.CurrentUser = await this.userService.GetCurrentUserAsync();
             var user = new User(this.CurrentUser);
 
             this.AvailableUsers = new ObservableCollection<User> { user };

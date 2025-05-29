@@ -17,6 +17,7 @@ using SteamHub.ApiContract.ServiceProxies;
 using SteamHub.Pages;
 using SteamHub.Web;
 using SteamHub.ViewModels;
+using SteamHub.Helpers;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -39,19 +40,24 @@ namespace SteamHub
         private UserServiceProxy userService;
         private SessionServiceProxy sessionService;
         private FriendsServiceProxy friendsService;
-        
+
         private FeaturesServiceProxy featuresService;
         private WalletServiceProxy walletService;
+        private ReviewServiceProxy reviewService;
         private FriendRequestServiceProxy friendRequestService;
         private AchievementsServiceProxy achievementsService;
         private CollectionsServiceProxy collectionServiceProxy;
         private NewsServiceProxy newsService;
         
         private readonly IHttpClientFactory _httpClientFactory;
+        public Frame MainContentFrame => this.ContentFrame;
 
         public MainWindow()
         {
             this.InitializeComponent();
+
+            // Set the login success callback in NavigationHelper
+            NavigationHelper.OnLoginSuccess = OnLoginSuccess;
 
             var handler = new HttpClientHandler
             {
@@ -80,7 +86,8 @@ namespace SteamHub
 
         private void ShowLoginPage()
         {
-            var loginPage = new LoginPage(this.userService, OnLoginSuccess);
+            // Pass the LoginFrame as the navigation frame for login/register navigation
+            var loginPage = new LoginPage(LoginFrame, this.userService, NavigationHelper.OnLoginSuccess);
             LoginFrame.Content = loginPage;
             LoginOverlay.Visibility = Visibility.Visible;
             NavView.Visibility = Visibility.Collapsed;
@@ -88,7 +95,8 @@ namespace SteamHub
 
         private void ShowRegisterPage()
         {
-            var registerPage = new RegisterPage(this.userService);
+            // Pass the LoginFrame as the navigation frame
+            var registerPage = new RegisterPage(LoginFrame, this.userService);
             LoginFrame.Content = registerPage;
         }
 
@@ -191,26 +199,27 @@ namespace SteamHub
         private void InitializeUserServices(User user)
         {
             Debug.WriteLine("Initializing user services...");
-            
+
             try
             {
                 this.achievementsService = new AchievementsServiceProxy();
+                this.marketplaceService = new MarketplaceServiceProxy(user);
+                this.pointShopService = new PointShopServiceProxy(user);
+                this.inventoryService = new InventoryServiceProxy(user);
+                this.gameService = new GameServiceProxy();
+                this.cartService = new CartServiceProxy(user);
+                this.userGameService = new UserGameServiceProxy(user);
+                this.developerService = new DeveloperServiceProxy(user);
                 this.tradeService = new TradeServiceProxy();
-                this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory, user);
-                this.pointShopService = new PointShopServiceProxy(_httpClientFactory, user);
-                this.inventoryService = new InventoryServiceProxy(_httpClientFactory);
-                this.gameService = new GameServiceProxy(_httpClientFactory);
-                this.cartService = new CartServiceProxy(_httpClientFactory, user);
-                this.userGameService = new UserGameServiceProxy(_httpClientFactory, user);
-                this.developerService = new DeveloperServiceProxy(_httpClientFactory, user);
-                this.friendsService = new FriendsServiceProxy(_httpClientFactory, user);
+                this.friendsService = new FriendsServiceProxy(_httpClientFactory);
                 this.achievementsService = new AchievementsServiceProxy();
                 this.collectionServiceProxy = new CollectionsServiceProxy();
                 this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
+                this.reviewService = new ReviewServiceProxy();
                 this.walletService = new WalletServiceProxy();
                 this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory,user);
                 this.newsService = new NewsServiceProxy(_httpClientFactory);
-
+                
                 Debug.WriteLine("User services initialized successfully");
             }
             catch (Exception ex)
@@ -236,7 +245,7 @@ namespace SteamHub
                 switch (tag)
                 {
                     case "HomePage":
-                        this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
+                        this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService, this.reviewService);
                         break;
                     case "CartPage":
                         this.ContentFrame.Content = new CartPage(this.cartService, this.userGameService);
@@ -245,7 +254,7 @@ namespace SteamHub
                         this.ContentFrame.Content = new PointsShopPage(this.pointShopService);
                         break;
                     case "WishlistPage":
-                        this.ContentFrame.Content = new WishListView(this.userGameService, this.gameService, this.cartService);
+                        this.ContentFrame.Content = new WishListView(this.userGameService, this.gameService, this.cartService, this.reviewService);
                         break;
                     case "DeveloperModePage":
                         this.ContentFrame.Content = new DeveloperModePage(this.developerService);
@@ -254,13 +263,13 @@ namespace SteamHub
                         this.ContentFrame.Content = new InventoryPage(this.inventoryService, this.userService);
                         break;
                     case "marketplace":
-                        this.ContentFrame.Content = new MarketplacePage(this.marketplaceService);
+                        this.ContentFrame.Content = new MarketplacePage(this.marketplaceService, this.userService);
                         break;
                     case "trading":
                         this.ContentFrame.Content = new TradingPage(this.tradeService, this.userService, this.gameService);
                         break;
                     case "friends":
-                        this.ContentFrame.Content = new FriendsPage(this.friendsService);
+                        this.ContentFrame.Content = new FriendsPage(this.friendsService, this.userService);
                         break;
                     case "LoginPage":
                         ShowLoginPage();
@@ -268,9 +277,15 @@ namespace SteamHub
                     case "RegisterPage":
                         ShowRegisterPage();
                         break;
-                   
+
                     case "profile":
-                        this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService, this.collectionServiceProxy, achievementsService, this.user);
+                        this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService,this.collectionServiceProxy, achievementsService, this.user);
+                        break;
+                    case "profileSettings":
+                        this.ContentFrame.Content = new ConfigurationsPage(this.userService, this.ContentFrame);
+                        break;
+                    case "ForgotPasswordPage":
+                        ShowLoginPage();
                         break;
                     case "AchievementsPage":
                         this.ContentFrame.Content = new AchievementsPage(this.achievementsService, this.userService);
@@ -280,6 +295,14 @@ namespace SteamHub
                         break;
                     case "NewsPage":
                         this.ContentFrame.Content = new NewsPage(this.newsService, this.userService, this.user);
+                    case "AddFriendsPage":
+                        this.ContentFrame.Content = new AddFriendsPage(this.friendsService, this.userService);
+                        break;
+					case "CollectionsPage":
+                        //this.ContentFrame.Content = new CollectionsPage(this.collectionServiceProxy , this.userService);
+                        this.ContentFrame.Navigate(typeof(CollectionsPage), (this.collectionServiceProxy, this.userService));
+
+
                         break;
                     default:
                         Debug.WriteLine($"Unknown page tag: {tag}");
@@ -312,7 +335,7 @@ namespace SteamHub
             if (args.SelectedItemContainer != null)
             {
                 var tag = args.SelectedItemContainer.Tag.ToString();
-                
+
                 if (tag == "LoginPage" || tag == "RegisterPage")
                 {
                     switch (tag)

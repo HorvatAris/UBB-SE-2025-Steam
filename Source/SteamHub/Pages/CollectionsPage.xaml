@@ -23,18 +23,10 @@
         <Grid.RowDefinitions>  
             <RowDefinition Height="Auto"/>  
             <RowDefinition Height="Auto"/>  
-            <RowDefinition Height="Auto"/>  
             <RowDefinition Height="*"/>  
         </Grid.RowDefinitions>  
 
-        <Button Grid.Row="0"  
-                Content="Back to Profile"  
-                Click="BackToProfileButton_Click"  
-                Style="{StaticResource AccentButtonStyle}"  
-                HorizontalAlignment="Left"  
-                Margin="20"/>  
-
-        <TextBlock Grid.Row="1"   
+        <TextBlock Grid.Row="0"   
                    Text="COLLECTIONS"   
                    FontSize="30"   
                    FontWeight="Bold"   
@@ -42,14 +34,14 @@
                    HorizontalAlignment="Center"  
                    Margin="0,10,0,20"/>  
 
-        <Button Grid.Row="2"  
+        <Button Grid.Row="1"  
                 Content="Create Collection"  
                 Click="CreateCollection_Click"  
                 Style="{StaticResource AccentButtonStyle}"  
                 HorizontalAlignment="Right"  
                 Margin="0,0,35,20"/>  
 
-        <Grid Grid.Row="3">  
+        <Grid Grid.Row="2">  
             <TextBlock Text="You don't have any collections yet. Create one to get started!"  
                        Style="{StaticResource BodyTextBlockStyle}"  
                        HorizontalAlignment="Center"  
@@ -95,7 +87,7 @@
                                 </Grid>  
 
                                 <TextBlock Grid.Row="1"  
-                                           Text="{Binding Name, TargetNullValue='Unnamed Collection'}"  
+                                           Text="{Binding CollectionName, TargetNullValue='Unnamed Collection'}"  
                                            Style="{ThemeResource BodyStrongTextBlockStyle}"  
                                            HorizontalAlignment="Center"  
                                            Margin="0,12,0,8"/>  
@@ -137,13 +129,9 @@
                         </DataTemplate>  
                     </ItemsControl.ItemTemplate>  
                 </ItemsControl>  
-            </ScrollViewer>  
+            </ScrollViewer>
 
-            <ProgressRing IsActive="{Binding IsLoading}"  
-                         Width="50"  
-                         Height="50"  
-                         HorizontalAlignment="Center"  
-                         VerticalAlignment="Center"/>  
+            <Frame x:Name="ContentFrame" Grid.Row="3"/>
         </Grid>  
     </Grid>  
 </Page>

@@ -4,6 +4,7 @@ using SteamHub.ApiContract.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,14 +40,22 @@ namespace SteamHub.ViewModels
             ownedGames = new ObservableCollection<OwnedGame>();
         }
 
-        public void LoadGames(int collectionId)
+        public async Task LoadGamesAsync(int collectionId)
         {
             try
             {
                 isLoading = true;
                 errorMessage = string.Empty;
                 isAllOwnedGamesCollection = collectionId == AllOwnedGamesCollectionId;
-                var gamesInCollection = collectionsService.GetGamesInCollection(collectionId);
+
+                // Await the task to get the list of games
+                var gamesInCollection = await collectionsService.GetGamesInCollection(collectionId);
+                foreach (var game in gamesInCollection)
+                {
+                    Debug.WriteLine($" - GameId={game.GameId}, Title={game.GameTitle}, UserId={game.UserId} , Picture={game.CoverPicture}");
+                }
+
+
                 ownedGames.Clear();
                 foreach (var game in gamesInCollection)
                 {

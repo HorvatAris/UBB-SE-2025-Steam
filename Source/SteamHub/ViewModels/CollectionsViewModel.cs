@@ -5,6 +5,7 @@ using SteamHub.ApiContract.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -102,8 +103,10 @@ namespace SteamHub.ViewModels
                 isLoading = true;
                 errorMessage = string.Empty;
 
-                var collections = collectionsService.GetAllCollections(userIdentifier);
-                    
+                var collections = await collectionsService.GetAllCollections(userIdentifier);
+
+
+
                 if (collections == null || collections.Count == 0)
                 {
                     errorMessage = ErrorNoCollectionsFound;
@@ -114,6 +117,7 @@ namespace SteamHub.ViewModels
                 Collections.Clear();
                 foreach (var collection in collections)
                 {
+                    Debug.WriteLine($"[Load] Collection: {collection.CollectionId} - {collection.CollectionName}");
                     Collections.Add(collection);
                 }
             }
@@ -133,7 +137,8 @@ namespace SteamHub.ViewModels
         {
             try
             {
-                collectionsService.DeleteCollection(collectionId, userIdentifier);
+                await collectionsService.DeleteCollection(collectionId, userIdentifier);
+
                 await LoadCollectionsAsync(); // Reload collections after deletion
             }
             catch (Exception ex)
@@ -173,7 +178,8 @@ namespace SteamHub.ViewModels
                     return;
                 }
 
-                collectionsService.AddGameToCollection(selectedCollection.CollectionId, gameId, userIdentifier);
+                await collectionsService.AddGameToCollection(selectedCollection.CollectionId, gameId);
+
                 await LoadCollectionsAsync(); // Reload collections to update the UI
             }
             catch (Exception ex)
@@ -193,7 +199,8 @@ namespace SteamHub.ViewModels
                     return;
                 }
 
-                collectionsService.RemoveGameFromCollection(selectedCollection.CollectionId, gameId);
+                await collectionsService.RemoveGameFromCollection(selectedCollection.CollectionId, gameId);
+
                 await LoadCollectionsAsync(); // Reload collections to update the UI
             }
             catch (Exception ex)
@@ -208,7 +215,7 @@ namespace SteamHub.ViewModels
         {
             try
             {
-                collectionsService.CreateCollection(
+                await collectionsService.CreateCollection(
                     userIdentifier,
                     parameters.CollectionName,
                     parameters.CoverPicture,
@@ -228,7 +235,7 @@ namespace SteamHub.ViewModels
         {
             try
             {
-                collectionsService.UpdateCollection(
+                await collectionsService.UpdateCollection(
                     parameters.CollectionId,
                     userIdentifier,
                     parameters.CollectionName,
@@ -245,17 +252,17 @@ namespace SteamHub.ViewModels
 
         public async Task<List<Collection>> GetPublicCollectionsForUserAsync(int userId)
         {
-            return collectionsService.GetPublicCollectionsForUser(userId);
+            return await collectionsService.GetPublicCollectionsForUser(userId);
         }
 
         public async Task<Collection> GetCollectionByIdAsync(int collectionId, int userId)
         {
-            return collectionsService.GetCollectionByIdentifier(collectionId, userId);
+            return await collectionsService.GetCollectionByIdentifier(collectionId, userId);
         }
 
         public async Task RemoveGameFromCollectionAsync(int collectionId, int gameId)
         {
-            collectionsService.RemoveGameFromCollection(collectionId, gameId);
+            await collectionsService.RemoveGameFromCollection(collectionId, gameId);
         }
     }
 }

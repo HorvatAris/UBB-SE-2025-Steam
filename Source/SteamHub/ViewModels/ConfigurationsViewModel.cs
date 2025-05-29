@@ -23,26 +23,20 @@ namespace SteamHub.ViewModels
         [RelayCommand]
         private void NavigateToFeatures()
         {
+            //  Change like the rest
             frame.Navigate(typeof(FeaturesPage));
-        }
-
-        [RelayCommand]
-        private async Task NavigateToProfile()
-        {
-            var currentUser = await userService.GetCurrentUserAsync();
-            frame.Navigate(typeof(ProfilePage), currentUser.UserId);
         }
 
         [RelayCommand]
         private void NavigateToProfileSettings()
         {
-            frame.Navigate(typeof(ModifyProfilePage));
+            frame.Content = new ModifyProfilePage(this.frame, this.userService);
         }
 
         [RelayCommand]
         private void NavigateToAccountSettings()
         {
-            frame.Navigate(typeof(AccountSettingsPage));
+            frame.Content = new AccountSettingsPage(this.frame, this.userService);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await _httpClient.DeleteAsync($"News/{userId}/comments/{commentId}");
+                await _httpClient.DeleteAsync($"api/News/{userId}/comments/{commentId}");
                 return true;
             }
             catch (Exception ex)
@@ -45,7 +45,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await _httpClient.DeleteAsync($"News/{userId}/posts/{postId}");
+                await _httpClient.DeleteAsync($"api/News/{userId}/posts/{postId}");
                 return true;
             }
             catch (Exception ex)
@@ -59,7 +59,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await _httpClient.PostAsync($"/api/News/{userId}/posts/{postId}/dislike", null);
+                await _httpClient.PostAsync($"api/News/{userId}/posts/{postId}/dislike", null);
                 return true;
             }
             catch (Exception ex)
@@ -98,7 +98,7 @@ namespace SteamHub.ApiContract.ServiceProxies
                     Encoding.UTF8,
                     "application/json"
                 );
-                var response = await _httpClient.PostAsync("/News/format", content);
+                var response = await _httpClient.PostAsync("api/News/format", content);
                 response.EnsureSuccessStatusCode();
 
                 return await response.Content.ReadAsStringAsync();
@@ -114,7 +114,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await _httpClient.PostAsync($"/api/News/{userId}/posts/{postId}/like", null);
+                await _httpClient.PostAsync($"api/News/{userId}/posts/{postId}/like", null);
                 return true;
             }
             catch (Exception ex)
@@ -128,7 +128,8 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/News/{userId}/posts/{postId}/comments");
+                Console.WriteLine($"User id: {userId}, Post id: {postId}");
+                var response = await _httpClient.GetAsync($"api/News/{userId}/posts/{postId}/comments");
                 response.EnsureSuccessStatusCode();
                 var result = await response.Content.ReadFromJsonAsync<List<Comment>>(_options);
                 return result;
@@ -143,17 +144,8 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var url = $"/api/News/{userId}/posts?page={pageNumber}";
-                Console.WriteLine($"Attempting to load posts from: {url}");
-                
-                var response = await _httpClient.GetAsync(url);
-                if (!response.IsSuccessStatusCode)
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Error response from server: {response.StatusCode} - {errorContent}");
-                    throw new Exception($"Server returned {response.StatusCode}: {errorContent}");
-                }
-
+                var response = await _httpClient.GetAsync($"api/News/{userId}/posts?page={pageNumber}&search={Uri.EscapeDataString(searchedText ?? string.Empty)}");
+                response.EnsureSuccessStatusCode();
                 var result = await response.Content.ReadFromJsonAsync<List<Post>>(_options);
                 if (result == null)
                 {
@@ -171,8 +163,9 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error retrieving posts: {ex.Message}");
-                throw new Exception("Error retrieving posts. Please try again later.", ex);
+                Console.Error.WriteLine($"User id: {userId}");
+
+                throw new Exception("Error retrieving posts", ex);
             }
         }
 
@@ -180,7 +173,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await _httpClient.DeleteAsync($"News/{userId}/posts/{postId}/rating");
+                await _httpClient.DeleteAsync($"api/News/{userId}/posts/{postId}/rating");
                 return true;
             }
             catch (Exception ex)
@@ -200,7 +193,7 @@ namespace SteamHub.ApiContract.ServiceProxies
                     "application/json"
                 );
 
-                await _httpClient.PostAsync($"/api/News/{userId}/posts/{postId}/comments", content);
+                await _httpClient.PostAsync($"api/News/{userId}/posts/{postId}/comments", content);
                 return true;
             }
             catch (Exception ex)
@@ -219,7 +212,7 @@ namespace SteamHub.ApiContract.ServiceProxies
                     Encoding.UTF8,
                     "application/json"
                 );
-                await _httpClient.PostAsync($"/api/News/{userId}/posts", content);
+                await _httpClient.PostAsync($"api/News/{userId}/posts", content);
                 return true;
             }
             catch (Exception ex)
@@ -265,7 +258,7 @@ namespace SteamHub.ApiContract.ServiceProxies
                     Encoding.UTF8,
                     "application/json"
                 );
-                await _httpClient.PutAsync($"News/{userId}/comments/{commentId}", content);
+                await _httpClient.PutAsync($"api/News/{userId}/comments/{commentId}", content);
                 return true;
             }
             catch (Exception ex)
@@ -284,7 +277,7 @@ namespace SteamHub.ApiContract.ServiceProxies
                     Encoding.UTF8,
                     "application/json"
                 );
-                await _httpClient.PutAsync($"News/{userId}/posts/{postId}", content);
+                await _httpClient.PutAsync($"api/News/{userId}/posts/{postId}", content);
                 return true;
             }
             catch (Exception ex)

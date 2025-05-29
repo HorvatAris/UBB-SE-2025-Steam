@@ -86,6 +86,7 @@ namespace SteamHub.Web.Controllers
                     model.Username,
                     model.Email,
                     model.Password,
+                    model.ConfirmPassword,
                     model.IsDeveloper);
 
                 if (success)

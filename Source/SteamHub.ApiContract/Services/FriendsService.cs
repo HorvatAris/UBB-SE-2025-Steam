@@ -143,9 +143,5 @@ namespace SteamHub.ApiContract.Services
                 throw new ServiceException("Failed to add friend by username", repositoryException);
             }
         }
-        public User GetUser()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
