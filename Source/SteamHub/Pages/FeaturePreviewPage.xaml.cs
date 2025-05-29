@@ -16,7 +16,7 @@ namespace SteamHub.Pages
         private User currentUser;
         private Frame frame;
 
-        public FeaturePreviewPage(IUserService userService, IFeaturesService featuresService, Frame frame, FeatureDisplay feature)
+        public FeaturePreviewPage(IUserService userService, IFeaturesService featuresService, Frame frame, FeatureDisplay feature, User user)
         {
             this.InitializeComponent();
             // Inject real services and user

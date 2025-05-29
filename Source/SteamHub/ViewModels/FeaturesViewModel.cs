@@ -281,7 +281,7 @@ namespace SteamHub.ViewModels
         {
             if (frame != null && featureDisplay != null)
             {
-                frame.Content = new SteamHub.Pages.FeaturePreviewPage(this._userService, this.featuresService, frame, featureDisplay);
+                frame.Content = new SteamHub.Pages.FeaturePreviewPage(this._userService, this.featuresService, frame, featureDisplay, _currentUser);
             }
         }
     }
