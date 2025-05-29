@@ -46,11 +46,6 @@ namespace SteamHub.ViewModels
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
-        public User GetCurrentUser()
-        {
-            return userService.GetCurrentUser();
-        }
-
         [RelayCommand]
         public async Task LoadFriendsAsync()
         {
@@ -60,13 +55,14 @@ namespace SteamHub.ViewModels
                 ErrorMessage = null;
 
                 var users = await userService.GetAllUsersAsync();
-                var friendships = await friendsService.GetAllFriendshipsAsync(userService.GetCurrentUser().UserId);
+                var currentUser = await userService.GetCurrentUserAsync();
+                var friendships = await friendsService.GetAllFriendshipsAsync(currentUser.UserId);
 
                 possibleFriendships.Clear();
 
                 foreach (var user in users)
                 {
-                    if (user.UserId == userService.GetCurrentUser().UserId)
+                    if (user.UserId == currentUser.UserId)
                     {
                         continue;
                     }
@@ -114,7 +110,9 @@ namespace SteamHub.ViewModels
                 IsLoading = true;
                 ErrorMessage = null;
 
-                await friendsService.AddFriendAsync(userService.GetCurrentUser().UserId, user_id);
+                var currentUser = await userService.GetCurrentUserAsync();
+
+                await friendsService.AddFriendAsync(currentUser.UserId, user_id);
                 await LoadFriendsAsync();
             }
             catch (ServiceException serviceException)
@@ -143,7 +141,9 @@ namespace SteamHub.ViewModels
                 IsLoading = true;
                 ErrorMessage = null;
 
-                var friendships = await friendsService.GetAllFriendshipsAsync(userService.GetCurrentUser().UserId);
+                var currentUser = await userService.GetCurrentUserAsync();
+
+                var friendships = await friendsService.GetAllFriendshipsAsync(currentUser.UserId);
                 int idx = -1;
                 foreach (var friendship in friendships)
                 {
