@@ -270,7 +270,7 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
                                     <div class="d-flex mb-2">
-                                        @*
+                                        
                                         <img src="@comment.Author.ProfilePicturePath" alt="@(comment.Author?.Username ?? "Unknown")"
                                         class="rounded-circle me-2" width="36" height="36">
 
@@ -279,12 +279,13 @@
                                             <small class="text-muted">@comment.Comment.CommentDate.ToString("MMM d, yyyy HH:mm")</small>
                                         </div>
 
-                                        *@
-
+                                        
+                                        @*
                                                 <div>
                                                     <h6 class="mb-0">@("Anonymus")</h6>
                                                     <small class="text-muted">@comment.Comment.CommentDate.ToString("MMM d, yyyy HH:mm")</small>
                                                 </div>
+                                         *@
                                     </div>
 
                                     @if (comment.IsCurrentUserAuthor)

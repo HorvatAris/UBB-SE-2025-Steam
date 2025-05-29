@@ -44,6 +44,8 @@ namespace SteamHub.Controllers
             {
                 Console.Error.WriteLine($"AUTHOR ID {post.AuthorId}");
                 var author = await userService.GetUserByIdentifierAsync(post.AuthorId);
+                Console.Error.WriteLine($"AUTHOR  {author.Username}");
+
                 authorsDict[post.AuthorId] = author;
             }
 
