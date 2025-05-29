@@ -5,6 +5,7 @@ using SteamHub.ApiContract.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -116,6 +117,7 @@ namespace SteamHub.ViewModels
                 Collections.Clear();
                 foreach (var collection in collections)
                 {
+                    Debug.WriteLine($"[Load] Collection: {collection.CollectionId} - {collection.CollectionName}");
                     Collections.Add(collection);
                 }
             }

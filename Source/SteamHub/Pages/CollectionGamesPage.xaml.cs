@@ -9,13 +9,13 @@ using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-
-using System.Diagnostics;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -28,7 +28,6 @@ namespace SteamHub.Pages
     /// </summary>
     public sealed partial class CollectionGamesPage : Page
     {
-        // Constants to replace magic strings
         private const string ErrorDialogTitle = "Error";
         private const string RemoveGameErrorMessage = "Failed to remove game from collection. Please try again.";
         private const string CloseButtonTextValue = "OK";
@@ -37,88 +36,97 @@ namespace SteamHub.Pages
         private CollectionsViewModel collectionsViewModel;
         private UsersViewModel userViewModel;
         private int collectionIdentifier;
-        private string collectionName = string.Empty;
+        private string collectionName;
+        private  ICollectionsService collectionsService;
+        private  IUserService userService;
 
-        public CollectionGamesPage(ICollectionsService collectionsService, IUserService userService)
+
+        public CollectionGamesPage() => this.InitializeComponent();
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            this.InitializeComponent();
-            collectionGamesViewModel = new CollectionGamesViewModel(collectionsService);
-            collectionsViewModel = new CollectionsViewModel(collectionsService, userService);
-            collectionsViewModel.LoadCollectionsAsync();
+            base.OnNavigatedTo(e);
 
-            userViewModel = new UsersViewModel(userService);
-            this.DataContext = collectionGamesViewModel;
-        }
 
-        protected override void OnNavigatedTo(NavigationEventArgs eventArgs)
-        {
-            base.OnNavigatedTo(eventArgs);
-            if (eventArgs.Parameter is (int collectionId, string collectionName))
+
+            if (e.Parameter is ValueTuple<ICollectionsService, IUserService, int, string> fullParams)
             {
-                collectionIdentifier = collectionId;
-                collectionName = collectionName;
-                LoadCollectionGames();
-            }
-            else if (eventArgs.Parameter is int backCollectionId)
-            {
-                // Handle back navigation from AddGameToCollectionPage
-                collectionIdentifier = backCollectionId;
+                var (svc, usrSvc, colId, colName) = fullParams;
 
-                // Await the asynchronous call to GetCurrentUserAsync to retrieve the user object
-                var userTask = userViewModel.GetCurrentUserAsync();
-                userTask.ContinueWith(async task =>
+                if (svc is null || usrSvc is null)
                 {
-                    var user = task.Result;
-                    if (user != null)
-                    {
-                        var userId = user.UserId;
-                        var collectionTask = collectionsViewModel.GetCollectionByIdAsync(collectionIdentifier, userId);
-                        var collection = await collectionTask; // Await the task to get the Collection object
-                        if (collection != null)
-                        {
-                            collectionName = collection.CollectionName; // Access the CollectionName property
-                            LoadCollectionGames();
-                        }
-                    }
-                 
-
-                    // Existing code remains unchanged
-                }, System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext());
-            }
-        }
-
-        private void LoadCollectionGames()
-        {
-            collectionGamesViewModel.CollectionName = collectionName;
-            collectionGamesViewModel.LoadGamesAsync(collectionIdentifier);
-        }
-
-        private void BackButton_Click(object sender, RoutedEventArgs eventArgs)
-        {
-            Frame.Navigate(typeof(CollectionsPage));
-        }
-
-        private void AddGameToCollection_Click(object sender, RoutedEventArgs eventArgs)
-        {
-            //Frame.Navigate(typeof(AddGameToCollectionPage), collectionIdentifier);
-        }
-
-        private void RemoveGame_Click(object sender, RoutedEventArgs eventArgs)
-        {
-            try
-            {
-                var button = sender as Button;
-                if (button?.Tag == null)
-                {
+                    
                     return;
                 }
 
-                int gameId = Convert.ToInt32(button.Tag);
+                collectionsService = svc;
+                userService = usrSvc;
+                collectionIdentifier = colId;
+                collectionName = colName;
 
-                collectionsViewModel.RemoveGameFromCollectionAsync(collectionIdentifier, gameId);
-                collectionGamesViewModel.LoadGamesAsync(collectionIdentifier);
+                collectionGamesViewModel = new CollectionGamesViewModel(collectionsService);
+                collectionsViewModel = new CollectionsViewModel(collectionsService, userService);
+                userViewModel = new UsersViewModel(userService);
+                this.DataContext = collectionGamesViewModel;
+
+                await collectionsViewModel.LoadCollectionsAsync();
+                await LoadCollectionGamesAsync();
             }
-            catch (Exception exception)
+            else if (e.Parameter is ValueTuple<ICollectionsService, IUserService, int> backParams)
+            {
+                var (svc, usrSvc, colId) = backParams;
+
+                collectionsService = svc;
+                userService = usrSvc;
+                collectionIdentifier = colId;
+
+                collectionGamesViewModel = new CollectionGamesViewModel(collectionsService);
+                collectionsViewModel = new CollectionsViewModel(collectionsService, userService);
+                userViewModel = new UsersViewModel(userService);
+                this.DataContext = collectionGamesViewModel;
+
+                var user = await userViewModel.GetCurrentUserAsync();
+                if (user != null)
+                {
+                    var collection = await collectionsViewModel.GetCollectionByIdAsync(collectionIdentifier, user.UserId);
+                    if (collection != null)
+                    {
+                        collectionName = collection.CollectionName;
+                        await LoadCollectionGamesAsync();
+                    }
+                }
+            }
+        }
+
+        private async Task LoadCollectionGamesAsync()
+        {
+            collectionGamesViewModel.CollectionName = collectionName;
+            await collectionGamesViewModel.LoadGamesAsync(collectionIdentifier);
+        }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(CollectionsPage), (collectionsService, userService));
+        }
+
+        private void AddGameToCollection_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine($"Navigating to AddGameToCollectionPage with CollectionId={collectionIdentifier}");
+
+            Frame.Navigate(typeof(AddGameToCollectionPage), (collectionsService, userService, collectionIdentifier));
+        }
+
+        private async void RemoveGame_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (sender is Button button && button.Tag is int gameId)
+                {
+                    await collectionsViewModel.RemoveGameFromCollectionAsync(collectionIdentifier, gameId);
+                    await LoadCollectionGamesAsync();
+                }
+            }
+            catch (Exception)
             {
                 var dialog = new ContentDialog
                 {
@@ -127,20 +135,16 @@ namespace SteamHub.Pages
                     CloseButtonText = CloseButtonTextValue,
                     XamlRoot = this.XamlRoot
                 };
-                dialog.ShowAsync();
+                await dialog.ShowAsync();
             }
         }
 
-        private void ViewGame_Click(object sender, RoutedEventArgs eventArgs)
+        private void ViewGame_Click(object sender, RoutedEventArgs e)
         {
-            var button = sender as Button;
-            if (button?.Tag == null)
+            if (sender is Button button && button.Tag is int gameId)
             {
-                return;
+                Frame.Navigate(typeof(GamePage), gameId);
             }
-
-            int gameId = Convert.ToInt32(button.Tag);
-            Frame.Navigate(typeof(GamePage), gameId);
         }
     }
 }

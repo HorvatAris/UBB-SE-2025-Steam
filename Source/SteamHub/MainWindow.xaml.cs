@@ -49,6 +49,7 @@ namespace SteamHub
         private CollectionsServiceProxy collectionServiceProxy;
 
         private readonly IHttpClientFactory _httpClientFactory;
+        public Frame MainContentFrame => this.ContentFrame;
 
         public MainWindow()
         {
@@ -290,8 +291,14 @@ namespace SteamHub
                     case "Wallet":
                         this.ContentFrame.Navigate(typeof(WalletPage), (this.walletService, this.userService));
                         break;
+                    case "AddFriendsPage":
+                        this.ContentFrame.Content = new AddFriendsPage(this.friendsService, this.userService);
+                        break;
 					case "CollectionsPage":
-                        this.ContentFrame.Content = new CollectionsPage(this.collectionServiceProxy , this.userService);
+                        //this.ContentFrame.Content = new CollectionsPage(this.collectionServiceProxy , this.userService);
+                        this.ContentFrame.Navigate(typeof(CollectionsPage), (this.collectionServiceProxy, this.userService));
+
+
                         break;
                     default:
                         Debug.WriteLine($"Unknown page tag: {tag}");

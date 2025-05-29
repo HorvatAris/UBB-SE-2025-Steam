@@ -24,9 +24,6 @@
 		<None Remove="Assets\Collections\image.jpg" />
 		<None Remove="Views\AchievementsPage.xaml" />
 		<None Remove="Views\AddGameToCollectionPage.xaml" />
-		<None Remove="Views\CollectionsForVisitorsPage.xaml" />
-		<None Remove="Views\CollectionGamesPage.xaml" />
-		<None Remove="Views\CollectionsPage.xaml" />
 		<None Remove="Views\CommentControl.xaml" />
 		<None Remove="Views\CommentInputControl.xaml" />
 		<None Remove="Views\ConfigurationsPage.xaml" />
@@ -161,15 +158,6 @@
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 		<Page Update="Views\AddGameToCollectionPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
-		<Page Update="Views\CollectionsForVisitorsPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
-		<Page Update="Views\CollectionGamesPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
-		<Page Update="Views\CollectionsPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 		<Page Update="Views\CommentControl.xaml">
