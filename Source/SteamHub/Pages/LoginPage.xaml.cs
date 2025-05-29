@@ -14,6 +14,7 @@ namespace SteamHub.Pages
     {
         private readonly IUserService userService;
         private readonly Action<User> onLoginSuccess;
+        private readonly Frame navigationFrame;
 
         /// <summary>
         /// Gets the ViewModel used for data binding on this page.
@@ -23,10 +24,12 @@ namespace SteamHub.Pages
         /// <summary>
         /// Initializes a new instance of the <see cref="LoginPage"/> class.
         /// </summary>
+        /// <param name="navigationFrame">The frame used for navigation between login/register pages.</param>
         /// <param name="userService">The user service to handle user-related operations.</param>
         /// <param name="onLoginSuccess">Callback to be invoked when login is successful.</param>
-        public LoginPage(IUserService userService, Action<User> onLoginSuccess)
+        public LoginPage(Frame navigationFrame, IUserService userService, Action<User> onLoginSuccess)
         {
+            this.navigationFrame = navigationFrame;
             this.userService = userService;
             this.onLoginSuccess = onLoginSuccess;
             this.InitializeComponent();
@@ -41,7 +44,7 @@ namespace SteamHub.Pages
         /// </summary>
         private void LoginPage_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel = new LoginViewModel(this.Frame, userService, onLoginSuccess);
+            ViewModel = new LoginViewModel(navigationFrame, userService, onLoginSuccess);
             this.DataContext = ViewModel;
         }
     }

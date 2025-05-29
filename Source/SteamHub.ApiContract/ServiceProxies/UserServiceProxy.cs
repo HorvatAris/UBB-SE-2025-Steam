@@ -103,7 +103,6 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                EnsureAuthorized();
                 await PostAsync("User/validate", new { Email = email, Username = username });
             }
             catch (Exception ex)
@@ -117,7 +116,6 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                EnsureAuthorized();
                 return await PostAsync<User>("User", user);
             }
             catch (Exception ex)
