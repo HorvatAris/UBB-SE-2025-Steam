@@ -36,36 +36,55 @@ namespace SteamHub.Pages
         private CollectionsViewModel collectionsViewModel;
         private UsersViewModel userViewModel;
         private int collectionIdentifier;
-        private string collectionName = string.Empty;
-        private readonly ICollectionsService collectionsService;
-        private readonly IUserService userService;
+        private string collectionName;
+        private  ICollectionsService collectionsService;
+        private  IUserService userService;
 
-        public CollectionGamesPage(ICollectionsService collectionsService, IUserService userService)
+
+        public CollectionGamesPage() => this.InitializeComponent();
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            this.InitializeComponent();
-            this.collectionsService = collectionsService;
-            this.userService = userService;
-            collectionGamesViewModel = new CollectionGamesViewModel(collectionsService);
-            collectionsViewModel = new CollectionsViewModel(collectionsService, userService);
-            _ = collectionsViewModel.LoadCollectionsAsync(); // fire-and-forget
+            base.OnNavigatedTo(e);
 
-            userViewModel = new UsersViewModel(userService);
-            this.DataContext = collectionGamesViewModel;
-        }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs eventArgs)
-        {
-            base.OnNavigatedTo(eventArgs);
 
-            if (eventArgs.Parameter is (int collectionId, string collectionNameParam))
+            if (e.Parameter is ValueTuple<ICollectionsService, IUserService, int, string> fullParams)
             {
-                collectionIdentifier = collectionId;
-                collectionName = collectionNameParam;
+                var (svc, usrSvc, colId, colName) = fullParams;
+
+                if (svc is null || usrSvc is null)
+                {
+                    
+                    return;
+                }
+
+                collectionsService = svc;
+                userService = usrSvc;
+                collectionIdentifier = colId;
+                collectionName = colName;
+
+                collectionGamesViewModel = new CollectionGamesViewModel(collectionsService);
+                collectionsViewModel = new CollectionsViewModel(collectionsService, userService);
+                userViewModel = new UsersViewModel(userService);
+                this.DataContext = collectionGamesViewModel;
+
+                await collectionsViewModel.LoadCollectionsAsync();
                 await LoadCollectionGamesAsync();
             }
-            else if (eventArgs.Parameter is int backCollectionId)
+            else if (e.Parameter is ValueTuple<ICollectionsService, IUserService, int> backParams)
             {
-                collectionIdentifier = backCollectionId;
+                var (svc, usrSvc, colId) = backParams;
+
+                collectionsService = svc;
+                userService = usrSvc;
+                collectionIdentifier = colId;
+
+                collectionGamesViewModel = new CollectionGamesViewModel(collectionsService);
+                collectionsViewModel = new CollectionsViewModel(collectionsService, userService);
+                userViewModel = new UsersViewModel(userService);
+                this.DataContext = collectionGamesViewModel;
+
                 var user = await userViewModel.GetCurrentUserAsync();
                 if (user != null)
                 {
@@ -87,12 +106,12 @@ namespace SteamHub.Pages
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            ContentFrame.Content = new CollectionGamesPage(collectionsService, userService);
+            Frame.Navigate(typeof(CollectionsPage), (collectionsService, userService));
         }
 
         private void AddGameToCollection_Click(object sender, RoutedEventArgs e)
         {
-            ContentFrame.Content = new AddGameToCollectionPage(collectionsService, userService);
+            Frame.Navigate(typeof(AddGameToCollectionPage), (collectionsService, userService, collectionIdentifier));
         }
 
         private async void RemoveGame_Click(object sender, RoutedEventArgs e)

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -50,9 +51,16 @@ namespace SteamHub.ViewModels
             {
                 IsLoading = true;
                 ErrorMessage = null;
-
+               
                 var currentUser = await userService.GetCurrentUserAsync();
                 userId = currentUser.UserId;
+
+                if (currentUser == null)
+                {
+                    Debug.WriteLine("⚠️ currentUser is null in AddGameToCollectionViewModel");
+                    ErrorMessage = "Failed to load user. Please try again.";
+                    return;
+                }
 
                 var gamesNotInCollection = await collectionsService.GetGamesNotInCollection(collectionId, userId);
                 AvailableGames.Clear();

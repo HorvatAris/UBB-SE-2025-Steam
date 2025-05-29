@@ -10,6 +10,7 @@ using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -28,21 +29,39 @@ namespace SteamHub.Pages
     {
         private AddGameToCollectionViewModel addGamesToCollectionViewModel;
         private int collectionIdentifier;
+        private ICollectionsService collectionsService;
+        private IUserService userService;
 
-        public AddGameToCollectionPage(ICollectionsService collectionsService, IUserService userService)
+        public AddGameToCollectionPage()
         {
             this.InitializeComponent();
-            addGamesToCollectionViewModel = new AddGameToCollectionViewModel(collectionsService, userService);
-            this.DataContext = addGamesToCollectionViewModel;
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs eventArgs)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            base.OnNavigatedTo(eventArgs);
-            if (eventArgs.Parameter is int collectionId)
+            base.OnNavigatedTo(e);
+
+            if (e.Parameter is ValueTuple<ICollectionsService, IUserService, int> parameters)
             {
-                collectionIdentifier = collectionId;
-                await addGamesToCollectionViewModel.InitializeAsync(collectionId);
+                var (svc, usrSvc, colId) = parameters;
+
+                if (svc is null || usrSvc is null)
+                    return;
+
+                collectionsService = svc;
+                userService = usrSvc;
+                collectionIdentifier = colId;
+
+                if (userService is null || collectionsService is null)
+                {
+                    Debug.WriteLine("Services are null in AddGameToCollectionPage");
+                    return;
+                }
+
+                addGamesToCollectionViewModel = new AddGameToCollectionViewModel(collectionsService, userService);
+                this.DataContext = addGamesToCollectionViewModel;
+
+                await addGamesToCollectionViewModel.InitializeAsync(collectionIdentifier);
             }
         }
 

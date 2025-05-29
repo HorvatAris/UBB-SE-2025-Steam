@@ -47,29 +47,31 @@ namespace SteamHub.Pages
 
         private CollectionsViewModel collectionsViewModel;
         private UsersViewModel usersViewModel;
-        private readonly ICollectionsService collectionsService;
-        private readonly IUserService userService;
-        public CollectionsPage(ICollectionsService collectionsService, IUserService userService)
+        private ICollectionsService collectionsService;
+        private IUserService userService;
+
+        public CollectionsPage() => this.InitializeComponent();
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            this.InitializeComponent();
-            this.collectionsService = collectionsService;
-            this.userService = userService;
-            collectionsViewModel = new CollectionsViewModel(collectionsService , userService);
-            LoadCollectionsAsync();
+            base.OnNavigatedTo(e);
 
+            if (e.Parameter is (ICollectionsService collectionsService, IUserService userService))
+                {
 
-            usersViewModel = new UsersViewModel(userService);
-            this.DataContext = collectionsViewModel;
+                this.collectionsService = collectionsService;
+                this.userService = userService;
+                collectionsViewModel = new CollectionsViewModel(collectionsService, userService);
+                usersViewModel = new UsersViewModel(userService);
+                this.DataContext = collectionsViewModel;
+
+                _ = LoadCollectionsAsync();
+            }
         }
-        private async Task LoadCollectionsAsync()
-        {
+
+        private async Task LoadCollectionsAsync() =>
             await collectionsViewModel.LoadCollectionsAsync();
-        }
-        protected override void OnNavigatedTo(NavigationEventArgs eventArgs)
-        {
-            base.OnNavigatedTo(eventArgs);
-            LoadCollections();
-        }
+
 
         private void LoadCollections()
         {
@@ -81,8 +83,12 @@ namespace SteamHub.Pages
             if (sender is Button button && button.CommandParameter is Collection collection)
             {
                 // Example: assuming you have access to the required services
-                var collectionGamesPage = new CollectionGamesPage(collectionsService, userService);
-                ContentFrame.Content = collectionGamesPage;
+                //var collectionGamesPage = new CollectionGamesPage(collectionsService, userService);
+                //ContentFrame.Content = collectionGamesPage;
+                Frame.Navigate(
+    typeof(CollectionGamesPage),
+    (this.collectionsService, this.userService, collection.CollectionId, collection.CollectionName)
+);
             }
         }
 

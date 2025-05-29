@@ -268,8 +268,9 @@ namespace SteamHub
                         this.ContentFrame.Navigate(typeof(WalletPage), (this.walletService, this.userService, this.user));
                         break;
 					case "CollectionsPage":
-                        this.ContentFrame.Content = new CollectionsPage(this.collectionServiceProxy , this.userService);
-                        //this.ContentFrame.Navigate(typeof(CollectionsPage), (this.collectionServiceProxy, this.userService));
+                        //this.ContentFrame.Content = new CollectionsPage(this.collectionServiceProxy , this.userService);
+                        this.ContentFrame.Navigate(typeof(CollectionsPage), (this.collectionServiceProxy, this.userService));
+
 
                         break;
                     default:
