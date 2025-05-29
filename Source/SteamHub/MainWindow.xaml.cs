@@ -17,6 +17,7 @@ using SteamHub.ApiContract.ServiceProxies;
 using SteamHub.Pages;
 using SteamHub.Web;
 using SteamHub.ViewModels;
+using SteamHub.Helpers;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -52,6 +53,9 @@ namespace SteamHub
         {
             this.InitializeComponent();
 
+            // Set the login success callback in NavigationHelper
+            NavigationHelper.OnLoginSuccess = OnLoginSuccess;
+
             var handler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true,
@@ -80,7 +84,7 @@ namespace SteamHub
         private void ShowLoginPage()
         {
             // Pass the LoginFrame as the navigation frame for login/register navigation
-            var loginPage = new LoginPage(LoginFrame, this.userService, OnLoginSuccess);
+            var loginPage = new LoginPage(LoginFrame, this.userService, NavigationHelper.OnLoginSuccess);
             LoginFrame.Content = loginPage;
             LoginOverlay.Visibility = Visibility.Visible;
             NavView.Visibility = Visibility.Collapsed;
@@ -88,7 +92,7 @@ namespace SteamHub
 
         private void ShowRegisterPage()
         {
-            // Pass the LoginFrame as the navigation frame - you'll need to update RegisterPage constructor too
+            // Pass the LoginFrame as the navigation frame
             var registerPage = new RegisterPage(LoginFrame, this.userService);
             LoginFrame.Content = registerPage;
         }

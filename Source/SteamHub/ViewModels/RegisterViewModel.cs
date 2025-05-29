@@ -10,6 +10,7 @@ using SteamHub.ApiContract.Models.Common;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ApiContract.Validators;
 using SteamHub.Pages;
+using SteamHub.Helpers;
 
 namespace SteamHub.ViewModels;
 
@@ -136,7 +137,8 @@ public partial class RegisterViewModel : ObservableObject
                 // Navigate to login page on successful registration
                 if (navigationFrame != null)
                 {
-                    var loginPage = new LoginPage(navigationFrame, UserService, null); // null for onLoginSuccess since we're just going back to login
+                    // Create the LoginPage with the callback from NavigationHelper
+                    var loginPage = new LoginPage(navigationFrame, UserService, NavigationHelper.OnLoginSuccess);
                     navigationFrame.Content = loginPage;
                 }
                 else
@@ -180,8 +182,8 @@ public partial class RegisterViewModel : ObservableObject
     {
         if (navigationFrame != null)
         {
-            // Create the LoginPage with required parameters and set it as content
-            var loginPage = new LoginPage(navigationFrame, UserService, null); // null for onLoginSuccess since we're just going back to login
+            // Create the LoginPage with the callback from NavigationHelper
+            var loginPage = new LoginPage(navigationFrame, UserService, NavigationHelper.OnLoginSuccess);
             navigationFrame.Content = loginPage;
         }
         else

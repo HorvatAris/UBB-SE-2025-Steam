@@ -14,6 +14,7 @@
 	using Xunit;
 	using SteamHub.ApiContract.Repositories;
     using SteamHub.ApiContract.Context.Repositories;
+    using SteamHub.ApiContract.Models.Common;
 
     public class PointShopServiceTest
 	{
@@ -28,7 +29,7 @@
 			testUser = new User
 			{
 				UserId = 1,
-				UserName = "John",
+				Username = "John",
 				PointsBalance = 1000,
 				Email = "test@example.com",
 				WalletBalance = 50,
@@ -41,16 +42,7 @@
 			service = new PointShopService(
 				itemRepositoryMock.Object,
 				inventoryRepositoryMock.Object,
-				userRepositoryMock.Object,
-				testUser);
-		}
-
-		[Fact]
-		public void GetCurrentUser_WhenCalled_ShouldReturnInjectedUser()
-		{
-			var user = service.GetCurrentUser();
-
-			Assert.Equal(testUser.UserId, user.UserId);
+				userRepositoryMock.Object);
 		}
 
 		[Fact]
@@ -106,53 +98,113 @@
 			itemRepositoryMock.Setup(proxy => proxy.GetPointShopItemsAsync())
 				.ReturnsAsync(allItems);
 
-			var foundItems = await service.GetUserItemsAsync();
+			var foundItems = await service.GetUserItemsAsync(testUser.UserId);
 
 			AssertUtils.AssertContainsEquivalent(foundItems, expectedItems);
 		}
 
-		[Fact]
-		public async Task PurchaseItem_WhenUserHasEnoughPoints_ShouldDeductPointsAndUpdateUser()
-		{
-			var item = new PointShopItem { ItemIdentifier = 1, PointPrice = 100 };
+        [Fact]
+        public async Task PurchaseItem_WhenUserHasEnoughPoints_ShouldDeductPointsAndUpdateUser()
+        {
+            var item = new PointShopItemResponse
+            {
+                PointShopItemId = 1,
+                PointPrice = 100
+            };
 
-			inventoryRepositoryMock.Setup(proxy => proxy.PurchaseItemAsync(It.IsAny<PurchasePointShopItemRequest>()))
-				.Returns(Task.CompletedTask);
-			userRepositoryMock.Setup(proxy => proxy.UpdateUserAsync(testUser.UserId, It.IsAny<UpdateUserRequest>()))
-				.Returns(Task.CompletedTask);
+            var userResponse = new UserResponse
+            {
+                UserId = testUser.UserId,
+                UserName = testUser.Username,
+                Email = testUser.Email,
+                WalletBalance = testUser.WalletBalance,
+                PointsBalance = testUser.PointsBalance,
+                UserRole = testUser.UserRole
+            };
 
-			await service.PurchaseItemAsync(item);
+            var itemRequest = new PurchasePointShopItemRequest
+            {
+                PointShopItemId = item.PointShopItemId,
+                UserId = userResponse.UserId
+            };
 
-			Assert.Equal(900, testUser.PointsBalance);
-		}
+            itemRepositoryMock.Setup(repo => repo.GetPointShopItemByIdAsync(item.PointShopItemId))
+                .ReturnsAsync(item);
 
-		[Fact]
-		public async Task ActivateItem_WhenItemValid_ShouldCallUpdateStatus()
-		{
-			var item = new PointShopItem { ItemIdentifier = 1 };
+            userRepositoryMock.Setup(repo => repo.GetUserByIdAsync(userResponse.UserId))
+                .ReturnsAsync(userResponse);
 
-			inventoryRepositoryMock.Setup(proxy => proxy.UpdateItemStatusAsync(It.IsAny<UpdateUserPointShopItemInventoryRequest>()))
-				.Returns(Task.CompletedTask);
+            inventoryRepositoryMock.Setup(repo => repo.PurchaseItemAsync(It.IsAny<PurchasePointShopItemRequest>()))
+                .Returns(Task.CompletedTask);
 
-			await service.ActivateItemAsync(item);
+            userRepositoryMock.Setup(repo => repo.UpdateUserAsync(userResponse.UserId, It.IsAny<UpdateUserRequest>()))
+                .Returns(Task.CompletedTask)
+                .Callback<int, UpdateUserRequest>((userId, request) =>
+                {
+                    userResponse.PointsBalance = request.PointsBalance;
+                });
 
-			inventoryRepositoryMock.Verify(proxy => proxy.UpdateItemStatusAsync(It.Is<UpdateUserPointShopItemInventoryRequest>(request => request.IsActive)), Times.Once);
-		}
+            await service.PurchaseItemAsync(itemRequest);
 
-		[Fact]
-		public async Task DeactivateItem_WhenItemValid_ShouldCallUpdateStatus()
-		{
-			var item = new PointShopItem { ItemIdentifier = 1 };
+            Assert.Equal(900, userResponse.PointsBalance);
+        }
 
-			inventoryRepositoryMock.Setup(proxy => proxy.UpdateItemStatusAsync(It.IsAny<UpdateUserPointShopItemInventoryRequest>()))
-				.Returns(Task.CompletedTask);
 
-			await service.DeactivateItemAsync(item);
 
-			inventoryRepositoryMock.Verify(proxy => proxy.UpdateItemStatusAsync(It.Is<UpdateUserPointShopItemInventoryRequest>(request => !request.IsActive)), Times.Once);
-		}
+        [Fact]
+        public async Task ActivateItem_WhenItemValid_ShouldCallUpdateStatus()
+        {
+            // Arrange
+            var activateRequest = new UpdateUserPointShopItemInventoryRequest
+            {
+                UserId = testUser.UserId,
+                PointShopItemId = 1,
+                IsActive = true
+            };
 
-		[Fact]
+            inventoryRepositoryMock.Setup(proxy =>
+                    proxy.UpdateItemStatusAsync(It.IsAny<UpdateUserPointShopItemInventoryRequest>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await service.ActivateItemAsync(activateRequest);
+
+            // Assert
+            inventoryRepositoryMock.Verify(proxy =>
+                proxy.UpdateItemStatusAsync(It.Is<UpdateUserPointShopItemInventoryRequest>(
+                    request =>
+                        request.UserId == testUser.UserId &&
+                        request.PointShopItemId == 1 &&
+                        request.IsActive)), Times.Once);
+        }
+
+
+        [Fact]
+        public async Task DeactivateItem_WhenItemValid_ShouldCallUpdateStatus()
+        {
+            var deactivateRequest = new UpdateUserPointShopItemInventoryRequest
+            {
+                UserId = testUser.UserId,
+                PointShopItemId = 1,
+                IsActive = false
+            };
+
+            inventoryRepositoryMock.Setup(proxy =>
+                    proxy.UpdateItemStatusAsync(It.IsAny<UpdateUserPointShopItemInventoryRequest>()))
+                .Returns(Task.CompletedTask);
+
+            await service.DeactivateItemAsync(deactivateRequest);
+
+            inventoryRepositoryMock.Verify(proxy =>
+                proxy.UpdateItemStatusAsync(It.Is<UpdateUserPointShopItemInventoryRequest>(
+                    request =>
+                        request.UserId == testUser.UserId &&
+                        request.PointShopItemId == 1 &&
+                        request.IsActive == false)), Times.Once);
+        }
+
+
+        [Fact]
 		public void CanUserPurchaseItem_WhenUserAlreadyOwnsItem_ShouldReturnFalse()
 		{
 			var selectedItem = new PointShopItem { ItemIdentifier = 1, PointPrice = 100 };
