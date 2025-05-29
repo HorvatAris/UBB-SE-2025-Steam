@@ -217,7 +217,7 @@ namespace SteamHub
                 this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
                 this.reviewService = new ReviewServiceProxy();
                 this.walletService = new WalletServiceProxy();
-                this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory,user);
+                this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory);
                 this.newsService = new NewsServiceProxy(_httpClientFactory);
                 
                 Debug.WriteLine("User services initialized successfully");
@@ -295,6 +295,7 @@ namespace SteamHub
                         break;
                     case "NewsPage":
                         this.ContentFrame.Content = new NewsPage(this.newsService, this.userService, this.user);
+                        break;
                     case "AddFriendsPage":
                         this.ContentFrame.Content = new AddFriendsPage(this.friendsService, this.userService);
                         break;
