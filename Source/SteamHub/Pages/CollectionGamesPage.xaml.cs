@@ -111,6 +111,8 @@ namespace SteamHub.Pages
 
         private void AddGameToCollection_Click(object sender, RoutedEventArgs e)
         {
+            Debug.WriteLine($"Navigating to AddGameToCollectionPage with CollectionId={collectionIdentifier}");
+
             Frame.Navigate(typeof(AddGameToCollectionPage), (collectionsService, userService, collectionIdentifier));
         }
 

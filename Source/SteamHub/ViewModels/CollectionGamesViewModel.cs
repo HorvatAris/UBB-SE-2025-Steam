@@ -4,6 +4,7 @@ using SteamHub.ApiContract.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,6 +50,11 @@ namespace SteamHub.ViewModels
 
                 // Await the task to get the list of games
                 var gamesInCollection = await collectionsService.GetGamesInCollection(collectionId);
+                foreach (var game in gamesInCollection)
+                {
+                    Debug.WriteLine($" - GameId={game.GameId}, Title={game.GameTitle}, UserId={game.UserId}");
+                }
+
 
                 ownedGames.Clear();
                 foreach (var game in gamesInCollection)

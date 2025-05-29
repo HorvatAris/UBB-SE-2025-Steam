@@ -123,8 +123,8 @@
                         Margin="0,0,5,20"  
                         Visibility="{Binding IsAllOwnedGamesCollection, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"/>  
 
-                <!-- Games Grid -->  
-                <ItemsControl ItemsSource="{Binding Games}"  
+                <!-- Games Grid -->
+                <ItemsControl ItemsSource="{Binding OwnedGames}"  
                             Margin="0,0,0,20">  
                     <ItemsControl.ItemsPanel>  
                         <ItemsPanelTemplate>  

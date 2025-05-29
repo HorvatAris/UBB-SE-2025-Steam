@@ -30,7 +30,15 @@ namespace SteamHub.Api.Context.Repositories
             return await context.Collections
                 .Where(c => c.UserId == userIdentifier)
                 .OrderBy(c => c.CreatedAt)
-                .Select(c => new ModelCollection(c.UserId, c.CollectionName, c.CreatedAt, c.CoverPicture, c.IsPublic))
+                .Select(c => new ModelCollection
+                {
+                    CollectionId = c.CollectionId,
+                    UserId = c.UserId,
+                    CollectionName = c.CollectionName,
+                    CreatedAt = c.CreatedAt,
+                    CoverPicture = c.CoverPicture,
+                    IsPublic = c.IsPublic
+                })
                 .ToListAsync();
         }
 
@@ -40,7 +48,15 @@ namespace SteamHub.Api.Context.Repositories
                 .Where(c => c.UserId == userIdentifier)
                 .OrderByDescending(c => c.CreatedAt)
                 .Take(3)
-                .Select(c => new ModelCollection(c.UserId, c.CollectionName, c.CreatedAt, c.CoverPicture, c.IsPublic))
+                .Select(c => new ModelCollection
+                {
+                    CollectionId = c.CollectionId,
+                    UserId = c.UserId,
+                    CollectionName = c.CollectionName,
+                    CreatedAt = c.CreatedAt,
+                    CoverPicture = c.CoverPicture,
+                    IsPublic = c.IsPublic
+                })
                 .ToListAsync();
         }
 
@@ -51,7 +67,15 @@ namespace SteamHub.Api.Context.Repositories
                     .ThenInclude(cg => cg.OwnedGame)
                 .FirstOrDefaultAsync(col => col.CollectionId == collectionIdentifier && col.UserId == userIdentifier);
 
-            return c == null ? null : new ModelCollection(c.UserId, c.CollectionName, c.CreatedAt, c.CoverPicture, c.IsPublic);
+            return c == null ? null : new ModelCollection
+            {
+                CollectionId = c.CollectionId,
+                UserId = c.UserId,
+                CollectionName = c.CollectionName,
+                CreatedAt = c.CreatedAt,
+                CoverPicture = c.CoverPicture,
+                IsPublic = c.IsPublic
+            };
         }
 
 
@@ -144,7 +168,15 @@ namespace SteamHub.Api.Context.Repositories
             return await context.Collections
                 .Where(c => c.UserId == userIdentifier && c.IsPublic)
                 .OrderBy(c => c.CollectionName)
-                .Select(c => new ModelCollection(c.UserId, c.CollectionName, c.CreatedAt, c.CoverPicture, c.IsPublic))
+                .Select(c => new ModelCollection
+                {
+                    CollectionId = c.CollectionId,
+                    UserId = c.UserId,
+                    CollectionName = c.CollectionName,
+                    CreatedAt = c.CreatedAt,
+                    CoverPicture = c.CoverPicture,
+                    IsPublic = c.IsPublic
+                })
                 .ToListAsync();
         }
 

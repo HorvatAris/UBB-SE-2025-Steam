@@ -10,6 +10,7 @@ using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -85,6 +86,8 @@ namespace SteamHub.Pages
                 // Example: assuming you have access to the required services
                 //var collectionGamesPage = new CollectionGamesPage(collectionsService, userService);
                 //ContentFrame.Content = collectionGamesPage;
+                Debug.WriteLine($"Selected CollectionId={collection.CollectionId}, Name={collection.CollectionName}");
+
                 Frame.Navigate(
     typeof(CollectionGamesPage),
     (this.collectionsService, this.userService, collection.CollectionId, collection.CollectionName)
