@@ -23,6 +23,7 @@ namespace SteamHub.ViewModels
     {
         private IUserDetails user;
         private readonly IInventoryService inventoryService;
+        private readonly IUserService userService;
         private ObservableCollection<Item> inventoryItems;
         private ObservableCollection<Game> availableGames;
         private ObservableCollection<User> availableUsers;
@@ -32,15 +33,15 @@ namespace SteamHub.ViewModels
         private bool isUpdating;
         private Item selectedItem;
 
-        public InventoryViewModel(IInventoryService inventoryS)
+        public InventoryViewModel(IInventoryService inventoryS, IUserService userService)
         {
             // this.inventoryService = inventoryService ?? throw new ArgumentNullException(nameof(inventoryService));
             System.Diagnostics.Debug.WriteLine(inventoryS.ToString());
-            this.inventoryService = inventoryS;
+            this.inventoryService = inventoryS ?? throw new ArgumentNullException(nameof(userService));
+            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.inventoryItems = new ObservableCollection<Item>();
             this.availableGames = new ObservableCollection<Game>();
             this.availableUsers = new ObservableCollection<User>();
-            this.user = this.inventoryService.GetAllUsers();
 
             // Load users and initialize data.
 
@@ -259,10 +260,11 @@ namespace SteamHub.ViewModels
         {
             try
             {
-                var user = new User(this.inventoryService.GetAllUsers());
+                var user = new User(await this.userService.GetCurrentUserAsync());
                 this.AvailableUsers.Clear();
                 this.AvailableUsers.Add(user);
                 this.SelectedUser = user;
+                this.user = user;
             }
             catch (Exception loadingUsersException)
             {

@@ -37,10 +37,14 @@
                 <NavigationViewItem Icon="Shop" Content="Marketplace" Tag="marketplace" />
                 <NavigationViewItem Icon="List" Content="Inventory" Tag="inventory" />
                 <NavigationViewItem Icon="Account" Content="Profile" Tag="profile" />
+                <NavigationViewItem Icon="Setting" Content="Settings" Tag="profileSettings"/>
                 <NavigationViewItem Icon="Switch" Content="Trading" Tag="trading" />
+                <NavigationViewItem Icon="AddFriend" Content="Friends" Tag="friends" />
                 <NavigationViewItem Icon="Scan" Content="Wallet" Tag="Wallet" />
                 <NavigationViewItem Icon="Like" Content="Achievements" Tag="AchievementsPage" />
-                
+                <NavigationViewItem Icon="Like" Content="Collections" Tag="CollectionsPage" />
+
+
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>

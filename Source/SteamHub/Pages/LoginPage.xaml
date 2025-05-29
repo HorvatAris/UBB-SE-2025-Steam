@@ -42,10 +42,6 @@
             <Button Content="Don't have an account yet? Register now!"
                     Command="{Binding NavigateToRegisterCommand}"
                     Style="{ThemeResource TextBlockButtonStyle}"/>
-
-            <Button Content="Forgot your password?"
-                    Command="{Binding NavigateToForgotPasswordCommand}"
-                    Style="{ThemeResource TextBlockButtonStyle}"/>
         </StackPanel>
     </Grid>
 </Page>

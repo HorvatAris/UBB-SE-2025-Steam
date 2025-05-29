@@ -102,8 +102,9 @@ namespace SteamHub.Api.Migrations
                     UserRole = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     LastLogin = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    WalletBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValue: 0m),
-                    PointsBalance = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    WalletBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PointsBalance = table.Column<int>(type: "int", nullable: false),
+                    ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastModified = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
@@ -745,7 +746,8 @@ namespace SteamHub.Api.Migrations
                     PostId = table.Column<int>(type: "int", nullable: false),
                     AuthorId = table.Column<int>(type: "int", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PostId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -756,6 +758,11 @@ namespace SteamHub.Api.Migrations
                         principalTable: "NewsPosts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_NewsComments_NewsPosts_PostId1",
+                        column: x => x.PostId1,
+                        principalTable: "NewsPosts",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_NewsComments_Users_AuthorId",
                         column: x => x.AuthorId,
@@ -778,7 +785,8 @@ namespace SteamHub.Api.Migrations
                         name: "FK_NewsPostRatingTypes_NewsPosts_PostId",
                         column: x => x.PostId,
                         principalTable: "NewsPosts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_NewsPostRatingTypes_Users_AuthorId",
                         column: x => x.AuthorId,
@@ -1069,17 +1077,17 @@ namespace SteamHub.Api.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "Bio", "CreatedAt", "Email", "LastLogin", "LastModified", "Password", "PointsBalance", "UserRole", "Username", "WalletBalance" },
+                columns: new[] { "UserId", "Bio", "CreatedAt", "Email", "LastLogin", "Password", "PointsBalance", "ProfilePicture", "UserRole", "Username", "WalletBalance" },
                 values: new object[,]
                 {
-                    { 1, "Gaming enthusiast and software developer", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "gabe.newell@valvestudio.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 6000, 1, "GabeN", 500m },
-                    { 2, "Game developer and tech lover", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mathias.new@cdprojektred.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG", 5000, 1, "MattN", 420m },
-                    { 3, "Casual gamer and streamer", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.chen@thatgamecompany.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq", 5000, 1, "JohnC", 390m },
-                    { 4, "Casual gamer and streamer", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "alice.johnson@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6", 6000, 0, "AliceJ", 780m },
-                    { 5, "Casual gamer and streamer", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "liam.garcia@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a", 7000, 0, "LiamG", 5500m },
-                    { 6, "Casual gamer and streamer", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "sophie.williams@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y", 6000, 0, "SophieW", 950m },
-                    { 7, "Casual gamer and streamer", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "noah.smith@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu", 4000, 0, "NoahS", 3300m },
-                    { 8, "Casual gamer and streamer", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "emily.brown@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC", 5000, 0, "EmilyB", 1100m }
+                    { 1, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "gabe.newell@valvestudio.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 6000, "https://i.imgur.com/vixhhkC.jpeg", 1, "GabeN", 500m },
+                    { 2, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mathias.new@cdprojektred.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG", 5000, "https://i.imgur.com/Ji7D74X.jpeg", 1, "MattN", 420m },
+                    { 3, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.chen@thatgamecompany.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq", 5000, "https://i.imgur.com/Ji7D74X.jpeg", 1, "JohnC", 390m },
+                    { 4, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "alice.johnson@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6", 6000, "https://i.imgur.com/l5qkgRu.jpeg", 0, "AliceJ", 780m },
+                    { 5, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "liam.garcia@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a", 7000, "https://i.imgur.com/JPNXxsg.jpeg", 0, "LiamG", 5500m },
+                    { 6, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "sophie.williams@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y", 6000, "https://i.imgur.com/l5qkgRu.jpeg", 0, "SophieW", 950m },
+                    { 7, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "noah.smith@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu", 4000, "https://i.imgur.com/JPNXxsg.jpeg", 0, "NoahS", 3300m },
+                    { 8, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "emily.brown@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC", 5000, "https://i.imgur.com/l5qkgRu.jpeg", 0, "EmilyB", 1100m }
                 });
 
             migrationBuilder.InsertData(
@@ -1106,6 +1114,35 @@ namespace SteamHub.Api.Migrations
                 table: "Collections",
                 columns: new[] { "CollectionId", "CollectionName", "CoverPicture", "CreatedAt", "UserId" },
                 values: new object[] { 6, "Pets", "/Assets/Collections/pets.jpg", new DateOnly(2025, 1, 21), 2 });
+
+            migrationBuilder.InsertData(
+                table: "Friendships",
+                columns: new[] { "FriendshipId", "FriendId", "UserId" },
+                values: new object[,]
+                {
+                    { 1, 1, 5 },
+                    { 2, 2, 5 },
+                    { 3, 3, 5 },
+                    { 4, 4, 5 },
+                    { 5, 6, 5 },
+                    { 6, 7, 5 },
+                    { 7, 8, 5 },
+                    { 8, 6, 4 },
+                    { 9, 7, 4 },
+                    { 10, 7, 6 },
+                    { 11, 5, 1 },
+                    { 12, 5, 2 },
+                    { 13, 5, 3 },
+                    { 14, 5, 4 },
+                    { 15, 5, 6 },
+                    { 16, 5, 7 },
+                    { 17, 5, 8 },
+                    { 18, 3, 1 },
+                    { 19, 3, 2 },
+                    { 20, 4, 3 },
+                    { 21, 8, 6 },
+                    { 22, 2, 1 }
+                });
 
             migrationBuilder.InsertData(
                 table: "Games",
@@ -1461,6 +1498,11 @@ namespace SteamHub.Api.Migrations
                 name: "IX_NewsComments_PostId",
                 table: "NewsComments",
                 column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NewsComments_PostId1",
+                table: "NewsComments",
+                column: "PostId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NewsPostRatingTypes_AuthorId",

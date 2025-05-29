@@ -36,33 +36,24 @@ namespace SteamHub.Api.Context.Repositories
                 ProfilePicture = userEntity.ProfilePicture,
                 Bio = userEntity.Bio ?? string.Empty,
                 LastModified = userEntity.LastModified,
-                WalletBalance = (float)userEntity.WalletBalance,
-                PointsBalance = userEntity.PointsBalance,
-                
-                // This for later
-                //UserAchievements = userEntity.UserAchievements.Select(ua => new UserAchievement
-                //{
-                //    UserId = ua.UserId,
-                //    AchievementId = ua.AchievementId,
-                //    UnlockedAt = ua.UnlockedAt
-                //}).ToList(),
-                //SoldGames = userEntity.SoldGames.Select(sg => new SoldGame
-                //{
-                //    SoldGameId = sg.SoldGameId,
-                //    GameId = sg.GameId,
-                //    UserId = sg.UserId,
-                //    SoldDate = sg.SoldDate,
-                //}).ToList()
+                WalletBalance = userEntity.WalletBalance,
+                PointsBalance = userEntity.PointsBalance
             };
 
             return user;
         }
 
-        private static void ApplyUserDtoToEntity(UserDTO userEntity, User userDto)
+        private static void ApplyUserDtoToEntity(UserDTO userDTO, User userEntity)
         {
-            userEntity.Username = userDto.Username;
-            userEntity.Email = userDto.Email;
-            userEntity.UserRole = userDto.UserRole;
+            userDTO.Username = userEntity.Username;
+            userDTO.Email = userEntity.Email;
+            userDTO.UserRole = userEntity.UserRole;
+            userDTO.Password = userEntity.Password;
+            userDTO.ProfilePicture = userEntity.ProfilePicture;
+            userDTO.Bio = string.Empty;
+            userDTO.CreatedAt = userEntity.CreatedAt;
+            userDTO.PointsBalance = userEntity.PointsBalance;
+            userDTO.WalletBalance = userEntity.WalletBalance;
         }
 
         public async Task<GetUsersResponse?> GetUsersAsync()
@@ -81,8 +72,8 @@ namespace SteamHub.Api.Context.Repositories
                     ProfilePicture = userEntity.ProfilePicture,
                     Bio = userEntity.Bio ?? string.Empty,
                     LastChanged = userEntity.LastModified,
-                    WalletBalance = (float)userEntity.WalletBalance,
-                    PointsBalance = userEntity.PointsBalance,
+                    WalletBalance = userEntity.WalletBalance,
+                    PointsBalance = userEntity.PointsBalance
                 })
                 .ToListAsync();
 
@@ -133,11 +124,13 @@ namespace SteamHub.Api.Context.Repositories
 
         public async Task<List<User>> GetAllUsersAsync()
         {
-            return dataContext.Users
+            var users = dataContext.Users
                 .AsNoTracking()
                 .OrderBy(userEntity => userEntity.Username)
                 .Select(MapEntityToUserDto)
                 .ToList();
+            
+            return await Task.FromResult(users);
         }
 
         public async Task<User> UpdateUserAsync(User userDto)
@@ -174,21 +167,26 @@ namespace SteamHub.Api.Context.Repositories
 
         public async Task<User?> VerifyCredentialsAsync(string emailOrUsername)
         {
-            var userEntity = await dataContext.Users.SingleOrDefaultAsync(
-                user => user.Username == emailOrUsername || user.Email == emailOrUsername);
+            var userEntity = await dataContext.Users
+                .AsNoTracking()
+                .SingleOrDefaultAsync(user => user.Username == emailOrUsername || user.Email == emailOrUsername);
 
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
         public async Task<User?> GetUserByEmailAsync(string email)
         {
-            var userEntity = await dataContext.Users.SingleOrDefaultAsync(user => user.Email == email);
+            var userEntity = await dataContext.Users
+                .AsNoTracking()
+                .SingleOrDefaultAsync(user => user.Email == email);
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
         public async Task<User?> GetUserByUsernameAsync(string username)
         {
-            var userEntity = await dataContext.Users.SingleOrDefaultAsync(user => user.Username == username);
+            var userEntity = await dataContext.Users
+                .AsNoTracking()
+                .SingleOrDefaultAsync(user => user.Username == username);
             return userEntity == null ? null : MapEntityToUserDto(userEntity);
         }
 
@@ -211,7 +209,6 @@ namespace SteamHub.Api.Context.Repositories
         {
             var userEntity = await dataContext.Users.FindAsync(userId)
                 ?? throw new KeyNotFoundException($"User {userId} not found.");
-
             userEntity.Email = newEmail;
             await dataContext.SaveChangesAsync();
         }
@@ -220,7 +217,6 @@ namespace SteamHub.Api.Context.Repositories
         {
             var userEntity = await dataContext.Users.FindAsync(userId)
                 ?? throw new KeyNotFoundException($"User {userId} not found.");
-
             userEntity.Password = PasswordHasher.HashPassword(newPassword);
             await dataContext.SaveChangesAsync();
         }
@@ -229,7 +225,6 @@ namespace SteamHub.Api.Context.Repositories
         {
             var userEntity = await dataContext.Users.FindAsync(userId)
                 ?? throw new KeyNotFoundException($"User {userId} not found.");
-
             userEntity.Username = newUsername;
             await dataContext.SaveChangesAsync();
         }
@@ -238,58 +233,24 @@ namespace SteamHub.Api.Context.Repositories
         {
             var userEntity = await dataContext.Users.FindAsync(userId)
                 ?? throw new KeyNotFoundException($"User {userId} not found.");
-
             userEntity.LastLogin = DateTime.UtcNow;
             await dataContext.SaveChangesAsync();
         }
 
-        // From UserProfile, WORK IN PROGRESS
         public async Task UpdateProfileBioAsync(int userId, string bio)
         {
-            var existing = await dataContext.Users.SingleOrDefaultAsync(user => user.UserId == userId)
-                ?? throw new Exception($"Profile with user ID {userId} not found.");
-            existing.Bio = bio;
-            existing.LastModified = DateTime.UtcNow;
+            var userEntity = await dataContext.Users.FindAsync(userId)
+                ?? throw new KeyNotFoundException($"User {userId} not found.");
+            userEntity.Bio = bio;
             await dataContext.SaveChangesAsync();
         }
 
-        public async Task UpdateProfilePictureAsync(int userId, string localImagePath)
+        public async Task UpdateProfilePictureAsync(int userId, string picturePath)
         {
-            string imgurClientId = "bbf48913b385d7b";
-            var existing = await dataContext.Users.SingleOrDefaultAsync(up => up.UserId == userId)
-                ?? throw new Exception($"Profile with user ID {userId} not found.");
-
-            string imageUrl = await UploadImageToImgurAsync(localImagePath, imgurClientId);
-
-            existing.ProfilePicture = imageUrl;
-            existing.LastModified = DateTime.UtcNow;
+            var userEntity = await dataContext.Users.FindAsync(userId)
+                ?? throw new KeyNotFoundException($"User {userId} not found.");
+            userEntity.ProfilePicture = picturePath;
             await dataContext.SaveChangesAsync();
-        }
-
-        private async Task<string> UploadImageToImgurAsync(string imagePath, string clientId)
-        {
-            using var client = new HttpClient();
-            using var form = new MultipartFormDataContent();
-            using var image = new ByteArrayContent(await File.ReadAllBytesAsync(imagePath));
-
-            image.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
-            form.Add(image, "image");
-
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Client-ID", clientId);
-
-            var response = await client.PostAsync("https://api.imgur.com/3/image", form);
-            var json = await response.Content.ReadAsStringAsync();
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception("Imgur upload failed: " + json);
-            }
-
-            var link = System.Text.Json.JsonDocument.Parse(json)
-                        .RootElement.GetProperty("data")
-                        .GetProperty("link").GetString();
-
-            return link ?? throw new Exception("Imgur returned null link.");
         }
     }
 }

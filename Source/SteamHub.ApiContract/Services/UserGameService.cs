@@ -170,7 +170,7 @@ public class UserGameService : IUserGameService
         {
             UserName = user.Username,
             Email = user.Email,
-            WalletBalance = (decimal)(user.WalletBalance - (float)totalSpent),
+            WalletBalance = user.WalletBalance - (decimal)totalSpent,
             PointsBalance = user.PointsBalance + pointsToAward,
             UserRole = user.UserRole,
         };

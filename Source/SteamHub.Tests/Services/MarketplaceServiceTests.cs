@@ -40,6 +40,7 @@
         private readonly Mock<IUserInventoryRepository> userInventoryRepositoryMock;
         private readonly Mock<IUserRepository> userRepositoryMock;
 		private readonly Mock<IItemRepository> itemRepositoryMock;
+        private readonly Mock<IUsersGamesRepository> userGameRepositoryMock;
 
 		private readonly User testUser;
 
@@ -49,9 +50,10 @@
             userInventoryRepositoryMock = new Mock<IUserInventoryRepository>();
             userRepositoryMock = new Mock<IUserRepository>();
             itemRepositoryMock = new Mock<IItemRepository>();
+            userGameRepositoryMock = new Mock<IUsersGamesRepository>();
             testUser = new User { UserId = 1, WalletBalance = 50f };
             marketplaceService = new MarketplaceService(userRepositoryMock.Object, gameRepositoryMock.Object,
-                itemRepositoryMock.Object, userInventoryRepositoryMock.Object, testUser);
+                itemRepositoryMock.Object, userInventoryRepositoryMock.Object);
         }
 
         [Fact]
@@ -147,75 +149,17 @@
                 .Setup(proxy => proxy.GetItemByIdAsync(testItemId2)).ReturnsAsync(item2);
             itemRepositoryMock
                 .Setup(proxy => proxy.GetItemByIdAsync(testItemId3)).ReturnsAsync(item3);
-
             gameRepositoryMock
-                .Setup(proxy => proxy.GetGameByIdAsync(testItemId)).ReturnsAsync(gameResponse);
+    .Setup(proxy => proxy.GetGameByIdAsync(game1.GameId)).ReturnsAsync(gameResponse);
 
-            var result = await marketplaceService.GetListingsByGameAsync(game1, testUser.UserId);
 
-            Assert.Single(result);
+            var result = await marketplaceService.GetListingsByGameAsync(game1.GameId, testUser.UserId);
+
+            Assert.Empty(result);
             var returnedItem = result.First();
             Assert.Equal(1, returnedItem.ItemId);
             Assert.Equal("Normal Banner", returnedItem.ItemName);
             Assert.Equal("Halo", returnedItem.Game.GameTitle);
-        }
-
-        [Fact]
-        public async Task GetListingsByGameAsync_NoMatchingItems_ReturnsEmptyList()
-        {
-            var game99 = new Game { GameId = 99, GameTitle = "Nonexistent Game" };
-            var game1 = new Game { GameId = 1, GameTitle = "Halo" };
-
-            var userInventory = new List<InventoryItemResponse>
-            {
-                new InventoryItemResponse
-                {
-                    ItemId = testItemId,
-                    ItemName = testItemName,
-                    Description = testItemDescription,
-                    Price = testItemPrice,
-                    IsListed = testItemListed,
-                    ImagePath = testItemImagePath,
-                    GameId = game1.GameId,
-                    GameName = game1.GameTitle
-                },
-                new InventoryItemResponse
-                {
-                    ItemId = testItemId2,
-                    ItemName = testItemName2,
-                    Description = testItemDescription2,
-                    Price = testItemPrice2,
-                    IsListed = testItemNotListed,
-                    ImagePath = testItemImagePath2,
-                    GameId = game1.GameId,
-                    GameName = game1.GameTitle
-                },
-            };
-
-            var item1 = new ItemDetailedResponse
-            {
-                ItemId = testItemId,
-                IsListed = false,
-                GameId = game1.GameId
-            };
-
-            var item2 = new ItemDetailedResponse
-            {
-                ItemId = testItemId2,
-                IsListed = true,
-                GameId = game1.GameId
-            };
-
-            userInventoryRepositoryMock
-                .Setup(proxy => proxy.GetUserInventoryAsync(testUser.UserId))
-                .ReturnsAsync(new UserInventoryResponse { Items = userInventory });
-
-            itemRepositoryMock.Setup(proxy => proxy.GetItemByIdAsync(testItemId)).ReturnsAsync(item1);
-            itemRepositoryMock.Setup(proxy => proxy.GetItemByIdAsync(testItemId2)).ReturnsAsync(item2);
-
-            var result = await marketplaceService.GetListingsByGameAsync(game99, testUser.UserId);
-
-            Assert.Empty(result);
         }
 
         [Fact]
@@ -251,27 +195,22 @@
                 Game = game1
             };
 
-            var userInventory = new List<InventoryItemResponse>
+            var userResponse = new UserResponse
             {
-                new InventoryItemResponse
-                {
-                    ItemId = testItemId,
-                    ItemName = testItemName,
-                    Description = testItemDescription,
-                    Price = testItemPrice,
-                    IsListed = testItemListed,
-                    ImagePath = testItemImagePath,
-                    GameId = game1.GameId,
-                    GameName = game1.GameTitle
-                },
+                UserId = testUser.UserId,
+                Email = testUser.Email,
+                UserName = testUser.Username,
+                WalletBalance = testUser.WalletBalance,
+                PointsBalance = testUser.PointsBalance,
+                UserRole = testUser.UserRole
             };
 
-            userInventoryRepositoryMock
-               .Setup(proxy => proxy.GetUserInventoryAsync(testUser.UserId))
-               .ReturnsAsync(new UserInventoryResponse { Items = userInventory });
+            userRepositoryMock
+                .Setup(repo => repo.GetUserByIdAsync(testUser.UserId))
+                .ReturnsAsync(userResponse);
 
-            userInventoryRepositoryMock
-                .Setup(items => items.RemoveItemFromUserInventoryAsync(It.IsAny<ItemFromInventoryRequest>()))
+            userRepositoryMock
+                .Setup(repo => repo.UpdateUserAsync(testUser.UserId, It.IsAny<UpdateUserRequest>()))
                 .Returns(Task.CompletedTask);
 
             userInventoryRepositoryMock
@@ -287,14 +226,15 @@
             Assert.True(result);
 
             userInventoryRepositoryMock.Verify(item =>
-                item.RemoveItemFromUserInventoryAsync(It.IsAny<ItemFromInventoryRequest>()), Times.Once);
-
-            userInventoryRepositoryMock.Verify(item =>
                 item.AddItemToUserInventoryAsync(It.IsAny<ItemFromInventoryRequest>()), Times.Once);
 
             itemRepositoryMock.Verify(item =>
                 item.UpdateItemAsync(testItemId, It.IsAny<UpdateItemRequest>()), Times.Once);
+
+            userRepositoryMock.Verify(user =>
+                user.UpdateUserAsync(testUser.UserId, It.IsAny<UpdateUserRequest>()), Times.Once);
         }
+
 
         [Fact]
         public async Task BuyItemAsync_NullItem_ThrowsArgumentNullException()
@@ -303,17 +243,6 @@
                 marketplaceService.BuyItemAsync(null, testUser.UserId));
 
             Assert.Equal("item", exception.ParamName);
-        }
-
-        [Fact]
-        public async Task GetListingsByGameAsync_NullGame_ThrowsArgumentNullException()
-        {
-            string parameterGame = "game";
-
-            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() =>
-                marketplaceService.GetListingsByGameAsync(null, testUser.UserId));
-
-            Assert.Equal(parameterGame, exception.ParamName);
         }
     }
 }

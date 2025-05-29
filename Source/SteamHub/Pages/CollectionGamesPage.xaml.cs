@@ -35,7 +35,7 @@ namespace SteamHub.Pages
 
         private CollectionGamesViewModel collectionGamesViewModel;
         private CollectionsViewModel collectionsViewModel;
-        // TO SOLVE private UsersViewModel userViewModel;
+        private UsersViewModel userViewModel;
         private int collectionIdentifier;
         private string collectionName = string.Empty;
 
@@ -46,7 +46,7 @@ namespace SteamHub.Pages
             collectionsViewModel = new CollectionsViewModel(collectionsService, userService);
             collectionsViewModel.LoadCollectionsAsync();
 
-            // TO SOLVE userViewModel = App.UsersViewModel;
+            userViewModel = new UsersViewModel(userService);
             this.DataContext = collectionGamesViewModel;
         }
 
@@ -63,20 +63,34 @@ namespace SteamHub.Pages
             {
                 // Handle back navigation from AddGameToCollectionPage
                 collectionIdentifier = backCollectionId;
-                //TO SOLVE var userId = userViewModel.GetCurrentUser().UserId;
-                // TO SOLVE var collection = collectionsViewModel.GetCollectionById(collectionIdentifier, userId);
-                //TO SOLVE  if (collection != null)
-                //{
-                //    collectionName = collection.CollectionName;
-                //    LoadCollectionGames();
-                // TO SOLVE  }
+
+                // Await the asynchronous call to GetCurrentUserAsync to retrieve the user object
+                var userTask = userViewModel.GetCurrentUserAsync();
+                userTask.ContinueWith(async task =>
+                {
+                    var user = task.Result;
+                    if (user != null)
+                    {
+                        var userId = user.UserId;
+                        var collectionTask = collectionsViewModel.GetCollectionByIdAsync(collectionIdentifier, userId);
+                        var collection = await collectionTask; // Await the task to get the Collection object
+                        if (collection != null)
+                        {
+                            collectionName = collection.CollectionName; // Access the CollectionName property
+                            LoadCollectionGames();
+                        }
+                    }
+                 
+
+                    // Existing code remains unchanged
+                }, System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext());
             }
         }
 
         private void LoadCollectionGames()
         {
             collectionGamesViewModel.CollectionName = collectionName;
-            collectionGamesViewModel.LoadGames(collectionIdentifier);
+            collectionGamesViewModel.LoadGamesAsync(collectionIdentifier);
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs eventArgs)
@@ -86,7 +100,7 @@ namespace SteamHub.Pages
 
         private void AddGameToCollection_Click(object sender, RoutedEventArgs eventArgs)
         {
-            // TO SOLVE Frame.Navigate(typeof(AddGameToCollectionPage), collectionIdentifier);
+            //Frame.Navigate(typeof(AddGameToCollectionPage), collectionIdentifier);
         }
 
         private void RemoveGame_Click(object sender, RoutedEventArgs eventArgs)
@@ -102,7 +116,7 @@ namespace SteamHub.Pages
                 int gameId = Convert.ToInt32(button.Tag);
 
                 collectionsViewModel.RemoveGameFromCollectionAsync(collectionIdentifier, gameId);
-                collectionGamesViewModel.LoadGames(collectionIdentifier);
+                collectionGamesViewModel.LoadGamesAsync(collectionIdentifier);
             }
             catch (Exception exception)
             {

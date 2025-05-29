@@ -10,12 +10,6 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class AchievementsServiceProxy : ServiceProxy, IAchievementsService
     {
-        private readonly JsonSerializerOptions _options = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-        };
-
         public AchievementsServiceProxy(string baseUrl = "https://localhost:7241/api/")
             : base(baseUrl)
         {
@@ -33,11 +27,11 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task<GroupedAchievementsResult> GetGroupedAchievementsForUser(int userIdentifier)
+        public async Task<Models.GroupedAchievementsResult> GetGroupedAchievementsForUser(int userIdentifier)
         {
             try
             {
-                return await GetAsync<GroupedAchievementsResult>($"Achievements/{userIdentifier}/grouped");
+                return await GetAsync<Models.GroupedAchievementsResult>($"Achievements/{userIdentifier}/grouped");
             }
             catch (Exception ex)
             {

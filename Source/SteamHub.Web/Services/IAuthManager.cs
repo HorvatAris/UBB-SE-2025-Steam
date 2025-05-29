@@ -21,7 +21,7 @@
         /// <param name="password">Desired password.</param>
         /// <param name="isDeveloper">Whether the user registers as a developer.</param>
         /// <returns>True if registration succeeded; otherwise false.</returns>
-        Task<bool> RegisterAsync(string username, string email, string password, bool isDeveloper);
+        Task<bool> RegisterAsync(string username, string email, string password, string confirmPassword, bool isDeveloper);
 
         /// <summary>
         /// Signs out the current user.

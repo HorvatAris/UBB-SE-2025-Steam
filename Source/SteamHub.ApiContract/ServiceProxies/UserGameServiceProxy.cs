@@ -87,7 +87,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task ComputeNoOfUserGamesForEachTagAsync(Collection<Tag> all_tags, int userId)
         {
-            var user_games = await this.GetAllGamesAsync(User.UserId);
+            var user_games = await this.GetAllGamesAsync(userId);
 
             // Manually build the dictionary instead of using ToDictionary
             Dictionary<string, Tag> tagsDictionary = new Dictionary<string, Tag>();
@@ -118,7 +118,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task ComputeTagScoreForGamesAsync(Collection<Game> games, int userId)
         {
-            var favorite_tags = await this.GetFavoriteUserTagsAsync(User.UserId);
+            var favorite_tags = await this.GetFavoriteUserTagsAsync(userId);
             foreach (var game in games)
             {
                 game.TagScore = InitialTagScore;
@@ -237,7 +237,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task<bool> IsGamePurchasedAsync(Game game, int userId)
         {
-            var purchasedGameList = await this.GetPurchasedGamesAsync(User.UserId);
+            var purchasedGameList = await this.GetPurchasedGamesAsync(userId);
             return purchasedGameList.Any(currentGame => currentGame.GameId == game.GameId);
         }
 

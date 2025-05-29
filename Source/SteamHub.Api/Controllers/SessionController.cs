@@ -14,16 +14,21 @@ namespace SteamHub.Api.Controllers;
 public class SessionController : ControllerBase
 {
     private readonly ISessionService _sessionService;
+    private readonly IUserService _userService;
 
-    public SessionController(ISessionService sessionService)
+    public SessionController(ISessionService sessionService, IUserService userService)
     {
         _sessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
+        _userService = userService ?? throw new ArgumentNullException(nameof(userService));
     }
 
     [HttpGet("CurrentUser")]
     public async Task<IActionResult> GetCurrentUser()
     {
         var user = await _sessionService.GetCurrentUserAsync();
+        var fullUser = _userService.GetUserByIdentifierAsync(user.UserId);
+        user.Password = fullUser.Result.Password;
+        user.ProfilePicture = fullUser.Result.ProfilePicture;
         if (user == null)
             return NotFound("No active session found");
 

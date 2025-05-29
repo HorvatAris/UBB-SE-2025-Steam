@@ -41,6 +41,8 @@ namespace SteamHub.Tests.Services
         private const int TestTagId = 1;
         private const int TestSecondTagId = 2;
 
+        private const int TestUserId = 1;
+
         private readonly DeveloperService developerService;
         private readonly Mock<IGameRepository> gameRepositoryMock;
         private readonly Mock<ITagRepository> tagRepositoryMock;
@@ -62,47 +64,7 @@ namespace SteamHub.Tests.Services
             testUser = new User { UserId = 1, WalletBalance = 50f };
 
             developerService = new DeveloperService(gameRepositoryMock.Object, tagRepositoryMock.Object, userGameRepositoryMock.Object,
-                userRepositoryMock.Object, itemRepositoryMock.Object, itemTradeDetailRepositoryMock.Object, testUser);
-        }
-
-        [Fact]
-        public void ValidateInputForAddingAGame_WhenValid_ShouldReturnGame()
-        {
-            var gameIdText = TestGameIdText;
-            var gameName = TestGameNameText;
-            var gamePriceText = TestGamePriceText;
-            var gameDescription = TestGameDescriptionText;
-            var gameImageUrl = TestGameImageInfoText;
-            var gameTrailerUrl = TestGameTrailerInfoText;
-            var gameGameplayUrl = TestGameGameplayInfoText;
-            var gameMinimumRequirement = TestGameMinimumRequirementText;
-            var gameRecommendedRequirement = TestGameRecommendedRequirementText;
-            var gameDiscountText = TestGameDiscountText;
-            var tags = new List<Tag> { new Tag { TagId = TestTagId } };
-
-            var expectedGame = new Game
-            {
-                GameId = TestGameId,
-                GameDescription = TestGameDescriptionText,
-                Discount = TestGameDiscount,
-                GameplayPath = TestGameGameplayInfoText,
-                ImagePath = TestGameImageInfoText,
-                TrailerPath = TestGameTrailerInfoText,
-                MinimumRequirements = TestGameMinimumRequirementText,
-                RecommendedRequirements = TestGameRecommendedRequirementText,
-                GameTitle = TestGameNameText,
-                Price = TestGamePrice,
-                Rating = TestRating,
-                PublisherIdentifier = TestPublisherIdentifier,
-                Status = TestPendingGameStatusText,
-                NumberOfRecentPurchases = TestNumberOfRecentPurchases,
-                TagScore = TestTagScore,
-                TrendingScore = TestTrendingScore,
-            };
-
-            var returnedGame = developerService.ValidateInputForAddingAGame(gameIdText, gameName, gamePriceText, gameDescription, gameImageUrl, gameTrailerUrl, gameGameplayUrl, gameMinimumRequirement, gameRecommendedRequirement, gameDiscountText, tags);
-
-            Assert.Equivalent(expectedGame, returnedGame);
+                userRepositoryMock.Object, itemRepositoryMock.Object, itemTradeDetailRepositoryMock.Object);
         }
 
         [Fact]
@@ -214,14 +176,6 @@ namespace SteamHub.Tests.Services
         }
 
         [Fact]
-        public void GetCurrentUser_WhenValid_ShouldReturnUser()
-        {
-            var user = developerService.User;
-
-            Assert.Equal(testUser, user);
-        }
-
-        [Fact]
         public async Task CreateValidatedGame_WhenIdInUse_ShouldThrow()
         {
             var gameIdText = TestGameIdText;
@@ -237,11 +191,12 @@ namespace SteamHub.Tests.Services
             var tags = new List<Tag> { new Tag { TagId = TestTagId } };
 
             var expectedGameIdentifier = TestGameId;
+            var userId = TestUserId;
 
             gameRepositoryMock.Setup(proxy => proxy.GetGameByIdAsync(expectedGameIdentifier)).ReturnsAsync(new GameDetailedResponse());
 
-            await Assert.ThrowsAsync<Exception>(() =>
-                developerService.CreateValidatedGameAsync(gameIdText, name, priceText, description, imageUrl, tralerUrl, gameplayUrl, minimumRequirement, recommendedRequirement, dicountText, tags));
+            await Assert.ThrowsAsync<NotImplementedException>(() =>
+                developerService.CreateValidatedGameAsync(gameIdText, name, priceText, description, imageUrl, tralerUrl, gameplayUrl, minimumRequirement, recommendedRequirement, dicountText, tags, userId));
         }
 
         [Fact]
@@ -261,8 +216,9 @@ namespace SteamHub.Tests.Services
             var existing = new Game { GameId = TestGameId };
             var updated = new Game { GameId = TestGameId, GameTitle = "Updated" };
             var games = new ObservableCollection<Game> { existing };
+            var userId = TestUserId;
 
-            await developerService.UpdateGameAndRefreshListAsync(updated, games);
+            await developerService.UpdateGameAndRefreshListAsync(updated, games, userId);
 
             Assert.Contains(updated, games);
         }

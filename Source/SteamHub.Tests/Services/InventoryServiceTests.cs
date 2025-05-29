@@ -12,6 +12,7 @@
     using SteamHub.Utils;
     using Xunit;
     using SteamHub.ApiContract.Repositories;
+    using SteamHub.ApiContract.Models.Common;
 
     public class InventoryServiceTests
     {
@@ -39,6 +40,7 @@
         private readonly InventoryService inventoryService;
         private readonly Mock<IUserInventoryRepository> userInventoryRepositoryMock;
         private readonly Mock<IItemRepository> itemRepositoryMock;
+        private readonly Mock<IUserRepository> userRepositoryMock;
         private readonly Mock<IGameRepository> gameRepositoryMock;
 
         private readonly InventoryValidator inventoryValidator;
@@ -50,14 +52,16 @@
             userInventoryRepositoryMock = new Mock<IUserInventoryRepository>();
             itemRepositoryMock = new Mock<IItemRepository>();
             gameRepositoryMock = new Mock<IGameRepository>();
+            userRepositoryMock = new Mock<IUserRepository>();
             testUser = new User { UserId = 1, WalletBalance = 50f };
-            inventoryService = new InventoryService(userInventoryRepositoryMock.Object, itemRepositoryMock.Object, gameRepositoryMock.Object, testUser);
+            inventoryService = new InventoryService(userRepositoryMock.Object, userInventoryRepositoryMock.Object, itemRepositoryMock.Object, gameRepositoryMock.Object);
             inventoryValidator = new InventoryValidator();
         }
 
         [Fact]
         public async Task SellItemAsync_WhenItemIsValidAndUpdateSucceeds_ReturnsTrue()
         {
+            var userId = 1;
             var item = new Item
             {
                 ItemId = testItemId,
@@ -89,10 +93,27 @@
                     ImagePath = testItemImagePath2
                 }
             });
+            userRepositoryMock
+    .Setup(repo => repo.GetUserByIdAsync(userId))
+    .ReturnsAsync(new UserResponse
+    {
+        UserId = userId,
+        UserName = "TestUser",
+        Password = "hashed-password",
+        Email = "test@example.com",
+        WalletBalance = 100,
+        PointsBalance = 50,
+        UserRole = UserRole.User,
+        CreatedAt = DateTime.UtcNow,
+        LastLogin = null,
+        ProfilePicture = ""
+    });
+
+
 
             itemRepositoryMock.Setup(proxy => proxy.UpdateItemAsync(item.ItemId, It.IsAny<UpdateItemRequest>())).Returns(Task.CompletedTask);
 
-            var result = await inventoryService.SellItemAsync(item);
+            var result = await inventoryService.SellItemAsync(item, userId);
 
             Assert.True(result);
             Assert.True(item.IsListed);
@@ -100,8 +121,10 @@
         }
 
         [Fact]
-        public async Task SellItemAsync_WhenUpdateFails_ReturnsFalse()
+        public async Task SellItemAsync_WhenUpdateFails_ThrowsException()
         {
+            // Arrange
+            var userId = 1;
             var item = new Item
             {
                 ItemId = testItemId,
@@ -112,39 +135,53 @@
                 ImagePath = testItemImagePath
             };
 
-            itemRepositoryMock.Setup(proxy => proxy.GetItemsAsync()).ReturnsAsync(new List<ItemDetailedResponse>
-            {
-                new ItemDetailedResponse
-                {
-                    ItemId = item.ItemId,
-                    ItemName = item.ItemName,
-                    Description = item.Description,
-                    Price = item.Price,
-                    IsListed = item.IsListed,
-                    ImagePath = item.ImagePath
-                },
-                new ItemDetailedResponse
-                {
-                    ItemId = testItemId2,
-                    ItemName = testItemName2,
-                    Description = testItemDescription2,
-                    Price = testItemPrice2,
-                    IsListed = testItemListed,
-                    ImagePath = testItemImagePath2
-                }
-            });
-
-            itemRepositoryMock.Setup(proxy => proxy.UpdateItemAsync(item.ItemId, It.IsAny<UpdateItemRequest>()))
-                                .ThrowsAsync(new Exception("Update failed"));
-
-            var result = await inventoryService.SellItemAsync(item);
-
-            Assert.False(result);
+            // Repository returns list that contains the item
+            itemRepositoryMock.Setup(repo => repo.GetItemsAsync()).ReturnsAsync(new List<ItemDetailedResponse>
+    {
+        new ItemDetailedResponse
+        {
+            ItemId = item.ItemId,
+            ItemName = item.ItemName,
+            Description = item.Description,
+            Price = item.Price,
+            IsListed = item.IsListed,
+            ImagePath = item.ImagePath,
+            GameId = 123          // include GameId since SellItemAsync uses it
         }
+    });
+
+            // User lookup
+            userRepositoryMock.Setup(r => r.GetUserByIdAsync(userId))
+                .ReturnsAsync(new UserResponse
+                {
+                    UserId = userId,
+                    UserName = "TestUser",
+                    Password = "hash",
+                    Email = "test@example.com",
+                    WalletBalance = 100,
+                    PointsBalance = 50,
+                    UserRole = UserRole.User,
+                    CreatedAt = DateTime.UtcNow,
+                    ProfilePicture = ""
+                });
+
+            // Simulate failure in UpdateItemAsync
+            itemRepositoryMock.Setup(repo =>
+                repo.UpdateItemAsync(item.ItemId, It.IsAny<UpdateItemRequest>()))
+                .ThrowsAsync(new Exception("Update failed"));
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<Exception>(() =>
+                inventoryService.SellItemAsync(item, userId));
+
+            Assert.Equal("Item couldn't be updated as for sale.", ex.Message);
+        }
+
 
         [Fact]
         public async Task SellItemAsync_WhenItemNotFound_ReturnsFalse()
         {
+            var userId = 1;
             var item = new Item
             {
                 ItemId = testItemId,
@@ -170,9 +207,7 @@
 
             itemRepositoryMock.Setup(proxy => proxy.UpdateItemAsync(item.ItemId, It.IsAny<UpdateItemRequest>())).Returns(Task.CompletedTask);
 
-            var result = await inventoryService.SellItemAsync(item);
-
-            Assert.False(result);
+            await Assert.ThrowsAsync<Exception>(() => inventoryService.SellItemAsync(item, userId));
         }
 
         [Fact]
@@ -325,6 +360,7 @@
         [Fact]
         public async Task GetAvailableGames_EmptyUserInventory_ReturnsOnlyAllGamesOption()
         {
+            var userId = 1;
             int firstItemIndex = 0;
             var items = new List<Item>();
 
@@ -336,7 +372,7 @@
                 .Setup(proxy => proxy.GetGamesAsync(It.IsAny<GetGamesRequest>()))
                 .ReturnsAsync(new List<GameDetailedResponse>()); // No games
 
-            var result = await inventoryService.GetAvailableGamesAsync(items);
+            var result = await inventoryService.GetAvailableGamesAsync(items, userId);
 
             Assert.Single(result);
             Assert.Equal("All Games", result[firstItemIndex].GameTitle);
@@ -345,6 +381,7 @@
         [Fact]
         public async Task GetAvailableGames_UserInventoryHasGames_ReturnsMatchingGames()
         {
+            var userId = 1;
             int resultCount = 3;
             var items = new List<Item>();
             var game1 = new Game { GameTitle = "Zelda" };
@@ -412,7 +449,7 @@
                     }
                 });
 
-            var result = await inventoryService.GetAvailableGamesAsync(items);
+            var result = await inventoryService.GetAvailableGamesAsync(items, userId);
 
             Assert.Equal(3, result.Count);
             Assert.Contains(result, game => game.GameTitle == "All Games");

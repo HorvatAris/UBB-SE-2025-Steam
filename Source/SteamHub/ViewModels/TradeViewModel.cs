@@ -427,11 +427,6 @@ namespace SteamHub.ViewModels
             return await this.userService.GetAllUsersAsync();
         }
 
-        public IUserDetails GetCurrentUserAsync()
-        {
-            return this.tradeService.GetCurrentUser();
-        }
-
         public async Task TrySendTradeAsync(XamlRoot root)
         {
             if (!this.CanSendTradeOffer)
@@ -496,29 +491,53 @@ namespace SteamHub.ViewModels
         {
             try
             {
-                var loggedInUser = new User(this.tradeService.GetCurrentUser());
+                var loggedInUser = await this.userService.GetCurrentUserAsync();
                 this.Users.Clear();
                 this.Users.Add(loggedInUser);
                 this.CurrentUser = loggedInUser;
 
-                var allUsers = await this.userService.GetAllUsersAsync();
-                this.AvailableUsers.Clear();
-                foreach (var user in allUsers)
+                // Load users in a separate try-catch to handle potential failures
+                try
                 {
-                    if (user.UserId != this.CurrentUser.UserId)
+                    var allUsers = await this.userService.GetAllUsersAsync();
+                    this.AvailableUsers.Clear();
+                    foreach (var user in allUsers)
                     {
-                        this.AvailableUsers.Add(user);
+                        if (user.UserId != this.CurrentUser.UserId)
+                        {
+                            this.AvailableUsers.Add(user);
+                        }
                     }
                 }
+                catch (System.Exception ex)
+                {
+                    Debug.WriteLine($"Error loading available users: {ex.Message}");
+                    this.AvailableUsers.Clear();
+                }
 
-                await this.LoadActiveTradesAsync();
-                await this.LoadTradeHistoryAsync();
+                // Load trades in separate try-catch blocks to prevent cascading failures
+                try
+                {
+                    await this.LoadActiveTradesAsync();
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.WriteLine($"Error loading active trades during user load: {ex.Message}");
+                }
+
+                try
+                {
+                    await this.LoadTradeHistoryAsync();
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.WriteLine($"Error loading trade history during user load: {ex.Message}");
+                }
             }
             catch (System.Exception exception)
             {
                 this.ErrorMessage = LoadUsersErrorMessage;
-                System.Diagnostics.Debug.WriteLine($"{LoadUsersDebugMessagePrefix}{exception.Message}");
-
+                Debug.WriteLine($"{LoadUsersDebugMessagePrefix}{exception.Message}");
                 this.AvailableUsers.Clear();
             }
         }
@@ -619,17 +638,30 @@ namespace SteamHub.ViewModels
 
             try
             {
-                var activeTrades = await this.tradeService.GetActiveTradesAsync(this.CurrentUser.UserId);
+                // Clear the collection first to prevent UI binding issues
                 this.ActiveTrades.Clear();
-                foreach (var trade in activeTrades)
+                
+                var activeTrades = await this.tradeService.GetActiveTradesAsync(this.CurrentUser.UserId);
+                
+                // Use a temporary list to avoid concurrent modifications
+                var tradesToAdd = activeTrades.ToList();
+
+                // Add trades to the collection
+                foreach (var trade in tradesToAdd)
                 {
                     this.ActiveTrades.Add(trade);
                 }
+
+                this.OnPropertyChanged(nameof(this.ActiveTrades));
             }
             catch (System.Exception loadingActiveTradesException)
             {
                 this.ErrorMessage = LoadActiveTradesErrorMessage;
-                System.Diagnostics.Debug.WriteLine($"{LoadActiveTradesDebugMessagePrefix}{loadingActiveTradesException.Message}");
+                Debug.WriteLine($"{LoadActiveTradesDebugMessagePrefix}{loadingActiveTradesException.Message}");
+                if (loadingActiveTradesException.InnerException != null)
+                {
+                    Debug.WriteLine($"Inner exception: {loadingActiveTradesException.InnerException.Message}");
+                }
             }
         }
 
@@ -642,16 +674,21 @@ namespace SteamHub.ViewModels
 
             try
             {
-                var historyTrades = await this.tradeService.GetTradeHistoryAsync(this.CurrentUser.UserId);
+                // Clear the collection first to prevent UI binding issues
                 this.TradeHistory.Clear();
-                foreach (var trade in historyTrades)
+                
+                var historyTrades = await this.tradeService.GetTradeHistoryAsync(this.CurrentUser.UserId);
+                
+                // Use a temporary list to avoid concurrent modifications
+                var tradesToAdd = historyTrades
+                    .Where(trade => trade.SourceUser.UserId == this.CurrentUser.UserId ||
+                                  trade.DestinationUser.UserId == this.CurrentUser.UserId)
+                    .ToList();
+
+                // Add trades to the collection
+                foreach (var trade in tradesToAdd)
                 {
-                    // Only add trades where the current user is involved
-                    if (trade.SourceUser.UserId == this.CurrentUser.UserId ||
-                        trade.DestinationUser.UserId == this.CurrentUser.UserId)
-                    {
-                        this.TradeHistory.Add(trade);
-                    }
+                    this.TradeHistory.Add(trade);
                 }
 
                 this.OnPropertyChanged(nameof(this.TradeHistory));
@@ -659,7 +696,11 @@ namespace SteamHub.ViewModels
             catch (System.Exception loadingTradeHistoryException)
             {
                 this.ErrorMessage = LoadTradeHistoryErrorMessage;
-                System.Diagnostics.Debug.WriteLine($"{LoadTradeHistoryDebugMessagePrefix}{loadingTradeHistoryException.Message}");
+                Debug.WriteLine($"{LoadTradeHistoryDebugMessagePrefix}{loadingTradeHistoryException.Message}");
+                if (loadingTradeHistoryException.InnerException != null)
+                {
+                    Debug.WriteLine($"Inner exception: {loadingTradeHistoryException.InnerException.Message}");
+                }
             }
         }
 
