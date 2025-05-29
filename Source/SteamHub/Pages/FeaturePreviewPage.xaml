@@ -113,7 +113,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Image 
-                                        Source="{Binding Source}"
+                                        Source="/{Binding Source}"
                                         Width="50"
                                         Height="50"
                                         Margin="5"/>
