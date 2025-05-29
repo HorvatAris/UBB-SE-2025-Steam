@@ -12,11 +12,7 @@ using SteamHub.Api.Context;
 namespace SteamHub.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-<<<<<<<< HEAD:Source/SteamHub.Api/Migrations/20250529125804_MainMigration.Designer.cs
-    [Migration("20250529125804_MainMigration")]
-========
-    [Migration("20250529133833_MainMigration")]
->>>>>>>> main:Source/SteamHub.Api/Migrations/20250529133833_MainMigration.Designer.cs
+    [Migration("20250529140358_MainMigration")]
     partial class MainMigration
     {
         /// <inheritdoc />
