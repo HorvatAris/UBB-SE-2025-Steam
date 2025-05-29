@@ -14,7 +14,7 @@
     <Page.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
-        <DataTemplate x:Key="FriendItemTemplate" x:DataType="models:Friendship">
+        <DataTemplate x:Key="FriendItemTemplate" x:DataType="models:Friendship"   >
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     CornerRadius="8"
                     Padding="12"
@@ -40,7 +40,7 @@
                                 HorizontalAlignment="Center"
                                 Spacing="8">
                         <Button Content="View"
-                                Command="{Binding ViewFriendCommand}"
+                                Command="{Binding DataContext.ViewFriendCommand,ElementName=PageRoot}"
                                 CommandParameter="{Binding FriendId}"
                                 Style="{StaticResource AccentButtonStyle}"
                                 MinWidth="80"/>

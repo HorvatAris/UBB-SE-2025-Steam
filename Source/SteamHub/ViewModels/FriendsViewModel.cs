@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using System.Linq;
+using SteamHub.Pages;
 
 namespace SteamHub.ViewModels
 {
@@ -129,6 +130,8 @@ namespace SteamHub.ViewModels
         {
             // Navigation logic will be handled in code-behind or via a navigation service
             // Parameter is passed from XAML
+            NavigationService.Instance.Navigate(typeof(FriendProfilePage), friendId);
+
         }
 
         [RelayCommand]
