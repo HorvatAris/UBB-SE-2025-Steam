@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.Api.Context;
+using SteamHub.ApiContract.Exceptions;
 
 namespace SteamHub.Api.Controllers
 {
@@ -20,7 +21,6 @@ namespace SteamHub.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
             return Ok(await userService.GetAllUsersAsync());
@@ -64,36 +64,28 @@ namespace SteamHub.Api.Controllers
             }
         }
 
-        /*
-    [HttpPost]
-        public IActionResult CreateUser([FromBody] User user)
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] User user)
         {
-            var strategy = dbContext.Database.CreateExecutionStrategy();
-
-            return strategy.ExecuteAsync(async () =>
+            try
             {
-                using var transaction = await dbContext.Database.BeginTransactionAsync();
-                try
-                {
-                    var createdUser = userService.CreateUser(user);
-                    if (createdUser == null || createdUser.UserId <= 0)
-                    {
-                        throw new Exception("User creation failed or returned an invalid user.");
-                    }
-
-                    walletService.CreateWallet(createdUser.UserId);
-
-                    await transaction.CommitAsync();
-                    return Ok(createdUser);
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    return BadRequest(ex.Message);
-                }
-            }).Result; // Ensure the result is awaited properly
+                var createdUser = await userService.CreateUserAsync(user);
+                return Ok(createdUser);
+            }
+            catch (EmailAlreadyExistsException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (UsernameAlreadyTakenException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = "Failed to create user" });
+            }
         }
-        */
+
         [HttpPut("{id}")]
         [Authorize]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] User user)
@@ -244,7 +236,7 @@ namespace SteamHub.Api.Controllers
                 return Unauthorized();
             }
 
-            var result = await userService.UpdateProfilePictureAsync(request.ProfilePicture);
+            var result = await userService.UpdateProfilePictureAsync(user.UserId, request.ProfilePicture);
             if (result)
             {
                 return Ok();
@@ -261,7 +253,7 @@ namespace SteamHub.Api.Controllers
                 return Unauthorized();
             }
 
-            var result = await userService.UpdateProfileBioAsync(request.Bio);
+            var result = await userService.UpdateProfileBioAsync(user.UserId, request.Bio);
             if (result)
             {
                 return Ok();

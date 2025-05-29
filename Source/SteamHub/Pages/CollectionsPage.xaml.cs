@@ -237,14 +237,5 @@ namespace SteamHub.Pages
                 }
             }
         }
-
-        private async void BackToProfileButton_Click(object sender, RoutedEventArgs eventArgs)
-        {
-            var currentUser = await usersViewModel.GetCurrentUserAsync();
-            if (currentUser != null)
-            {
-                Frame.Navigate(typeof(ProfilePage), currentUser.UserId);
-            }
-        }
     }
 }

@@ -35,9 +35,6 @@
                     HorizontalAlignment="Center" 
                     Width="200"/>
            
-            <Button Content="Back to Profile"
-                    Command="{Binding NavigateToProfileCommand}"
-                    Style="{ThemeResource TextBlockButtonStyle}"/>
         </StackPanel>
     </Grid>
 </Page>

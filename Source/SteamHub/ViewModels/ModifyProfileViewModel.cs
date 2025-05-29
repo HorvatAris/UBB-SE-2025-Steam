@@ -108,11 +108,11 @@ namespace SteamHub.ViewModels
                 if (ValidateDescription())
                 {
                     bool changesMade = false;
-
+                    var currentUser = await userService.GetCurrentUserAsync();
                     // Save new picture if changed
                     if (selectedImageFile != null && SelectedImagePath != originalImagePath)
                     {
-                        await userService.UpdateProfilePictureAsync(selectedImageFile.Path);
+                        await userService.UpdateProfilePictureAsync(currentUser.UserId, selectedImageFile.Path);
                         originalImagePath = SelectedImagePath;
                         changesMade = true;
                     }
@@ -120,7 +120,7 @@ namespace SteamHub.ViewModels
                     // Save new description if changed
                     if (Description != originalDescription)
                     {
-                        await userService.UpdateProfileBioAsync(Description);
+                        await userService.UpdateProfileBioAsync(currentUser.UserId, Description);
                         originalDescription = Description;
                         changesMade = true;
                     }

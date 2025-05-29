@@ -24,8 +24,6 @@ namespace SteamHub.ApiContract.Services
 
         public IItemRepository ItemRepository { get; set; }
 
-        public IUserDetails User { get; set; }
-
         public MarketplaceService(IUserRepository userRepository, IGameRepository gameRepository, IItemRepository itemRepository,
                                   IUserInventoryRepository userInventoryRepository)
         {

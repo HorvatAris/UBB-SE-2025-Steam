@@ -289,8 +289,6 @@ namespace SteamHub.ViewModels
             IAchievementsService achievementsService)
         {
             // Initialize userProfile to prevent null reference exceptions
-            user = new User();
-
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.friendsService = friendsService ?? throw new ArgumentNullException(nameof(friendsService));
             this.dispatcherQueue = dispatcherQueue ?? throw new ArgumentNullException(nameof(dispatcherQueue));
@@ -367,7 +365,7 @@ namespace SteamHub.ViewModels
                 try
                 {
                     var currentUserId = user_id;
-                    var isFriend = friendsService.AreUsersFriends(currentUserId, user_id);
+                    var isFriend = await friendsService.AreUsersFriendsAsync(currentUserId, user_id);
 
                     // Get equipped features
                     List<Feature> equippedFeatures = new List<Feature>();
@@ -427,7 +425,7 @@ namespace SteamHub.ViewModels
 
                             try
                             {
-                                FriendCount = friendsService.GetFriendshipCount(currentUser.UserId);
+                                FriendCount = await friendsService.GetFriendshipCountAsync(currentUser.UserId);
                             }
                             catch (Exception exception)
                             {
@@ -627,22 +625,22 @@ namespace SteamHub.ViewModels
                 if (IsFriend)
                 {
                     // Remove friend
-                    var friendshipId = friendsService.GetFriendshipIdentifier(currentUser.UserId, userIdentifier);
+                    var friendshipId = await friendsService.GetFriendshipIdentifierAsync(currentUser.UserId, userIdentifier);
                     if (friendshipId.HasValue)
                     {
-                        friendsService.RemoveFriend(friendshipId.Value);
+                        await friendsService.RemoveFriendAsync(friendshipId.Value);
                         IsFriend = false;
                         FriendButtonText = "Add Friend";
-                        FriendCount = friendsService.GetFriendshipCount(userIdentifier);
+                        FriendCount = await friendsService.GetFriendshipCountAsync(userIdentifier);
                     }
                 }
                 else
                 {
                     // Add friend
-                    friendsService.AddFriend(currentUser.UserId, userIdentifier);
+                    await friendsService.AddFriendAsync(currentUser.UserId, userIdentifier);
                     IsFriend = true;
                     FriendButtonText = "Unfriend";
-                    FriendCount = friendsService.GetFriendshipCount(userIdentifier);
+                    FriendCount = await friendsService.GetFriendshipCountAsync(userIdentifier);
                 }
             }
             catch (Exception exception)
