@@ -22,7 +22,6 @@ namespace SteamHub.ApiContract.ServiceProxies
         public FriendRequestServiceProxy(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient("SteamHubApi");
-            // Store user if needed for friend request operations
         }
 
         public async Task<IEnumerable<FriendRequest>> GetFriendRequestsAsync(string username)

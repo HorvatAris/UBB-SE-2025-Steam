@@ -22,7 +22,7 @@ namespace BusinessLayer.Repositories
         public async Task<IEnumerable<FriendRequest>> GetFriendRequestsAsync(string username)
         {
             // Convert username to userId first
-            var user = await context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            var user = await context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Username == username);
             if (user == null)
             {
                 return new List<FriendRequest>();
@@ -49,8 +49,8 @@ namespace BusinessLayer.Repositories
             try
             {
                 // Convert usernames to userIds
-                var senderUser = await context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
-                var receiverUser = await context.Users.FirstOrDefaultAsync(u => u.Username == request.ReceiverUsername);
+                var senderUser = await context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Username == request.Username);
+                var receiverUser = await context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Username == request.ReceiverUsername);
 
                 if (senderUser == null || receiverUser == null)
                 {
@@ -81,8 +81,8 @@ namespace BusinessLayer.Repositories
             try
             {
                 // Convert usernames to userIds
-                var senderUser = await context.Users.FirstOrDefaultAsync(u => u.Username == senderUsername);
-                var receiverUser = await context.Users.FirstOrDefaultAsync(u => u.Username == receiverUsername);
+                var senderUser = await context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Username == senderUsername);
+                var receiverUser = await context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Username == receiverUsername);
 
                 if (senderUser == null || receiverUser == null)
                 {
