@@ -27,10 +27,10 @@ namespace SteamHub.Pages
 
             try
             {
-                if (e.Parameter is (IWalletService walletService, IUserService userService, User loggedInUser))
+                if (e.Parameter is (IWalletService walletService, IUserService userService))
                 {
-                    Debug.WriteLine($"Creating WalletViewModel for user: {loggedInUser.Username}");
-                    ViewModel = new WalletViewModel(walletService, userService, loggedInUser);
+                    //Debug.WriteLine($"Creating WalletViewModel for user: {loggedInUser.Username}");
+                    ViewModel = new WalletViewModel(walletService, userService);
                     this.DataContext = ViewModel;
                     
                     Debug.WriteLine("Initializing WalletViewModel");

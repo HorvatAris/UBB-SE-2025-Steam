@@ -14,44 +14,16 @@ namespace SteamHub.ApiContract.ServiceProxies
     /// </summary>
     public class UserServiceProxy : ServiceProxy, IUserService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        public UserServiceProxy(string baseUrl = "https://localhost:7241/api/")
+            : base(baseUrl)
         {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-        };
-        private string _authToken;
-
-        public UserServiceProxy(IHttpClientFactory httpClientFactory)
-            : base()
-        {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
-        }
-
-        private string GetAuthToken()
-        {
-            return _authToken;
-        }
-
-        private void SetAuthToken(string token)
-        {
-            _authToken = token;
-            if (!string.IsNullOrEmpty(token))
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            }
-            else
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = null;
-            }
         }
 
         private void EnsureAuthorized()
         {
-            var authToken = GetAuthToken();
-            if (string.IsNullOrEmpty(authToken))
+            if (CurrentUser == null)
             {
-                Debug.WriteLine("Authorization required but no auth token found");
+                Debug.WriteLine("Authorization required but no user session found");
                 throw new UnauthorizedAccessException("User must be logged in to perform this operation.");
             }
         }
@@ -59,14 +31,15 @@ namespace SteamHub.ApiContract.ServiceProxies
         /// <inheritdoc/>
         public async Task<List<User>> GetAllUsersAsync()
         {
-            EnsureAuthorized();
-            var response = await _httpClient.GetAsync("/api/User/All");
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                var error = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Failed to fetch users: {error}");
+                return await GetAsync<List<User>>("User");
             }
-            return await response.Content.ReadFromJsonAsync<List<User>>(_jsonOptions)!;
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to fetch users: {ex.Message}");
+                return new List<User>();
+            }
         }
 
         /// <inheritdoc/>
@@ -243,52 +216,12 @@ namespace SteamHub.ApiContract.ServiceProxies
             try
             {
                 Debug.WriteLine("Attempting to get current user...");
-                
-                // Check if we have an auth token
-                var authToken = GetAuthToken();
-                if (string.IsNullOrEmpty(authToken))
+                if (CurrentUser == null)
                 {
-                    Debug.WriteLine("No auth token found");
+                    Debug.WriteLine("No user session found");
                     return null;
                 }
-
-                Debug.WriteLine($"Auth token found: {authToken.Substring(0, Math.Min(20, authToken.Length))}...");
-
-                // Ensure the token is set in the headers
-                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authToken);
-
-                // Make the request to the correct endpoint
-                var response = await _httpClient.GetAsync("/api/Session/CurrentUser");
-                
-                Debug.WriteLine($"Response status code: {response.StatusCode}");
-                
-                if (!response.IsSuccessStatusCode)
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    Debug.WriteLine($"Failed to get current user. Status: {response.StatusCode}, Error: {errorContent}");
-                    
-                    // If unauthorized, clear the token
-                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                    {
-                        Debug.WriteLine("Unauthorized response - clearing auth token");
-                        SetAuthToken(null);
-                    }
-                    
-                    return null;
-                }
-
-                var content = await response.Content.ReadAsStringAsync();
-                Debug.WriteLine($"Response content: {content}");
-
-                if (string.IsNullOrEmpty(content))
-                {
-                    Debug.WriteLine("Empty response content");
-                    return null;
-                }
-
-                var user = JsonSerializer.Deserialize<User>(content, _jsonOptions);
-                Debug.WriteLine($"Successfully retrieved user: {user?.Username ?? "null"}");
-                return user;
+                return await GetAsync<User>("Session/CurrentUser");
             }
             catch (Exception ex)
             {
@@ -302,12 +235,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                EnsureAuthorized();
-                var response = await _httpClient.GetAsync("/api/Session/IsLoggedIn");
-                if (!response.IsSuccessStatusCode)
-                    return false;
-
-                return await response.Content.ReadFromJsonAsync<bool>(_jsonOptions);
+                return await GetAsync<bool>("Session/IsLoggedIn");
             }
             catch (Exception ex)
             {
@@ -380,8 +308,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             try
             {
                 EnsureAuthorized();
-                // IMPLEMENT
-                await Task.CompletedTask;
+                await PutAsync<object>($"User/{userId}/profilePicture", new { ProfilePicture = profilePicturePath });
             }
             catch (Exception ex)
             {
@@ -394,8 +321,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             try
             {
                 EnsureAuthorized();
-                // IMPLEMENT
-                await Task.CompletedTask;
+                await PutAsync<object>($"User/{userId}/bio", new { Bio = profileBio });
             }
             catch (Exception ex)
             {
@@ -408,43 +334,47 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                Debug.WriteLine($"Attempting login for user: {emailOrUsername}");
+                Debug.WriteLine($"LoginAsync - Starting login for user: {emailOrUsername}");
                 var loginRequest = new { EmailOrUsername = emailOrUsername, Password = password };
                 
-                Debug.WriteLine("Sending login request...");
+                Debug.WriteLine("LoginAsync - Sending login request...");
                 var response = await PostAsync<LoginResponse>("Authentication/Login", loginRequest);
-                Debug.WriteLine($"Response received: {response != null}");
                 
                 if (response == null)
                 {
-                    Debug.WriteLine("Login response is null");
+                    Debug.WriteLine("LoginAsync - Login response is null");
                     return null;
                 }
 
-                Debug.WriteLine($"Response details - Token: {!string.IsNullOrEmpty(response.Token)}, User: {response.User != null}, SessionDetails: {response.UserWithSessionDetails != null}");
+                Debug.WriteLine($"LoginAsync - Response received:");
+                Debug.WriteLine($"  Token exists: {!string.IsNullOrEmpty(response.Token)}");
+                Debug.WriteLine($"  User exists: {response.User != null}");
+                Debug.WriteLine($"  SessionDetails exists: {response.UserWithSessionDetails != null}");
                 
-                if (response.User != null)
+                if (response.User != null && !string.IsNullOrEmpty(response.Token))
                 {
-                    Debug.WriteLine($"Login successful for user: {response.User.Username}");
-                    Debug.WriteLine("Setting auth token...");
-                    SetAuthToken(response.Token);
-                    Debug.WriteLine("Setting current user...");
-                    SetCurrentUser(response.UserWithSessionDetails);
-                    Debug.WriteLine("Login process completed successfully");
+                    Debug.WriteLine($"LoginAsync - Login successful for user: {response.User.Username}");
+                    Debug.WriteLine($"LoginAsync - Setting auth token: {response.Token.Substring(0, Math.Min(20, response.Token.Length))}...");
+                    base.SetAuthToken(response.Token);
+                    
+                    Debug.WriteLine("LoginAsync - Setting current user");
+                    base.SetCurrentUser(response.UserWithSessionDetails);
+                    
+                    Debug.WriteLine("LoginAsync - Login process completed successfully");
                     return response.User;
                 }
 
-                Debug.WriteLine("Login response User is null");
+                Debug.WriteLine("LoginAsync - Login failed - response.User or response.Token is null");
                 return null;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Login failed with error: {ex.Message}");
-                Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                Debug.WriteLine($"LoginAsync - Login failed with error: {ex.Message}");
+                Debug.WriteLine($"LoginAsync - Stack trace: {ex.StackTrace}");
                 if (ex.InnerException != null)
                 {
-                    Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
-                    Debug.WriteLine($"Inner exception stack trace: {ex.InnerException.StackTrace}");
+                    Debug.WriteLine($"LoginAsync - Inner exception: {ex.InnerException.Message}");
+                    Debug.WriteLine($"LoginAsync - Inner exception stack trace: {ex.InnerException.StackTrace}");
                 }
                 return null;
             }
@@ -455,12 +385,17 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await _httpClient.PostAsync("/api/Session/Logout", null);
-                SetAuthToken(null); // Clear the auth token on logout
+                Debug.WriteLine("LogoutAsync - Starting logout process");
+                await PostAsync("Session/Logout", null);
+                Debug.WriteLine("LogoutAsync - Clearing auth token");
+                base.SetAuthToken(null);
+                Debug.WriteLine("LogoutAsync - Clearing current user");
+                base.ClearCurrentUser();
+                Debug.WriteLine("LogoutAsync - Logout completed successfully");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Logout failed: {ex.Message}");
+                Debug.WriteLine($"LogoutAsync - Logout failed: {ex.Message}");
             }
         }
     }

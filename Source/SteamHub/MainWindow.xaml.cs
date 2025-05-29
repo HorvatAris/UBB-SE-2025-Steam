@@ -70,7 +70,7 @@ namespace SteamHub
 
             _httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
 
-            this.userService = new UserServiceProxy(_httpClientFactory);
+            this.userService = new UserServiceProxy();
             this.sessionService = new SessionServiceProxy(_httpClientFactory);
 
             // Start with login page
@@ -194,10 +194,10 @@ namespace SteamHub
             try
             {
                 this.achievementsService = new AchievementsServiceProxy();
-                this.tradeService = new TradeServiceProxy(_httpClientFactory, user);
+                this.tradeService = new TradeServiceProxy();
                 this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory, user);
                 this.pointShopService = new PointShopServiceProxy(_httpClientFactory, user);
-                this.inventoryService = new InventoryServiceProxy(_httpClientFactory, user);
+                this.inventoryService = new InventoryServiceProxy(_httpClientFactory);
                 this.gameService = new GameServiceProxy(_httpClientFactory);
                 this.cartService = new CartServiceProxy(_httpClientFactory, user);
                 this.userGameService = new UserGameServiceProxy(_httpClientFactory, user);
@@ -206,7 +206,7 @@ namespace SteamHub
                 this.achievementsService = new AchievementsServiceProxy();
                 this.collectionServiceProxy = new CollectionsServiceProxy();
                 this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
-                this.walletService = new WalletServiceProxy(user);
+                this.walletService = new WalletServiceProxy();
                 this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory,user);
 
                 Debug.WriteLine("User services initialized successfully");
@@ -249,7 +249,7 @@ namespace SteamHub
                         this.ContentFrame.Content = new DeveloperModePage(this.developerService);
                         break;
                     case "inventory":
-                        this.ContentFrame.Content = new InventoryPage(this.inventoryService);
+                        this.ContentFrame.Content = new InventoryPage(this.inventoryService, this.userService);
                         break;
                     case "marketplace":
                         this.ContentFrame.Content = new MarketplacePage(this.marketplaceService);
@@ -271,10 +271,10 @@ namespace SteamHub
                         this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService, this.collectionServiceProxy, achievementsService, this.user);
                         break;
                     case "AchievementsPage":
-                        this.ContentFrame.Content = new AchievementsPage(this.achievementsService, this.userService, this.user);
+                        this.ContentFrame.Content = new AchievementsPage(this.achievementsService, this.userService);
                         break;
                     case "Wallet":
-                        this.ContentFrame.Navigate(typeof(WalletPage), (this.walletService, this.userService, this.user));
+                        this.ContentFrame.Navigate(typeof(WalletPage), (this.walletService, this.userService));
                         break;
                     default:
                         Debug.WriteLine($"Unknown page tag: {tag}");
@@ -308,7 +308,7 @@ namespace SteamHub
             {
                 var tag = args.SelectedItemContainer.Tag.ToString();
                 
-                if (tag == "LoginPage" || tag == "RegisterPage" || tag == "ForgotPasswordPage")
+                if (tag == "LoginPage" || tag == "RegisterPage")
                 {
                     switch (tag)
                     {
@@ -317,9 +317,6 @@ namespace SteamHub
                             break;
                         case "RegisterPage":
                             ShowRegisterPage();
-                            break;
-                        case "ForgotPasswordPage":
-                            ShowLoginPage();
                             break;
                     }
                 }

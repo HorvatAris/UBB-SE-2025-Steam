@@ -52,7 +52,7 @@ namespace SteamHub.ApiContract.Models.User
 
         public string ProfilePicture { get; set; }
 
-        public string ProfilePicturePath;
+        public string ProfilePicturePath { get; set; } = string.Empty;
         public string? Bio { get; set; }
         public DateTime LastModified { get; set; }
 
