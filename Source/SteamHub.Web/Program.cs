@@ -38,6 +38,8 @@ builder.Services.AddScoped<IFriendsService, FriendsServiceProxy>();
 builder.Services.AddScoped<ICollectionsService, CollectionsServiceProxy>();
 builder.Services.AddScoped<IFeaturesService, FeaturesServiceProxy>();
 
+builder.Services.AddScoped<INewsService, NewsServiceProxy>();
+
 
 
 builder.Services.AddHttpClient("SteamHubApi", client =>
