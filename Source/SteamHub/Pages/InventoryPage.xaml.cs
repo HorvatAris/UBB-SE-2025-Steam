@@ -31,10 +31,10 @@ namespace SteamHub.Pages
         /// <summary>
         /// Initializes a new instance of the <see cref="InventoryPage"/> class.
         /// </summary>
-        public InventoryPage(IInventoryService inventoryService)
+        public InventoryPage(IInventoryService inventoryService, IUserService userService)
         {
             this.InitializeComponent();
-            this.ViewModel = new InventoryViewModel(inventoryService);
+            this.ViewModel = new InventoryViewModel(inventoryService, userService);
             this.DataContext = this;
             this.Loaded += this.InventoryPage_Loaded;
         }

@@ -12,12 +12,10 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class TradeServiceProxy : ServiceProxy, ITradeService
     {
-        private readonly IUserDetails user;
-
-        public TradeServiceProxy(IUserDetails user, string baseUrl = "https://localhost:7241/api/")
+        public TradeServiceProxy(string baseUrl = "https://localhost:7241/api/")
             : base(baseUrl)
         {
-            this.user = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
+
         }
 
         public async Task AcceptTradeAsync(ItemTrade trade, bool isSourceUser)
@@ -136,11 +134,6 @@ namespace SteamHub.ApiContract.ServiceProxies
                 System.Diagnostics.Debug.WriteLine($"Error fetching active trades: {exception.Message}");
                 return new List<ItemTrade>();
             }
-        }
-
-        public IUserDetails GetCurrentUser()
-        {
-            return this.user;
         }
 
         public async Task<List<ItemTrade>> GetTradeHistoryAsync(int userId)

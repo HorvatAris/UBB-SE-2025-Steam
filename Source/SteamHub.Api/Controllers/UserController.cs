@@ -20,6 +20,7 @@ namespace SteamHub.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
             return Ok(await userService.GetAllUsersAsync());

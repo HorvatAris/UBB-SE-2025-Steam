@@ -1,27 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.Web.ViewModels;
-using System.Security.Claims;
+using SteamHub.Web.Services;
+using SteamHub.ApiContract.Models.User;
+
 namespace SteamHub.Web.Controllers
 {
     public class AchievementsController : Controller
     {
         private readonly IAchievementsService _achievementsService;
+        private readonly IUserDetails _userDetails;
 
-        public AchievementsController(IAchievementsService achievementsService)
+        public AchievementsController(
+            IAchievementsService achievementsService,
+            IUserDetails userDetails)
         {
             _achievementsService = achievementsService;
+            _userDetails = userDetails;
         }
+
         public async Task<IActionResult> Index()
         {
-            string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (!int.TryParse(userIdStr, out int userId))
-            {
-                return RedirectToAction("Login", "Auth"); //  redirect to login
-            }
-
-            var result = await _achievementsService.GetGroupedAchievementsForUser(userId);
+            var result = await _achievementsService.GetGroupedAchievementsForUser(_userDetails.UserId);
 
             var vm = new AchievementsViewModel
             {
