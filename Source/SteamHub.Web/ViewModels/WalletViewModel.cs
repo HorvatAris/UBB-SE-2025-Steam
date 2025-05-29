@@ -43,11 +43,11 @@ namespace SteamHub.Web.ViewModels
 			user = null!;
 		}
 
-		public WalletViewModel(IWalletService walletService, IUserService userService)
+		public WalletViewModel(IWalletService walletService, IUserService userService, IUserDetails user)
 		{
 			_walletService = walletService ?? throw new ArgumentNullException(nameof(walletService));
 			SelectedPaymentMethod = string.Empty;
-			user = userService.GetCurrentUserAsync().GetAwaiter().GetResult();
+			this.user = user;
 		}
 
 		public async Task RefreshWalletData()

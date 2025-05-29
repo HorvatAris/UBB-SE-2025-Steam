@@ -16,11 +16,11 @@ namespace SteamHub.Web.Controllers
         private readonly IUserGameService userGameService;
         private readonly IUserDetails user;
 
-        public CartPageController(ICartService cartService, IUserGameService userGameService)
+        public CartPageController(ICartService cartService, IUserGameService userGameService, IUserDetails user)
         {
             this.cartService = cartService;
             this.userGameService = userGameService;
-            this.user = this.cartService.GetUser(); // neaparat
+            this.user = user;
         }
 
         public async Task<IActionResult> Index()

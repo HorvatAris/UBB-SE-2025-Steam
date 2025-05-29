@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.Web.ViewModels;
+using SteamHub.ApiContract.Models.User;
 
 namespace SteamHub.Web.Controllers
 {
@@ -10,16 +11,18 @@ namespace SteamHub.Web.Controllers
 	{
 		private readonly IWalletService _walletService;
 		private readonly IUserService _userService;
+		private readonly IUserDetails _user;
 
-		public WalletController(IWalletService walletService, IUserService userService)
+		public WalletController(IWalletService walletService, IUserService userService, IUserDetails user)
 		{
 			_walletService = walletService ?? throw new ArgumentNullException(nameof(walletService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+			_user = user;
         }
 
 		public async Task<IActionResult> Index()
 		{
-			var viewModel = new WalletViewModel(_walletService, _userService);
+			var viewModel = new WalletViewModel(_walletService, _userService, _user);
 			await viewModel.RefreshWalletData();
 			return View(viewModel);
 		}
@@ -34,8 +37,7 @@ namespace SteamHub.Web.Controllers
 				{
 					try
 					{
-						var currentUser = await _userService.GetCurrentUserAsync();
-                        await _walletService.AddMoney(viewModel.AmountToAdd.Value, currentUser.UserId);
+                        await _walletService.AddMoney(viewModel.AmountToAdd.Value, _user.UserId);
 						TempData["SuccessMessage"] = $"Successfully added ${viewModel.AmountToAdd:F2} to your wallet using {viewModel.SelectedPaymentMethod}.";
 						return RedirectToAction(nameof(Index));
 					}
@@ -50,7 +52,7 @@ namespace SteamHub.Web.Controllers
 				}
 			}
 
-			var freshViewModel = new WalletViewModel(_walletService, _userService);
+			var freshViewModel = new WalletViewModel(_walletService, _userService, _user);
 			await freshViewModel.RefreshWalletData();
 			freshViewModel.AmountToAdd = viewModel.AmountToAdd;
 			freshViewModel.SelectedPaymentMethod = viewModel.SelectedPaymentMethod;

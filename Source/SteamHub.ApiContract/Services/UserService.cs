@@ -14,35 +14,59 @@ namespace SteamHub.ApiContract.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository userRepository;
+        private readonly IWalletRepository walletRepository;
         private readonly ISessionRepository sessionRepository;
 
-        public UserService(IUserRepository userRepository, ISessionRepository sessionRepository)
+        public UserService(IUserRepository userRepository, ISessionRepository sessionRepository, IWalletRepository walletRepository)
         {
             this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             this.sessionRepository = sessionRepository ?? throw new ArgumentNullException(nameof(sessionRepository));
+            this.walletRepository = walletRepository;
         }
 
         public async Task<User> GetUserByIdentifierAsync(int userId)
-            => await userRepository.GetUserByIdAsync(userId);
+        {
+            return await userRepository.GetUserByIdAsync(userId);
+        }
 
         public async Task<User> GetUserByEmailAsync(string email)
-            => await userRepository.GetUserByEmailAsync(email);
+        {
+            return await userRepository.GetUserByEmailAsync(email);
+        }
 
         public async Task<User?> GetUserByUsernameAsync(string username)
-            => await userRepository.GetUserByUsernameAsync(username);
+        {
+            return await userRepository.GetUserByUsernameAsync(username);
+        }
 
         public async Task ValidateUserAndEmailAsync(string email, string username)
         {
             var errorType = await userRepository.CheckUserExistsAsync(email, username);
-            if (errorType == "EMAIL_EXISTS") throw new EmailAlreadyExistsException(email);
-            if (errorType == "USERNAME_EXISTS") throw new UsernameAlreadyTakenException(username);
+            if (errorType == "EMAIL_EXISTS")
+            {
+                throw new EmailAlreadyExistsException(email);
+            }
+
+            if (errorType == "USERNAME_EXISTS")
+            {
+                throw new UsernameAlreadyTakenException(username);
+            }
         }
 
         public async Task<User> CreateUserAsync(User user)
         {
             await ValidateUserAndEmailAsync(user.Email, user.Username);
+            
+            // Ensure required fields are set
             user.Password = PasswordHasher.HashPassword(user.Password);
-            return await userRepository.CreateUserAsync(user);
+            user.CreatedAt = DateTime.UtcNow;
+            user.LastModified = DateTime.UtcNow;
+            user.UserRole = user.UserRole;
+                        
+            var createdUser = await userRepository.CreateUserAsync(user);
+            await walletRepository.AddNewWallet(createdUser.UserId);
+
+            return createdUser;
         }
 
         public async Task<User> UpdateUserAsync(User user)
@@ -61,13 +85,19 @@ namespace SteamHub.ApiContract.Services
         }
 
         public async Task UpdateUserEmailAsync(int userId, string newEmail)
-            => await userRepository.ChangeEmailAsync(userId, newEmail);
+        {
+            await userRepository.ChangeEmailAsync(userId, newEmail);
+        }
 
         public async Task UpdateUserPasswordAsync(int userId, string newPassword)
-            => await userRepository.ChangePasswordAsync(userId, newPassword);
+        {
+            await userRepository.ChangePasswordAsync(userId, newPassword);
+        }
 
         public async Task UpdateUserUsernameAsync(int userId, string newUsername)
-            => await userRepository.ChangeUsernameAsync(userId, newUsername);
+        {
+            await userRepository.ChangeUsernameAsync(userId, newUsername);
+        }
 
         public async Task<User?> LoginAsync(string emailOrUsername, string password)
         {
@@ -158,10 +188,14 @@ namespace SteamHub.ApiContract.Services
             return await userRepository.GetAllUsersAsync();
         }
 
-        public async Task UpdateProfilePictureAsync(int userId, string profilePicturePath) 
-            => await userRepository.UpdateProfilePictureAsync(userId, profilePicturePath);
+        public async Task UpdateProfilePictureAsync(int userId, string profilePicturePath)
+        {
+            await userRepository.UpdateProfilePictureAsync(userId, profilePicturePath);
+        }
 
-        public async Task UpdateProfileBioAsync(int userId, string profileBio) 
-            => await userRepository.UpdateProfileBioAsync(userId, profileBio);
+        public async Task UpdateProfileBioAsync(int userId, string profileBio)
+        {
+            await userRepository.UpdateProfileBioAsync(userId, profileBio);
+        }
     }
 }

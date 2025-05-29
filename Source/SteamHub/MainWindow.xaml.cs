@@ -39,13 +39,13 @@ namespace SteamHub
         private UserServiceProxy userService;
         private SessionServiceProxy sessionService;
         private FriendsServiceProxy friendsService;
-        
+
         private FeaturesServiceProxy featuresService;
         private WalletServiceProxy walletService;
         private FriendRequestServiceProxy friendRequestService;
         private AchievementsServiceProxy achievementsService;
         private CollectionsServiceProxy collectionServiceProxy;
-        
+
         private readonly IHttpClientFactory _httpClientFactory;
 
         public MainWindow()
@@ -79,7 +79,8 @@ namespace SteamHub
 
         private void ShowLoginPage()
         {
-            var loginPage = new LoginPage(this.userService, OnLoginSuccess);
+            // Pass the LoginFrame as the navigation frame for login/register navigation
+            var loginPage = new LoginPage(LoginFrame, this.userService, OnLoginSuccess);
             LoginFrame.Content = loginPage;
             LoginOverlay.Visibility = Visibility.Visible;
             NavView.Visibility = Visibility.Collapsed;
@@ -87,7 +88,8 @@ namespace SteamHub
 
         private void ShowRegisterPage()
         {
-            var registerPage = new RegisterPage(this.userService);
+            // Pass the LoginFrame as the navigation frame - you'll need to update RegisterPage constructor too
+            var registerPage = new RegisterPage(LoginFrame, this.userService);
             LoginFrame.Content = registerPage;
         }
 
@@ -190,7 +192,7 @@ namespace SteamHub
         private void InitializeUserServices(User user)
         {
             Debug.WriteLine("Initializing user services...");
-            
+
             try
             {
                 this.achievementsService = new AchievementsServiceProxy();
@@ -207,7 +209,7 @@ namespace SteamHub
                 this.collectionServiceProxy = new CollectionsServiceProxy();
                 this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
                 this.walletService = new WalletServiceProxy();
-                this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory,user);
+                this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory, user);
 
                 Debug.WriteLine("User services initialized successfully");
             }
@@ -266,7 +268,7 @@ namespace SteamHub
                     case "RegisterPage":
                         ShowRegisterPage();
                         break;
-                   
+
                     case "profile":
                         this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService, this.collectionServiceProxy, achievementsService, this.user);
                         break;
@@ -307,7 +309,7 @@ namespace SteamHub
             if (args.SelectedItemContainer != null)
             {
                 var tag = args.SelectedItemContainer.Tag.ToString();
-                
+
                 if (tag == "LoginPage" || tag == "RegisterPage")
                 {
                     switch (tag)
