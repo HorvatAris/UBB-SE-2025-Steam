@@ -35,6 +35,9 @@ builder.Services.AddScoped<IFriendRequestService, FriendRequestServiceProxy>();
 builder.Services.AddScoped<IReviewService, ReviewServiceProxy>(_ => new ReviewServiceProxy(apiBaseUri));
 builder.Services.AddScoped<IWalletService, WalletServiceProxy>();
 builder.Services.AddScoped<IFriendsService, FriendsServiceProxy>();
+builder.Services.AddScoped<ICollectionsService, CollectionsServiceProxy>();
+builder.Services.AddScoped<IFeaturesService, FeaturesServiceProxy>();
+
 builder.Services.AddScoped<INewsService, NewsServiceProxy>();
 
 

@@ -2,6 +2,7 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ViewModels;
 
 namespace SteamHub.Pages
@@ -10,11 +11,16 @@ namespace SteamHub.Pages
     {
         private AccountSettingsViewModel ViewModel { get; set; }
         private ContentDialog passwordConfirmationDialog;
+        private Frame frame;
+        private IUserService userService;
 
-        public AccountSettingsPage()
+        public AccountSettingsPage(Frame frame, IUserService userService)
         {
+            this.frame = frame ?? throw new ArgumentNullException(nameof(frame));
+            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.InitializeComponent();
-            ViewModel = new AccountSettingsViewModel();
+            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            ViewModel = new AccountSettingsViewModel(this.userService);
             DataContext = ViewModel;
             ViewModel.RequestPasswordConfirmation += ViewModel_RequestPasswordConfirmation;
         }
@@ -122,7 +128,7 @@ namespace SteamHub.Pages
         }
         private void GoBack(object sender, RoutedEventArgs e)
         {
-            Frame.GoBack();
+            Frame.Content = new ConfigurationsPage(this.userService, this.frame);
         }
     }
 }

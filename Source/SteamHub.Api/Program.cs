@@ -74,6 +74,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 // Register repositories with scoped lifetime
 builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+builder.Services.AddScoped<ICollectionsRepository, CollectionsRepository>();
 builder.Services.AddScoped<IPointShopItemRepository, PointShopItemRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
@@ -96,6 +97,7 @@ builder.Services.AddScoped<INewsService, NewsService>();
 
 builder.Services.AddScoped<IAchievementsRepository, AchievementsRepository>();
 builder.Services.AddScoped<IAchievementsService, AchievementsService>();
+builder.Services.AddScoped<ICollectionsService, CollectionsService>();
 
 
 builder.Services.AddScoped<ISessionService, SessionService>();

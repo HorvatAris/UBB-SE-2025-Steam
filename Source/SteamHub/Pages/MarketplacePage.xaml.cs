@@ -36,12 +36,12 @@ namespace SteamHub.Pages
         private const string UnexpectedErrorMessage = "An unexpected error occurred. Please try again.";
         private readonly MarketplaceViewModel marketplaceViewModel;
 
-        public MarketplacePage(IMarketplaceService marketplaceService)
+        public MarketplacePage(IMarketplaceService marketplaceService, IUserService userService)
         {
             this.InitializeComponent();
 
             // var marketplaceServiceInstance = new MarketplaceService(new Repository.Marketplace.MarketplaceRepository());
-            this.marketplaceViewModel = new MarketplaceViewModel(marketplaceService);
+            this.marketplaceViewModel = new MarketplaceViewModel(marketplaceService, userService);
             this.DataContext = this.marketplaceViewModel;
             this.Loaded += this.OnMarketplacePageLoaded;
         }

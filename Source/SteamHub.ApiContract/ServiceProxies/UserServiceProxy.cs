@@ -61,7 +61,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                //EnsureAuthorized();
+                // EnsureAuthorized();
                 return await GetAsync<User>($"User/{userId}");
             }
             catch
@@ -103,7 +103,6 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                EnsureAuthorized();
                 await PostAsync("User/validate", new { Email = email, Username = username });
             }
             catch (Exception ex)
@@ -117,7 +116,6 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                EnsureAuthorized();
                 return await PostAsync<User>("User", user);
             }
             catch (Exception ex)
@@ -303,12 +301,13 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task UpdateProfilePictureAsync(int userId, string profilePicturePath)
+        public async Task<bool> UpdateProfilePictureAsync(int userId, string profilePicturePath)
         {
             try
             {
                 EnsureAuthorized();
                 await PutAsync<object>($"User/{userId}/profilePicture", new { ProfilePicture = profilePicturePath });
+				return true;
             }
             catch (Exception ex)
             {
@@ -316,12 +315,13 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task UpdateProfileBioAsync(int userId, string profileBio)
+        public async Task<bool> UpdateProfileBioAsync(int userId, string profileBio)
         {
             try
             {
                 EnsureAuthorized();
                 await PutAsync<object>($"User/{userId}/bio", new { Bio = profileBio });
+				return true;
             }
             catch (Exception ex)
             {

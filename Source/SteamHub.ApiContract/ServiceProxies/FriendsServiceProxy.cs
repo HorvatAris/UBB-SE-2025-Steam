@@ -10,22 +10,10 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class FriendsServiceProxy : ServiceProxy, IFriendsService
     {
-        private readonly IUserDetails _user;
-
-        public FriendsServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user, string baseUrl = "https://localhost:7241/api/")
+        public FriendsServiceProxy(IHttpClientFactory httpClientFactory, string baseUrl = "https://localhost:7241/api/")
             : base(baseUrl)
         {
-            _user = user;
-            SetCurrentUser(new UserWithSessionDetails
-            {
-                UserId = user.UserId,
-                Username = user.Username,
-            });
-        }
 
-        public User GetUser()
-        {
-            return new User(_user);
         }
 
         public async Task<List<Friendship>> GetAllFriendshipsAsync(int userId)

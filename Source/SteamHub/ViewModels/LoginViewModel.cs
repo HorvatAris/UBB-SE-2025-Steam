@@ -17,7 +17,7 @@ namespace SteamHub.ViewModels;
 public partial class LoginViewModel : ObservableObject
 {
     private readonly IUserService userService;
-    private readonly Frame loginViewFrame;
+    private readonly Frame navigationFrame;
     private readonly Action<User> onLoginSuccess;
 
     /// <summary>
@@ -47,13 +47,13 @@ public partial class LoginViewModel : ObservableObject
     /// <summary>
     /// Initializes a new instance of the <see cref="LoginViewModel"/> class.
     /// </summary>
-    /// <param name="frame">The frame used for navigation.</param>
+    /// <param name="navigationFrame">The frame used for navigation.</param>
     /// <param name="userService">Service for authenticating users.</param>
     /// <param name="onLoginSuccess">Action to invoke on successful login.</param>
-    public LoginViewModel(Frame frame, IUserService userService, Action<User> onLoginSuccess)
+    public LoginViewModel(Frame navigationFrame, IUserService userService, Action<User> onLoginSuccess)
     {
         this.userService = userService;
-        this.loginViewFrame = frame;
+        this.navigationFrame = navigationFrame;
         this.onLoginSuccess = onLoginSuccess;
     }
 
@@ -77,11 +77,11 @@ public partial class LoginViewModel : ObservableObject
 
             Debug.WriteLine($"Attempting login for user: {Username}");
             var loginResult = await userService.LoginAsync(Username, Password);
-            
+
             if (loginResult != null)
             {
                 Debug.WriteLine($"Login successful for user: {loginResult.Username}");
-                
+
                 // // Get a fresh copy of the user data to ensure we have the most up-to-date information
                 // var currentUser = await userService.GetCurrentUserAsync();
                 // if (currentUser == null)
@@ -119,6 +119,15 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand]
     private void NavigateToRegister()
     {
-        loginViewFrame.Navigate(typeof(RegisterPage));
+        if (navigationFrame != null)
+        {
+            // Create the RegisterPage with required parameters and set it as content
+            var registerPage = new RegisterPage(navigationFrame, userService);
+            navigationFrame.Content = registerPage;
+        }
+        else
+        {
+            Debug.WriteLine("Navigation frame is null - cannot navigate to register page");
+        }
     }
 }

@@ -7,8 +7,8 @@ using SteamHub.Api.Context;
 using SteamHub.Api.Context.Repositories;
 using SteamHub.Api.Entities;
 using SteamHub.ApiContract.Models.User;
-
 using User = SteamHub.Api.Entities.User;
+using SteamHub.ApiContract.Models.Common;
 
 using Xunit;
 using SteamHub.ApiContract.Models.User;
@@ -42,6 +42,8 @@ namespace SteamHub.Tests.Repositories
                     UserId = 1,
                     Username = "Alice",
                     Email = "alice@example.com",
+                    Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
+                    ProfilePicture = "",
                     UserRole = UserRole.User,
                     WalletBalance = (float)100.0m,
                     PointsBalance = 500
@@ -51,6 +53,8 @@ namespace SteamHub.Tests.Repositories
                     UserId = 2,
                     Username = "Bob",
                     Email = "bob@example.com",
+                    Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
+                    ProfilePicture = "",
                     UserRole = UserRole.Developer,
                     WalletBalance = (float)200.0m,
                     PointsBalance = 1000
@@ -102,6 +106,8 @@ namespace SteamHub.Tests.Repositories
             {
                 UserName = "Charlie",
                 Email = "charlie@example.com",
+                Password = "secret",
+                ProfilePicture = "",
                 UserRole = UserRole.Developer,
                 WalletBalance = (float)50.0m,
                 PointsBalance = 250
@@ -146,7 +152,7 @@ namespace SteamHub.Tests.Repositories
                 PointsBalance = 0
             };
 
-            await Assert.ThrowsAsync<Exception>(() => _repository.UpdateUserAsync(999, request));
+            await Assert.ThrowsAsync<KeyNotFoundException>(() => _repository.UpdateUserAsync(999, request));
         }
     }
 }
