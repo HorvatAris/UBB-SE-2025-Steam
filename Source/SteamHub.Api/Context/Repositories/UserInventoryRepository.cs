@@ -50,6 +50,7 @@ namespace SteamHub.Api.Context.Repositories
         public async Task<InventoryItemResponse?> GetItemFromUserInventoryAsync(int userId, int itemId)
         {
             var currentUserInventory = await _context.UserInventories
+                .AsNoTracking()
                 .Include(userInventory => userInventory.Item)
                 .Include(userInventory => userInventory.Game)
                 .FirstOrDefaultAsync(userInventory => userInventory.UserId == userId && userInventory.ItemId == itemId);
@@ -72,6 +73,7 @@ namespace SteamHub.Api.Context.Repositories
         public async Task<UserInventoryResponse> GetUserInventoryAsync(int userId)
         {
             var userInventories = await _context.UserInventories
+                .AsNoTracking()
                 .Where(userInventory => userInventory.UserId == userId)
                 .Include(userInventory => userInventory.Item)
                 .Include(userInventory => userInventory.Game)

@@ -12,6 +12,7 @@ using SteamHub.ApiContract.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -53,7 +54,7 @@ builder.Services.AddAuthentication(options =>
             if (!string.IsNullOrEmpty(sessionId) && Guid.TryParse(sessionId, out var sessionGuid))
             {
                 var sessionService = context.HttpContext.RequestServices.GetRequiredService<ISessionService>();
-                sessionService.RestoreSessionFromDatabaseAsync(sessionGuid);
+                await sessionService.RestoreSessionFromDatabaseAsync(sessionGuid);
             }
         },
         OnChallenge = context =>
@@ -64,8 +65,14 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddDbContext<DataContext>();
+// Configure DbContext with proper concurrency handling
+builder.Services.AddDbContext<DataContext>(options => 
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll); // Use tracking by default
+});
 
+// Register repositories with scoped lifetime
 builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 builder.Services.AddScoped<ICollectionsRepository, CollectionsRepository>();
 builder.Services.AddScoped<IPointShopItemRepository, PointShopItemRepository>();
@@ -105,7 +112,6 @@ builder.Services.AddScoped<IFriendsService, FriendsService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 // builder.Services.AddScoped<IFriendRequestService, FriendRequestService>(); // -- UNCOMMENT ONCE IFriendsService is implemented
-
 
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
