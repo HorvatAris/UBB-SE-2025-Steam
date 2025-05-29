@@ -36,22 +36,14 @@
             itemRepositoryMock = new Mock<IItemRepository>();
             userInventoryRepositoryMock = new Mock<IUserInventoryRepository>();
 
-            testUser = new User { UserId = 1, UserName = "TestUser" };
+            testUser = new User { UserId = 1, Username = "TestUser" };
             tradeService = new TradeService(
                 itemTradeRepositoryMock.Object,
-                testUser,
                 itemTradeDetailRepositoryMock.Object,
                 userRepositoryMock.Object,
                 gameRepositoryMock.Object,
                 itemRepositoryMock.Object,
                 userInventoryRepositoryMock.Object);
-        }
-
-        [Fact]
-        public void GetCurrentUser_ValidExistingUser_ShouldReturnUser()
-        {
-            var user = tradeService.GetCurrentUser();
-            Assert.Equal(testUser, user);
         }
 
         [Fact]
@@ -74,14 +66,37 @@
             var toUserId = 2;
             var gameId = 3;
 
-            await tradeService.TransferItemAsync(itemId, fromUserId, toUserId, gameId);
+            var tradeRequest = new TransferItemTradeRequest
+            {
+                SourceUserId = fromUserId,
+                DestinationUserId = toUserId,
+                GameId = gameId,
+                ItemId = itemId
+            };
 
-            userInventoryRepositoryMock.Verify(proxy => proxy.RemoveItemFromUserInventoryAsync(It.Is<ItemFromInventoryRequest>(request =>
-                request.UserId == fromUserId && request.ItemId == itemId && request.GameId == gameId)), Times.Once);
+            userInventoryRepositoryMock
+                .Setup(repo => repo.RemoveItemFromUserInventoryAsync(It.IsAny<ItemFromInventoryRequest>()))
+                .Returns(Task.CompletedTask);
 
-            userInventoryRepositoryMock.Verify(proxy => proxy.AddItemToUserInventoryAsync(It.Is<ItemFromInventoryRequest>(request =>
-                request.UserId == toUserId && request.ItemId == itemId && request.GameId == gameId)), Times.Once);
+            userInventoryRepositoryMock
+                .Setup(repo => repo.AddItemToUserInventoryAsync(It.IsAny<ItemFromInventoryRequest>()))
+                .Returns(Task.CompletedTask);
+
+            await tradeService.TransferItemAsync(tradeRequest);
+
+            userInventoryRepositoryMock.Verify(proxy =>
+                proxy.RemoveItemFromUserInventoryAsync(It.Is<ItemFromInventoryRequest>(request =>
+                    request.UserId == fromUserId &&
+                    request.ItemId == itemId &&
+                    request.GameId == gameId)), Times.Once);
+
+            userInventoryRepositoryMock.Verify(proxy =>
+                proxy.AddItemToUserInventoryAsync(It.Is<ItemFromInventoryRequest>(request =>
+                    request.UserId == toUserId &&
+                    request.ItemId == itemId &&
+                    request.GameId == gameId)), Times.Once);
         }
+
 
         [Fact]
         public async Task AddItemTradeAsync_ValidTradeDetails_ShouldCreateTradeAndDetails()
