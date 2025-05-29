@@ -366,3 +366,7 @@ onnx-models
 
 .idea
 /Source/SteamHub.Api/Properties/launchSettings.json
+/Source/SteamHub.Api/Migrations/20250529113610_MainMigration.cs
+/Source/SteamHub.Api/Migrations/20250529113610_MainMigration.Designer.cs
+/Source/SteamHub.Api/Migrations/20250529053724_MainMigration.cs
+/Source/SteamHub.Api/Migrations/20250529053724_MainMigration.Designer.cs
