@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using SteamHub.ApiContract.Models;
+using SteamHub.ApiContract.Repositories;
 
 public class NewsRepository : INewsRepository
 {
@@ -24,7 +25,7 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or the query execution failed</exception>
 	public async Task<int> UpdatePostLikeCount(int postId)
 	{
-		var post = await context.NewsPosts.FindAsync(postId);
+		var post = await context.NewsPosts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == postId);
 		if (post is null)
 		{
 			return 0;
@@ -44,9 +45,9 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or the query execution failed</exception>
 	public async Task<int> UpdatePostDislikeCount(int postId)
 	{
-		var post = await context.NewsPosts.FindAsync(postId);
+		var post = await context.NewsPosts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == postId);
 
-		if (post is null)
+        if (post is null)
 		{
 			return 0;
 		}
@@ -68,20 +69,29 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or the execution failed</exception>
 	public async Task<int> AddRatingToPost(int postId, int userId, int ratingType)
 	{
-		var rating = new Entities.PostRatingType
+        var existing = await context.NewsPostRatingTypes.AsNoTracking().FirstOrDefaultAsync(rp => rp.PostId == postId && rp.AuthorId == userId);
+        if (existing != null)
+        {
+            return 0;
+        }
+
+        var post = await context.NewsPosts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == postId);
+        if (post == null)
+        {
+            return 0;
+        }
+
+        var rating = new Entities.PostRatingType
 		{
 			PostId = postId,
 			AuthorId = userId,
 			RatingType = ratingType == 1 ? true : false
 		};
 
+        context.NewsPostRatingTypes.Add(rating);
+        await context.SaveChangesAsync();
 
-		var post = await context.NewsPosts.FindAsync(postId);
-		if (post == null)
-		{
-			return 0;
-		}
-		if (rating.RatingType == false)
+        if (rating.RatingType == false)
 		{
 			post.NrDislikes++;
 		}
@@ -89,10 +99,10 @@ public class NewsRepository : INewsRepository
 		{
 			post.NrLikes++;
 		}
+		post.ActiveUserRating = rating.RatingType;
 
-		context.NewsPosts.Update(post);
+        context.NewsPosts.Update(post);
 
-		context.NewsPostRatingTypes.Add(rating);
 		return await context.SaveChangesAsync();
 	}
 
@@ -105,18 +115,22 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or the execution failed</exception>
 	public async Task<int> RemoveRatingFromPost(int postId, int userId)
 	{
-		var rating = await context.NewsPostRatingTypes.FindAsync(postId, userId);
-		if (rating == null)
+		var rating = await context.NewsPostRatingTypes.AsNoTracking().FirstOrDefaultAsync(rp => rp.PostId == postId && rp.AuthorId == userId);
+        if (rating == null)
 		{
 			return 0;
 		}
 
-		var post = await context.NewsPosts.FindAsync(postId);
+		var post = await context.NewsPosts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == postId);
 		if (post == null)
 		{
 			return 0;
 		}
-		if (rating.RatingType == false)
+
+        context.NewsPostRatingTypes.Remove(rating);
+        await context.SaveChangesAsync();
+
+        if (rating.RatingType == false)
 		{
 			post.NrDislikes--;
 		}
@@ -125,9 +139,10 @@ public class NewsRepository : INewsRepository
 			post.NrLikes--;
 		}
 
-		context.NewsPosts.Update(post);
+		post.ActiveUserRating = null;
 
-		context.NewsPostRatingTypes.Remove(rating);
+        context.NewsPosts.Update(post);
+
 		return await context.SaveChangesAsync();
 	}
 
@@ -152,7 +167,7 @@ public class NewsRepository : INewsRepository
 			NrDislikes = 0
 		};
 
-		var post = await context.NewsPosts.FindAsync(postId);
+		var post = await context.NewsPosts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == postId);
 
 		if (post is null)
 		{
@@ -176,8 +191,8 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or execution failed</exception>
 	public async Task<int> UpdateComment(int commentId, string commentContent)
 	{
-		var comment = await context.NewsComments.FindAsync(commentId);
-		if (comment == null)
+		var comment = await context.NewsComments.AsNoTracking().FirstOrDefaultAsync(c => c.CommentId == commentId);
+        if (comment == null)
 		{
 			return 0;
 		}
@@ -196,14 +211,14 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or the execution failed</exception>
 	public async Task<int> DeleteCommentFromDatabase(int commentId)
 	{
-		var comment = await context.NewsComments.FindAsync(commentId);
-		if (comment == null)
+		var comment = await context.NewsComments.AsNoTracking().FirstOrDefaultAsync(c => c.CommentId == commentId);
+        if (comment == null)
 		{
 			return 0;
 		}
 
 		// Update the comment count of the post
-		var post = await context.NewsPosts.FindAsync(comment.PostId);
+		var post = await context.NewsPosts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == comment.PostId);
 		if (post != null)
 		{
 			post.NrComments--;
@@ -224,6 +239,7 @@ public class NewsRepository : INewsRepository
 	public async Task<List<Comment>> LoadFollowingComments(int postId)
 	{
 		return await context.NewsComments
+			.AsNoTracking()
 			.Where(comment => comment.PostId == postId)
 			.OrderByDescending(comment => comment.CommentDate)
 			.Select(comment => new Comment
@@ -271,7 +287,7 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or execution failed</exception>
 	public async Task<int> UpdatePost(int postId, string postContent)
 	{
-		var post = await context.NewsPosts.FindAsync(postId);
+		var post = await context.NewsPosts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == postId);
 		if (post is null)
 		{
 			return 0;
@@ -289,7 +305,7 @@ public class NewsRepository : INewsRepository
 	/// <exception cref="Exception">Throw an error if the connection or execution failed</exception>
 	public async Task<int> DeletePostFromDatabase(int postId)
 	{
-		var post = await context.NewsPosts.FindAsync(postId);
+		var post = await context.NewsPosts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == postId);
 		if (post is null)
 		{
 			return 0;
@@ -312,7 +328,8 @@ public class NewsRepository : INewsRepository
 		pageNumber = Math.Max(1, pageNumber);
 
 		var query = await context.NewsPosts
-			.Where(post => EF.Functions.Like(post.Content, $"%{searchedText}%"))
+			.AsNoTracking()
+            .Where(post => EF.Functions.Like(post.Content, $"%{searchedText}%"))
 			.OrderByDescending(post => post.UploadDate)
 			.ThenByDescending(post => post.Id)
 			.Skip((pageNumber - 1) * PAGE_SIZE)
@@ -332,8 +349,8 @@ public class NewsRepository : INewsRepository
 
 		foreach (var post in query)
 		{
-			var rating = await context.NewsPostRatingTypes.FindAsync(post.Id, userId);
-			post.ActiveUserRating = rating != null ? rating.RatingType : null;
+			var rating = await context.NewsPostRatingTypes.AsNoTracking().FirstOrDefaultAsync(rp => rp.PostId == post.Id && rp.AuthorId == userId);
+            post.ActiveUserRating = rating != null ? rating.RatingType : null;
 		}
 		return query;
 	}

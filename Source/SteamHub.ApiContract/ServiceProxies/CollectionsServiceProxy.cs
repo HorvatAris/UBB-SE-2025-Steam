@@ -4,6 +4,7 @@ using SteamHub.ApiContract.Models.Game;
 using SteamHub.ApiContract.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                return await GetAsync<List<Collection>>($"Collection/{userIdentifier}");
+                return await GetAsync<List<Collection>>($"Collections/{userIdentifier}");
             }
             catch (Exception ex)
             {
@@ -45,7 +46,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                return await GetAsync<List<OwnedGame>>($"Collection/{collectionIdentifier}/games");
+                return await GetAsync<List<OwnedGame>>($"Collections/{collectionIdentifier}/games");
             }
             catch (Exception ex)
             {
@@ -57,7 +58,9 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await PostAsync("Collection/add-game", new
+                Debug.WriteLine($"Sending: CollectionId={collectionIdentifier}, GameId={gameIdentifier}");
+
+                await PostAsync("Collections/add-game", new
                 {
                     CollectionId = collectionIdentifier,
                     GameId = gameIdentifier
@@ -65,6 +68,8 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"[AddGameToCollection] EXCEPTION: {ex.Message}");
+                Debug.WriteLine($"[AddGameToCollection] STACK TRACE: {ex.StackTrace}");
                 throw new ServiceException("Failed to add game to collection", ex);
             }
         }
@@ -73,7 +78,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await PostAsync("Collection/remove-game", new
+                await PostAsync("Collections/remove-game", new
                 {
                     CollectionId = collectionIdentifier,
                     GameId = gameIdentifier
@@ -114,7 +119,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await PutAsync<Collection>($"Collection/{collectionIdentifier}", new
+                await PutAsync<Collection>($"Collections/{collectionIdentifier}", new
                 {
                     UserId = userIdentifier,
                     CollectionName = collectionName,
@@ -132,7 +137,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                return await GetAsync<List<Collection>>($"Collection/public/{userIdentifier}");
+                return await GetAsync<List<Collection>>($"Collections/public/{userIdentifier}");
             }
             catch (Exception ex)
             {
@@ -145,7 +150,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             try
             {
                 return await GetAsync<List<OwnedGame>>(
-                    $"Collection/{collectionIdentifier}/user/{userIdentifier}/games-not-in-collection");
+                    $"Collections/{collectionIdentifier}/user/{userIdentifier}/games-not-in-collection");
             }
             catch (Exception ex)
             {

@@ -423,7 +423,7 @@
                 </Button>
                 -->
 
-                <!-- Settings button -->
+                <!-- Settings button --><!--
                 <Button Style="{StaticResource TransparentButton}"
                     Command="{x:Bind ViewModel.ConfigurationCommand}"
                     CommandParameter="{x:Bind ViewModel.userService}"
@@ -431,7 +431,7 @@
                             <FontIcon FontFamily="Segoe MDL2 Assets" 
                           Glyph="&#xE713;"
                           Foreground="White"/>  
-                </Button>
+                </Button>-->
 
             </StackPanel>
 

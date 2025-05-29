@@ -55,4 +55,9 @@ public class Collection
         IsPublic = isPublic;
         IsAllOwnedGamesCollection = false;
     }
+
+    public Collection()
+    {
+        // Required for object initializer or EF Core materialization
+    }
 }
