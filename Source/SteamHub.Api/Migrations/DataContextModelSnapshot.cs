@@ -786,9 +786,14 @@ namespace SteamHub.Api.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserProfileProfileId")
+                        .HasColumnType("int");
+
                     b.HasKey("RequestId");
 
                     b.HasIndex("ReceiverUserId");
+
+                    b.HasIndex("UserProfileProfileId");
 
                     b.HasIndex("SenderUserId", "ReceiverUserId")
                         .IsUnique();
@@ -810,16 +815,155 @@ namespace SteamHub.Api.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserProfileProfileId")
+                        .HasColumnType("int");
+
                     b.HasKey("FriendshipId");
 
                     b.HasIndex("FriendId");
 
                     b.HasIndex("UserId");
 
+                    b.HasIndex("UserProfileProfileId");
+
                     b.HasIndex("UserId", "FriendId")
                         .IsUnique();
 
                     b.ToTable("Friendships");
+
+                    b.HasData(
+                        new
+                        {
+                            FriendshipId = 1,
+                            FriendId = 1,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            FriendshipId = 2,
+                            FriendId = 2,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            FriendshipId = 3,
+                            FriendId = 3,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            FriendshipId = 4,
+                            FriendId = 4,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            FriendshipId = 5,
+                            FriendId = 6,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            FriendshipId = 6,
+                            FriendId = 7,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            FriendshipId = 7,
+                            FriendId = 8,
+                            UserId = 5
+                        },
+                        new
+                        {
+                            FriendshipId = 8,
+                            FriendId = 6,
+                            UserId = 4
+                        },
+                        new
+                        {
+                            FriendshipId = 9,
+                            FriendId = 7,
+                            UserId = 4
+                        },
+                        new
+                        {
+                            FriendshipId = 10,
+                            FriendId = 7,
+                            UserId = 6
+                        },
+                        new
+                        {
+                            FriendshipId = 11,
+                            FriendId = 5,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            FriendshipId = 12,
+                            FriendId = 5,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            FriendshipId = 13,
+                            FriendId = 5,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            FriendshipId = 14,
+                            FriendId = 5,
+                            UserId = 4
+                        },
+                        new
+                        {
+                            FriendshipId = 15,
+                            FriendId = 5,
+                            UserId = 6
+                        },
+                        new
+                        {
+                            FriendshipId = 16,
+                            FriendId = 5,
+                            UserId = 7
+                        },
+                        new
+                        {
+                            FriendshipId = 17,
+                            FriendId = 5,
+                            UserId = 8
+                        },
+                        new
+                        {
+                            FriendshipId = 22,
+                            FriendId = 2,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            FriendshipId = 18,
+                            FriendId = 3,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            FriendshipId = 19,
+                            FriendId = 3,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            FriendshipId = 20,
+                            FriendId = 4,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            FriendshipId = 21,
+                            FriendId = 8,
+                            UserId = 6
+                        });
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.Game", b =>
@@ -2126,18 +2270,18 @@ namespace SteamHub.Api.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("LastModified")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PointsBalance")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProfilePicture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserRole")
                         .HasColumnType("int");
@@ -2147,9 +2291,7 @@ namespace SteamHub.Api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("WalletBalance")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
-                        .HasDefaultValue(0m);
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("UserId");
 
@@ -2159,13 +2301,13 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 1,
-                            Bio = "Gaming enthusiast and software developer",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "gabe.newell@valvestudio.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                             PointsBalance = 6000,
+                            ProfilePicture = "",
                             UserRole = 1,
                             Username = "GabeN",
                             WalletBalance = 500m
@@ -2173,13 +2315,13 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 2,
-                            Bio = "Game developer and tech lover",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mathias.new@cdprojektred.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG",
                             PointsBalance = 5000,
+                            ProfilePicture = "",
                             UserRole = 1,
                             Username = "MattN",
                             WalletBalance = 420m
@@ -2187,13 +2329,13 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 3,
-                            Bio = "Casual gamer and streamer",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "john.chen@thatgamecompany.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq",
                             PointsBalance = 5000,
+                            ProfilePicture = "",
                             UserRole = 1,
                             Username = "JohnC",
                             WalletBalance = 390m
@@ -2201,13 +2343,13 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 4,
-                            Bio = "Casual gamer and streamer",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "alice.johnson@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6",
                             PointsBalance = 6000,
+                            ProfilePicture = "",
                             UserRole = 0,
                             Username = "AliceJ",
                             WalletBalance = 780m
@@ -2215,13 +2357,13 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 5,
-                            Bio = "Casual gamer and streamer",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "liam.garcia@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a",
                             PointsBalance = 7000,
+                            ProfilePicture = "",
                             UserRole = 0,
                             Username = "LiamG",
                             WalletBalance = 5500m
@@ -2229,13 +2371,13 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 6,
-                            Bio = "Casual gamer and streamer",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "sophie.williams@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y",
                             PointsBalance = 6000,
+                            ProfilePicture = "",
                             UserRole = 0,
                             Username = "SophieW",
                             WalletBalance = 950m
@@ -2243,13 +2385,13 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 7,
-                            Bio = "Casual gamer and streamer",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "noah.smith@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu",
                             PointsBalance = 4000,
+                            ProfilePicture = "",
                             UserRole = 0,
                             Username = "NoahS",
                             WalletBalance = 3300m
@@ -2257,13 +2399,13 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 8,
-                            Bio = "Casual gamer and streamer",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "emily.brown@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC",
                             PointsBalance = 5000,
+                            ProfilePicture = "",
                             UserRole = 0,
                             Username = "EmilyB",
                             WalletBalance = 1100m
@@ -2511,6 +2653,91 @@ namespace SteamHub.Api.Migrations
                             PointShopItemId = 4,
                             IsActive = true,
                             PurchaseDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.UserProfile", b =>
+                {
+                    b.Property<int>("ProfileId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfileId"));
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastModified")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProfileId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserProfiles");
+
+                    b.HasData(
+                        new
+                        {
+                            ProfileId = 1,
+                            Bio = "Gaming enthusiast and software developer",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 1
+                        },
+                        new
+                        {
+                            ProfileId = 2,
+                            Bio = "Game developer and tech lover",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 2
+                        },
+                        new
+                        {
+                            ProfileId = 3,
+                            Bio = "Casual gamer and streamer",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 3
+                        },
+                        new
+                        {
+                            ProfileId = 4,
+                            Bio = "Casual gamer and streamer",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 4
+                        },
+                        new
+                        {
+                            ProfileId = 5,
+                            Bio = "Casual gamer and streamer",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 5
+                        },
+                        new
+                        {
+                            ProfileId = 6,
+                            Bio = "Casual gamer and streamer",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 6
+                        },
+                        new
+                        {
+                            ProfileId = 7,
+                            Bio = "Casual gamer and streamer",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 7
+                        },
+                        new
+                        {
+                            ProfileId = 8,
+                            Bio = "Casual gamer and streamer",
+                            LastModified = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 8
                         });
                 });
 
@@ -2913,6 +3140,10 @@ namespace SteamHub.Api.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("SteamHub.Api.Entities.UserProfile", null)
+                        .WithMany("FriendRequests")
+                        .HasForeignKey("UserProfileProfileId");
+
                     b.Navigation("Receiver");
 
                     b.Navigation("Sender");
@@ -2931,6 +3162,10 @@ namespace SteamHub.Api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("SteamHub.Api.Entities.UserProfile", null)
+                        .WithMany("Friendships")
+                        .HasForeignKey("UserProfileProfileId");
 
                     b.Navigation("Friend");
 
@@ -3272,6 +3507,17 @@ namespace SteamHub.Api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SteamHub.Api.Entities.UserProfile", b =>
+                {
+                    b.HasOne("SteamHub.Api.Entities.User", "User")
+                        .WithOne()
+                        .HasForeignKey("SteamHub.Api.Entities.UserProfile", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SteamHub.Api.Entities.UsersGames", b =>
                 {
                     b.HasOne("SteamHub.Api.Entities.Game", "Game")
@@ -3399,6 +3645,13 @@ namespace SteamHub.Api.Migrations
 
                     b.Navigation("Wallet")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.UserProfile", b =>
+                {
+                    b.Navigation("FriendRequests");
+
+                    b.Navigation("Friendships");
                 });
 #pragma warning restore 612, 618
         }
