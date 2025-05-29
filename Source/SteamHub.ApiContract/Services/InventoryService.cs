@@ -129,17 +129,6 @@ namespace SteamHub.ApiContract.Services
             return filteredItems;
         }
 
-        public IUserDetails GetAllUsers()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IUserDetails> GetAllUsersAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-
         public async Task<bool> SellItemAsync(Item item, int userId)
         {
             // Validate that the item is sellable.
@@ -182,7 +171,7 @@ namespace SteamHub.ApiContract.Services
                 UserName = user.Username,
                 Email = user.Email,
                 UserRole = user.UserRole,
-                WalletBalance = user.WalletBalance + item.Price,
+                WalletBalance = user.WalletBalance + (decimal)item.Price,
                 PointsBalance = user.PointsBalance,
             };
 

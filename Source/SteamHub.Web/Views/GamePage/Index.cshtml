@@ -28,6 +28,10 @@
             @(Model.IsOwned ? "Owned" : "Not Owned")
         </p>
 
+        <a asp-controller="Reviews" asp-action="Index" asp-route-gameId="@Model.Game.GameId" class="btn btn-secondary mt-2">
+            View Reviews
+        </a>
+        
         <form asp-action="AddToCart" method="post" id="add-to-cart-form">
             <input type="hidden" name="id" value="@Model.Game.GameId" />
             <button type="submit" class="btn btn-primary">Add to Cart</button>
@@ -37,6 +41,8 @@
             <input type="hidden" name="id" value="@Model.Game.GameId" />
             <button type="submit" class="btn btn-secondary">Add to Wishlist</button>
         </form>
+
+
 
         <!-- Alerts with dismiss buttons -->
         <div id="success-message" class="alert alert-success alert-dismissible fade show d-none mt-2" role="alert">
@@ -97,6 +103,10 @@
     </div>
 }
 
+<div class="reviews-container">
+    
+</div>
+
 @if (Model.SimilarGames?.Any() == true)
 {
     <div class="mb-4">
@@ -118,6 +128,8 @@
         </div>
     </div>
 }
+
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Include Bootstrap JS (for alert dismiss) -->
@@ -177,4 +189,8 @@
                 });
         });
     });
+</script>
+
+<script>
+    $(document).ready(() => loadGameReviews({gameId: @Model.Game.GameId}))
 </script>

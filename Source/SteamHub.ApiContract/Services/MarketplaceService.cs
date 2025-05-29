@@ -24,8 +24,6 @@ namespace SteamHub.ApiContract.Services
 
         public IItemRepository ItemRepository { get; set; }
 
-        public IUserDetails User { get; set; }
-
         public MarketplaceService(IUserRepository userRepository, IGameRepository gameRepository, IItemRepository itemRepository,
                                   IUserInventoryRepository userInventoryRepository)
         {
@@ -179,7 +177,7 @@ namespace SteamHub.ApiContract.Services
                 {
                     UserName = currentUser.Username,
                     Email = currentUser.Email,
-                    WalletBalance = currentUser.WalletBalance - item.Price,
+                    WalletBalance = currentUser.WalletBalance - (decimal)item.Price,
                     PointsBalance = currentUser.PointsBalance,
                     UserRole = currentUser.UserRole,
                 });

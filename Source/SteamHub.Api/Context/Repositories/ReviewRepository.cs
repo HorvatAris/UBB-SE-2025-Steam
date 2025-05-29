@@ -17,25 +17,31 @@ namespace SteamHub.Api.Context.Repositories
         // Fetch all reviews for a given game
         public async Task<List<Review>> FetchAllReviewsByGameId(int gameId)
         {
-            return await context.Reviews
+            return await context.Reviews.Include(r => r.Game)
+                .Include(r => r.User)
                 .Where(r => r.GameIdentifier == gameId || gameId == 0)
                 .OrderByDescending(r => r.DateAndTimeWhenReviewWasCreated)
-                .Select(r => new Review
-                {
-                    ReviewIdentifier = r.ReviewIdentifier,
-                    ReviewTitleText = r.ReviewTitleText,
-                    ReviewContentText = r.ReviewContentText,
-                    IsRecommended = r.IsRecommended,
-                    NumericRatingGivenByUser = r.NumericRatingGivenByUser,
-                    TotalHelpfulVotesReceived = r.TotalHelpfulVotesReceived,
-                    TotalFunnyVotesReceived = r.TotalFunnyVotesReceived,
-                    TotalHoursPlayedByReviewer = r.TotalHelpfulVotesReceived,
-                    UserIdentifier = r.UserIdentifier,
-                    DateAndTimeWhenReviewWasCreated = r.DateAndTimeWhenReviewWasCreated,
-                    GameIdentifier = r.GameIdentifier,
-                    Username = r.User.Username,
-                    TitleOfGame = r.Game.Name
-                }).ToListAsync();
+                .Select(r => MapToReviewDto(r)).ToListAsync();
+        }
+
+        private static Review MapToReviewDto(ReviewEntity r)
+        {
+            return new Review
+            {
+                ReviewIdentifier = r.ReviewIdentifier,
+                ReviewTitleText = r.ReviewTitleText,
+                ReviewContentText = r.ReviewContentText,
+                IsRecommended = r.IsRecommended,
+                NumericRatingGivenByUser = r.NumericRatingGivenByUser,
+                TotalHelpfulVotesReceived = r.TotalHelpfulVotesReceived,
+                TotalFunnyVotesReceived = r.TotalFunnyVotesReceived,
+                TotalHoursPlayedByReviewer = r.TotalHelpfulVotesReceived,
+                UserIdentifier = r.UserIdentifier,
+                DateAndTimeWhenReviewWasCreated = r.DateAndTimeWhenReviewWasCreated,
+                GameIdentifier = r.GameIdentifier,
+                Username = r.User.Username,
+                TitleOfGame = r.Game.Name
+            };
         }
 
         // Insert a new review into the database
@@ -54,7 +60,6 @@ namespace SteamHub.Api.Context.Repositories
                 UserIdentifier = reviewToInsert.UserIdentifier,
                 DateAndTimeWhenReviewWasCreated = reviewToInsert.DateAndTimeWhenReviewWasCreated,
                 GameIdentifier = reviewToInsert.GameIdentifier,
-               
             });
             return await context.SaveChangesAsync() > 0;
         }
@@ -67,6 +72,7 @@ namespace SteamHub.Api.Context.Repositories
             {
                 return false;
             }
+
             existing.ReviewTitleText = reviewToUpdate.ReviewTitleText;
             existing.ReviewContentText = reviewToUpdate.ReviewContentText;
             existing.IsRecommended = reviewToUpdate.IsRecommended;
@@ -85,12 +91,14 @@ namespace SteamHub.Api.Context.Repositories
             {
                 return false;
             }
+
             context.Reviews.Remove(toRemove);
             return await context.SaveChangesAsync() > 0;
         }
 
         // Toggle Helpful or Funny votes for a review
-        public async Task<bool> ToggleVoteForReview(int reviewIdToVoteOn, string voteTypeAsStringEitherHelpfulOrFunny, bool shouldIncrementVoteCount)
+        public async Task<bool> ToggleVoteForReview(int reviewIdToVoteOn, string voteTypeAsStringEitherHelpfulOrFunny,
+            bool shouldIncrementVoteCount)
         {
             var review = context.Reviews.Find(reviewIdToVoteOn);
             if (review == null)
@@ -99,7 +107,9 @@ namespace SteamHub.Api.Context.Repositories
             }
 
             // Get the current vote count
-            int currentVoteCount = voteTypeAsStringEitherHelpfulOrFunny == "Helpful" ? review.TotalHelpfulVotesReceived : review.TotalFunnyVotesReceived;
+            int currentVoteCount = voteTypeAsStringEitherHelpfulOrFunny == "Helpful"
+                ? review.TotalHelpfulVotesReceived
+                : review.TotalFunnyVotesReceived;
 
             // If shouldIncrementVoteCount is true, we're adding a vote
             // If false, we're removing a vote
@@ -147,10 +157,12 @@ namespace SteamHub.Api.Context.Repositories
             await context.SaveChangesAsync();
             return true;
         }
+
         // Retrieve review statistics for a specific game
-        public async Task<(int TotalReviews, int TotalPositiveRecommendations, double AverageRatingValue)> RetrieveReviewStatisticsForGame(int gameId)
+        public async Task<(int TotalReviews, int TotalPositiveRecommendations, double AverageRatingValue)>
+            RetrieveReviewStatisticsForGame(int gameId)
         {
-            var stats =await context.Reviews
+            var stats = await context.Reviews
                 .Where(r => r.GameIdentifier == gameId)
                 .GroupBy(r => 1)
                 .Select(g => new
@@ -165,6 +177,14 @@ namespace SteamHub.Api.Context.Repositories
                 ? (0, 0, 0.0)
                 : (stats.TotalReviews, stats.TotalPositiveRecommendations, stats.AverageRatingValue);
         }
-        
+
+        public async Task<Review?> GetReviewById(int reviewId)
+        {
+            return await context.Reviews
+                .Include(r => r.Game)
+                .Include(r => r.User)
+                .Where(r => r.ReviewIdentifier == reviewId)
+                .Select(r => MapToReviewDto(r)).FirstOrDefaultAsync();
+        }
     }
 }

@@ -66,9 +66,9 @@ namespace SteamHub.ViewModels
         private readonly IUserService userService;
         private Func<Task> pendingAction;
 
-        public AccountSettingsViewModel()
+        public AccountSettingsViewModel(IUserService userService)
         {
-            userService = App.UserService;
+            this.userService = userService;
             _ = LoadUserDataAsync();
         }
 

@@ -1,19 +1,11 @@
-using NUnit.Framework;
-
 namespace Tests
 {
-    public class Tests
+    public class UnitTest1
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-        [Test]
+        [Fact]
         public void Test1()
         {
-            int a = 5;
-            Assert.That(a, Is.EqualTo(5));
+
         }
     }
 }

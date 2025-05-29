@@ -18,7 +18,9 @@ namespace SteamHub.Api.Context.Repositories
 
         public async Task<Wallet> GetWallet(int walletId)
         {
-            var walletEntity = await context.Wallets.FindAsync(walletId);
+            var walletEntity = await context.Wallets
+                .AsNoTracking()
+                .FirstOrDefaultAsync(w => w.WalletId == walletId);
             if (walletEntity == null)
             {
                 throw new Exception($"Wallet with ID {walletId} not found.");
@@ -37,6 +39,7 @@ namespace SteamHub.Api.Context.Repositories
         public async Task<int> GetWalletIdByUserId(int userId)
         {
             var walletEntity = await context.Wallets
+                .AsNoTracking()
                 .Where(w => w.UserId == userId)
                 .Select(w => w.WalletId)
                 .FirstOrDefaultAsync();
@@ -49,10 +52,12 @@ namespace SteamHub.Api.Context.Repositories
 
         public async Task AddMoneyToWallet(decimal moneyToAdd, int userId)
         {
-            var walletEntity = await context.Wallets.SingleOrDefaultAsync(w => w.UserId == userId)
+            var walletEntity = await context.Wallets
+                .SingleOrDefaultAsync(w => w.UserId == userId)
                 ?? throw new Exception($"No wallet for user {userId}");
+
             walletEntity.Balance += moneyToAdd;
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         public async Task AddPointsToWallet(int pointsToAdd, int userId)
@@ -60,7 +65,7 @@ namespace SteamHub.Api.Context.Repositories
             var walletEntity = await context.Wallets.SingleOrDefaultAsync(w => w.UserId == userId)
                 ?? throw new Exception($"No wallet for user {userId}");
             walletEntity.Points += pointsToAdd;
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         public async Task<decimal> GetMoneyFromWallet(int walletId)
@@ -80,7 +85,7 @@ namespace SteamHub.Api.Context.Repositories
             var walletEntity =  await context.Wallets.SingleOrDefaultAsync(w => w.UserId == userId)
                 ?? throw new Exception($"No wallet for user {userId}");
             walletEntity.Balance -= amount;
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         public async Task BuyWithPoints(int amount, int userId)
@@ -88,7 +93,7 @@ namespace SteamHub.Api.Context.Repositories
             var walletEntity = await context.Wallets.SingleOrDefaultAsync(w => w.UserId == userId)
                 ?? throw new Exception($"No wallet for user {userId}");
             walletEntity.Points -= amount;
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         public async Task AddNewWallet(int userId)
@@ -100,7 +105,7 @@ namespace SteamHub.Api.Context.Repositories
                 Balance = 0m
             };
             await context.Wallets.AddAsync(walletEntity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         public async Task RemoveWallet(int userId)
@@ -109,7 +114,7 @@ namespace SteamHub.Api.Context.Repositories
             if (walletEntity != null)
             {
                 context.Wallets.Remove(walletEntity);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
         }
 

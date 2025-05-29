@@ -12,6 +12,7 @@ using SteamHub.ApiContract.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -53,7 +54,7 @@ builder.Services.AddAuthentication(options =>
             if (!string.IsNullOrEmpty(sessionId) && Guid.TryParse(sessionId, out var sessionGuid))
             {
                 var sessionService = context.HttpContext.RequestServices.GetRequiredService<ISessionService>();
-                sessionService.RestoreSessionFromDatabaseAsync(sessionGuid);
+                await sessionService.RestoreSessionFromDatabaseAsync(sessionGuid);
             }
         },
         OnChallenge = context =>
@@ -64,9 +65,16 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddDbContext<DataContext>();
+// Configure DbContext with proper concurrency handling
+builder.Services.AddDbContext<DataContext>(options => 
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll); // Use tracking by default
+});
 
+// Register repositories with scoped lifetime
 builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+builder.Services.AddScoped<ICollectionsRepository, CollectionsRepository>();
 builder.Services.AddScoped<IPointShopItemRepository, PointShopItemRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
@@ -78,12 +86,17 @@ builder.Services.AddScoped<IItemTradeRepository, ItemTradeRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IUserInventoryRepository, UserInventoryRepository>();
 builder.Services.AddScoped<IItemTradeDetailRepository, ItemTradeDetailRepository>();
+builder.Services.AddScoped<IFriendshipsRepository, FriendshipsRepository>();
 builder.Services.AddScoped<IWalletRepository, WalletRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IFriendRequestRepository, FriendRequestRepository>();
 
+builder.Services.AddScoped<INewsRepository, NewsRepository>();
 
 builder.Services.AddScoped<IAchievementsRepository, AchievementsRepository>();
 builder.Services.AddScoped<IAchievementsService, AchievementsService>();
+builder.Services.AddScoped<ICollectionsService, CollectionsService>();
+
 
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -95,11 +108,12 @@ builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<IPointShopService, PointShopService>();
 builder.Services.AddScoped<ITradeService, TradeService>();
 builder.Services.AddScoped<IMarketplaceService, MarketplaceService>();
+builder.Services.AddScoped<IFriendsService, FriendsService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
-
 builder.Services.AddScoped<IFeaturesRepository, FeaturesRepository>();
 builder.Services.AddScoped<IFeaturesService, FeaturesService>();
+
 
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });

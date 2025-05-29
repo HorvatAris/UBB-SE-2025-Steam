@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Shapes;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ApiContract.Models.User;
+using SteamHub.Pages;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -54,6 +55,9 @@ namespace SteamHub
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             MainWindow = new MainWindow();
+            //var rootFrame = new Frame();
+            //MainWindow.Content = rootFrame;
+            //rootFrame.Navigate(typeof(LoginPage), null);
             MainWindow.Activate();
             this.UnhandledException += (_, e) =>
             {

@@ -8,15 +8,15 @@ using SteamHub.ApiContract.Services.Interfaces;
 
 namespace SteamHub.ViewModels
 {
-    public partial class WalletViewModel : BaseViewModel
+    public partial class WalletViewModel : ObservableObject
     {
         private readonly IWalletService walletService;
+        private readonly IUserService userService;
 
-        public WalletViewModel(IWalletService walletService, IUserService userService, User currentUser) 
-            : base(userService, currentUser)
+        public WalletViewModel(IWalletService walletService, IUserService userService) 
         {
             this.walletService = walletService ?? throw new ArgumentNullException(nameof(walletService));
-            Debug.WriteLine($"WalletViewModel initialized for user: {currentUser.Username}");
+            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         [ObservableProperty]
@@ -44,12 +44,6 @@ namespace SteamHub.ViewModels
             OnPropertyChanged(nameof(PointsText));
         }
 
-        protected override void OnUserChanged()
-        {
-            base.OnUserChanged();
-            Debug.WriteLine($"User changed in WalletViewModel - refreshing wallet data for user: {CurrentUser.Username}");
-            _ = RefreshWalletDataAsync();
-        }
 
         public async Task InitializeAsync()
         {
@@ -58,7 +52,6 @@ namespace SteamHub.ViewModels
                 IsLoading = true;
                 ErrorMessage = string.Empty;
 
-                Debug.WriteLine($"Starting WalletViewModel initialization for user: {CurrentUser.Username}");
                 await RefreshWalletDataAsync();
             }
             catch (Exception ex)
@@ -81,18 +74,20 @@ namespace SteamHub.ViewModels
                 IsLoading = true;
                 ErrorMessage = string.Empty;
 
-                Debug.WriteLine($"Refreshing wallet data for user: {CurrentUser.Username} (ID: {CurrentUser.UserId})");
+                var currentUser = await this.userService.GetCurrentUserAsync();
+
+                Debug.WriteLine($"Refreshing wallet data for user: {currentUser.Username} (ID: {currentUser.UserId})");
                 
                 // Make parallel API calls for better performance
-                var balanceTask = walletService.GetBalance(CurrentUser.UserId);
-                var pointsTask = walletService.GetPoints(CurrentUser.UserId);
+                var balanceTask = walletService.GetBalance(currentUser.UserId);
+                var pointsTask = walletService.GetPoints(currentUser.UserId);
 
                 await Task.WhenAll(balanceTask, pointsTask);
 
                 Balance = await balanceTask;
                 Points = await pointsTask;
 
-                Debug.WriteLine($"Wallet refreshed for {CurrentUser.Username} - Balance: {Balance}, Points: {Points}");
+                Debug.WriteLine($"Wallet refreshed for {currentUser.Username} - Balance: {Balance}, Points: {Points}");
             }
             catch (Exception ex)
             {
@@ -118,9 +113,11 @@ namespace SteamHub.ViewModels
             {
                 IsLoading = true;
                 ErrorMessage = string.Empty;
-                
-                Debug.WriteLine($"Adding {amount:C} to wallet for user: {CurrentUser.Username} (ID: {CurrentUser.UserId})");
-                await walletService.AddMoney(amount, CurrentUser.UserId);
+
+                var currentUser = await this.userService.GetCurrentUserAsync();
+
+                Debug.WriteLine($"Adding {amount:C} to wallet for user: {currentUser.Username} (ID: {currentUser.UserId})");
+                await walletService.AddMoney(amount, currentUser.UserId);
                 await RefreshWalletDataAsync();
             }
             catch (Exception ex)

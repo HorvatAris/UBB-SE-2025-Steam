@@ -15,7 +15,6 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class MarketplaceServiceProxy : IMarketplaceService
     {
-        public IUserDetails User { get; set; }
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _options = new JsonSerializerOptions
         {
@@ -23,10 +22,9 @@ namespace SteamHub.ApiContract.ServiceProxies
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
 
-        public MarketplaceServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user)
+        public MarketplaceServiceProxy(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient("SteamHubApi");
-            this.User = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
 
         public async Task AddListingAsync(Game game, Item item)

@@ -308,7 +308,7 @@ namespace SteamHub.Pages
                 if (result == ContentDialogResult.Primary)
                 {
                     // Get the friendship ID for the current user and friend
-                    var friendships = App.FriendsService.GetAllFriendships();
+                    var friendships = await App.FriendsService.GetAllFriendshipsAsync(userIdentifier);
                     var currentUser = await App.UserService.GetCurrentUserAsync();
                     var friendship = friendships.FirstOrDefault(currentFriendship =>
                         (currentFriendship.UserId == currentUser.UserId && currentFriendship.FriendId == userIdentifier) ||
@@ -316,7 +316,7 @@ namespace SteamHub.Pages
 
                     if (friendship != null)
                     {
-                        App.FriendsService.RemoveFriend(friendship.FriendshipId);
+                        await App.FriendsService.RemoveFriendAsync(friendship.FriendshipId);
                         Frame.Navigate(typeof(ProfilePage), currentUser.UserId);
                     }
                     else
