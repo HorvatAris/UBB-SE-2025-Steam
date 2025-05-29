@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SteamHub.Pages.NewsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamHub.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:SteamHub.ApiContract.Models"
+    xmlns:converters="using:SteamHub.Pages.Converters"
+    mc:Ignorable="d"
+    x:Name="NewsPageName"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <converters:DateToStringConverter x:Key="DateToStringConverter"/>
+        <converters:StringFormatConverter x:Key="StringFormatConverter"/>
+        <Style x:Key="NewsCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+        <converters:PostIdToCommentsConverter x:Key="PostIdToCommentsConverter" />
+
+
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Padding="20">
+            <TextBlock Text="News Feed" Style="{StaticResource TitleLargeTextBlockStyle}" Margin="0,0,0,20"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox PlaceholderText="Search news..." Text="{x:Bind ViewModel.SearchText, Mode=TwoWay}" Margin="0,0,10,0"/>
+                <Button Grid.Column="1" Content="Create Post" Click="CreatePostButton_Click"/>
+            </Grid>
+        </StackPanel>
+
+        <!-- News Posts -->
+        <ScrollViewer Grid.Row="1" Padding="20">
+            <ItemsControl ItemsSource="{x:Bind ViewModel.Posts}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,0,0,20" Padding="20" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Post Header -->
+                            <Grid Grid.Row="0" Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding AuthorId}" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="0,0,10,0"/>
+                                <TextBlock Grid.Column="1" Text="{Binding UploadDate, Converter={StaticResource DateToStringConverter}}" Style="{StaticResource BodyTextBlockStyle}"/>
+                                <TextBlock Grid.Column="2" Text="{Binding NrComments, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0} comments'}" Style="{StaticResource BodyTextBlockStyle}"/>
+                            </Grid>
+
+                            <!-- Post Content -->
+                            <TextBlock Grid.Row="1" Text="{Binding Content}" TextWrapping="Wrap" Style="{StaticResource BodyTextBlockStyle}" Margin="0,0,0,10"/>
+
+                            <!-- Like/Dislike Buttons -->
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,10">
+                                <Button Tag="{Binding Id}" Click="LikePost_Click" Margin="0,0,10,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <FontIcon Glyph="&#xE8E1;" Margin="0,0,5,0"/>
+                                        <TextBlock Text="{Binding NrLikes}"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Tag="{Binding Id}" Click="DislikePost_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <FontIcon Glyph="&#xE8E0;" Margin="0,0,5,0"/>
+                                        <TextBlock Text="{Binding NrDislikes}"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                            
+
+                            <!-- Add Comment -->
+                            <Grid Grid.Row="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox PlaceholderText="Write a comment..." Margin="0,0,10,0"/>
+                                <Button Grid.Column="1" Tag="{Binding Id}" Click="AddComment_Click" Content="Comment"/>
+                            </Grid>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</Page> 

@@ -45,6 +45,7 @@ namespace SteamHub
         private FriendRequestServiceProxy friendRequestService;
         private AchievementsServiceProxy achievementsService;
         private CollectionsServiceProxy collectionServiceProxy;
+        private NewsServiceProxy newsService;
         
         private readonly IHttpClientFactory _httpClientFactory;
 
@@ -208,6 +209,7 @@ namespace SteamHub
                 this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
                 this.walletService = new WalletServiceProxy();
                 this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory,user);
+                this.newsService = new NewsServiceProxy(_httpClientFactory);
 
                 Debug.WriteLine("User services initialized successfully");
             }
@@ -275,6 +277,9 @@ namespace SteamHub
                         break;
                     case "Wallet":
                         this.ContentFrame.Navigate(typeof(WalletPage), (this.walletService, this.userService));
+                        break;
+                    case "NewsPage":
+                        this.ContentFrame.Content = new NewsPage(this.newsService, this.userService, this.user);
                         break;
                     default:
                         Debug.WriteLine($"Unknown page tag: {tag}");
