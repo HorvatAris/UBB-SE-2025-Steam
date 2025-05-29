@@ -50,7 +50,6 @@ namespace SteamHub.ApiContract.Services
                 UserSession.Instance.ClearSession();
                 return null;
             }
-
             return new User
             {
                 UserId = userWithSession.UserId,

@@ -16,6 +16,8 @@ namespace SteamHub.ApiContract.Models.User
         {
             UserId = userDetails.UserId;
             Username = userDetails.Username;
+            Password = userDetails.Password;
+            ProfilePicture = userDetails.ProfilePicture;
             Email = userDetails.Email;
             WalletBalance = userDetails.WalletBalance;
             PointsBalance = userDetails.PointsBalance;

@@ -106,7 +106,7 @@ namespace SteamHub.Api.Migrations
                     PointsBalance = table.Column<int>(type: "int", nullable: false),
                     ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
@@ -197,6 +197,57 @@ namespace SteamHub.Api.Migrations
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FriendRequests",
+                columns: table => new
+                {
+                    RequestId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SenderUserId = table.Column<int>(type: "int", nullable: false),
+                    ReceiverUserId = table.Column<int>(type: "int", nullable: false),
+                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    ProfilePhotoPath = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FriendRequests", x => x.RequestId);
+                    table.ForeignKey(
+                        name: "FK_FriendRequests_Users_ReceiverUserId",
+                        column: x => x.ReceiverUserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId");
+                    table.ForeignKey(
+                        name: "FK_FriendRequests_Users_SenderUserId",
+                        column: x => x.SenderUserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Friendships",
+                columns: table => new
+                {
+                    FriendshipId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    FriendId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Friendships", x => x.FriendshipId);
+                    table.ForeignKey(
+                        name: "FK_Friendships_Users_FriendId",
+                        column: x => x.FriendId,
+                        principalTable: "Users",
+                        principalColumn: "UserId");
+                    table.ForeignKey(
+                        name: "FK_Friendships_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -377,27 +428,6 @@ namespace SteamHub.Api.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserPointShopInventories_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserProfiles",
-                columns: table => new
-                {
-                    ProfileId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserProfiles", x => x.ProfileId);
-                    table.ForeignKey(
-                        name: "FK_UserProfiles_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -836,69 +866,6 @@ namespace SteamHub.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FriendRequests",
-                columns: table => new
-                {
-                    RequestId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SenderUserId = table.Column<int>(type: "int", nullable: false),
-                    ReceiverUserId = table.Column<int>(type: "int", nullable: false),
-                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    ProfilePhotoPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserProfileProfileId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FriendRequests", x => x.RequestId);
-                    table.ForeignKey(
-                        name: "FK_FriendRequests_UserProfiles_UserProfileProfileId",
-                        column: x => x.UserProfileProfileId,
-                        principalTable: "UserProfiles",
-                        principalColumn: "ProfileId");
-                    table.ForeignKey(
-                        name: "FK_FriendRequests_Users_ReceiverUserId",
-                        column: x => x.ReceiverUserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId");
-                    table.ForeignKey(
-                        name: "FK_FriendRequests_Users_SenderUserId",
-                        column: x => x.SenderUserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Friendships",
-                columns: table => new
-                {
-                    FriendshipId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    FriendId = table.Column<int>(type: "int", nullable: false),
-                    UserProfileProfileId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Friendships", x => x.FriendshipId);
-                    table.ForeignKey(
-                        name: "FK_Friendships_UserProfiles_UserProfileProfileId",
-                        column: x => x.UserProfileProfileId,
-                        principalTable: "UserProfiles",
-                        principalColumn: "ProfileId");
-                    table.ForeignKey(
-                        name: "FK_Friendships_Users_FriendId",
-                        column: x => x.FriendId,
-                        principalTable: "Users",
-                        principalColumn: "UserId");
-                    table.ForeignKey(
-                        name: "FK_Friendships_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ForumComments",
                 columns: table => new
                 {
@@ -1110,17 +1077,17 @@ namespace SteamHub.Api.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "Bio", "CreatedAt", "Email", "LastLogin", "LastModified", "Password", "PointsBalance", "ProfilePicture", "UserRole", "Username", "WalletBalance" },
+                columns: new[] { "UserId", "Bio", "CreatedAt", "Email", "LastLogin", "Password", "PointsBalance", "ProfilePicture", "UserRole", "Username", "WalletBalance" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "gabe.newell@valvestudio.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 6000, "", 1, "GabeN", 500m },
-                    { 2, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mathias.new@cdprojektred.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG", 5000, "", 1, "MattN", 420m },
-                    { 3, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.chen@thatgamecompany.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq", 5000, "", 1, "JohnC", 390m },
-                    { 4, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "alice.johnson@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6", 6000, "", 0, "AliceJ", 780m },
-                    { 5, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "liam.garcia@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a", 7000, "", 0, "LiamG", 5500m },
-                    { 6, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "sophie.williams@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y", 6000, "", 0, "SophieW", 950m },
-                    { 7, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "noah.smith@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu", 4000, "", 0, "NoahS", 3300m },
-                    { 8, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "emily.brown@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC", 5000, "", 0, "EmilyB", 1100m }
+                    { 1, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "gabe.newell@valvestudio.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 6000, "https://i.imgur.com/vixhhkC.jpeg", 1, "GabeN", 500m },
+                    { 2, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mathias.new@cdprojektred.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG", 5000, "https://i.imgur.com/Ji7D74X.jpeg", 1, "MattN", 420m },
+                    { 3, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.chen@thatgamecompany.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq", 5000, "https://i.imgur.com/Ji7D74X.jpeg", 1, "JohnC", 390m },
+                    { 4, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "alice.johnson@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6", 6000, "https://i.imgur.com/l5qkgRu.jpeg", 0, "AliceJ", 780m },
+                    { 5, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "liam.garcia@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a", 7000, "https://i.imgur.com/JPNXxsg.jpeg", 0, "LiamG", 5500m },
+                    { 6, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "sophie.williams@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y", 6000, "https://i.imgur.com/l5qkgRu.jpeg", 0, "SophieW", 950m },
+                    { 7, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "noah.smith@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu", 4000, "https://i.imgur.com/JPNXxsg.jpeg", 0, "NoahS", 3300m },
+                    { 8, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "emily.brown@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC", 5000, "https://i.imgur.com/l5qkgRu.jpeg", 0, "EmilyB", 1100m }
                 });
 
             migrationBuilder.InsertData(
@@ -1150,31 +1117,31 @@ namespace SteamHub.Api.Migrations
 
             migrationBuilder.InsertData(
                 table: "Friendships",
-                columns: new[] { "FriendshipId", "FriendId", "UserId", "UserProfileProfileId" },
+                columns: new[] { "FriendshipId", "FriendId", "UserId" },
                 values: new object[,]
                 {
-                    { 1, 1, 5, null },
-                    { 2, 2, 5, null },
-                    { 3, 3, 5, null },
-                    { 4, 4, 5, null },
-                    { 5, 6, 5, null },
-                    { 6, 7, 5, null },
-                    { 7, 8, 5, null },
-                    { 8, 6, 4, null },
-                    { 9, 7, 4, null },
-                    { 10, 7, 6, null },
-                    { 11, 5, 1, null },
-                    { 12, 5, 2, null },
-                    { 13, 5, 3, null },
-                    { 14, 5, 4, null },
-                    { 15, 5, 6, null },
-                    { 16, 5, 7, null },
-                    { 17, 5, 8, null },
-                    { 18, 3, 1, null },
-                    { 19, 3, 2, null },
-                    { 20, 4, 3, null },
-                    { 21, 8, 6, null },
-                    { 22, 2, 1, null }
+                    { 1, 1, 5 },
+                    { 2, 2, 5 },
+                    { 3, 3, 5 },
+                    { 4, 4, 5 },
+                    { 5, 6, 5 },
+                    { 6, 7, 5 },
+                    { 7, 8, 5 },
+                    { 8, 6, 4 },
+                    { 9, 7, 4 },
+                    { 10, 7, 6 },
+                    { 11, 5, 1 },
+                    { 12, 5, 2 },
+                    { 13, 5, 3 },
+                    { 14, 5, 4 },
+                    { 15, 5, 6 },
+                    { 16, 5, 7 },
+                    { 17, 5, 8 },
+                    { 18, 3, 1 },
+                    { 19, 3, 2 },
+                    { 20, 4, 3 },
+                    { 21, 8, 6 },
+                    { 22, 2, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -1229,21 +1196,6 @@ namespace SteamHub.Api.Migrations
                     { 6, 5, false, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 3, 6, false, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 4, 7, true, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
-                });
-
-            migrationBuilder.InsertData(
-                table: "UserProfiles",
-                columns: new[] { "ProfileId", "Bio", "LastModified", "UserId" },
-                values: new object[,]
-                {
-                    { 1, "Gaming enthusiast and software developer", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1 },
-                    { 2, "Game developer and tech lover", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2 },
-                    { 3, "Casual gamer and streamer", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 },
-                    { 4, "Casual gamer and streamer", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4 },
-                    { 5, "Casual gamer and streamer", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 5 },
-                    { 6, "Casual gamer and streamer", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 6 },
-                    { 7, "Casual gamer and streamer", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 7 },
-                    { 8, "Casual gamer and streamer", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 8 }
                 });
 
             migrationBuilder.InsertData(
@@ -1472,11 +1424,6 @@ namespace SteamHub.Api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_FriendRequests_UserProfileProfileId",
-                table: "FriendRequests",
-                column: "UserProfileProfileId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Friendships_FriendId",
                 table: "Friendships",
                 column: "FriendId");
@@ -1491,11 +1438,6 @@ namespace SteamHub.Api.Migrations
                 table: "Friendships",
                 columns: new[] { "UserId", "FriendId" },
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Friendships_UserProfileProfileId",
-                table: "Friendships",
-                column: "UserProfileProfileId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FriendsTable_User1Id",
@@ -1653,12 +1595,6 @@ namespace SteamHub.Api.Migrations
                 column: "PointShopItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserProfiles_UserId",
-                table: "UserProfiles",
-                column: "UserId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserSessions_UserId",
                 table: "UserSessions",
                 column: "UserId");
@@ -1764,9 +1700,6 @@ namespace SteamHub.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "ForumPosts");
-
-            migrationBuilder.DropTable(
-                name: "UserProfiles");
 
             migrationBuilder.DropTable(
                 name: "Tags");

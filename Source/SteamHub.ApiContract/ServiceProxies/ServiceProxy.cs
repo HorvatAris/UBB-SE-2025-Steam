@@ -168,8 +168,13 @@ namespace SteamHub.ApiContract.ServiceProxies
         /// </summary>
         protected async Task PostAsync(string endpoint, object data)
         {
+            // this is mostly for debugging purposes
+            string jsonPayload = JsonSerializer.Serialize(data, new JsonSerializerOptions
+            {
+                WriteIndented = true // for easier debugging
+            });
             var content = new StringContent(
-                JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
+                jsonPayload, Encoding.UTF8, "application/json");
             var response = await StaticHttpClient.PostAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
             await EnsureSuccessStatusCodeAsync(response).ConfigureAwait(false);
         }

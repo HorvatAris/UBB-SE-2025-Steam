@@ -19,6 +19,9 @@ using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Models.Collections;
 using Collection = SteamHub.ApiContract.Models.Collections.Collection;
 using CommunityToolkit.Common;
+using Microsoft.Extensions.Configuration;
+using Microsoft.UI.Xaml.Controls;
+using Windows.UI.ApplicationSettings;
 
 
 
@@ -29,11 +32,12 @@ namespace SteamHub.ViewModels
         private static ProfileViewModel profileViewModelInstance;
         private User user;
         // private readonly FriendRequestViewModel friendRequestViewModel;
-        private readonly IUserService userService;
+        public readonly IUserService userService;
         private readonly IFriendsService friendsService;
         private readonly DispatcherQueue dispatcherQueue;
         private readonly IFeaturesService featuresService;
         private readonly IAchievementsService achievementsService;
+
 
         public ProfileViewModel()
         {
@@ -103,6 +107,18 @@ namespace SteamHub.ViewModels
                     user.ProfilePicture = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        [RelayCommand]
+        private void OnConfiguration(object parameter)
+        {
+            if (parameter is IUserService userService)
+            {
+                // Navigate with the service
+                var appWindow = App.MainWindow; // you need to expose this in your App class
+                var rootFrame = appWindow.Content as Frame;
+                rootFrame?.Navigate(typeof(ConfigurationsPage), userService);
             }
         }
 
@@ -233,6 +249,8 @@ namespace SteamHub.ViewModels
         private AchievementWithStatus yearsOfActivity;
         [ObservableProperty]
         private AchievementWithStatus numberOfPostsGetTopAchievement;
+        // Rename the field to avoid ambiguity with the property
+        private IRelayCommand<object> _configurationCommand;
 
         public static ProfileViewModel Instance
         {
@@ -271,8 +289,6 @@ namespace SteamHub.ViewModels
             IAchievementsService achievementsService)
         {
             // Initialize userProfile to prevent null reference exceptions
-            user = new User();
-
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.friendsService = friendsService ?? throw new ArgumentNullException(nameof(friendsService));
             this.dispatcherQueue = dispatcherQueue ?? throw new ArgumentNullException(nameof(dispatcherQueue));
@@ -381,7 +397,7 @@ namespace SteamHub.ViewModels
                             
                             if (user != null)
                             {
-                                biography = user.Bio ?? string.Empty;
+                                Biography = user.Bio ?? string.Empty;
                                 if (user.ProfilePicture != null)
                                 {
                                     if (user.ProfilePicture.StartsWith("http://") || user.ProfilePicture.StartsWith("https://"))
@@ -438,7 +454,7 @@ namespace SteamHub.ViewModels
 
                             try
                             {
-                                var lastThreeCollections = gameCollectionsService.GetLastThreeCollectionsForUser(user_id);
+                                var lastThreeCollections = await gameCollectionsService.GetLastThreeCollectionsForUser(user_id);
                                 gameCollections.Clear();
                                 foreach (var collection in lastThreeCollections)
                                 {
@@ -720,11 +736,11 @@ namespace SteamHub.ViewModels
 
 
 
-        [RelayCommand]
+        /*[RelayCommand]
         private void Configuration()
         {
             NavigationService.Instance.Navigate(typeof(Pages.ConfigurationsPage));
-        }
+        }*/
 
         [RelayCommand]
         private async Task BackToProfile()

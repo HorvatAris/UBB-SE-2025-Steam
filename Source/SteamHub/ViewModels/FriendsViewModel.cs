@@ -24,7 +24,8 @@ namespace SteamHub.ViewModels
         #endregion
 
         private readonly IFriendsService friendsService;
-        private readonly IUserDetails user;
+        private readonly IUserService userService;
+        private IUserDetails user;
 
         [ObservableProperty]
         private ObservableCollection<Friendship> friendships = new ObservableCollection<Friendship>();
@@ -38,15 +39,16 @@ namespace SteamHub.ViewModels
         [ObservableProperty]
         private string errorMessage;
 
-        public FriendsViewModel(IFriendsService friendsService)
+        public FriendsViewModel(IFriendsService friendsService, IUserService userService)
         {
             this.friendsService = friendsService ?? throw new ArgumentNullException(nameof(friendsService));
-            this.user = this.friendsService.GetUser();
+            this.userService = userService;
             _ = InitializeAsync();
         }
 
         public async Task InitializeAsync()
         {
+            this.user = await userService.GetCurrentUserAsync();
             await LoadFriendsAsync();
         }
 
