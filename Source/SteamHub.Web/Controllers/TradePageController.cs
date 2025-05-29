@@ -76,7 +76,9 @@ namespace SteamHub.Web.Controllers
 				Email = _userDetails.Email,
 				UserRole = _userDetails.UserRole,
 				PointsBalance = _userDetails.PointsBalance,
-				WalletBalance = _userDetails.WalletBalance
+				WalletBalance = _userDetails.WalletBalance,
+				Password = _userDetails.Password,
+				ProfilePicture = _userDetails.ProfilePicture
 			};
 
 			var allUsers = await _userService.GetAllUsersAsync();

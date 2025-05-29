@@ -27,6 +27,7 @@ public class GamePageViewModel : INotifyPropertyChanged
     private readonly ICartService cartService;
     private readonly IUserGameService userGameService;
     private readonly IGameService gameService;
+    private readonly IReviewService reviewService;
     private IUserDetails user;
 
     private Game game;
@@ -35,15 +36,17 @@ public class GamePageViewModel : INotifyPropertyChanged
     private ObservableCollection<string> gameTags;
     private ObservableCollection<string> mediaLinks;
 
-    public GamePageViewModel(IGameService gameService, ICartService cartService, IUserGameService userGameService)
+    public GamePageViewModel(IGameService gameService, ICartService cartService, IUserGameService userGameService, IReviewService reviewService)
     {
         this.cartService = cartService;
         this.userGameService = userGameService;
         this.gameService = gameService;
+        this.reviewService = reviewService;
         this.user = this.cartService.GetUser();
         this.SimilarGames = new ObservableCollection<Game>();
         this.GameTags = new ObservableCollection<string>();
         this.MediaLinks = new ObservableCollection<string>();
+        this.reviewService = reviewService;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -194,7 +197,7 @@ public class GamePageViewModel : INotifyPropertyChanged
     {
         if (frame != null)
         {
-            var gamePage = new GamePage(this.gameService, this.cartService, this.userGameService, game);
+            var gamePage = new GamePage(this.gameService, this.cartService, this.userGameService, this.reviewService, game);
 
             frame.Content = gamePage;
         }
@@ -275,4 +278,14 @@ public class GamePageViewModel : INotifyPropertyChanged
         var similarGames = await this.gameService.GetSimilarGamesAsync(this.Game.GameId);
         this.SimilarGames = new ObservableCollection<Game>(similarGames.Take(MaxSimilarGamesToDisplay));
     }
+
+    public void NavigateToReviewsPage(Frame parentFrame, int gameId)
+    {
+        if (parentFrame != null)
+        {
+            var reviewsPage = new ReviewsPage(this.reviewService);
+            parentFrame.Navigate(typeof(ReviewsPage), gameId);
+        }
+    }
+
 }
