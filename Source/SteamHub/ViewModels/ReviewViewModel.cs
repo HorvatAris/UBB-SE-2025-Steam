@@ -82,7 +82,8 @@ namespace SteamHub.ViewModels
                     {
                         continue;
                     }
-                    CollectionOfGameReviews.Add(review);
+                    else
+                        CollectionOfGameReviews.Add(review);
                 }
 
                 UpdateReviewStatistics();
