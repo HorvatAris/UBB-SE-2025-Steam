@@ -228,6 +228,40 @@ namespace SteamHub.Api.Controllers
             return BadRequest("Failed to update email");
         }
 
+        [HttpPost("updatePFP")]
+        public async Task<IActionResult> UpdatePFP([FromBody] PFPChangeRequest request)
+        {
+            var user = await userService.GetCurrentUserAsync();
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var result = await userService.UpdateProfilePictureAsync(user.UserId, request.ProfilePicture);
+            if (result)
+            {
+                return Ok();
+            }
+            return BadRequest("Failed to update pfp");
+        }
+
+        [HttpPost("updateBio")]
+        public async Task<IActionResult> UpdateBio([FromBody] BioChangeRequest request)
+        {
+            var user = await userService.GetCurrentUserAsync();
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var result = await userService.UpdateProfileBioAsync(user.UserId, request.Bio);
+            if (result)
+            {
+                return Ok();
+            }
+            return BadRequest("Failed to update bio");
+        }
+
         [HttpPost("verifyPassword")]
         [Authorize]
         public async Task<IActionResult> VerifyPassword([FromBody] PasswordVerifyRequest request)
@@ -246,6 +280,16 @@ namespace SteamHub.Api.Controllers
     public class PasswordVerifyRequest
     {
         public string Password { get; set; }
+    }
+
+    public class PFPChangeRequest
+    {
+        public string ProfilePicture { get; set; }
+    }
+
+    public class BioChangeRequest
+    {
+        public string Bio { get; set; }
     }
 
     public class EmailUpdateRequest

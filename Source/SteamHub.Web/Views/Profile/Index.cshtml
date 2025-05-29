@@ -1,0 +1,53 @@
+﻿@model SteamHub.Web.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = $"{Model.Username}'s Profile";
+}
+
+<div class="container-fluid" style=" min-height: 100vh;">
+    <div class="row">
+        <!-- Left Sidebar -->
+        <div class="col-md-3" style=" padding: 20px;">
+            <div class="text-center">
+                <img src="@Model.ProfilePhotoPath" alt="Profile Picture" style="width:160px;height:160px;border-radius:10px;" />
+
+                @if (@Model.IsProfileOwner)
+                {
+                    <div style=" padding: 5px; border-radius: 5px; margin: 10px 0; font-size: 12px;">
+                        No. friends: @Model.FriendCount
+                    </div>
+                }
+
+                @if (Model.IsDeveloper)
+                {
+                    <div style="background-color: #FFD700; color: black; padding: 3px 8px; border-radius: 3px; font-size: 12px; margin: 10px 0;">
+                        Developer
+                    </div>
+                }
+            </div>
+
+            <div style="background-color: rgba(64, 64, 64, 0.5); padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <h6>Bio</h6>
+                <p style="font-size: 12px;">@Model.Biography</p>
+            </div>
+            <div>
+                <h2>Achievements</h2>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9" style="padding: 20px;">
+            <h2>Collections</h2>
+
+            <div class="row mt-3">
+                @foreach (var collection in Model.GameCollections)
+                {
+                    <div class="col-md-3 mb-3">
+                        <div style="width: 180px; height: 120px; background-color: #E6D5B8; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: black;">
+                            @collection.CollectionName
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -10,4 +10,5 @@ public interface IUserDetails
     public string Password { get; }
     string Email { get; }
     decimal WalletBalance { get; set; }
+    string ProfilePicture { get; set; }
 }

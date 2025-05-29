@@ -45,6 +45,8 @@ namespace SteamHub.Web.Services
 
             var userForSession = new User { UserId = content.User.UserId };
             Guid sessionId = await _sessionService.CreateNewSessionAsync(userForSession);
+            // TEMPORARY: have to look if the other things are even needed
+            await this.userService.LoginAsync(emailOrUsername, password);
 
             var user = content.User;
             var claims = new List<Claim>
