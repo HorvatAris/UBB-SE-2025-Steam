@@ -78,7 +78,7 @@
                                     <StackPanel Grid.Column="1" 
                           Margin="12,0,0,0"
                           VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Title}"
+                                        <TextBlock Text="{Binding GameTitle}"
                              Style="{ThemeResource BodyStrongTextBlockStyle}"
                              TextWrapping="NoWrap"
                              TextTrimming="CharacterEllipsis"/>
