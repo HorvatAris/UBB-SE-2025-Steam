@@ -17,7 +17,7 @@ using SteamHub.ApiContract.Constants;
 
 namespace SteamHub.ApiContract.ServiceProxies
 {
-    public class PointShopServiceProxy : IPointShopService
+    public class PointShopServiceProxy : ServiceProxy, IPointShopService
     {
         private const int InitialIndexOfTransaction = 0;
         private const int IncrementingValue = 1;
@@ -25,17 +25,15 @@ namespace SteamHub.ApiContract.ServiceProxies
         private const int InitialIndexUserItems = 0;
         private const string FilterTypeAll = "All";
 
-        private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
 
-        public PointShopServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user)
+        public PointShopServiceProxy(IUserDetails user, string baseUrl = "https://localhost:7241/api/") : base(baseUrl)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
-            this.User = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
+           this.User = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
 
         public IUserDetails User { get; set; }
@@ -54,8 +52,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
             try
             {
-                var response = await _httpClient.PutAsJsonAsync($"/api/PointShop/Activate", request);
-                response.EnsureSuccessStatusCode();
+                await PutAsync<UpdateUserPointShopItemInventoryRequest>("/api/PointShop/Activate", request);
             }
             catch (Exception exception)
             {
@@ -94,8 +91,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
             try
             {
-                var response = await _httpClient.PutAsJsonAsync($"/api/PointShop/Deactivate", request);
-                response.EnsureSuccessStatusCode();
+                await PutAsync<UpdateUserPointShopItemInventoryRequest>("/api/PointShop/Deactivate", request);
             }
             catch (Exception exception)
             {
@@ -107,12 +103,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var itemsResponse = await _httpClient.GetAsync("/api/PointShop");
-                itemsResponse.EnsureSuccessStatusCode();
-                var itemsResult = await itemsResponse.Content.ReadFromJsonAsync<List<PointShopItem>>(_options);
-
-                // Ensure a non-null list is returned
-                return itemsResult ?? new List<PointShopItem>();
+                return await GetAsync<List<PointShopItem>>("/api/PointShop");
             }
             catch (Exception exception)
             {
@@ -232,11 +223,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var userItemsResponse = await _httpClient.GetAsync($"/api/PointShop/User/{userId}");
-                userItemsResponse.EnsureSuccessStatusCode();
-                var userItems = await userItemsResponse.Content.ReadFromJsonAsync<Collection<PointShopItem>>(_options);
-
-                return userItems ?? new Collection<PointShopItem>();
+                return await GetAsync<Collection<PointShopItem>>($"/api/PointShop/User/{userId}");
             }
             catch (Exception exception)
             {
@@ -248,8 +235,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/PointShop/Purchase", purchaseRequest);
-                response.EnsureSuccessStatusCode();
+                await PostAsync<PurchasePointShopItemRequest>("/api/PointShop/Purchase", purchaseRequest);
             }
             catch (Exception exception)
             {

@@ -16,63 +16,54 @@ using SteamHub.ApiContract.Models.UserInventory;
 
 namespace SteamHub.ApiContract.ServiceProxies
 {
-    public class InventoryServiceProxy : IInventoryService
+    public class InventoryServiceProxy : ServiceProxy, IInventoryService
     {
         private readonly InventoryValidator inventoryValidator;
-        private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
         public IUserDetails User { get; set; }
-        public InventoryServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user)
+        public InventoryServiceProxy(IUserDetails user, string baseUrl = "https://localhost:7241") : base(baseUrl)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
-            this.User = user;
+            this.User = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
 
         public async Task AddItemToInventoryAsync(Game game, Item item, int userId)
         {
-            var request = new AddItemToInventoryRequest
-            {
-                Game = game,
-                Item = item
-            };
+            if (game == null) throw new ArgumentNullException(nameof(game));
+            if (item == null) throw new ArgumentNullException(nameof(item));
+            if (userId <= 0) throw new ArgumentException("UserId must be positive.", nameof(userId));
 
-            var response = await _httpClient.PostAsJsonAsync($"/api/Inventory/AddItemToInventory/{userId}", request);
-            response.EnsureSuccessStatusCode();
+            var request = new AddItemToInventoryRequest { Game = game, Item = item };
+            await PostAsync($"/api/Inventory/AddItem/{userId}", request);
         }
 
 
         public List<Item> FilterInventoryItems(List<Item> items, Game selectedGame, string searchText)
         {
-            if (items == null)
-            {
-                throw new ArgumentNullException(nameof(items));
-            }
+            if (items == null) throw new ArgumentNullException(nameof(items));
+            IEnumerable<Item> filtered = items.Where(item => !item.IsListed);
 
-            IEnumerable<Item> filtered = items;
+            bool hasGameFilter = selectedGame != null &&
+                                 !string.IsNullOrWhiteSpace(selectedGame.GameTitle) &&
+                                 !string.Equals(selectedGame.GameTitle, "All Games", StringComparison.OrdinalIgnoreCase);
 
-            // Filter out listed items (only show unlisted ones)
-            filtered = filtered.Where(item => !item.IsListed);
-
-            // Filter by selected game if it's not null and not the "All Games" option
-            if (selectedGame != null && selectedGame.GameTitle != "All Games")
+            if (hasGameFilter)
             {
                 filtered = filtered.Where(item =>
+                    !string.IsNullOrWhiteSpace(item.GameName) &&
                     string.Equals(item.GameName, selectedGame.GameTitle, StringComparison.OrdinalIgnoreCase));
             }
 
-            // Filter by search text if provided
-            if (!string.IsNullOrWhiteSpace(searchText))
+            bool hasTextFilter = !string.IsNullOrWhiteSpace(searchText);
+            if (hasTextFilter)
             {
-                searchText = searchText.Trim();
+                string trimmed = searchText.Trim();
                 filtered = filtered.Where(item =>
-                    (!string.IsNullOrEmpty(item.ItemName) &&
-                     item.ItemName.Trim().Contains(searchText, StringComparison.OrdinalIgnoreCase)) ||
-                    (!string.IsNullOrEmpty(item.Description) &&
-                     item.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
+                    (!string.IsNullOrEmpty(item.ItemName) && item.ItemName.Contains(trimmed, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrEmpty(item.Description) && item.Description.Contains(trimmed, StringComparison.OrdinalIgnoreCase)));
             }
 
             return filtered.ToList();
@@ -80,11 +71,8 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task<List<Item>> GetAllItemsFromInventoryAsync(int userId)
         {
-            var response = await _httpClient.GetAsync($"/api/Inventory/All/{userId}");
-            response.EnsureSuccessStatusCode();
-
-            var items = await response.Content.ReadFromJsonAsync<List<Item>>();
-            return items ?? new List<Item>();
+            if (userId <= 0) throw new ArgumentException("UserId must be positive.", nameof(userId));
+            return await GetAsync<List<Item>>($"/api/Inventory/All/{userId}");
         }
 
         public IUserDetails GetAllUsers()
@@ -99,36 +87,17 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task<List<Game>> GetAvailableGamesAsync(List<Item> items, int userId)
         {
-            var response = await _httpClient.PostAsJsonAsync(
-                $"/api/Inventory/AvailableGames/{userId}",
-                items
-            );
-            if (!response.IsSuccessStatusCode)
-            {
-                string errorContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("Status: " + response.StatusCode);
-                Console.WriteLine("Error content: " + errorContent);
-                throw new Exception("API call failed: " + errorContent);
-            }
-
-            response.EnsureSuccessStatusCode();
-
-            var games = await response.Content.ReadFromJsonAsync<List<Game>>();
-            return games ?? new List<Game>();
+            if (userId <= 0) throw new ArgumentException("UserId must be positive.", nameof(userId));
+            if (items == null || items.Count == 0) return new List<Game>();
+            return await GetAsync<List<Game>>($"/api/Inventory/AvailableGames/{userId}");
         }
 
 
         public async Task<List<Item>> GetItemsFromInventoryAsync(Game game, int userId)
         {
-            var response = await _httpClient.PostAsJsonAsync(
-                $"/api/Inventory/ItemsFromGame/{userId}",
-                game
-            );
-
-            response.EnsureSuccessStatusCode();
-
-            var items = await response.Content.ReadFromJsonAsync<List<Item>>();
-            return items ?? new List<Item>();
+            if (userId <= 0) throw new ArgumentException("UserId must be positive.", nameof(userId));
+            if (game == null) throw new ArgumentNullException(nameof(game));
+            return await GetAsync<List<Item>>($"/api/Inventory/ItemsFromGame/{userId}");
         }
 
 
@@ -140,48 +109,22 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task<List<Item>> GetUserInventoryAsync(int userId)
         {
-            if (userId <= 0)
-            {
-                throw new ArgumentException("UserId must be positive.", nameof(userId));
-            }
-
-            var response = await _httpClient.GetAsync($"/api/Inventory/UserInventory/{userId}");
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Failed to get user inventory: {error}");
-            }
-
-            var items = await response.Content.ReadFromJsonAsync<List<Item>>();
-            var finalList = new List<Item>();
+            if (userId <= 0) throw new ArgumentException("UserId must be positive.", nameof(userId));
+            var items = await GetAsync<List<Item>>($"/api/Inventory/UserInventory/{userId}") ?? new List<Item>();
             foreach (var item in items)
             {
-                item.GameName = item.Game.GameTitle;
-                finalList.Add(item);
+                item.GameName = item.Game?.GameTitle ?? "Unknown Game";
             }
-
-
-            return finalList ?? new List<Item>();
+            return items;
         }
 
 
         public async Task<bool> SellItemAsync(Item item, int userId)
         {
-            if (item == null)
-                throw new ArgumentNullException(nameof(item));
-
-            var response = await _httpClient.PatchAsJsonAsync($"/api/Inventory/SellItem/{userId}", item);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return true;
-            }
-            else
-            {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Failed to sell item: {errorContent}");
-            }
+            if (item == null) throw new ArgumentNullException(nameof(item));
+            if (userId <= 0) throw new ArgumentException("UserId must be positive.", nameof(userId));
+            await PatchAsync($"/api/Inventory/SellItem/{userId}", item);
+            return true;
         }
 
     }

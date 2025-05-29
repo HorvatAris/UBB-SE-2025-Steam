@@ -195,13 +195,13 @@ namespace SteamHub
             {
                 this.achievementsService = new AchievementsServiceProxy();
                 this.tradeService = new TradeServiceProxy(_httpClientFactory, user);
-                this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory, user);
-                this.pointShopService = new PointShopServiceProxy(_httpClientFactory, user);
-                this.inventoryService = new InventoryServiceProxy(_httpClientFactory, user);
-                this.gameService = new GameServiceProxy(_httpClientFactory);
-                this.cartService = new CartServiceProxy(_httpClientFactory, user);
-                this.userGameService = new UserGameServiceProxy(_httpClientFactory, user);
-                this.developerService = new DeveloperServiceProxy(_httpClientFactory, user);
+                this.marketplaceService = new MarketplaceServiceProxy(user);
+                this.pointShopService = new PointShopServiceProxy(user);
+                this.inventoryService = new InventoryServiceProxy(user);
+                this.gameService = new GameServiceProxy();
+                this.cartService = new CartServiceProxy(user);
+                this.userGameService = new UserGameServiceProxy(user);
+                this.developerService = new DeveloperServiceProxy(user);
                 this.friendsService = new FriendsServiceProxy(_httpClientFactory, user);
                 this.achievementsService = new AchievementsServiceProxy();
                 this.collectionServiceProxy = new CollectionsServiceProxy();

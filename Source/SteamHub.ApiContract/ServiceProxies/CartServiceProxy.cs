@@ -15,18 +15,16 @@ using System.Net.Http.Headers;
 
 namespace SteamHub.ApiContract.ServiceProxies
 {
-    public class CartServiceProxy : ICartService
+    public class CartServiceProxy : ServiceProxy, ICartService
     {
-        private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
 
-        public CartServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user)
+        public CartServiceProxy(IUserDetails user, string baseUrl = "https://localhost:7241") : base(baseUrl)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
             this.user = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
 
@@ -37,14 +35,13 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/Cart/AddToCart", gameRequest);
-
-                if (!response.IsSuccessStatusCode)
+                var purchasedGames = await GetAllPurchasedGamesAsync(this.user.UserId);
+                if (purchasedGames.Any(game => game.GameId == gameRequest.GameId))
                 {
-                    var errorMessage = (await response.Content.ReadAsStringAsync()).Trim('"');
-                    System.Diagnostics.Debug.WriteLine($"API returned error: {errorMessage}");
-                    throw new Exception(errorMessage);
+                    throw new InvalidOperationException("Game is already purchased and cannot be added to the cart again.");
                 }
+
+                await PostAsync("/api/Cart/AddToCart", gameRequest);
             }
             catch (Exception exception)
             {
@@ -57,12 +54,8 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Cart/{userId}");
-                response.EnsureSuccessStatusCode(); // Ensure successful status code
-
-                var result = await response.Content.ReadFromJsonAsync<List<Game>>(_options);
-
-                var gameIds = result
+                var response = await GetAsync<List<Game>>($"/api/Cart/{userId}");
+                var gameIds = response
                     .Select(currentGame => currentGame.GameId)
                     .ToList();
                 return gameIds ?? new List<int>();
@@ -78,11 +71,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Cart/Purchased/{userId}");
-                response.EnsureSuccessStatusCode(); // Ensure successful status code
-                var purchasedGames = await response.Content.ReadFromJsonAsync<List<Game>>(_options);
-
-                return purchasedGames ?? new List<Game>();
+                return await GetAsync<List<Game>>($"/api/Cart/Purchased/{userId}");
             }
             catch (Exception exception)
             {
@@ -95,11 +84,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Cart/{userId}");
-                response.EnsureSuccessStatusCode(); // Ensure successful status code
-                var games = await response.Content.ReadFromJsonAsync<List<Game>>(_options);
-               
-                return games ?? new List<Game>();
+                return await GetAsync<List<Game>>($"/api/Cart/{userId}");
             }
             catch (Exception exception)
             {
@@ -146,8 +131,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PatchAsJsonAsync("/api/Cart/RemoveFromCart", gameRequest);
-                response.EnsureSuccessStatusCode(); // Ensure successful status code
+                await PatchAsync("/api/Cart/RemoveFromCart", gameRequest);
             }
             catch (Exception exception)
             {

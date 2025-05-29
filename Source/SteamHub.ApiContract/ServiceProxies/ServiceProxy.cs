@@ -185,6 +185,20 @@ namespace SteamHub.ApiContract.ServiceProxies
             return await HandleResponseAsync<T>(response).ConfigureAwait(false);
         }
 
+        protected async Task PatchAsync(string endpoint, object data)
+        {
+            var content = new StringContent(
+                JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), BaseUrl + endpoint)
+            {
+                Content = content
+            };
+            var response = await StaticHttpClient.SendAsync(request).ConfigureAwait(false);
+            await EnsureSuccessStatusCodeAsync(response).ConfigureAwait(false);
+        }
+
+
+
         /// <summary>
         /// Sends a DELETE request asynchronously and deserializes the JSON response.
         /// </summary>
