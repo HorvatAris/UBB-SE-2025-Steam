@@ -82,13 +82,13 @@ builder.Services.AddScoped<IFriendshipsRepository, FriendshipsRepository>();
 builder.Services.AddScoped<IWalletRepository, WalletRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IFriendRequestRepository, FriendRequestRepository>();
-
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
-
 builder.Services.AddScoped<IAchievementsRepository, AchievementsRepository>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+
+
+builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IAchievementsService, AchievementsService>();
-
-
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IGameService, GameService>();

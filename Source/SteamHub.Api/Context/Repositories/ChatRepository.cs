@@ -1,13 +1,10 @@
-﻿
-using SteamHub.ApiContract.Models;
-using SteamHub.ApiContract.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SteamHub.ApiContract.Models;
+using Microsoft.EntityFrameworkCore;
+using ChatConversationEntity = SteamHub.Api.Entities.ChatConversation;
+using ChatMessageEntity = SteamHub.Api.Entities.ChatMessage;
+using SteamHub.Api.Context;
 
-namespace SteamHub.Api.Context.Repositories
+namespace SteamHub.ApiContract.Repositories
 {
     public class ChatRepository : IChatRepository
     {
@@ -18,88 +15,83 @@ namespace SteamHub.Api.Context.Repositories
             context = newContext ?? throw new ArgumentNullException(nameof(newContext));
         }
 
-        public ChatConversation CreateConversation(int user1, int user2)
+        public async Task<ChatConversation> CreateConversation(int user1, int user2)
         {
-            ChatConversation chatConversation = GetConversation(user1, user2);
-            if (chatConversation != null)
-            {
-                return chatConversation;
-            }
+            var existing = await GetConversationEntity(user1, user2);
+            if (existing != null)
+                return MapToContractConversation(existing);
 
-            // Ensure the correct type is used for ChatConversation
-            SteamHub.Api.Entities.ChatConversation conversation = new SteamHub.Api.Entities.ChatConversation
+            var conversation = new ChatConversationEntity
             {
                 User1Id = user1,
                 User2Id = user2
             };
             context.ChatConversations.Add(conversation);
-            context.SaveChanges();
-            return new ChatConversation
-            {
-                ConversationId = conversation.ConversationId,
-                User1Id = conversation.User1Id,
-                User2Id = conversation.User2Id
-            };
+            await context.SaveChangesAsync();
+            return MapToContractConversation(conversation);
         }
 
-        public ChatConversation GetConversation(int user1, int user2)
+        public async Task<ChatConversation?> GetConversation(int user1, int user2)
         {
-            var conversation = context.ChatConversations
-                .FirstOrDefault(c => (c.User1Id == user1 && c.User2Id == user2) || (c.User1Id == user2 && c.User2Id == user1));
-
-            if (conversation == null)
-            {
-                return null;
-            }
-
-            return new ChatConversation
-            {
-                ConversationId = conversation.ConversationId,
-                User1Id = conversation.User1Id,
-                User2Id = conversation.User2Id
-            };
+            var entity = await GetConversationEntity(user1, user2);
+            return entity == null ? null : MapToContractConversation(entity);
         }
 
-        public ChatMessage SendMessage(int senderId, int conversationId, string messageContent, string messageFormat)
+        public async Task<ChatMessage> SendMessage(int senderId, int conversationId, string messageContent, string messageFormat)
         {
-            SteamHub.Api.Entities.ChatMessage message = new SteamHub.Api.Entities.ChatMessage
+            var message = new ChatMessageEntity
             {
                 SenderId = senderId,
                 ConversationId = conversationId,
                 MessageContent = messageContent,
                 MessageFormat = messageFormat,
-                Timestamp = DateTime.Now
+                Timestamp = DateTime.UtcNow
             };
             context.ChatMessages.Add(message);
-            context.SaveChanges();
-            return new ChatMessage
+            await context.SaveChangesAsync();
+            return MapToContractMessage(message);
+        }
+
+        public async Task<List<ChatMessage>> GetAllMessagesOfConversation(int conv_id)
+        {
+            var messages = await context.ChatMessages
+                .Where(m => m.ConversationId == conv_id)
+                .OrderBy(m => m.Timestamp)
+                .ToListAsync();
+            return messages.Select(MapToContractMessage).ToList();
+        }
+
+        // Helper to get entity conversation
+        private async Task<ChatConversationEntity?> GetConversationEntity(int user1, int user2)
+        {
+            return await context.ChatConversations
+                .FirstOrDefaultAsync(c => (c.User1Id == user1 && c.User2Id == user2) || (c.User1Id == user2 && c.User2Id == user1));
+        }
+
+        // Mapping helpers
+        private ChatConversation MapToContractConversation(ChatConversationEntity entity)
+        {
+            if (entity == null) return null!;
+            return new ChatConversation
             {
-                MessageId = message.MessageId,
-                SenderId = message.SenderId,
-                ConversationId = message.ConversationId,
-                MessageContent = message.MessageContent,
-                MessageFormat = message.MessageFormat,
-                Timestamp = message.Timestamp.Ticks 
+                ConversationId = entity.ConversationId,
+                User1Id = entity.User1Id,
+                User2Id = entity.User2Id
             };
         }
 
-        public List<ChatMessage> GetAllMessagesOfConversation(int conv_id)
+        private ChatMessage MapToContractMessage(ChatMessageEntity entity)
         {
-            var messages = context.ChatMessages
-                .Where(m => m.ConversationId == conv_id)
-                .OrderBy(m => m.Timestamp)
-                .Select(m => new ChatMessage
-                {
-                    MessageId = m.MessageId,
-                    SenderId = m.SenderId,
-                    ConversationId = m.ConversationId,
-                    MessageContent = m.MessageContent,
-                    MessageFormat = m.MessageFormat,
-                    Timestamp = m.Timestamp.Ticks
-                })
-                .ToList();
-
-            return messages;
+            if (entity == null) return null!;
+            return new ChatMessage
+            {
+                MessageId = entity.MessageId,
+                ConversationId = entity.ConversationId,
+                SenderId = entity.SenderId,
+                MessageContent = entity.MessageContent,
+                MessageFormat = entity.MessageFormat,
+                Timestamp = new DateTimeOffset(entity.Timestamp).ToUnixTimeMilliseconds()
+            };
         }
     }
 }
