@@ -7,10 +7,12 @@
     using SteamHub.Api.Entities;
     using SteamHub.Api.Context.Repositories;
     using SteamHub.ApiContract.Models.Game;
+    using SteamHub.ApiContract.Models.User;
     using Game = SteamHub.Api.Entities.Game;
     using Microsoft.EntityFrameworkCore;
     using Xunit;
     using Microsoft.Extensions.Configuration;
+    using SteamHub.ApiContract.Models.Common;
 
     public class GameRepositoryTest : IDisposable
     {
@@ -50,32 +52,67 @@
             var pendingStatus = new GameStatus { Id = GameStatusEnum.Pending, Name = "Pending" };
             var rejectedStatus = new GameStatus { Id = GameStatusEnum.Rejected, Name = "Rejected" };
 
-            var userRole = new Role { Id = RoleEnum.User, Name = "User" };
-            var developerRole = new Role { Id = RoleEnum.Developer, Name = "Developer" };
-
             // Create test users
-            var user = new User
+            var user = new Api.Entities.User
             {
                 UserId = 1,
-                UserName = "test_user",
+                Username = "test_user",
                 Email = "user@example.com",
                 WalletBalance = 100.0f,
                 PointsBalance = 500.0f,
-                RoleId = RoleEnum.User,
+                UserRole = UserRole.User,
+                Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
+                ProfilePicture = "",
+
                 UserPointShopItemsInventory = new List<UserPointShopItemInventory>(),
-                StoreTransactions = new List<StoreTransaction>()
+                StoreTransactions = new List<StoreTransaction>(),
+                UserAchievements = new List<UserAchievement>(),
+                SoldGames = new List<SoldGame>(),
+                Reviews = new List<Review>(),
+                NewsPosts = new List<Post>(),
+                NewsComments = new List<Comment>(),
+                PostRatings = new List<PostRatingType>(),
+                SentFriendRequests = new List<FriendRequest>(),
+                ReceivedFriendRequests = new List<FriendRequest>(),
+                Friendships = new List<Friendship>(),
+                FriendOf = new List<Friendship>(),
+                ConversationsAsUser1 = new List<ChatConversation>(),
+                ConversationsAsUser2 = new List<ChatConversation>(),
+                SentMessages = new List<ChatMessage>(),
+                ForumComments = new List<ForumComment>(),
+                LikedComments = new List<UserLikedComment>(),
+                DislikedComments = new List<UserDislikedComment>()
             };
 
-            var developer = new User
+            var developer = new Api.Entities.User
             {
                 UserId = 2,
-                UserName = "test_dev",
+                Username = "test_dev",
                 Email = "dev@example.com",
                 WalletBalance = 500.0f,
                 PointsBalance = 1000.0f,
-                RoleId = RoleEnum.Developer,
+                UserRole = UserRole.Developer,
+                Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
+                ProfilePicture = "",
                 UserPointShopItemsInventory = new List<UserPointShopItemInventory>(),
-                StoreTransactions = new List<StoreTransaction>()
+                StoreTransactions = new List<StoreTransaction>(),
+
+                UserAchievements = new List<UserAchievement>(),
+                SoldGames = new List<SoldGame>(),
+                Reviews = new List<Review>(),
+                NewsPosts = new List<Post>(),
+                NewsComments = new List<Comment>(),
+                PostRatings = new List<PostRatingType>(),
+                SentFriendRequests = new List<FriendRequest>(),
+                ReceivedFriendRequests = new List<FriendRequest>(),
+                Friendships = new List<Friendship>(),
+                FriendOf = new List<Friendship>(),
+                ConversationsAsUser1 = new List<ChatConversation>(),
+                ConversationsAsUser2 = new List<ChatConversation>(),
+                SentMessages = new List<ChatMessage>(),
+                ForumComments = new List<ForumComment>(),
+                LikedComments = new List<UserLikedComment>(),
+                DislikedComments = new List<UserDislikedComment>()
             };
 
             _mockContext.Users.AddRange(user, developer);
@@ -108,7 +145,9 @@
                 PublisherUserId = 2,
                 Publisher = developer,
                 StoreTransactions = new List<StoreTransaction>(),
-                Items = new List<Item>()
+                Items = new List<Item>(),
+
+                
             };
 
             var game2 = new Game
@@ -185,7 +224,6 @@
             };
 
             user.StoreTransactions.Add(storeTransaction1);
-            user.StoreTransactions.Add(storeTransaction2);
             game1.StoreTransactions.Add(storeTransaction1);
             game2.StoreTransactions.Add(storeTransaction2);
 
@@ -268,7 +306,7 @@
                 Name = "New Test Game",
                 Description = "New Test Description",
                 Price = 49.99m,
-                PublisherUserIdentifier = 2,
+                PublisherUserIdentifier = 1,
                 MinimumRequirements = "Min",
                 RecommendedRequirements = "Rec",
                 ImagePath = "path.jpg",
@@ -281,7 +319,6 @@
 
             var result = await _repository.CreateGameAsync(request);
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal(request.Name, result.Name);
             var gameInDb = await _mockContext.Games.FirstOrDefaultAsync(g => g.GameId == result.Identifier);
