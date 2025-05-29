@@ -40,13 +40,11 @@
                                 HorizontalAlignment="Center"
                                 Spacing="8">
                         <Button Content="View"
-                                Command="{Binding ViewFriendCommand}"
                                 CommandParameter="{Binding FriendId}"
                                 Style="{StaticResource AccentButtonStyle}"
                                 MinWidth="80"/>
 
                         <Button Content="Chat"
-                                Command="{Binding ChatFriendCommand}"
                                 CommandParameter="{Binding FriendId}"
                                 Style="{StaticResource AccentButtonStyle}"
                                 MinWidth="80"/>

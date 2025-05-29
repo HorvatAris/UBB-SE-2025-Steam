@@ -14,7 +14,8 @@
 
     <Grid x:Name="RootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">  
         <Grid.Resources>  
-            <converters:GameCountToStringConverter x:Key="GameCountToStringConverter"/>  
+            <converters:GameCountToStringConverter x:Key="GameCountToStringConverter"/>
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <DataTemplate x:Key="GameItemTemplate" x:DataType="models:OwnedGame">  
                 <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"  
                         CornerRadius="8"  
@@ -43,7 +44,7 @@
                         <StackPanel Grid.Column="1"   
                                   Margin="12,0,0,0"  
                                   VerticalAlignment="Center">  
-                            <TextBlock Text="{Binding Title}"  
+                            <TextBlock Text="{Binding GameTitle}"  
                                      Style="{ThemeResource BodyStrongTextBlockStyle}"  
                                      TextWrapping="NoWrap"  
                                      TextTrimming="CharacterEllipsis"/>  
@@ -103,7 +104,7 @@
                       TextWrapping="Wrap"  
                       TextTrimming="CharacterEllipsis"  
                       MaxLines="1"/>  
-            <TextBlock Text="{Binding Games.Count, Converter={StaticResource GameCountToStringConverter}}"  
+            <TextBlock Text="{Binding OwnedGames.Count, Converter={StaticResource GameCountToStringConverter}}"  
                       Style="{StaticResource BodyTextBlockStyle}"/>  
         </StackPanel>  
 
@@ -122,8 +123,8 @@
                         Margin="0,0,5,20"  
                         Visibility="{Binding IsAllOwnedGamesCollection, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"/>  
 
-                <!-- Games Grid -->  
-                <ItemsControl ItemsSource="{Binding Games}"  
+                <!-- Games Grid -->
+                <ItemsControl ItemsSource="{Binding OwnedGames}"  
                             Margin="0,0,0,20">  
                     <ItemsControl.ItemsPanel>  
                         <ItemsPanelTemplate>  
@@ -159,7 +160,7 @@
                                     <StackPanel Grid.Column="1"   
                                               Margin="12,0,0,0"  
                                               VerticalAlignment="Center">  
-                                        <TextBlock Text="{Binding Title}"  
+                                        <TextBlock Text="{Binding GameTitle}"  
                                                  Style="{ThemeResource BodyStrongTextBlockStyle}"  
                                                  TextWrapping="NoWrap"  
                                                  TextTrimming="CharacterEllipsis"/>  
@@ -186,7 +187,7 @@
                                                     Tag="{Binding GameId}"  
                                                     Style="{StaticResource AccentButtonStyle}"  
                                                     MinWidth="100"  
-                                                    Visibility="{Binding DataContext.IsAllOwnedGamesCollection, ElementName=RootGrid, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"/>  
+                                                    />  
                                         </StackPanel>  
                                     </StackPanel>  
                                 </Grid>  
@@ -211,6 +212,9 @@
                    Foreground="{ThemeResource SystemFillColorCriticalBrush}"  
                    HorizontalAlignment="Center"  
                    VerticalAlignment="Center"  
-                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>  
-    </Grid>  
+                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+        <Frame x:Name="ContentFrame" Grid.Row="3"/>
+
+    </Grid>
+
 </Page> 
