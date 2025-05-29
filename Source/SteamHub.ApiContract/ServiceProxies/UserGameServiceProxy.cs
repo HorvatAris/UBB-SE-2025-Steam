@@ -18,7 +18,7 @@ using System.Net.Http.Headers;
 
 namespace SteamHub.ApiContract.ServiceProxies
 {
-    public class UserGameServiceProxy : IUserGameService
+    public class UserGameServiceProxy : ServiceProxy, IUserGameService
     {
         private const int InitialValueForLastEarnedPoints = 0;
         private const int ResetValueForNumberOfUserGamesWithTag = 0;
@@ -35,15 +35,13 @@ namespace SteamHub.ApiContract.ServiceProxies
         private const int ValueToDecrementPositionWith = 1;
         private const int ValueToIncrementPositionWith = 1;
 
-        private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
-        public UserGameServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user)
+        public UserGameServiceProxy(IUserDetails user, string baseUrl = "https://localhost:7241") : base(baseUrl)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
             this.User = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
 
@@ -54,13 +52,19 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/UserGame/AddToWishlist", gameRequest);
-                if (!response.IsSuccessStatusCode)
+                var purchasedGames = await GetPurchasedGamesAsync(gameRequest.UserId);
+                if (purchasedGames.Any(g => g.GameId == gameRequest.GameId))
                 {
-                    var errorMessage = (await response.Content.ReadAsStringAsync()).Trim('"');
-                    System.Diagnostics.Debug.WriteLine($"API returned error: {errorMessage}");
-                    throw new Exception(errorMessage);
+                    throw new InvalidOperationException("You already own this game. Cannot add to wishlist.");
                 }
+
+                var wishlistGames = await GetWishListGamesAsync(gameRequest.UserId);
+                if (wishlistGames.Any(g => g.GameId == gameRequest.GameId))
+                {
+                    throw new InvalidOperationException("This game is already in your wishlist.");
+                }
+
+                await PostAsync("/api/UserGame/AddToWishlist", gameRequest);
             }
             catch (Exception exception)
             {
@@ -73,10 +77,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/UserGame/{userId}");
-                response.EnsureSuccessStatusCode(); // Ensure successful status code
-                var result = await response.Content.ReadFromJsonAsync<Collection<Game>>(_options);
-                return result ?? throw new InvalidOperationException("Invalid response from GetAllGamesAsync");
+                return await GetAsync<Collection<Game>>($"/api/UserGame/{userId}");
             }
             catch (Exception exception)
             {
@@ -191,10 +192,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/UserGame/Tags/{userId}");
-                response.EnsureSuccessStatusCode(); // Ensure successful status code
-                var result = await response.Content.ReadFromJsonAsync<Collection<Tag>>(_options);
-                return result ?? throw new InvalidOperationException("Invalid response from GetFavoriteUserTagsAsync");
+                return await GetAsync<Collection<Tag>>($"/api/UserGame/Tags/{userId}");
             }
             catch (Exception exception)
             {
@@ -207,10 +205,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/UserGame/RecommendedGames/{userId}");
-                response.EnsureSuccessStatusCode(); // Ensure successful status code
-                var result = await response.Content.ReadFromJsonAsync<Collection<Game>>(_options);
-                return result ?? throw new InvalidOperationException("Invalid response from GetRecommendedGamesAsync");
+                return await GetAsync<Collection<Game>>($"/api/UserGame/RecommendedGames/{userId}");
             }
             catch (Exception exception)
             {
@@ -223,10 +218,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/UserGame/Wishlist/{userId}");
-                response.EnsureSuccessStatusCode(); // Ensure successful status code
-                var result = await response.Content.ReadFromJsonAsync<Collection<Game>>(_options);
-                return result ?? throw new InvalidOperationException("Invalid response from GetWishListGamesAsync");
+                return await GetAsync<Collection<Game>>($"/api/UserGame/Wishlist/{userId}");
             }
             catch (Exception exception)
             {
@@ -245,10 +237,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/UserGame/Purchased/{userId}");
-                response.EnsureSuccessStatusCode(); // Ensure successful status code
-                var result = await response.Content.ReadFromJsonAsync<Collection<Game>>(_options);
-                return result ?? throw new InvalidOperationException("Invalid response from GetPurchasedGamesAsync");
+                return await GetAsync<Collection<Game>>($"/api/UserGame/Purchased/{userId}");
             }
             catch (Exception exception)
             {
@@ -261,17 +250,12 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/UserGame/Purchase", request);
-                response.EnsureSuccessStatusCode();
-
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<PurchaseResponse>(responseContent, _options);
+                var result = await PostAsync<PurchaseResponse>("/api/UserGame/Purchase", request);
                 if (result != null)
                 {
                     LastEarnedPoints = result.PointsEarned;
                     User.PointsBalance += result.PointsEarned;
                 }
-
                 return result?.PointsEarned ?? InitialValueForLastEarnedPoints;
             }
             catch (Exception exception)
@@ -285,9 +269,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = _httpClient.PatchAsJsonAsync("/api/UserGame/RemoveFromWishlist", gameRequest);
-                response.Result.EnsureSuccessStatusCode(); // Ensure successful status code
-                return Task.CompletedTask;
+                return PatchAsyncWithoutResponse("/api/UserGame/RemoveFromWishlist", gameRequest);
             }
             catch (Exception exception)
             {

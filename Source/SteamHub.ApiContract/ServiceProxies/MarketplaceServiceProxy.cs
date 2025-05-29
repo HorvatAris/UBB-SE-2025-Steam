@@ -13,18 +13,18 @@ using System.Net.Http.Json;
 
 namespace SteamHub.ApiContract.ServiceProxies
 {
-    public class MarketplaceServiceProxy : IMarketplaceService
+    public class MarketplaceServiceProxy : ServiceProxy, IMarketplaceService
     {
-        private readonly HttpClient _httpClient;
+        public IUserDetails User { get; set; }
         private readonly JsonSerializerOptions _options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
 
-        public MarketplaceServiceProxy(IHttpClientFactory httpClientFactory)
+        public MarketplaceServiceProxy(IUserDetails user, string baseUrl = "https://localhost:7241/") : base(baseUrl)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
+            this.User = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
 
         public async Task AddListingAsync(Game game, Item item)
@@ -36,8 +36,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync($"api/Marketplace/BuyItem/{userId}", item);
-                response.EnsureSuccessStatusCode();
+                await PostAsync($"api/Marketplace/BuyItem/{userId}", item);
                 return true;
             }
             catch (Exception ex)
@@ -50,10 +49,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try 
             {
-                var response = await _httpClient.GetAsync("api/Marketplace/Listings");
-                response.EnsureSuccessStatusCode();
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<Item>>(content, _options) ?? new List<Item>();
+                return await GetAsync<List<Item>>("api/Marketplace/Listings");
             }
             catch (Exception ex)
             {
@@ -65,10 +61,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync("api/Marketplace/Users");
-                response.EnsureSuccessStatusCode();
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<User>>(content, _options) ?? new List<User>();
+                return await GetAsync<List<User>>("api/Marketplace/Users");
             }
             catch (Exception ex)
             {
@@ -80,10 +73,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"api/Marketplace/Listings/{userId}/Game/{gameId}");
-                response.EnsureSuccessStatusCode();
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<Item>>(content, _options) ?? new List<Item>();
+               return await GetAsync<List<Item>>($"api/Marketplace/Listings/{userId}/Game/{gameId}");
             }
             catch (Exception ex)
             {
@@ -100,8 +90,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PutAsync($"api/Marketplace/UpdateListing/{gameId}/{itemId}", null);
-                response.EnsureSuccessStatusCode();
+                await PutAsync<object>($"api/Marketplace/UpdateListing/{gameId}/{itemId}", null);
             }
             catch (Exception ex)
             {
@@ -112,8 +101,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PutAsync($"api/Marketplace/SwitchListingStatus/{gameId}/{itemId}", null);
-                response.EnsureSuccessStatusCode();
+                await PutAsync<object>($"api/Marketplace/SwitchListingStatus/{gameId}/{itemId}", null);
             }
             catch (Exception ex)
             {
