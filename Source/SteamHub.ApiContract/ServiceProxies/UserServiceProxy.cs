@@ -303,7 +303,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task<bool> UpdateProfilePictureAsync(string profilePicturePath)
+        public async Task<bool> UpdateProfilePictureAsync(int userId, string profilePicturePath)
         {
             try
             {
@@ -317,7 +317,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task<bool> UpdateProfileBioAsync(string profileBio)
+        public async Task<bool> UpdateProfileBioAsync(int userId, string profileBio)
         {
             try
             {

@@ -244,7 +244,7 @@ namespace SteamHub.Api.Controllers
                 return Unauthorized();
             }
 
-            var result = await userService.UpdateProfilePictureAsync(request.ProfilePicture);
+            var result = await userService.UpdateProfilePictureAsync(user.UserId, request.ProfilePicture);
             if (result)
             {
                 return Ok();
@@ -261,7 +261,7 @@ namespace SteamHub.Api.Controllers
                 return Unauthorized();
             }
 
-            var result = await userService.UpdateProfileBioAsync(request.Bio);
+            var result = await userService.UpdateProfileBioAsync(user.UserId, request.Bio);
             if (result)
             {
                 return Ok();

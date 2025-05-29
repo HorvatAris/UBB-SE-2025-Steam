@@ -491,7 +491,7 @@ namespace SteamHub.ViewModels
         {
             try
             {
-                var loggedInUser = new User(await this.userService.GetCurrentUserAsync());
+                var loggedInUser = await this.userService.GetCurrentUserAsync();
                 this.Users.Clear();
                 this.Users.Add(loggedInUser);
                 this.CurrentUser = loggedInUser;
