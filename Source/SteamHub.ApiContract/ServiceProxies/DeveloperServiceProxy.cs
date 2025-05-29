@@ -18,9 +18,8 @@ using SteamHub.ApiContract.Models.Developer;
 
 namespace SteamHub.ApiContract.ServiceProxies
 {
-    public class DeveloperServiceProxy : IDeveloperService
+    public class DeveloperServiceProxy : ServiceProxy, IDeveloperService
     {
-        private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
@@ -33,9 +32,8 @@ namespace SteamHub.ApiContract.ServiceProxies
         private const string PendingState = "Pending";
 
         public IUserDetails User { get; set; }
-        public DeveloperServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user)
+        public DeveloperServiceProxy(IUserDetails user, string baseUrl = "https://localhost:7241") : base(baseUrl)
         {
-            _httpClient = httpClientFactory.CreateClient("SteamHubApi");
             this.User = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
      
@@ -102,8 +100,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task DeleteGameTagsAsync(int gameId)
         {
-            var response = await _httpClient.PatchAsync($"/api/Developer/Games/{gameId}/Tags", null);
-            response.EnsureSuccessStatusCode();
+            await PatchAsync($"/api/Developer/Games/{gameId}/Tags", null);
         }
 
         public Game FindGameInObservableCollectionById(int gameId, ObservableCollection<Game> gameList)
@@ -121,40 +118,25 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task<Collection<Tag>> GetAllTagsAsync()
         {
-            var response = await _httpClient.GetAsync("/api/Developer/Tags");
-            response.EnsureSuccessStatusCode();
-
-            var tags = await response.Content.ReadFromJsonAsync<Collection<Tag>>();
-            return tags ?? new Collection<Tag>();
+            return await GetAsync<Collection<Tag>>("/api/Developer/Tags");
         }
 
 
         public async Task<List<Game>> GetDeveloperGamesAsync(int userId)
         {
-            var response = await _httpClient.GetAsync($"/api/Developer/Games/{userId}");
-            response.EnsureSuccessStatusCode();
-
-            var games = await response.Content.ReadFromJsonAsync<List<Game>>();
-            return games ?? new List<Game>();
+            return await GetAsync<List<Game>>($"/api/Developer/Games/{userId}");
         }
 
 
         public async Task<int> GetGameOwnerCountAsync(int gameId)
         {
-            var response = await _httpClient.GetAsync($"/api/Developer/Games/{gameId}/OwnersCount");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<int>();
+            return await GetAsync<int>($"/api/Developer/Games/{gameId}/OwnersCount");
         }
         
 
         public async Task<List<Tag>> GetGameTagsAsync(int gameId)
         {
-            var response = await _httpClient.GetAsync($"/api/Developer/Games/{gameId}/Tags");
-
-            response.EnsureSuccessStatusCode();
-
-            var tags = await response.Content.ReadFromJsonAsync<List<Tag>>();
-            return tags ?? new List<Tag>();
+            return await GetAsync<List<Tag>>($"/api/Developer/Games/{gameId}/Tags");
         }
 
 
@@ -181,11 +163,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Developer/RejectionMessage/{game_id}");
-                response.EnsureSuccessStatusCode();
-
-                var message = await response.Content.ReadAsStringAsync();
-                return message;
+                return await GetAsync<string>($"/api/Developer/RejectionMessage/{game_id}");
             }
             catch (Exception ex)
             {
@@ -198,11 +176,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Developer/Unvalidated/{userId}");
-                response.EnsureSuccessStatusCode();
-                var userGames = await response.Content.ReadFromJsonAsync <List<Game>>(_options);
-
-                return userGames ?? new List<Game>();
+                return await GetAsync<List<Game>>($"/api/Developer/Unvalidated/{userId}");
             }
             catch (Exception ex)
             {
@@ -213,30 +187,13 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task InsertGameTagAsync(int gameId, int tagId)
         {
-            var response = await _httpClient.PostAsync($"/api/Developer/Games/{gameId}/Tags/{tagId}", null);
-            response.EnsureSuccessStatusCode();
+            await PostAsync($"/api/Developer/Games/{gameId}/Tags/{tagId}", null);
         }
 
 
         public async Task<bool> IsGameIdInUseAsync(int gameId)
         {
-            var response = await _httpClient.GetAsync($"/api/Developer/Games/{gameId}/Exists");
-
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                return false;
-            }
-
-            response.EnsureSuccessStatusCode();
-
-            // Deserialize the JSON response into your ExistsResponse object
-            var result = await response.Content.ReadFromJsonAsync<ExistsResponse>(_options);
-            if (result == null)
-            {
-                throw new InvalidOperationException("Failed to deserialize API response for game ID existence. Response body was null or invalid JSON for ExistsResponse type.");
-            }
-
-            return result.Exists;
+            return await GetAsync<bool>($"/api/Developer/Games/{gameId}/Exists");
         }
 
         public async Task<bool> IsGameIdInUseAsync(
@@ -288,8 +245,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             try
             {
                 var content = new StringContent(string.Empty);
-                var response = await _httpClient.PatchAsync($"/api/Developer/Reject/{game_id}", content);
-                response.EnsureSuccessStatusCode();
+                await PostAsync($"/api/Developer/Reject/{game_id}", content);
             }
             catch (Exception ex)
             {
@@ -302,11 +258,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var jsonMessage = JsonSerializer.Serialize(message); // this adds quotes around the string
-                var content = new StringContent(jsonMessage, Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.PatchAsync($"/api/Developer/RejectWithMessage/{game_id}", content);
-                response.EnsureSuccessStatusCode();
+                await PatchAsync($"/api/Developer/RejectWithMessage/{game_id}", message);
             }
             catch (Exception ex)
             {
@@ -341,12 +293,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             if (game == null)
                 throw new ArgumentNullException(nameof(game));
 
-            var response = await _httpClient.PatchAsJsonAsync(
-                $"/api/Developer/Update/{userId}",
-                game
-            );
-
-            response.EnsureSuccessStatusCode();
+            await PatchAsync($"/api/Developer/Update/{userId}", game);
         }
 
 
@@ -371,29 +318,17 @@ namespace SteamHub.ApiContract.ServiceProxies
             System.Diagnostics.Debug.WriteLine($"Request URL: /api/Developer/UpdateWithTags/{userId}");
             System.Diagnostics.Debug.WriteLine($"Request Body: {json}");
 
-            var response = await _httpClient.PatchAsJsonAsync(
-                $"/api/Developer/UpdateWithTags/{userId}",
-                request,
-                _options
-            );
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                System.Diagnostics.Debug.WriteLine($"Error Response: {errorContent}");
-                throw new HttpRequestException($"Request failed with status code {response.StatusCode}. Error: {errorContent}");
-            }
-
-            response.EnsureSuccessStatusCode();
+            await PatchAsync($"/api/Developer/UpdateWithTags/{userId}", request);
         }
 
         public async Task ValidateGameAsync(int game_id)
         {
             try
             {
-                var content = new StringContent(string.Empty);
-                var response = await _httpClient.PatchAsync($"/api/Developer/Validate/{game_id}", content);
-                response.EnsureSuccessStatusCode();
+                //var content = new StringContent(string.Empty);
+                //var response = await _httpClient.PatchAsync($"/api/Developer/Validate/{game_id}", content);
+                //response.EnsureSuccessStatusCode();
+                await PatchAsync($"/api/Developer/Validate/{game_id}", new StringContent(string.Empty));
             }
             catch (Exception exception)
             {
@@ -466,8 +401,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task DeleteGameAsync(int gameId)
         {
-            var response = await _httpClient.DeleteAsync($"/api/Developer/Delete/{gameId}");
-            response.EnsureSuccessStatusCode();
+            await DeleteAsync<object>($"/api/Developer/Delete/{gameId}");
         }
 
         public IUserDetails GetCurrentUser()
@@ -484,13 +418,7 @@ namespace SteamHub.ApiContract.ServiceProxies
              // add empty list if null, or add at least one tag if needed
             game.Status ??= "Pending";      // default status if null
 
-            // Use PostAsJsonAsync to send the Game object as JSON in the request body
-            var response = await _httpClient.PostAsJsonAsync(
-                $"/api/Developer/Create/{userId}",
-                game
-            );
-
-            response.EnsureSuccessStatusCode();
+            await PostAsync($"/api/Developer/Create/{userId}", game);
         }
 
 

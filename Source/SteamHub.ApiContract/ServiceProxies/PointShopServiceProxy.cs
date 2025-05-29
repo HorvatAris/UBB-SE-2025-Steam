@@ -31,7 +31,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
 
-        public PointShopServiceProxy(IUserDetails user, string baseUrl = "https://localhost:7241/api/") : base(baseUrl)
+        public PointShopServiceProxy(IUserDetails user, string baseUrl = "https://localhost:7241") : base(baseUrl)
         {
            this.User = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
@@ -49,7 +49,8 @@ namespace SteamHub.ApiContract.ServiceProxies
             {
                 throw new InvalidOperationException("User is not initialized");
             }
-
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
             try
             {
                 await PutAsync<UpdateUserPointShopItemInventoryRequest>("/api/PointShop/Activate", request);
@@ -88,10 +89,12 @@ namespace SteamHub.ApiContract.ServiceProxies
             {
                 throw new InvalidOperationException("User is not initialized");
             }
-
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
             try
             {
-                await PutAsync<UpdateUserPointShopItemInventoryRequest>("/api/PointShop/Deactivate", request);
+                var response = await PutAsync<UpdateUserPointShopItemInventoryRequest>("/api/PointShop/Deactivate", request);
+
             }
             catch (Exception exception)
             {
@@ -233,15 +236,20 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task PurchaseItemAsync(PurchasePointShopItemRequest purchaseRequest)
         {
+            if (purchaseRequest == null)
+                throw new ArgumentNullException(nameof(purchaseRequest));
+
             try
             {
-                await PostAsync<PurchasePointShopItemRequest>("/api/PointShop/Purchase", purchaseRequest);
+                await PostAsync("/api/PointShop/Purchase", purchaseRequest);
             }
             catch (Exception exception)
             {
+                System.Diagnostics.Debug.WriteLine($"Error purchasing item: {exception.Message}");
                 throw new Exception($"Error purchasing item: {exception.Message}", exception);
             }
         }
+
 
         public async Task<PointShopItem> ToggleActivationForItemAsync(int itemId, ObservableCollection<PointShopItem> userItems)
         {

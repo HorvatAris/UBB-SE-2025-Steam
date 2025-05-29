@@ -22,7 +22,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
 
-        public MarketplaceServiceProxy(IUserDetails user, string baseUrl = "https://localhost:7241/api/") : base(baseUrl)
+        public MarketplaceServiceProxy(IUserDetails user, string baseUrl = "https://localhost:7241/") : base(baseUrl)
         {
             this.User = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
