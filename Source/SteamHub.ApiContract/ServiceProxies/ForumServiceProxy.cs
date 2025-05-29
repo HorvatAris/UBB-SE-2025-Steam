@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using SteamHub.ApiContract.Models;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ApiContract.ServiceProxies;
@@ -16,30 +17,20 @@ namespace SteamHub.ApiContract.Services.Proxies
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
-        public int GetCurrentUserId()
+        public async Task<int> GetCurrentUserIdAsync()
         {
-            var currentUser = userService.GetCurrentUserAsync().GetAwaiter().GetResult();
+            var currentUser = await userService.GetCurrentUserAsync();
             return currentUser != null ? (int)currentUser.UserId : 0;
         }
 
-#nullable enable
-        public List<ForumPost> GetPagedPosts(uint pageNumber, uint pageSize, bool positiveScoreOnly = false, int? gameId = null, string? filter = null)
+        public async Task<List<ForumPost>> GetPagedPostsAsync(uint pageNumber, uint pageSize, bool positiveScoreOnly = false, int? gameId = null, string? filter = null)
         {
             try
             {
                 string queryParams = $"?page={pageNumber}&size={pageSize}&positiveOnly={positiveScoreOnly}";
-
-                if (gameId.HasValue)
-                {
-                    queryParams += $"&gameId={gameId.Value}";
-                }
-
-                if (!string.IsNullOrEmpty(filter))
-                {
-                    queryParams += $"&filter={Uri.EscapeDataString(filter)}";
-                }
-
-                return GetAsync<List<ForumPost>>($"Forum/posts{queryParams}").GetAwaiter().GetResult();
+                if (gameId.HasValue) queryParams += $"&gameId={gameId.Value}";
+                if (!string.IsNullOrEmpty(filter)) queryParams += $"&filter={Uri.EscapeDataString(filter)}";
+                return await GetAsync<List<ForumPost>>($"Forum/posts{queryParams}");
             }
             catch (Exception)
             {
@@ -47,11 +38,11 @@ namespace SteamHub.ApiContract.Services.Proxies
             }
         }
 
-        public List<ForumPost> GetTopPosts(TimeSpanFilter filter)
+        public async Task<List<ForumPost>> GetTopPostsAsync(TimeSpanFilter filter)
         {
             try
             {
-                return GetAsync<List<ForumPost>>($"Forum/top-posts?filter={filter}").GetAwaiter().GetResult();
+                return await GetAsync<List<ForumPost>>($"Forum/top-posts?filter={filter}");
             }
             catch (Exception)
             {
@@ -59,22 +50,14 @@ namespace SteamHub.ApiContract.Services.Proxies
             }
         }
 
-        public int GetPostCount(bool positiveScoreOnly = false, int? gameId = null, string? filter = null)
+        public async Task<int> GetPostCountAsync(bool positiveScoreOnly = false, int? gameId = null, string? filter = null)
         {
             try
             {
                 string queryParams = $"?positiveOnly={positiveScoreOnly}";
-
-                if (gameId.HasValue)
-                {
-                    queryParams += $"&gameId={gameId.Value}";
-                }
-                if (!string.IsNullOrEmpty(filter))
-                {
-                    queryParams += $"&filter={Uri.EscapeDataString(filter)}";
-                }
-
-                return GetAsync<int>($"Forum/posts/count{queryParams}").GetAwaiter().GetResult();
+                if (gameId.HasValue) queryParams += $"&gameId={gameId.Value}";
+                if (!string.IsNullOrEmpty(filter)) queryParams += $"&filter={Uri.EscapeDataString(filter)}";
+                return await GetAsync<int>($"Forum/posts/count{queryParams}");
             }
             catch (Exception)
             {
@@ -82,11 +65,11 @@ namespace SteamHub.ApiContract.Services.Proxies
             }
         }
 
-        public void VoteOnPost(int postId, int voteValue)
+        public async Task VoteOnPostAsync(int postId, int voteValue)
         {
             try
             {
-                PostAsync($"Forum/posts/{postId}/vote", new { VoteValue = voteValue }).GetAwaiter().GetResult();
+                await PostAsync($"Forum/posts/{postId}/vote", new { VoteValue = voteValue });
             }
             catch (Exception ex)
             {
@@ -94,11 +77,11 @@ namespace SteamHub.ApiContract.Services.Proxies
             }
         }
 
-        public void VoteOnComment(int commentId, int voteValue)
+        public async Task VoteOnCommentAsync(int commentId, int voteValue)
         {
             try
             {
-                PostAsync($"Forum/comments/{commentId}/vote", new { VoteValue = voteValue }).GetAwaiter().GetResult();
+                await PostAsync($"Forum/comments/{commentId}/vote", new { VoteValue = voteValue });
             }
             catch (Exception ex)
             {
@@ -106,11 +89,11 @@ namespace SteamHub.ApiContract.Services.Proxies
             }
         }
 
-        public List<ForumComment> GetComments(int postId)
+        public async Task<List<ForumComment>> GetCommentsAsync(int postId)
         {
             try
             {
-                return GetAsync<List<ForumComment>>($"Forum/posts/{postId}/comments").GetAwaiter().GetResult();
+                return await GetAsync<List<ForumComment>>($"Forum/posts/{postId}/comments");
             }
             catch (Exception)
             {
@@ -118,11 +101,11 @@ namespace SteamHub.ApiContract.Services.Proxies
             }
         }
 
-        public void DeleteComment(int commentId)
+        public async Task DeleteCommentAsync(int commentId)
         {
             try
             {
-                DeleteAsync<object>($"Forum/comments/{commentId}").GetAwaiter().GetResult();
+                await DeleteAsync<object>($"Forum/comments/{commentId}");
             }
             catch (Exception ex)
             {
@@ -130,16 +113,11 @@ namespace SteamHub.ApiContract.Services.Proxies
             }
         }
 
-        public void CreateComment(string body, int postId, string date)
+        public async Task CreateCommentAsync(string body, int postId, string date)
         {
             try
             {
-                PostAsync("Forum/comments", new
-                {
-                    Body = body,
-                    PostId = postId,
-                    Date = date
-                }).GetAwaiter().GetResult();
+                await PostAsync("Forum/comments", new { Body = body, PostId = postId, Date = date });
             }
             catch (Exception ex)
             {
@@ -147,11 +125,11 @@ namespace SteamHub.ApiContract.Services.Proxies
             }
         }
 
-        public void DeletePost(int postId)
+        public async Task DeletePostAsync(int postId)
         {
             try
             {
-                DeleteAsync<object>($"Forum/posts/{postId}").GetAwaiter().GetResult();
+                await DeleteAsync<object>($"Forum/posts/{postId}");
             }
             catch (Exception ex)
             {
@@ -159,27 +137,16 @@ namespace SteamHub.ApiContract.Services.Proxies
             }
         }
 
-        public void CreatePost(string title, string body, string date, int? gameId)
+        public async Task CreatePostAsync(string title, string body, string date, int? gameId)
         {
             try
             {
-                PostAsync("Forum/posts", new
-                {
-                    Title = title,
-                    Body = body,
-                    Date = date,
-                    GameId = gameId
-                }).GetAwaiter().GetResult();
+                await PostAsync("Forum/posts", new { Title = title, Body = body, Date = date, GameId = gameId });
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error creating post: {ex.Message}");
             }
-        }
-
-        public void Initialize(IForumService instance)
-        {
-            // This method is only called on the server side
         }
     }
 }

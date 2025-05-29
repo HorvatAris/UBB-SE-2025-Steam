@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SteamHub.ApiContract.Models;
 
@@ -9,19 +6,16 @@ namespace SteamHub.ApiContract.Services.Interfaces
 {
     public interface IForumService
     {
-        // at the moment, implementations of IForumService must contain a static field
-        // that holds the initialised service
-        public void Initialize(IForumService forumService);
-        public int GetCurrentUserId();
-        public List<ForumPost> GetPagedPosts(uint pageNumber, uint pageSize, bool positiveScoreOnly = false, int? gameId = null, string? filter = null);
-        public List<ForumPost> GetTopPosts(TimeSpanFilter filter);
-        public int GetPostCount(bool positiveScoreOnly = false, int? gameId = null, string? filter = null);
-        public void VoteOnPost(int postId, int voteValue);
-        public void VoteOnComment(int commentId, int voteValue);
-        public List<ForumComment> GetComments(int postId);
-        public void DeleteComment(int commentId);
-        public void CreateComment(string body, int postId, string date);
-        public void DeletePost(int postId);
-        public void CreatePost(string title, string body, string date, int? gameId);
+        Task<int> GetCurrentUserIdAsync();
+        Task<List<ForumPost>> GetPagedPostsAsync(uint pageNumber, uint pageSize, bool positiveScoreOnly = false, int? gameId = null, string? filter = null);
+        Task<List<ForumPost>> GetTopPostsAsync(TimeSpanFilter filter);
+        Task<int> GetPostCountAsync(bool positiveScoreOnly = false, int? gameId = null, string? filter = null);
+        Task VoteOnPostAsync(int postId, int voteValue);
+        Task VoteOnCommentAsync(int commentId, int voteValue);
+        Task<List<ForumComment>> GetCommentsAsync(int postId);
+        Task DeleteCommentAsync(int commentId);
+        Task CreateCommentAsync(string body, int postId, string date);
+        Task DeletePostAsync(int postId);
+        Task CreatePostAsync(string title, string body, string date, int? gameId);
     }
 }
