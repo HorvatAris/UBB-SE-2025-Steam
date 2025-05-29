@@ -5,22 +5,22 @@ using SteamHub.ApiContract.Models;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Services.Interfaces;
 
-/* TODO: */
-/* UNCOMMENT AND MODIFY IFriendService instances to IFriendsService once IFriendsService is implemented */
-/*
 namespace SteamHub.ApiContract.Services
 {
     public class FriendRequestService : IFriendRequestService
     {
         private readonly IFriendRequestRepository friendRequestRepository;
         
-        private readonly IFriendService friendService;
-        
+        private readonly IFriendsService friendService;
 
-        public FriendRequestService(IFriendRequestRepository friendRequestRepository, IFriendService friendService)
+        private readonly IUserRepository userRepository;
+
+
+        public FriendRequestService(IFriendRequestRepository friendRequestRepository, IFriendsService friendService, IUserRepository userRepository)
         {
             this.friendRequestRepository = friendRequestRepository ?? throw new ArgumentNullException(nameof(friendRequestRepository));
             this.friendService = friendService ?? throw new ArgumentNullException(nameof(friendService));
+            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         public async Task<IEnumerable<FriendRequest>> GetFriendRequestsAsync(string username)
@@ -77,17 +77,18 @@ namespace SteamHub.ApiContract.Services
                 return false;
             }
 
-            // First, add as friend
-            bool friendAdded = await friendService.AddFriendAsync(
-                senderUsername,
-                receiverUsername,
-                requestToAccept.Email,
-                requestToAccept.ProfilePhotoPath);
+            // Convert usernames to User IDs
+            var senderUser = await userRepository.GetUserByUsernameAsync(senderUsername);
+            var receiverUser = await userRepository.GetUserByUsernameAsync(receiverUsername);
 
-            if (!friendAdded)
+            if (senderUser == null || receiverUser == null)
             {
+                // User not found
                 return false;
             }
+
+            // First, add as friend
+            await friendService.AddFriendAsync(senderUser.UserId, receiverUser.UserId);
 
             // Then delete the friend request
             return await friendRequestRepository.DeleteFriendRequestAsync(senderUsername, receiverUsername);
@@ -105,4 +106,3 @@ namespace SteamHub.ApiContract.Services
         }
     }
 }
-*/
