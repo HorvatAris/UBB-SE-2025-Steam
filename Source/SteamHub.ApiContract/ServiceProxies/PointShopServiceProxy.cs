@@ -53,11 +53,13 @@ namespace SteamHub.ApiContract.ServiceProxies
                 throw new ArgumentNullException(nameof(request));
             try
             {
-                await PutAsync<UpdateUserPointShopItemInventoryRequest>("/api/PointShop/Activate", request);
+                // Don't try to deserialize the response if we don't need it
+                await PutAsync("/api/PointShop/Activate", request);
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error activating item: {exception.Message}", exception);
+                System.Diagnostics.Debug.WriteLine($"Error activating item: {exception.Message}");
+                throw new Exception($"Failed to activate item: {exception.Message}", exception);
             }
         }
 
@@ -93,12 +95,13 @@ namespace SteamHub.ApiContract.ServiceProxies
                 throw new ArgumentNullException(nameof(request));
             try
             {
-                var response = await PutAsync<UpdateUserPointShopItemInventoryRequest>("/api/PointShop/Deactivate", request);
-
+                // Don't try to deserialize the response if we don't need it
+                await PutAsync("/api/PointShop/Deactivate", request);
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error activating item: {exception.Message}", exception);
+                System.Diagnostics.Debug.WriteLine($"Error deactivating item: {exception.Message}");
+                throw new Exception($"Failed to deactivate item: {exception.Message}", exception);
             }
         }
 
