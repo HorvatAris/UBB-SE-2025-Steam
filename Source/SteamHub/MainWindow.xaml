@@ -42,8 +42,8 @@
                 <NavigationViewItem Icon="AddFriend" Content="Friends" Tag="friends" />
                 <NavigationViewItem Icon="Scan" Content="Wallet" Tag="Wallet" />
                 <NavigationViewItem Icon="Like" Content="Achievements" Tag="AchievementsPage" />
+                <NavigationViewItem Icon="Emoji" Content="Features" Tag="FeaturesPage" />
                 <NavigationViewItem Icon="Like" Content="Collections" Tag="CollectionsPage" />
-
 
             </NavigationView.MenuItems>
 

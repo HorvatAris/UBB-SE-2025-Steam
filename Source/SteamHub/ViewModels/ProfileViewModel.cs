@@ -296,15 +296,7 @@ namespace SteamHub.ViewModels
             this.featuresService = featuresService ?? throw new ArgumentNullException(nameof(featuresService));
             this.achievementsService = achievementsService ?? throw new ArgumentNullException(nameof(achievementsService));
 
-            // Register for feature equipped/unequipped events
-            FeaturesViewModel.FeatureEquipStatusChanged += async (sender, userId) =>
-            {
-                // Only refresh if it's the current user's profile being displayed
-                if (userId == userIdentifier)
-                {
-                    await RefreshEquippedFeaturesAsync();
-                }
-            };
+            // Removed FeatureEquipStatusChanged event registration
         }
 
         public async Task LoadProfileAsync(int user_id)

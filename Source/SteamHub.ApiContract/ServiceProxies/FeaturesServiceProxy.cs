@@ -10,8 +10,9 @@ using SteamHub.ApiContract.Services.Interfaces;
 
 namespace SteamHub.ApiContract.ServiceProxies
 {
-    public class FeaturesServiceProxy : IFeaturesService
+    public class FeaturesServiceProxy : ServiceProxy, IFeaturesService
     {
+
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _options = new JsonSerializerOptions
         {
@@ -24,17 +25,34 @@ namespace SteamHub.ApiContract.ServiceProxies
             _httpClient = httpClientFactory.CreateClient("SteamHubApi");
         }
 
+        public async Task<Dictionary<string, List<Feature>>> GetFeaturesByCategoriesAsync(int userId)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"Features/user/{userId}/categories");
+                response.EnsureSuccessStatusCode();
+                var result = await response.Content.ReadFromJsonAsync<Dictionary<string, List<Feature>>>(_options);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in GetFeaturesByCategoriesAsync: {ex}");
+                throw new Exception("Failed to retrieve features from server", ex);
+            }
+        }
+
         public async Task<List<Feature>> GetAllFeaturesAsync(int userId)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature");
+                var response = await _httpClient.GetAsync($"Features?userId={userId}");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<List<Feature>>(_options) 
-                    ?? new List<Feature>();
+                var result = await response.Content.ReadFromJsonAsync<List<Feature>>(_options);
+                return result;
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error in GetAllFeaturesAsync: {ex}");
                 throw new Exception("Failed to retrieve features from server", ex);
             }
         }
@@ -43,28 +61,30 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature/type/{type}");
+                var response = await _httpClient.GetAsync($"Features/type/{type}");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<List<Feature>>(_options) 
-                    ?? new List<Feature>();
+                var result = await response.Content.ReadFromJsonAsync<List<Feature>>(_options);
+                return result;
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error in GetFeaturesByTypeAsync: {ex}");
                 throw new Exception("Failed to retrieve features by type from server", ex);
             }
         }
 
-        public async Task<List<Feature>> GetUserFeaturesAsync(int userIdentifier)
+        public async Task<List<Feature>> GetUserFeaturesAsync(int userId)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature/user/{userIdentifier}");
+                var response = await _httpClient.GetAsync($"Features/user/{userId}");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<List<Feature>>(_options) 
-                    ?? new List<Feature>();
+                var result = await response.Content.ReadFromJsonAsync<List<Feature>>(_options);
+                return result;
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error in GetUserFeaturesAsync: {ex}");
                 throw new Exception("Failed to retrieve user features from server", ex);
             }
         }
@@ -73,9 +93,10 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature/user/{userId}/purchased/{featureId}");
+                var response = await _httpClient.GetAsync($"Features/user/{userId}/purchased/{featureId}");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                var result = await response.Content.ReadFromJsonAsync<bool>(_options);
+                return result;
             }
             catch (Exception)
             {
@@ -87,13 +108,10 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/Feature/equip", new
-                {
-                    UserId = userId,
-                    FeatureId = featureId
-                }, _options);
+                var response = await _httpClient.PostAsJsonAsync("Features/equip", new { UserId = userId, FeatureId = featureId });
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<bool>(_options);
+                var result = await response.Content.ReadFromJsonAsync<bool>(_options);
+                return result;
             }
             catch (Exception)
             {
@@ -101,60 +119,48 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task<bool> UnequipFeatureAsync(int userIdentifier, int featureIdentifier)
+        public async Task<bool> UnequipFeatureAsync(int userId, int featureId)
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/Feature/unequip", new
-                {
-                    UserId = userIdentifier,
-                    FeatureId = featureIdentifier
-                }, _options);
+                var response = await _httpClient.PostAsJsonAsync("Features/unequip", new { UserId = userId, FeatureId = featureId });
                 response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadFromJsonAsync<FeatureResponse>(_options);
-                return result?.Success ?? false;
+                var featureResponse = await response.Content.ReadFromJsonAsync<FeatureResponse>(_options);
+                return featureResponse?.Success ?? false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception($"Failed to unequip feature: {ex.Message}", ex);
+                return false;
             }
         }
 
-        public async Task<bool> UnequipFeaturesByTypeAsync(int userIdentifier, string featureType)
+        public async Task<bool> UnequipFeaturesByTypeAsync(int userId, string featureType)
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/Feature/unequip-type", new
-                {
-                    UserId = userIdentifier,
-                    FeatureType = featureType
-                }, _options);
+                var response = await _httpClient.PostAsJsonAsync("Features/unequip-type", new { UserId = userId, FeatureType = featureType });
                 response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadFromJsonAsync<FeatureResponse>(_options);
-                return result?.Success ?? false;
+                var featureResponse = await response.Content.ReadFromJsonAsync<FeatureResponse>(_options);
+                return featureResponse?.Success ?? false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception($"Failed to unequip features by type: {ex.Message}", ex);
+                return false;
             }
         }
 
-        public async Task<bool> AddUserFeatureAsync(int userIdentifier, int featureIdentifier)
+        public async Task<bool> AddUserFeatureAsync(int userId, int featureId)
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/Feature/purchase", new
-                {
-                    UserId = userIdentifier,
-                    FeatureId = featureIdentifier
-                }, _options);
+                var response = await _httpClient.PostAsJsonAsync("Features/purchase", new { UserId = userId, FeatureId = featureId });
                 response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadFromJsonAsync<FeatureResponse>(_options);
-                return result?.Success ?? false;
+                var featureResponse = await response.Content.ReadFromJsonAsync<FeatureResponse>(_options);
+                return featureResponse?.Success ?? false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception($"Failed to purchase feature: {ex.Message}", ex);
+                return false;
             }
         }
 
@@ -162,13 +168,16 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature/user/{userId}/equipped");
+                System.Diagnostics.Debug.WriteLine($"Fetching equipped features for user ID: {userId}");
+                var response = await _httpClient.GetAsync($"Features/user/{userId}/equipped");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<List<Feature>>(_options) 
-                    ?? new List<Feature>();
+                var result = await response.Content.ReadFromJsonAsync<List<Feature>>(_options);
+                System.Diagnostics.Debug.WriteLine($"Successfully retrieved equipped features for user ID: {userId}");
+                return result;
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error fetching equipped features for user ID {userId}: {ex}");
                 throw new Exception("Failed to retrieve equipped features from server", ex);
             }
         }
@@ -177,28 +186,15 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature/{featureId}");
+                var response = await _httpClient.GetAsync($"Features/{featureId}");
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<Feature>(_options);
+                var result = await response.Content.ReadFromJsonAsync<Feature>(_options);
+                return result;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Failed to retrieve feature with ID {featureId} from server", ex);
-            }
-        }
-
-        public async Task<Dictionary<string, List<Feature>>> GetFeaturesByCategoriesAsync(int userId)
-        {
-            try
-            {
-                var response = await _httpClient.GetAsync($"/api/Feature/user/{userId}/categories");
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<Dictionary<string, List<Feature>>>(_options) 
-                    ?? new Dictionary<string, List<Feature>>();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to retrieve features by categories from server", ex);
+                System.Diagnostics.Debug.WriteLine($"Error in GetFeatureByIdAsync: {ex}");
+                throw new Exception($"Failed to retrieve feature by ID from server", ex);
             }
         }
 
@@ -206,31 +202,33 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/Feature/user/{userId}/preview/{featureId}");
+                var response = await _httpClient.GetAsync($"Features/user/{userId}/preview/{featureId}");
                 response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadFromJsonAsync<FeaturePreviewResponse>(_options);
-                return (result?.ProfilePicturePath ?? "ms-appx:///Assets/default-profile.png",
-                        result?.BioText ?? "No bio available",
-                        result?.EquippedFeatures ?? new List<Feature>());
+                var previewResponse = await response.Content.ReadFromJsonAsync<FeaturePreviewResponse>(_options);
+                return (previewResponse.ProfilePicturePath, previewResponse.BioText, previewResponse.EquippedFeatures);
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error in GetFeaturePreviewDataAsync: {ex}");
                 throw new Exception("Failed to retrieve feature preview data from server", ex);
             }
         }
-    }
 
-    // Helper classes for feature responses
-    public class FeatureResponse
-    {
-        public bool Success { get; set; }
-        public string Message { get; set; }
-    }
+        public class FeatureResponse
+        {
+            public bool Success { get; set; }
+            public string Message { get; set; }
+        }
 
-    public class FeaturePreviewResponse
-    {
-        public string ProfilePicturePath { get; set; }
-        public string BioText { get; set; }
-        public List<Feature> EquippedFeatures { get; set; }
+        public class FeaturePreviewResponse
+        {
+            public string ProfilePicturePath { get; set; }
+            public string BioText { get; set; }
+            public List<Feature> EquippedFeatures { get; set; }
+        }
     }
 } 
+
+
+
+

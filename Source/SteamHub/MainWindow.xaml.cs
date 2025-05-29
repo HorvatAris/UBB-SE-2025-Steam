@@ -77,6 +77,7 @@ namespace SteamHub
 
             this.userService = new UserServiceProxy();
             this.sessionService = new SessionServiceProxy(_httpClientFactory);
+            this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
 
             // Start with login page
             ShowLoginPage();
@@ -143,6 +144,7 @@ namespace SteamHub
                     this.cartService = null;
                     this.userGameService = null;
                     this.developerService = null;
+                    this.featuresService = null;
                     this.friendsService = null;
                     this.friendRequestService = null;
 
@@ -286,6 +288,9 @@ namespace SteamHub
                         break;
                     case "AchievementsPage":
                         this.ContentFrame.Content = new AchievementsPage(this.achievementsService, this.userService);
+                        break;
+                    case "FeaturesPage":
+                        this.ContentFrame.Content = new FeaturesPage(this.featuresService, this.userService, this.user, this.ContentFrame);
                         break;
                     case "Wallet":
                         this.ContentFrame.Navigate(typeof(WalletPage), (this.walletService, this.userService));

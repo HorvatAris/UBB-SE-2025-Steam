@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
 using SteamHub.ApiContract.Repositories;
 using SteamHub.ApiContract.Services.Interfaces;
+using SteamHub.ApiContract.Models.User;
 using SteamHub.Pages;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace SteamHub
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    public partial class App : Application
+    public sealed partial class App : Application
     {
         public App()
         {
@@ -49,6 +50,8 @@ namespace SteamHub
         public static IFeaturesService FeaturesService { get; private set; }
         public static IAchievementsService AchievementsService { get; private set; }
 
+        public static User CurrentUser { get; set; }
+
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             MainWindow = new MainWindow();
@@ -66,4 +69,4 @@ namespace SteamHub
 
     }
 
-    }
+}

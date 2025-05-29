@@ -39,13 +39,12 @@ builder.Services.AddScoped<ICollectionsService, CollectionsServiceProxy>();
 builder.Services.AddScoped<IFeaturesService, FeaturesServiceProxy>();
 
 
-
 builder.Services.AddHttpClient("SteamHubApi", client =>
 {
     client.BaseAddress = new Uri(apiBaseUri);
     client.DefaultRequestHeaders.Add("Accept", "application/json");
-    
-}).ConfigurePrimaryHttpMessageHandler(() => new NoSslCertificateValidationHandler());
+    client.DefaultRequestVersion = new Version(1, 1);
+});
 
 
 builder.Services.AddAuthentication("SteamHubAuth")

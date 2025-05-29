@@ -15,12 +15,13 @@ namespace SteamHub.Api.Context.Repositories
 
         public FeaturesRepository(DataContext context)
         {
+            System.Diagnostics.Debug.WriteLine($"[DEBUG] FeaturesRepository constructor called. context is null: {context == null}");
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<List<Feature>> GetAllFeaturesAsync(int userId)
         {
-            return await context.Features
+                        return await context.Features
                 .Select(feature => new Feature
                 {
                     FeatureId = feature.FeatureId,

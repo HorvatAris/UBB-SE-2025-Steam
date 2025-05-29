@@ -13,12 +13,12 @@ namespace SteamHub.ApiContract.Services
     {
         private readonly IFeaturesRepository featuresRepository;
         private readonly IUserService userService;
-        private readonly IPointShopService walletService;
+        private readonly IWalletService walletService;
 
         public FeaturesService(
             IFeaturesRepository featuresRepository,
             IUserService userService,
-            IPointShopService walletService)
+            IWalletService walletService)
         {
             this.featuresRepository = featuresRepository;
             this.userService = userService;
@@ -27,16 +27,10 @@ namespace SteamHub.ApiContract.Services
 
         public async Task<List<Feature>> GetAllFeaturesAsync(int userId)
         {
-            var features = await featuresRepository.GetAllFeaturesAsync(userId);
-            foreach (var feature in features)
-            {
-                var validationResult = FeaturesValidator.ValidateFeature(feature);
-                if (!validationResult.isValid)
-                {
-                    throw new InvalidOperationException(validationResult.errorMessage);
-                }
-            }
-            return features;
+            System.Diagnostics.Debug.WriteLine($"[Service] GetAllFeaturesAsync called with userId={userId}");
+            var result = await featuresRepository.GetAllFeaturesAsync(userId);
+            System.Diagnostics.Debug.WriteLine($"[Service] Features returned: {result.Count}");
+            return result;
         }
 
         public async Task<List<Feature>> GetFeaturesByTypeAsync(string type)
@@ -128,11 +122,11 @@ namespace SteamHub.ApiContract.Services
                 throw new InvalidOperationException(validationResult.errorMessage);
             }
 
-            /* await userService.GetUserByIdentifier(userIdentifier);
+            var user = userService.GetUserByIdentifierAsync(userIdentifier);
             if (user == null)
             {
                 throw new InvalidOperationException("User not found.");
-            }*/
+            }
 
             var balance = 0;// await walletService.GetBalanceAsync();
             if (balance < feature.Value)
