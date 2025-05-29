@@ -69,23 +69,18 @@
                         Spacing="5"
                         Margin="0,5,0,5">
 
-                        <!-- Friends Count Button -->
-                        <!--<Button Style="{StaticResource TransparentButton}"
-                            Padding="0"
-                            Command="{x:Bind ViewModel.ShowFriendsCommand, Mode=OneWay}"
+                        <!-- Friends Count Display -->
+                        <Border Background="#E6D5B8" 
+                            Padding="10,3" 
+                            CornerRadius="5"
                             HorizontalAlignment="Center"
-                            Visibility="{x:Bind ViewModel.IsProfileOwner, Mode=OneWay}">
-                            <Border Background="#E6D5B8" 
-                                Padding="10,3" 
-                                CornerRadius="5">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="No. friends: "
-                                    FontSize="12"/>
-                                    <TextBlock Text="{x:Bind ViewModel.FriendCount, Mode=OneWay}"
-                                        FontSize="12"/>
-                                </StackPanel>
-                            </Border>
-                        </Button> -->
+                            Visibility="{x:Bind ViewModel.IsProfileOwner, Mode=OneWay}">    
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="No. friends: " FontSize="12"/>
+                                <TextBlock Text="{x:Bind ViewModel.FriendCount, Mode=OneWay}" FontSize="12"/>
+                            </StackPanel>
+                        </Border>
+
 
                         <!-- Friend Button (Only visible on the friends page) -->
                         <Button Content="{x:Bind ViewModel.FriendButtonText, Mode=OneWay}"
@@ -430,12 +425,14 @@
 
                 <!-- Settings button -->
                 <Button Style="{StaticResource TransparentButton}"
-                        Command="{x:Bind ViewModel.ConfigurationCommand}"
-                        Visibility="{x:Bind ViewModel.IsProfileOwner, Mode=OneWay}">
-                    <FontIcon FontFamily="Segoe MDL2 Assets" 
-                             Glyph="&#xE713;"
-                             Foreground="White"/>
+                    Command="{x:Bind ViewModel.ConfigurationCommand}"
+                    CommandParameter="{x:Bind ViewModel.userService}"
+                    Visibility="{x:Bind ViewModel.IsProfileOwner, Mode=OneWay}">
+                            <FontIcon FontFamily="Segoe MDL2 Assets" 
+                          Glyph="&#xE713;"
+                          Foreground="White"/>  
                 </Button>
+
             </StackPanel>
 
             <!-- Collections Header -->

@@ -50,6 +50,17 @@ public class WebUserDetails : IUserDetails
     public string Username => GetClaimValue(ClaimTypes.Name)!;
     public string Password => GetClaimValue(ClaimTypes.Hash)!;
     public string Email => GetClaimValue(ClaimTypes.Email)!;
+    public string ProfilePicture
+    {
+        get => GetClaimValue("ProfilePicture") ?? "ms-appx:///Assets/DefaultUser.png";
+        set
+        {
+            httpContextAccessor.HttpContext?.User.AddIdentity(new ClaimsIdentity(new[]
+            {
+                new Claim("ProfilePicture", value)
+            }));
+        }
+    }
 
     public decimal WalletBalance
     {

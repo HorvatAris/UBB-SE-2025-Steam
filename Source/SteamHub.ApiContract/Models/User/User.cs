@@ -16,6 +16,8 @@ namespace SteamHub.ApiContract.Models.User
         {
             UserId = userDetails.UserId;
             Username = userDetails.Username;
+            Password = userDetails.Password;
+            ProfilePicture = userDetails.ProfilePicture;
             Email = userDetails.Email;
             WalletBalance = userDetails.WalletBalance;
             PointsBalance = userDetails.PointsBalance;
@@ -52,7 +54,7 @@ namespace SteamHub.ApiContract.Models.User
 
         public string ProfilePicture { get; set; }
 
-        public string ProfilePicturePath;
+        public string ProfilePicturePath { get; set; } = string.Empty;
         public string? Bio { get; set; }
         public DateTime LastModified { get; set; }
 

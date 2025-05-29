@@ -4,7 +4,6 @@ namespace SteamHub.ApiContract.Services.Interfaces
 {
     public interface IWalletService
     {
-        IUserDetails GetUser();
         Task CreateWallet(int userIdentifier);
         Task<decimal> GetBalance(int userId);
         Task<int> GetPoints(int userId);

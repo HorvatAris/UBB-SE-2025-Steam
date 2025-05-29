@@ -27,14 +27,16 @@ namespace SteamHub.ApiContract.Services
         private readonly IUserInventoryRepository userInventoryRepository;
         private readonly IItemRepository itemRepository;
         private readonly IGameRepository gameRepository;
+        private readonly IWalletRepository walletRepository;
         
 
-        public InventoryService(IUserRepository userRepository, IUserInventoryRepository userInventoryRepository, IItemRepository itemRepository, IGameRepository gameRepository)
+        public InventoryService(IUserRepository userRepository, IUserInventoryRepository userInventoryRepository, IItemRepository itemRepository, IGameRepository gameRepository, IWalletRepository walletRepository)
         {
             this.userRepository = userRepository;
             this.userInventoryRepository = userInventoryRepository;
             this.itemRepository = itemRepository;
             this.gameRepository = gameRepository;
+            this.walletRepository = walletRepository;
 
             // Instantiate the validator with enriched logic.
             this.inventoryValidator = new InventoryValidator();
@@ -129,17 +131,6 @@ namespace SteamHub.ApiContract.Services
             return filteredItems;
         }
 
-        public IUserDetails GetAllUsers()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IUserDetails> GetAllUsersAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-
         public async Task<bool> SellItemAsync(Item item, int userId)
         {
             // Validate that the item is sellable.
@@ -192,6 +183,7 @@ namespace SteamHub.ApiContract.Services
                 await this.itemRepository.UpdateItemAsync(item.ItemId, itemUpdateRequest);
                 await this.userInventoryRepository.RemoveItemFromUserInventoryAsync(itemFromInventoryRequest);
                 await this.userRepository.UpdateUserAsync(userId, userUpdateRequest);
+                await this.walletRepository.AddMoneyToWallet((decimal)item.Price, userId);
             }
             catch (Exception exception)
             {

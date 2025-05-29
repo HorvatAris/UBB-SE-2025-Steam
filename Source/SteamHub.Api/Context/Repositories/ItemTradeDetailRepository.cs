@@ -15,6 +15,7 @@ public class ItemTradeDetailRepository : IItemTradeDetailRepository
     public async Task<GetItemTradeDetailsResponse?> GetItemTradeDetailsAsync()
     {
         var tradeDetails = await _context.ItemTradeDetails
+            .AsNoTracking()
             .Select(details => new ItemTradeDetailResponse
             {
                 TradeId = details.TradeId,
@@ -32,6 +33,7 @@ public class ItemTradeDetailRepository : IItemTradeDetailRepository
     public async Task<ItemTradeDetailResponse?> GetItemTradeDetailAsync(int tradeId, int itemId)
     {
         var result = await _context.ItemTradeDetails
+            .AsNoTracking()
             .Where(details => details.TradeId == tradeId && details.ItemId == itemId)
             .Select(details => new ItemTradeDetailResponse
             {

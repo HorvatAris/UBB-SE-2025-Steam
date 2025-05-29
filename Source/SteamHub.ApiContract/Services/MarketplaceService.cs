@@ -24,15 +24,16 @@ namespace SteamHub.ApiContract.Services
 
         public IItemRepository ItemRepository { get; set; }
 
-        public IUserDetails User { get; set; }
+        public IWalletRepository WalletRepository { get; set; }
 
         public MarketplaceService(IUserRepository userRepository, IGameRepository gameRepository, IItemRepository itemRepository,
-                                  IUserInventoryRepository userInventoryRepository)
+                                  IUserInventoryRepository userInventoryRepository, IWalletRepository walletRepository)
         {
             this.UserRepository = userRepository;
             this.GameRepository = gameRepository;
             this.ItemRepository = itemRepository;
             this.UserInventoryRepository = userInventoryRepository;
+            this.WalletRepository = walletRepository;
         }
 
         public async Task<List<User>> GetAllUsersAsync()
@@ -183,6 +184,8 @@ namespace SteamHub.ApiContract.Services
                     PointsBalance = currentUser.PointsBalance,
                     UserRole = currentUser.UserRole,
                 });
+
+            await this.WalletRepository.BuyWithMoney((decimal)item.Price, currentUserId);
 
             return true;
         }

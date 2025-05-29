@@ -50,7 +50,6 @@ namespace SteamHub.Api.Context
         public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
 
         public DbSet<Wallet> Wallets { get; set; }
-        public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Achievement> Achievements { get; set; }
         public DbSet<ChatConversation> ChatConversations { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
@@ -137,7 +136,8 @@ namespace SteamHub.Api.Context
                     Password = passwords[0],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "https://i.imgur.com/vixhhkC.jpeg",
+                    Bio = "Testing"
                 },
                 new User
                 {
@@ -150,7 +150,8 @@ namespace SteamHub.Api.Context
                     Password = passwords[1],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "https://i.imgur.com/Ji7D74X.jpeg",
+                    Bio = "Testing"
                 },
                 new User
                 {
@@ -163,7 +164,8 @@ namespace SteamHub.Api.Context
                     Password = passwords[2],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "https://i.imgur.com/Ji7D74X.jpeg",
+                    Bio = "Testing"
                 },
                 new User
                 {
@@ -176,7 +178,8 @@ namespace SteamHub.Api.Context
                     Password = passwords[3],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "https://i.imgur.com/l5qkgRu.jpeg",
+                    Bio = "Testing"
                 },
                 new User
                 {
@@ -189,7 +192,8 @@ namespace SteamHub.Api.Context
                     Password = passwords[4],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "https://i.imgur.com/JPNXxsg.jpeg",
+                    Bio = "Testing"
                 },
                 new User
                 {
@@ -202,7 +206,8 @@ namespace SteamHub.Api.Context
                     Password = passwords[5],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "https://i.imgur.com/l5qkgRu.jpeg",
+                    Bio = "Testing"
                 },
                 new User
                 {
@@ -215,7 +220,8 @@ namespace SteamHub.Api.Context
                     Password = passwords[6],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "https://i.imgur.com/JPNXxsg.jpeg",
+                    Bio = "Testing"
                 },
                 new User
                 {
@@ -228,7 +234,8 @@ namespace SteamHub.Api.Context
                     Password = passwords[7],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = ""
+                    ProfilePicture = "https://i.imgur.com/l5qkgRu.jpeg",
+                    Bio = "Testing"
                 }
             };
 
@@ -260,7 +267,7 @@ namespace SteamHub.Api.Context
                     Price = 24.99m,
                     MinimumRequirements = "4GB RAM, 2.5GHz Processor, GTX 580",
                     RecommendedRequirements = "8GB RAM, 3.0GHz Processor, GTX 680",
-                    StatusId = GameStatusEnum.Rejected,
+                    StatusId = GameStatusEnum.Approved,
                     RejectMessage = "Minimum requirements are too high",
                     Rating = 4.2m,
                     NumberOfRecentPurchases = 0,
@@ -1797,27 +1804,6 @@ namespace SteamHub.Api.Context
                       .HasForeignKey(cg => cg.CollectionId);
             });
 
-            // -- UserProfile mapping --------------------------------------------------------
-            builder.Entity<UserProfile>(entity =>
-            {
-                entity.HasKey(up => up.ProfileId);
-                entity.Property(up => up.ProfileId)
-                    .ValueGeneratedOnAdd();
-                entity.Property(up => up.UserId)
-                    .IsRequired();
-                entity.Property(up => up.Bio);
-                entity.Property(up => up.LastModified)
-                    .HasDefaultValueSql("GETDATE()");
-
-                entity.HasOne(up => up.User)
-                    .WithOne()
-                    .HasForeignKey<UserProfile>(up => up.UserId);
-
-                entity.Ignore(up => up.Email);
-                entity.Ignore(up => up.Username);
-                entity.Ignore(up => up.ProfilePicture);
-            });
-
             // -- Wallet mapping --------------------------------------------------------
             builder.Entity<Wallet>(entity =>
             {
@@ -1855,7 +1841,11 @@ namespace SteamHub.Api.Context
                     .WithOne(r => r.User)
                     .HasForeignKey(r => r.UserIdentifier)
                     .OnDelete(DeleteBehavior.NoAction);
-
+                // UserProfile
+                entity.Property(up => up.Bio);
+                entity.Property(up => up.LastModified)
+                    .HasDefaultValueSql("GETDATE()");
+                entity.Property(up => up.ProfilePicture);
                 entity.HasMany(u => u.NewsPosts)
                     .WithOne(p => p.Author)
                     .HasForeignKey(p => p.AuthorId)
@@ -1966,71 +1956,6 @@ namespace SteamHub.Api.Context
                       .OnDelete(DeleteBehavior.Restrict);
             });
 
-
-
-            // UserProfiles seed data
-            var userProfilesSeed = new List<UserProfile>
-            {
-                new UserProfile
-                {
-                    ProfileId = 1,
-                    UserId = 1,
-                    Bio = "Gaming enthusiast and software developer",
-                    LastModified = new DateTime(2024, 1, 1)
-                },
-                new UserProfile
-                {
-                    ProfileId = 2,
-                    UserId = 2,
-                    Bio = "Game developer and tech lover",
-                    LastModified = new DateTime(2024, 1, 1)
-                },
-                new UserProfile
-                {
-                    ProfileId = 3,
-                    UserId = 3,
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
-                },
-                new UserProfile
-                {
-                    ProfileId = 4,
-                    UserId = 4,
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
-                },
-                new UserProfile
-                {
-                    ProfileId = 5,
-                    UserId = 5,
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
-                },
-                new UserProfile
-                {
-                    ProfileId = 6,
-                    UserId = 6,
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
-                },
-                new UserProfile
-                {
-                    ProfileId = 7,
-                    UserId = 7,
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
-                },
-                new UserProfile
-                {
-                    ProfileId = 8,
-                    UserId = 8,
-                    Bio = "Casual gamer and streamer",
-                    LastModified = new DateTime(2024, 1, 1)
-                }
-            };
-
-            builder.Entity<UserProfile>().HasData(userProfilesSeed);
-
             // Wallets seed data
             var walletsSeed = new List<Wallet>
             {
@@ -2131,6 +2056,54 @@ namespace SteamHub.Api.Context
 
             builder.Entity<Achievement>().HasData(achievementsSeed);
             builder.Entity<Friendship>().HasData(firendshipSeed);
+
+            var reviewsSeed = new List<Review>
+            {
+                new Review
+                {
+                    ReviewIdentifier = 1,
+                    ReviewTitleText = "Amazing Game!",
+                    ReviewContentText = "Risk of Rain 2 is a blast to play with friends. Highly recommended.",
+                    IsRecommended = true,
+                    NumericRatingGivenByUser = (double)4.5m,
+                    TotalHelpfulVotesReceived = 10,
+                    TotalFunnyVotesReceived = 2,
+                    TotalHoursPlayedByReviewer = 50,
+                    DateAndTimeWhenReviewWasCreated = new DateTime(2024, 5, 1),
+                    UserIdentifier = 4, // AliceJ
+                    GameIdentifier = 1  // Risk of Rain 2
+                },
+                new Review
+                {
+                    ReviewIdentifier = 2,
+                    ReviewTitleText = "Not my style",
+                    ReviewContentText = "Cyberstrike 2077 is too scary for me, but my friends love it.",
+                    IsRecommended = false,
+                    NumericRatingGivenByUser = (double)2.5m,
+                    TotalHelpfulVotesReceived = 3,
+                    TotalFunnyVotesReceived = 1,
+                    TotalHoursPlayedByReviewer = 8,
+                    DateAndTimeWhenReviewWasCreated = new DateTime(2024, 5, 2),
+                    UserIdentifier = 5, // LiamG
+                    GameIdentifier = 19  // Dead by Daylight
+                },
+                new Review
+                {
+                    ReviewIdentifier = 3,
+                    ReviewTitleText = "Classic",
+                    ReviewContentText = "Mario brings back the nostalgia with modern graphics.",
+                    IsRecommended = true,
+                    NumericRatingGivenByUser = (double)5.0m,
+                    TotalHelpfulVotesReceived = 15,
+                    TotalFunnyVotesReceived = 4,
+                    TotalHoursPlayedByReviewer = 120,
+                    DateAndTimeWhenReviewWasCreated = new DateTime(2024, 5, 3),
+                    UserIdentifier = 6, // SophieW
+                    GameIdentifier = 5  // Mario
+                }
+            };
+
+            builder.Entity<Review>().HasData(reviewsSeed);
         }
     }
 }

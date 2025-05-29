@@ -21,23 +21,20 @@
                        HorizontalAlignment="Center"
                        Padding="0,0,0,20"/>
 
-            <Button Content="Manage Features"
+            <!-- <Button Content="Manage Features"
                     Command="{Binding NavigateToFeaturesCommand}"
                     Style="{ThemeResource AccentButtonStyle}"
                     HorizontalAlignment="Center"
-                    Width="200"/>
-            <Button Content="Account Settings"
+                    Width="200"/> -->
+            <!--<Button Content="Account Settings"
                     Command="{Binding NavigateToAccountSettingsCommand}"
                     HorizontalAlignment="Center" 
-                    Width="200"/>
+                    Width="200"/> -->
             <Button Content="Modify Profile"
                     Command="{Binding NavigateToProfileSettingsCommand}"
                     HorizontalAlignment="Center" 
                     Width="200"/>
            
-            <Button Content="Back to Profile"
-                    Command="{Binding NavigateToProfileCommand}"
-                    Style="{ThemeResource TextBlockButtonStyle}"/>
         </StackPanel>
     </Grid>
 </Page>

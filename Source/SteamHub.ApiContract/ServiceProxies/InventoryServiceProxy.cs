@@ -75,16 +75,6 @@ namespace SteamHub.ApiContract.ServiceProxies
             return await GetAsync<List<Item>>($"/api/Inventory/All/{userId}");
         }
 
-        public IUserDetails GetAllUsers()
-        {
-            return this.User;
-        }
-
-        public async Task<IUserDetails> GetAllUsersAsync()
-        {
-            return await Task.FromResult(this.User);
-        }
-
         public async Task<List<Game>> GetAvailableGamesAsync(List<Item> items, int userId)
         {
             if (userId <= 0) throw new ArgumentException("UserId must be positive.", nameof(userId));
@@ -122,7 +112,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             if (userId <= 0) throw new ArgumentException("UserId must be positive.", nameof(userId));
-            await PatchAsync($"/api/Inventory/SellItem/{userId}", item);
+            await PatchAsync<object>($"/api/Inventory/SellItem/{userId}", item);
             return true;
         }
 

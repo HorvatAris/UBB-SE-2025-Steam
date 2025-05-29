@@ -10,17 +10,21 @@ namespace SteamHub.Tests.Services
     using SteamHub.ApiContract.Services;
     using Xunit;
 
+    using SteamHub.ApiContract.Models.Common;
+
     public class UserServiceTests
     {
         private readonly UserService userService;
         private readonly Mock<IUserRepository> userRepositoryMock;
-        private readonly Mock<ISessionService> sessionServiceMock;
+        private readonly Mock<ISessionRepository> sessionRepositoryMock;
 
         public UserServiceTests()
         {
             this.userRepositoryMock = new Mock<IUserRepository>();
-            this.sessionServiceMock = new Mock<ISessionService>();
-            this.userService = new UserService(this.userRepositoryMock.Object, this.sessionServiceMock.Object);
+            this.sessionRepositoryMock = new Mock<ISessionRepository>(); 
+            this.userService = new UserService(
+                this.userRepositoryMock.Object,
+                this.sessionRepositoryMock.Object); 
         }
 
         [Fact]
@@ -56,7 +60,7 @@ namespace SteamHub.Tests.Services
 
             var result = await userService.GetAllUsersAsync();
 
-            Assert.Equal("user1", result[0].UserName);
+            Assert.Equal("user1", result[0].Username);
         }
 
         [Fact]
@@ -128,7 +132,7 @@ namespace SteamHub.Tests.Services
 
             var result = await userService.GetAllUsersAsync();
 
-            Assert.Equal("user2", result[1].UserName);
+            Assert.Equal("user2", result[1].Username);
         }
 
         [Fact]
@@ -201,7 +205,7 @@ namespace SteamHub.Tests.Services
                     Email = "user1@example.com",
                     WalletBalance = 100f,
                     PointsBalance = 50,
-                    Role = RoleEnum.Developer
+                    UserRole = UserRole.Developer
                 },
                 new UserResponse
                 {
@@ -210,7 +214,7 @@ namespace SteamHub.Tests.Services
                     Email = "user2@example.com",
                     WalletBalance = 200f,
                     PointsBalance = 80,
-                    Role = RoleEnum.User
+                    UserRole = UserRole.User
                 }
             };
         }

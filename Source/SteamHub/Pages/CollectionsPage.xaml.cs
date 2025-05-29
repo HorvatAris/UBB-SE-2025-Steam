@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -45,19 +46,23 @@ namespace SteamHub.Pages
         private const string PublicCollectionHeader = "Public Collection";
 
         private CollectionsViewModel collectionsViewModel;
-        //TO SOLVE private UsersViewModel usersViewModel;
+        private UsersViewModel usersViewModel;
 
         public CollectionsPage(ICollectionsService collectionsService, IUserService userService)
         {
             this.InitializeComponent();
 
             collectionsViewModel = new CollectionsViewModel(collectionsService , userService);
-            collectionsViewModel.LoadCollectionsAsync();
+            LoadCollectionsAsync();
 
-            //TO SOLVE usersViewModel = App.UsersViewModel;
+
+            usersViewModel = new UsersViewModel(userService);
             this.DataContext = collectionsViewModel;
         }
-
+        private async Task LoadCollectionsAsync()
+        {
+            await collectionsViewModel.LoadCollectionsAsync();
+        }
         protected override void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
             base.OnNavigatedTo(eventArgs);
@@ -218,11 +223,6 @@ namespace SteamHub.Pages
                     await errorDialog.ShowAsync();
                 }
             }
-        }
-
-        private void BackToProfileButton_Click(object sender, RoutedEventArgs eventArgs)
-        {
-          //TO SOLVE  Frame.Navigate(typeof(ProfilePage), usersViewModel.GetCurrentUser().UserId);
         }
     }
 }

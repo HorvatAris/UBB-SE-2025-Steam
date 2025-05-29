@@ -10,16 +10,26 @@ namespace SteamHub.ApiContract.Services.Interfaces
 {
     public interface ICollectionsService
     {
-        List<Collection> GetAllCollections(int userIdentifier);
-        List<SteamHub.ApiContract.Models.Collections.Collection> GetLastThreeCollectionsForUser(int userIdentifier);
-        Collection GetCollectionByIdentifier(int collectionIdentifier, int userIdentifier);
-        List<OwnedGame> GetGamesInCollection(int collectionIdentifier);
-        void AddGameToCollection(int collectionIdentifier, int gameIdentifier, int userIdentifier);
-        void RemoveGameFromCollection(int collectionIdentifier, int gameIdentifier);
-        void DeleteCollection(int collectionIdentifier, int userIdentifier);
-        void CreateCollection(int userIdentifier, string collectionName, string coverPicture, bool isPublic, DateOnly createdAt);
-        void UpdateCollection(int collectionIdentifier, int userIdentifier, string collectionName, string coverPicture, bool isPublic);
-        List<Collection> GetPublicCollectionsForUser(int userIdentifier);
-        List<OwnedGame> GetGamesNotInCollection(int collectionIdentifier, int userIdentifier);
+        Task<List<Collection>> GetAllCollections(int userId);
+
+        Task<Collection> GetCollectionByIdentifier(int collectionId, int userId);
+
+        Task<List<Collection>> GetLastThreeCollectionsForUser(int userId);
+
+        Task<List<OwnedGame>> GetGamesInCollection(int collectionId);
+
+        Task AddGameToCollection(int collectionId, int gameId);
+
+        Task RemoveGameFromCollection(int collectionId, int gameId);
+
+        Task DeleteCollection(int collectionId, int userId);
+
+        Task CreateCollection(int userId, string collectionName, string coverPicture, bool isPublic, DateOnly createdAt);
+
+        Task UpdateCollection(int collectionId, int userId, string collectionName, string coverPicture, bool isPublic);
+
+        Task<List<Collection>> GetPublicCollectionsForUser(int userId);
+
+        Task<List<OwnedGame>> GetGamesNotInCollection(int collectionId, int userId);
     }
 }

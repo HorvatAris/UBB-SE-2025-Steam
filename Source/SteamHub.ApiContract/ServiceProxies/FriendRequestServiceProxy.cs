@@ -19,7 +19,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
 
-        public FriendRequestServiceProxy(IHttpClientFactory httpClientFactory, IUserDetails user)
+        public FriendRequestServiceProxy(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient("SteamHubApi");
             // Store user if needed for friend request operations
