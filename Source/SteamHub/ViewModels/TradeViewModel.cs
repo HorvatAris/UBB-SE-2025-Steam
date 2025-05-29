@@ -639,13 +639,13 @@ namespace SteamHub.ViewModels
             try
             {
                 // Clear the collection first to prevent UI binding issues
-                this.ActiveTrades.Clear();
                 
                 var activeTrades = await this.tradeService.GetActiveTradesAsync(this.CurrentUser.UserId);
                 
                 // Use a temporary list to avoid concurrent modifications
                 var tradesToAdd = activeTrades.ToList();
 
+                this.ActiveTrades.Clear();
                 // Add trades to the collection
                 foreach (var trade in tradesToAdd)
                 {
@@ -673,10 +673,7 @@ namespace SteamHub.ViewModels
             }
 
             try
-            {
-                // Clear the collection first to prevent UI binding issues
-                this.TradeHistory.Clear();
-                
+            {   
                 var historyTrades = await this.tradeService.GetTradeHistoryAsync(this.CurrentUser.UserId);
                 
                 // Use a temporary list to avoid concurrent modifications
@@ -684,6 +681,9 @@ namespace SteamHub.ViewModels
                     .Where(trade => trade.SourceUser.UserId == this.CurrentUser.UserId ||
                                   trade.DestinationUser.UserId == this.CurrentUser.UserId)
                     .ToList();
+
+                // Clear the collection first to prevent UI binding issues
+                this.TradeHistory.Clear();
 
                 // Add trades to the collection
                 foreach (var trade in tradesToAdd)
@@ -787,6 +787,10 @@ namespace SteamHub.ViewModels
                 }
 
                 bool isSourceUser = trade.SourceUser.UserId == this.CurrentUser.UserId;
+                trade.SourceUser.Password = "";
+                trade.SourceUser.ProfilePicture = "";
+                trade.DestinationUser.Password = "";
+                trade.DestinationUser.ProfilePicture = "";
                 await this.tradeService.AcceptTradeAsync(trade, isSourceUser);
 
                 // Clear the selected trade
