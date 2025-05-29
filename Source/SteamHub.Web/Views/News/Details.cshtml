@@ -1,0 +1,407 @@
+﻿@using System.Text.RegularExpressions
+@model SteamHub.Web.ViewModels.NewsPostViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "News Details";
+}
+
+@{
+    // Strip out full HTML wrapper from post content
+    var rawHtml = Model.Post.Content ?? string.Empty;
+    var innerHtml = Regex.Replace(rawHtml,
+        @"^.*?<body[^>]*>(.*?)</body>.*$",
+        "$1",
+        RegexOptions.Singleline | RegexOptions.IgnoreCase
+    );
+}
+
+<style>
+    /* Card styling */
+    .news-card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+    background: linear-gradient(to right, #4568dc, #b06ab3);
+    color: white;
+    padding: 16px;
+    border-bottom: none;
+    }
+
+    .card-header .text-muted {
+    color: rgba(255, 255, 255, 0.8) !important;
+    }
+
+    .card-body {
+    padding: 1.5rem;
+    }
+
+    .card-footer {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-top: 1px solid rgba(0, 0, 0, 0.125);
+    padding: 16px;
+    }
+
+    .post-content {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    }
+
+    .post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1rem 0;
+    }
+
+    .comments-card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .comments-card .card-header {
+    background: linear-gradient(to right, #4568dc, #b06ab3);
+    color: white;
+    padding: 16px;
+    border-bottom: none;
+    }
+
+    .comment-item {
+    border: 1px solid rgba(0,0,0,0.125);
+    border-radius: 8px;
+    transition: transform .2s,box-shadow .2s;
+    }
+
+    .comment-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .rounded-circle {
+    object-fit: cover;
+    border: 2px solid white;
+    }
+
+    .form-control:focus {
+    border-color: #4568dc;
+    box-shadow: 0 0 0 .25rem rgba(69,104,220,.25);
+    }
+
+    .modal-header {
+    background: linear-gradient(to right,#4568dc,#b06ab3);
+    color: white;
+    border-bottom: none;
+    }
+
+    .modal-header .btn-close {
+    color: white;
+    }
+
+    .badge {
+    font-weight: 500;
+    padding: .5em .75em;
+    }
+
+    .spoiler {
+    background-color: #1a1a1a;
+    color: #1a1a1a;
+    cursor: pointer;
+    padding: 3px 6px;
+    border-radius: 4px;
+    user-select: none;
+    transition: color .2s;
+    }
+
+    .spoiler.revealed {
+    color: white;
+    }
+
+    .news-votes-details {
+    align-items: center;
+    background: #f8f9fa;
+    border-radius: 1.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 1.3rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    .like-indicator-details {
+    color: #198754;
+    font-weight: bold;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    background: none !important;
+    border: none !important;
+    }
+
+    .dislike-indicator-details {
+    color: #dc3545;
+    font-weight: bold;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    background: none !important;
+    border: none !important;
+    }
+
+    .vote-count-details {
+    margin-left: 0.3rem;
+    font-size: 1.2rem;
+    }
+</style>
+
+<div class="container mt-4">
+    <!-- Back button -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <a asp-action="Index" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> Back to News
+            </a>
+        </div>
+    </div>
+
+    <!-- Post detail card -->
+    <div class="card mb-4 news-card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    @{
+                        var imageBase64 = Model.Author?.ProfilePicture != null
+                        ? (Model.Author.ProfilePicture)
+                        : string.Empty;
+                        var imgSrc = !string.IsNullOrEmpty(imageBase64)
+                        ? $"data:image/png;base64,{imageBase64}"
+                        : "/images/default-avatar.png";
+                    }
+                    <img src="@imgSrc" alt="@(Model.Author?.Username ?? "Unknown")" class="rounded-circle me-3" width="48" height="48" />
+                    <div>
+                        <h5 class="mb-0">@(Model.Author?.Username ?? "Unknown")</h5>
+                        <small class="text-muted">@Model.Post.UploadDate.ToString("MMM d, yyyy HH:mm")</small>
+                    </div>
+                </div>
+                @if (Model.IsCurrentUserAuthor)
+                {
+                    <div>
+                        <a asp-action="Edit" asp-route-id="@Model.Post.Id" class="btn btn-outline-light me-2">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#deletePostModal">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="post-content">
+                @Html.Raw(innerHtml)
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between">
+                <div class="d-flex news-votes-details">
+                    <form asp-action="Like" method="post" class="me-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Post.Id" />
+                        <button type="submit" class="btn @(Model.Post.ActiveUserRating == true ? "btn-primary" : "btn-outline-primary") like-indicator-details">
+                            👍 <span class="vote-count-details">@Model.Post.NrLikes</span>
+                        </button>
+                    </form>
+                    <form asp-action="Dislike" method="post" class="me-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Post.Id" />
+                        <button type="submit" class="btn @(Model.Post.ActiveUserRating == false ? "btn-danger" : "btn-outline-danger") dislike-indicator-details">
+                            👎 <span class="vote-count-details">@Model.Post.NrDislikes</span>
+                        </button>
+                    </form>
+                    @if (Model.Post.ActiveUserRating.HasValue)
+                    {
+                        <form asp-action="RemoveRating" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.Post.Id" />
+                            <button type="submit" class="btn btn-outline-secondary">
+                                <i class="bi bi-x"></i> Remove Rating
+                            </button>
+                        </form>
+                    }
+                </div>
+                <span class="badge bg-secondary fs-6">
+                    <i class="bi bi-chat-text"></i> @Model.Post.NrComments Comments
+                </span>
+            </div>
+        </div>
+    </div>
+    <!-- Comments section -->
+    <div class="card comments-card">
+        <div class="card-header">
+            <h4 class="mb-0">Comments</h4>
+        </div>
+
+        <div class="card-body">
+            <!-- Comment form -->
+            <form asp-action="AddComment" method="post" class="mb-4">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="postId" value="@Model.Post.Id">
+
+                <div class="form-group mb-3">
+                    <label for="content" class="form-label">Add a comment</label>
+                    <textarea name="content" id="content" class="form-control"
+                    rows="3" placeholder="Write your comment..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-send"></i> Post Comment
+                </button>
+            </form>
+
+            <!-- Comments list -->
+            @if (Model.Comments.Any())
+            {
+                <div class="comments-list">
+                    @foreach (var comment in Model.Comments.OrderByDescending(c => c.Comment.CommentDate))
+                    {
+                        <div class="comment-item card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex mb-2">
+                                        @*
+                                        <img src="@comment.Author.ProfilePicturePath" alt="@(comment.Author?.Username ?? "Unknown")"
+                                        class="rounded-circle me-2" width="36" height="36">
+
+                                        <div>
+                                            <h6 class="mb-0">@(comment.Author?.Username ?? "Unknown")</h6>
+                                            <small class="text-muted">@comment.Comment.CommentDate.ToString("MMM d, yyyy HH:mm")</small>
+                                        </div>
+
+                                        *@
+
+                                                <div>
+                                                    <h6 class="mb-0">@("Anonymus")</h6>
+                                                    <small class="text-muted">@comment.Comment.CommentDate.ToString("MMM d, yyyy HH:mm")</small>
+                                                </div>
+                                    </div>
+
+                                    @if (comment.IsCurrentUserAuthor)
+                                    {
+                                        <div>
+                                            <button class="btn btn-sm btn-outline-primary edit-comment-btn"
+                                            data-comment-id="@comment.Comment.CommentId">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </button>
+
+                                            <button class="btn btn-sm btn-outline-danger delete-comment-btn"
+                                            data-comment-id="@comment.Comment.CommentId"
+                                            data-post-id="@Model.Post.Id">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="comment-content mt-2" id="comment-content-@comment.Comment.CommentId">
+                                    @{
+                                        // Strip out full HTML wrapper from comment content
+                                        var rawCommentHtml = comment.Comment.Content;
+                                        var innerCommentHtml = Regex.Replace(rawCommentHtml,
+                                        @"^.*?<body[^>]*>(.*?)</body>.*$",
+                                        "$1",
+                                        RegexOptions.Singleline | RegexOptions.IgnoreCase
+                                        );
+                                    }
+                                    @Html.Raw(innerCommentHtml)
+                                </div>
+
+                                <div class="edit-form d-none" id="edit-comment-@comment.Comment.CommentId">
+                                    <form asp-action="EditComment" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="commentId" value="@comment.Comment.CommentId">
+                                        <input type="hidden" name="postId" value="@Model.Post.Id">
+
+                                        <div class="form-group mb-3">
+                                            <textarea name="content" class="form-control"
+                                                      rows="3">@Html.Raw(innerCommentHtml)</textarea>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                        <button type="button" class="btn btn-sm btn-secondary cancel-edit-btn"
+                                                data-comment-id="@comment.Comment.CommentId">
+                                            Cancel
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> No comments yet. Be the first to comment!
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Delete Post Modal -->
+    <div class="modal fade" id="deletePostModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this post? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form asp-action="Delete" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Post.Id">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden form for comment deletion -->
+    <form id="deleteCommentForm" asp-action="DeleteComment" method="post" class="d-none">
+        @Html.AntiForgeryToken()
+        <input type="hidden" id="deleteCommentId" name="commentId" value="" />
+        <input type="hidden" name="postId" value="@Model.Post.Id" />
+    </form>
+</div>
+
+@section Scripts {
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.spoiler').forEach(el => el.addEventListener('click', () => el.classList.toggle('revealed')));
+            document.querySelectorAll('.edit-comment-btn').forEach(btn => btn.addEventListener('click', function() {
+                const id = this.dataset.commentId;
+                document.getElementById(`comment-content-${id}`).classList.add('d-none');
+                document.getElementById(`edit-comment-${id}`).classList.remove('d-none');
+            }));
+            document.querySelectorAll('.cancel-edit-btn').forEach(btn => btn.addEventListener('click', function() {
+                const id = this.dataset.commentId;
+                document.getElementById(`comment-content-${id}`).classList.remove('d-none');
+                document.getElementById(`edit-comment-${id}`).classList.add('d-none');
+            }));
+            document.querySelectorAll('.delete-comment-btn').forEach(btn => btn.addEventListener('click', function() {
+                if(confirm('Delete this comment?')){
+                    document.getElementById('deleteCommentId').value = this.dataset.commentId;
+                    document.getElementById('deleteCommentForm').submit();
+                }
+            }));
+        });
+    </script>
+}

@@ -1,0 +1,135 @@
+﻿@using System.Text.RegularExpressions
+@model SteamHub.Web.ViewModels.NewsViewModel
+
+@{
+    ViewData["Title"] = "News";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">News</h2>
+    @if (Model.IsDeveloper)
+    {
+        <a asp-action="Create" class="btn btn-primary">Create Post</a>
+    }
+    <div class="row">
+        @foreach (var post in Model.Posts)
+        {
+			@* var author = Model.Authors.ContainsKey(post.AuthorId) *@
+			@* 	? Model.Authors[post.AuthorId] *@
+			@* 	: null; *@
+			//var username = author.Username ?? "Unknown";
+            var rawHtml = post.Content ?? "";
+            var innerHtml = Regex.Replace(rawHtml,
+            @"^.*?<body[^>]*>(.*?)</body>.*$",
+            "$1",
+            RegexOptions.Singleline | RegexOptions.IgnoreCase
+            );
+
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 news-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            @*
+                             <img src="@author?.ProfilePicturePath" class="rounded-circle me-2"
+                                  alt="Avatar" width="30" height="30" />
+                             <span>@username</span> 
+                             *@
+
+                        </div>
+                        <small class="text-muted">@post.UploadDate.ToString("g")</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="post-content-preview">
+                            @Html.Raw(innerHtml)
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between">
+                        <div class="news-votes">
+                            <span class="like-indicator me-3">👍 <span class="vote-count">@post.NrLikes</span></span>
+                            <span class="dislike-indicator">👎 <span class="vote-count">@post.NrDislikes</span></span>
+                        </div>
+                        <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-sm btn-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<style>
+    .post-content-preview {
+        max-height: 200px;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .post-content-preview::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), white);
+        }
+
+    .news-card {
+        transition: transform 0.2s;
+    }
+
+        .news-card:hover {
+            transform: scale(1.02);
+        }
+
+    .news-votes {
+        display: flex;
+        align-items: center;
+        background: #f8f9fa;
+        border-radius: 1.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 1.3rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .like-indicator {
+        color: #198754;
+        font-weight: bold;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+    .dislike-indicator {
+        color: #dc3545;
+        font-weight: bold;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+    .vote-count {
+        margin-left: 0.3rem;
+        font-size: 1.2rem;
+    }
+</style>
+
+<script>
+    // Handle spoiler tags
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.spoiler').forEach(spoiler => {
+            spoiler.addEventListener('click', function() {
+                this.classList.toggle('revealed');
+            });
+        });
+    });
+</script>

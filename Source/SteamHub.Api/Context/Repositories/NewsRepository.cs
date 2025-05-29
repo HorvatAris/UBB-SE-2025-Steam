@@ -99,8 +99,9 @@ public class NewsRepository : INewsRepository
 		{
 			post.NrLikes++;
 		}
+		post.ActiveUserRating = rating.RatingType;
 
-		context.NewsPosts.Update(post);
+        context.NewsPosts.Update(post);
 
 		return await context.SaveChangesAsync();
 	}
@@ -138,7 +139,9 @@ public class NewsRepository : INewsRepository
 			post.NrLikes--;
 		}
 
-		context.NewsPosts.Update(post);
+		post.ActiveUserRating = null;
+
+        context.NewsPosts.Update(post);
 
 		return await context.SaveChangesAsync();
 	}
