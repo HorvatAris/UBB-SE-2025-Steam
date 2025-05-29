@@ -289,8 +289,6 @@ namespace SteamHub.ViewModels
             IAchievementsService achievementsService)
         {
             // Initialize userProfile to prevent null reference exceptions
-            user = new User();
-
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.friendsService = friendsService ?? throw new ArgumentNullException(nameof(friendsService));
             this.dispatcherQueue = dispatcherQueue ?? throw new ArgumentNullException(nameof(dispatcherQueue));

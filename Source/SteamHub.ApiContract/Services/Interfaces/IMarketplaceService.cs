@@ -12,8 +12,6 @@ namespace SteamHub.ApiContract.Services.Interfaces
 
     public interface IMarketplaceService
     {
-        IUserDetails User { get; set; }
-
         Task AddListingAsync(Game game, Item item);
 
         Task<bool> BuyItemAsync(Item item, int userId);

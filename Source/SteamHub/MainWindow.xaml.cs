@@ -197,19 +197,19 @@ namespace SteamHub
             {
                 this.achievementsService = new AchievementsServiceProxy();
                 this.tradeService = new TradeServiceProxy();
-                this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory, user);
+                this.marketplaceService = new MarketplaceServiceProxy(_httpClientFactory);
                 this.pointShopService = new PointShopServiceProxy(_httpClientFactory, user);
                 this.inventoryService = new InventoryServiceProxy(_httpClientFactory);
                 this.gameService = new GameServiceProxy(_httpClientFactory);
                 this.cartService = new CartServiceProxy(_httpClientFactory, user);
                 this.userGameService = new UserGameServiceProxy(_httpClientFactory, user);
                 this.developerService = new DeveloperServiceProxy(_httpClientFactory, user);
-                this.friendsService = new FriendsServiceProxy(_httpClientFactory, user);
+                this.friendsService = new FriendsServiceProxy(_httpClientFactory);
                 this.achievementsService = new AchievementsServiceProxy();
                 this.collectionServiceProxy = new CollectionsServiceProxy();
                 this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
                 this.walletService = new WalletServiceProxy();
-                this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory, user);
+                this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory);
 
                 Debug.WriteLine("User services initialized successfully");
             }
@@ -254,13 +254,13 @@ namespace SteamHub
                         this.ContentFrame.Content = new InventoryPage(this.inventoryService, this.userService);
                         break;
                     case "marketplace":
-                        this.ContentFrame.Content = new MarketplacePage(this.marketplaceService);
+                        this.ContentFrame.Content = new MarketplacePage(this.marketplaceService, this.userService);
                         break;
                     case "trading":
                         this.ContentFrame.Content = new TradingPage(this.tradeService, this.userService, this.gameService);
                         break;
                     case "friends":
-                        this.ContentFrame.Content = new FriendsPage(this.friendsService);
+                        this.ContentFrame.Content = new FriendsPage(this.friendsService, this.userService);
                         break;
                     case "LoginPage":
                         ShowLoginPage();

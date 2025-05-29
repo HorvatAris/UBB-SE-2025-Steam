@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.Web.ViewModels;
 
@@ -9,28 +10,24 @@ namespace SteamHub.Web.Controllers
     public class MarketplaceController : Controller
     {
         private readonly IMarketplaceService _marketplaceService;
+        private readonly IUserDetails _user;
 
-        public MarketplaceController(IMarketplaceService marketplaceService)
+        public MarketplaceController(IMarketplaceService marketplaceService, IUserDetails user)
         {
             _marketplaceService = marketplaceService;
+            _user = user;
         }
 
         public async Task<IActionResult> Index()
         {
-            var allUsers = await _marketplaceService.GetAllUsersAsync();
-            var currentUsername = User.Identity?.Name;
-            var currentUser = allUsers.FirstOrDefault(u => u.Username == currentUsername);
-
-            if (currentUser == null)
+            if (_user == null)
             {
                 return RedirectToAction("Login", "Account");
             }
 
-            _marketplaceService.User = currentUser;
-
             var viewModel = new MarketplaceViewModel
             {
-                CurrentUser = currentUser,
+                CurrentUser = new User(_user),
                 Items = await _marketplaceService.GetAllListingsAsync()
             };
 
@@ -45,17 +42,13 @@ namespace SteamHub.Web.Controllers
         {
             try
             {
-                var allUsers = await _marketplaceService.GetAllUsersAsync();
-                var currentUsername = User.Identity?.Name;
-                var currentUser = allUsers.FirstOrDefault(u => u.Username == currentUsername);
-
-                if (currentUser == null)
+                if (_user == null)
                 {
                     return Json(new { success = false, message = "User not authenticated." });
                 }
 
-                _marketplaceService.User = currentUser;
-
+                var currentUser = new User(_user);
+                
                 var listings = await _marketplaceService.GetAllListingsAsync();
                 var item = listings.FirstOrDefault(i => i.ItemId == itemId && i.IsListed);
 
