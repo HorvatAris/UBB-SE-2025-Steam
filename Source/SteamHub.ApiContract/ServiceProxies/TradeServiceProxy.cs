@@ -114,7 +114,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await PatchAsync("Trade/Decline", trade);
+                await PatchAsyncWithoutResponse("Trade/Decline", trade);
             }
             catch (Exception ex)
             {
@@ -168,7 +168,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await PatchAsync($"Trade/Complete/{tradeId}", null);
+                await PatchAsyncWithoutResponse($"Trade/Complete/{tradeId}", null);
             }
             catch (Exception ex)
             {
@@ -180,7 +180,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await PatchAsync("Trade/TransferItem", tradeRequest);
+                await PatchAsyncWithoutResponse("Trade/TransferItem", tradeRequest);
             }
             catch (Exception ex)
             {
@@ -192,7 +192,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await PatchAsync($"Trade/Update", trade);
+                await PatchAsyncWithoutResponse($"Trade/Update", trade);
             }
             catch (Exception ex)
             {

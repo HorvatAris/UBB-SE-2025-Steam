@@ -269,7 +269,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                return PatchAsync("/api/UserGame/RemoveFromWishlist", gameRequest);
+                return PatchAsyncWithoutResponse("/api/UserGame/RemoveFromWishlist", gameRequest);
             }
             catch (Exception exception)
             {

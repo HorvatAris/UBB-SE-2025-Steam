@@ -228,7 +228,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             return await HandleResponseAsync<T>(response).ConfigureAwait(false);
         }
 
-        protected async Task PatchAsync(string endpoint, object data)
+        protected async Task PatchWithoutResponseAsync(string endpoint, object data)
         {
             var content = new StringContent(
                 JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
@@ -269,7 +269,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         /// <summary>
         /// Sends a PATCH request with JSON content asynchronously without expecting a response body.
         /// </summary>
-        protected async Task PatchAsync(string endpoint, object data)
+        protected async Task PatchAsyncWithoutResponse(string endpoint, object data)
         {
             var content = new StringContent(
                 JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");

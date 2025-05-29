@@ -100,7 +100,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 
         public async Task DeleteGameTagsAsync(int gameId)
         {
-            await PatchAsync($"/api/Developer/Games/{gameId}/Tags", null);
+            await PatchAsyncWithoutResponse($"/api/Developer/Games/{gameId}/Tags", null);
         }
 
         public Game FindGameInObservableCollectionById(int gameId, ObservableCollection<Game> gameList)
@@ -258,7 +258,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await PatchAsync($"/api/Developer/RejectWithMessage/{game_id}", message);
+                await PatchAsyncWithoutResponse($"/api/Developer/RejectWithMessage/{game_id}", message);
             }
             catch (Exception ex)
             {
@@ -293,7 +293,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             if (game == null)
                 throw new ArgumentNullException(nameof(game));
 
-            await PatchAsync($"/api/Developer/Update/{userId}", game);
+            await PatchAsyncWithoutResponse($"/api/Developer/Update/{userId}", game);
         }
 
 
@@ -318,7 +318,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             System.Diagnostics.Debug.WriteLine($"Request URL: /api/Developer/UpdateWithTags/{userId}");
             System.Diagnostics.Debug.WriteLine($"Request Body: {json}");
 
-            await PatchAsync($"/api/Developer/UpdateWithTags/{userId}", request);
+            await PatchAsyncWithoutResponse($"/api/Developer/UpdateWithTags/{userId}", request);
         }
 
         public async Task ValidateGameAsync(int game_id)
@@ -328,7 +328,7 @@ namespace SteamHub.ApiContract.ServiceProxies
                 //var content = new StringContent(string.Empty);
                 //var response = await _httpClient.PatchAsync($"/api/Developer/Validate/{game_id}", content);
                 //response.EnsureSuccessStatusCode();
-                await PatchAsync($"/api/Developer/Validate/{game_id}", new StringContent(string.Empty));
+                await PatchAsyncWithoutResponse($"/api/Developer/Validate/{game_id}", new StringContent(string.Empty));
             }
             catch (Exception exception)
             {

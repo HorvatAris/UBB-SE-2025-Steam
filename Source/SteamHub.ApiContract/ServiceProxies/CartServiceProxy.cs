@@ -131,7 +131,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await PatchAsync("/api/Cart/RemoveFromCart", gameRequest);
+                await PatchAsyncWithoutResponse("/api/Cart/RemoveFromCart", gameRequest);
             }
             catch (Exception exception)
             {
