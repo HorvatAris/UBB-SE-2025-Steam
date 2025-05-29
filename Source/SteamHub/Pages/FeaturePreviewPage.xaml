@@ -1,136 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
-    x:Class="SteamHub.Pages.FeaturePreviewPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SteamHub.Pages"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+<Page  
+   x:Class="SteamHub.Pages.FeaturePreviewPage"  
+   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  
+   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
+   xmlns:local="using:SteamHub.Pages"  
+   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"  
+   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
+   mc:Ignorable="d"  
+   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">  
 
-    <Grid Padding="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+   <Grid Padding="20">  
+       <Grid.RowDefinitions>  
+           <RowDefinition Height="Auto"/>  
+           <RowDefinition Height="*"/>  
+       </Grid.RowDefinitions>  
 
-        <!-- Header with Back Button -->
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+       <!-- Header with Back Button -->  
+       <Grid>  
+           <Grid.ColumnDefinitions>  
+               <ColumnDefinition Width="Auto"/>  
+               <ColumnDefinition Width="*"/>  
+           </Grid.ColumnDefinitions>  
 
-            <Button 
-                x:Name="BackButton"
-                Content="Back"
-                Click="BackButton_Click"
-                Margin="0,0,20,0"/>
+           <Button   
+               x:Name="BackButton"  
+               Content="Back"  
+               Click="BackButton_Click"  
+               Margin="0,0,20,0"/>  
 
-            <TextBlock 
-                Grid.Column="1"
-                Text="Feature Preview" 
-                Style="{StaticResource TitleTextBlockStyle}"
-                VerticalAlignment="Center"/>
-        </Grid>
+           <TextBlock   
+               Grid.Column="1"  
+               Text="Feature Preview"   
+               Style="{StaticResource TitleTextBlockStyle}"  
+               VerticalAlignment="Center"/>  
+       </Grid>  
 
-        <!-- Feature Preview Content -->
-        <Grid Grid.Row="1" Margin="0,20,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+       <!-- Feature Preview Content -->  
+       <Grid Grid.Row="1" Margin="0,20,0,0">  
+           <Grid.ColumnDefinitions>  
+               <ColumnDefinition Width="300"/>  
+               <ColumnDefinition Width="*"/>  
+           </Grid.ColumnDefinitions>  
 
-            <!-- Left Column: Feature Image -->
-            <Border 
-                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                Padding="20"
-                CornerRadius="8">
-                <Image 
-                    Source="{x:Bind ViewModel.SelectedFeature.Feature.Source}"
-                    Stretch="Uniform"/>
-            </Border>
+           <!-- Left Column: Feature Image -->  
+           <Border   
+               Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"  
+               Padding="20"  
+               CornerRadius="8">  
+               <Image   
+                   Source="{x:Bind ViewModel.SelectedFeature.Feature.Source}"  
+                   Stretch="Uniform"/>  
+           </Border>  
 
-            <!-- Right Column: Feature Details -->
-            <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                <TextBlock 
-                    Text="{x:Bind ViewModel.SelectedFeature.Feature.Name}"
-                    Style="{StaticResource TitleTextBlockStyle}"
-                    Margin="0,0,0,10"/>
+           <!-- Right Column: Feature Details -->  
+           <StackPanel Grid.Column="1" Margin="20,0,0,0">  
+               <TextBlock   
+                   Text="{x:Bind ViewModel.SelectedFeature.Feature.Name}"  
+                   Style="{StaticResource TitleTextBlockStyle}"  
+                   Margin="0,0,0,10"/>  
 
-                <TextBlock 
-                    Text="{x:Bind ViewModel.SelectedFeature.Feature.Description}"
-                    Style="{StaticResource BodyTextBlockStyle}"
-                    TextWrapping="Wrap"
-                    Margin="0,0,0,20"/>
+               <TextBlock   
+                   Text="{x:Bind ViewModel.SelectedFeature.Feature.Description}"  
+                   Style="{StaticResource BodyTextBlockStyle}"  
+                   TextWrapping="Wrap"  
+                   Margin="0,0,0,20"/>  
 
-                <TextBlock 
-                    Text="Type:"
-                    Style="{StaticResource SubtitleTextBlockStyle}"
-                    FontWeight="Bold"
-                    Margin="0,0,0,10"/>
+               <TextBlock   
+                   Text="Type:"  
+                   Style="{StaticResource SubtitleTextBlockStyle}"  
+                   FontWeight="Bold"  
+                   Margin="0,0,0,10"/>  
 
-                <TextBlock 
-                    Text="{x:Bind ViewModel.SelectedFeature.Feature.Type}"
-                    Style="{StaticResource BodyTextBlockStyle}"
-                    Margin="0,0,0,20"/>
+               <TextBlock   
+                   Text="{x:Bind ViewModel.SelectedFeature.Feature.Type}"  
+                   Style="{StaticResource BodyTextBlockStyle}"  
+                   Margin="0,0,0,20"/>  
 
-                <TextBlock 
-                    Text="Value:"
-                    Style="{StaticResource SubtitleTextBlockStyle}"
-                    FontWeight="Bold"
-                    Margin="0,0,0,10"/>
+               <TextBlock   
+                   Text="Value:"  
+                   Style="{StaticResource SubtitleTextBlockStyle}"  
+                   FontWeight="Bold"  
+                   Margin="0,0,0,10"/>  
 
-                <TextBlock 
-                    Text="{x:Bind ViewModel.SelectedFeature.Feature.Value}"
-                    Style="{StaticResource BodyTextBlockStyle}"
-                    Margin="0,0,0,20"/>
+               <TextBlock   
+                   Text="{x:Bind ViewModel.SelectedFeature.Feature.Value}"  
+                   Style="{StaticResource BodyTextBlockStyle}"  
+                   Margin="0,0,0,20"/>  
 
-                <TextBlock 
-                    Text="Preview"
-                    Style="{StaticResource SubtitleTextBlockStyle}"
-                    Margin="0,0,0,10"/>
+               <TextBlock   
+                   Text="Preview"  
+                   Style="{StaticResource SubtitleTextBlockStyle}"  
+                   Margin="0,0,0,10"/>  
 
-                <Border 
-                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    Padding="20"
-                    CornerRadius="8">
-                    <StackPanel>
-                        <TextBlock 
-                            Text="{x:Bind ViewModel.PreviewBioText}"
-                            Style="{StaticResource BodyTextBlockStyle}"
-                            TextWrapping="Wrap"/>
+               <Border   
+                   Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"  
+                   Padding="20"  
+                   CornerRadius="8">  
+                   <StackPanel>  
+                       <TextBlock   
+                           Text="{x:Bind ViewModel.PreviewBioText}"  
+                           Style="{StaticResource BodyTextBlockStyle}"  
+                           TextWrapping="Wrap"/>  
 
-                        <ItemsControl 
-                            ItemsSource="{x:Bind ViewModel.PreviewEquippedFeatures}"
-                            Margin="0,20,0,0">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Image 
-                                        Source="/{Binding Source}"
-                                        Width="50"
-                                        Height="50"
-                                        Margin="5"/>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </Border>
+                       <ItemsControl   
+                           ItemsSource="{x:Bind ViewModel.PreviewEquippedFeatures}"  
+                           Margin="0,20,0,0">  
+                           <ItemsControl.ItemsPanel>  
+                               <ItemsPanelTemplate>  
+                                   <StackPanel Orientation="Horizontal"/>  
+                               </ItemsPanelTemplate>  
+                           </ItemsControl.ItemsPanel>  
+                           <ItemsControl.ItemTemplate>  
+                               <DataTemplate>  
+                                   <Image Source="{Binding Path=Source}"  
+                                          Width="50"  
+                                          Height="50"  
+                                          Margin="5"/>  
+                               </DataTemplate>  
+                           </ItemsControl.ItemTemplate>  
+                       </ItemsControl>  
+                   </StackPanel>  
+               </Border>  
 
-                <!-- Purchase Button -->
-                <Button 
-                    Content="Purchase Feature"
-                    Command="{x:Bind ViewModel.PurchaseFeatureCommand}"
-                    CommandParameter="{x:Bind ViewModel.SelectedFeature}"
-                    Margin="0,20,0,0"
-                    HorizontalAlignment="Left"/>
-            </StackPanel>
-        </Grid>
-    </Grid>
+               <!-- Purchase Button -->  
+               <Button   
+                   Content="Purchase Feature"  
+                   Command="{x:Bind ViewModel.PurchaseFeatureCommand}"  
+                   CommandParameter="{x:Bind ViewModel.SelectedFeature}"  
+                   Margin="0,20,0,0"  
+                   HorizontalAlignment="Left"/>  
+           </StackPanel>  
+       </Grid>  
+   </Grid>  
 </Page>

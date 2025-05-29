@@ -45,7 +45,6 @@
                                     {
                                         <form asp-action="PurchaseFeature" method="post" class="d-inline">
                                             <input type="hidden" name="featureId" value="@feature.FeatureId" />
-                                            <button type="submit" class="btn btn-success">Purchase</button>
                                             @Html.AntiForgeryToken()
                                         </form>
                                     }

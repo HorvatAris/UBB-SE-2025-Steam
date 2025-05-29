@@ -39,10 +39,10 @@
                         <Button Grid.Column="1" Content="Preview" Margin="10,0" 
                                 Command="{Binding DataContext.PreviewFeatureCommand, ElementName=FeaturesPageRoot}" 
                                 CommandParameter="{Binding}"/>
-                        <!-- Purchase Button -->
+                        <!-- Purchase Button 
                         <Button Grid.Column="2" Content="Purchase" Margin="10,0" 
                                 Command="{Binding DataContext.PurchaseFeatureCommand, ElementName=FeaturesPageRoot}" 
-                                CommandParameter="{Binding}"/>
+                                CommandParameter="{Binding}"/> -->
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
