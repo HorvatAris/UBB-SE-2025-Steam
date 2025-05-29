@@ -52,7 +52,7 @@ namespace SteamHub.ViewModels
                 var gamesInCollection = await collectionsService.GetGamesInCollection(collectionId);
                 foreach (var game in gamesInCollection)
                 {
-                    Debug.WriteLine($" - GameId={game.GameId}, Title={game.GameTitle}, UserId={game.UserId}");
+                    Debug.WriteLine($" - GameId={game.GameId}, Title={game.GameTitle}, UserId={game.UserId} , Picture={game.CoverPicture}");
                 }
 
 

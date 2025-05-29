@@ -87,7 +87,9 @@ namespace SteamHub.Api.Context.Repositories
                 {
                     GameId = cg.OwnedGame.GameId,
                     UserId = cg.OwnedGame.UserId,
-                    GameTitle = cg.OwnedGame.GameTitle
+                    GameTitle = cg.OwnedGame.GameTitle,
+                    Description = cg.OwnedGame.Description,
+                    CoverPicture = cg.OwnedGame.CoverPicture
                 })
                 .ToListAsync();
         }
@@ -100,7 +102,9 @@ namespace SteamHub.Api.Context.Repositories
                 {
                     GameId = cg.OwnedGame.GameId,
                     UserId = cg.OwnedGame.UserId,
-                    GameTitle = cg.OwnedGame.GameTitle
+                    GameTitle = cg.OwnedGame.GameTitle,
+                    Description = cg.OwnedGame.Description,
+                    CoverPicture = cg.OwnedGame.CoverPicture
                 })
                 .ToListAsync();
         }
@@ -193,7 +197,9 @@ namespace SteamHub.Api.Context.Repositories
                 {
                     GameId = g.GameId,
                     UserId = g.UserId,
-                    GameTitle = g.GameTitle
+                    GameTitle = g.GameTitle,
+                    Description = g.Description,
+                    CoverPicture = g.CoverPicture
                 })
                 .ToListAsync();
         }
