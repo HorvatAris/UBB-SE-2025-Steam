@@ -77,7 +77,7 @@ namespace SteamHub
 
             this.userService = new UserServiceProxy();
             this.sessionService = new SessionServiceProxy(_httpClientFactory);
-            this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
+            this.featuresService = new FeaturesServiceProxy();
 
             // Start with login page
             ShowLoginPage();
@@ -214,7 +214,7 @@ namespace SteamHub
                 this.friendsService = new FriendsServiceProxy(_httpClientFactory);
                 this.achievementsService = new AchievementsServiceProxy();
                 this.collectionServiceProxy = new CollectionsServiceProxy();
-                this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
+                this.featuresService = new FeaturesServiceProxy();
                 this.reviewService = new ReviewServiceProxy();
                 this.walletService = new WalletServiceProxy();
                 this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory);
