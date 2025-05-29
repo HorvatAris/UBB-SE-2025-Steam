@@ -43,6 +43,7 @@ namespace SteamHub
 
         private FeaturesServiceProxy featuresService;
         private WalletServiceProxy walletService;
+        private ReviewServiceProxy reviewService;
         private FriendRequestServiceProxy friendRequestService;
         private AchievementsServiceProxy achievementsService;
         private CollectionsServiceProxy collectionServiceProxy;
@@ -212,6 +213,7 @@ namespace SteamHub
                 this.achievementsService = new AchievementsServiceProxy();
                 this.collectionServiceProxy = new CollectionsServiceProxy();
                 this.featuresService = new FeaturesServiceProxy(_httpClientFactory);
+                this.reviewService = new ReviewServiceProxy();
                 this.walletService = new WalletServiceProxy();
                 this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory);
 
@@ -240,7 +242,7 @@ namespace SteamHub
                 switch (tag)
                 {
                     case "HomePage":
-                        this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService);
+                        this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService, this.reviewService);
                         break;
                     case "CartPage":
                         this.ContentFrame.Content = new CartPage(this.cartService, this.userGameService);
@@ -249,7 +251,7 @@ namespace SteamHub
                         this.ContentFrame.Content = new PointsShopPage(this.pointShopService);
                         break;
                     case "WishlistPage":
-                        this.ContentFrame.Content = new WishListView(this.userGameService, this.gameService, this.cartService);
+                        this.ContentFrame.Content = new WishListView(this.userGameService, this.gameService, this.cartService, this.reviewService);
                         break;
                     case "DeveloperModePage":
                         this.ContentFrame.Content = new DeveloperModePage(this.developerService);
@@ -287,6 +289,9 @@ namespace SteamHub
                         break;
                     case "Wallet":
                         this.ContentFrame.Navigate(typeof(WalletPage), (this.walletService, this.userService));
+                        break;
+                    case "AddFriendsPage":
+                        this.ContentFrame.Content = new AddFriendsPage(this.friendsService, this.userService);
                         break;
 					case "CollectionsPage":
                         this.ContentFrame.Content = new CollectionsPage(this.collectionServiceProxy , this.userService);

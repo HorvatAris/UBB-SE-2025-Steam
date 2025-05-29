@@ -12,7 +12,7 @@ using SteamHub.Api.Context;
 namespace SteamHub.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250529053724_MainMigration")]
+    [Migration("20250529125536_MainMigration")]
     partial class MainMigration
     {
         /// <inheritdoc />
@@ -1034,7 +1034,7 @@ namespace SteamHub.Api.Migrations
                             Rating = 4.2m,
                             RecommendedRequirements = "8GB RAM, 3.0GHz Processor, GTX 680",
                             RejectMessage = "Minimum requirements are too high",
-                            StatusId = 2,
+                            StatusId = 1,
                             TrailerPath = "https://www.youtube.com/watch?v=pJ-aR--gScM"
                         },
                         new
@@ -2022,6 +2022,50 @@ namespace SteamHub.Api.Migrations
                     b.HasIndex("UserIdentifier");
 
                     b.ToTable("Reviews");
+
+                    b.HasData(
+                        new
+                        {
+                            ReviewIdentifier = 1,
+                            DateAndTimeWhenReviewWasCreated = new DateTime(2024, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            GameIdentifier = 1,
+                            IsRecommended = true,
+                            NumericRatingGivenByUser = 4.5m,
+                            ReviewContentText = "Risk of Rain 2 is a blast to play with friends. Highly recommended.",
+                            ReviewTitleText = "Amazing Game!",
+                            TotalFunnyVotesReceived = 2,
+                            TotalHelpfulVotesReceived = 10,
+                            TotalHoursPlayedByReviewer = 50,
+                            UserIdentifier = 4
+                        },
+                        new
+                        {
+                            ReviewIdentifier = 2,
+                            DateAndTimeWhenReviewWasCreated = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            GameIdentifier = 19,
+                            IsRecommended = false,
+                            NumericRatingGivenByUser = 2.5m,
+                            ReviewContentText = "Cyberstrike 2077 is too scary for me, but my friends love it.",
+                            ReviewTitleText = "Not my style",
+                            TotalFunnyVotesReceived = 1,
+                            TotalHelpfulVotesReceived = 3,
+                            TotalHoursPlayedByReviewer = 8,
+                            UserIdentifier = 5
+                        },
+                        new
+                        {
+                            ReviewIdentifier = 3,
+                            DateAndTimeWhenReviewWasCreated = new DateTime(2024, 5, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            GameIdentifier = 5,
+                            IsRecommended = true,
+                            NumericRatingGivenByUser = 5m,
+                            ReviewContentText = "Mario brings back the nostalgia with modern graphics.",
+                            ReviewTitleText = "Classic",
+                            TotalFunnyVotesReceived = 4,
+                            TotalHelpfulVotesReceived = 15,
+                            TotalHoursPlayedByReviewer = 120,
+                            UserIdentifier = 6
+                        });
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.SessionDetails", b =>

@@ -1149,7 +1149,7 @@ namespace SteamHub.Api.Migrations
                 columns: new[] { "GameId", "Description", "Discount", "GameplayPath", "ImagePath", "MinimumRequirements", "Name", "NumberOfRecentPurchases", "Price", "PublisherUserId", "Rating", "RecommendedRequirements", "RejectMessage", "StatusId", "TrailerPath" },
                 values: new object[,]
                 {
-                    { 1, "A rogue-like third-person shooter where players fight through hordes of monsters to escape an alien planet.", 0.20m, "https://www.youtube.com/watch?v=Cwk3qmD28CE", "https://upload.wikimedia.org/wikipedia/en/c/c1/Risk_of_Rain_2.jpg", "4GB RAM, 2.5GHz Processor, GTX 580", "Risk of Rain 2", 0, 24.99m, 1, 4.2m, "8GB RAM, 3.0GHz Processor, GTX 680", "Minimum requirements are too high", 2, "https://www.youtube.com/watch?v=pJ-aR--gScM" },
+                    { 1, "A rogue-like third-person shooter where players fight through hordes of monsters to escape an alien planet.", 0.20m, "https://www.youtube.com/watch?v=Cwk3qmD28CE", "https://upload.wikimedia.org/wikipedia/en/c/c1/Risk_of_Rain_2.jpg", "4GB RAM, 2.5GHz Processor, GTX 580", "Risk of Rain 2", 0, 24.99m, 1, 4.2m, "8GB RAM, 3.0GHz Processor, GTX 680", "Minimum requirements are too high", 1, "https://www.youtube.com/watch?v=pJ-aR--gScM" },
                     { 2, "A multiplayer horror game where survivors must evade a killer.", 0.40m, "https://www.youtube.com/watch?v=3wUHKO0ieyY", "https://pbs.twimg.com/media/FOEzJiXX0AcxBTi.jpg", "8GB RAM, i3-4170, GTX 760", "Dead by Daylight", 0, 19.99m, 1, 4.8m, "16GB RAM, i5-6500, GTX 1060", null, 0, "https://www.youtube.com/watch?v=JGhIXLO3ul8" },
                     { 3, "A tactical first-person shooter featuring team-based gameplay.", 0.50m, "https://www.youtube.com/watch?v=P22HqM9w500", "https://sm.ign.com/ign_nordic/cover/c/counter-st/counter-strike-2_jc2d.jpg", "8GB RAM, i5-2500K, GTX 660", "Counter-Strike 2", 0, 20.99m, 1, 4.9m, "16GB RAM, i7-7700K, GTX 1060", null, 1, "https://www.youtube.com/watch?v=c80dVYcL69E" },
                     { 4, "A story-driven first-person shooter that revolutionized the genre.", 0.60m, "https://www.youtube.com/watch?v=jElU1mD8JnI", "https://media.moddb.com/images/mods/1/47/46951/d1jhx20-dc797b78-5feb-4005-b206-.1.jpg", "512MB RAM, 1.7GHz Processor, DirectX 8 GPU", "Half-Life 2", 0, 9.99m, 1, 4.1m, "1GB RAM, 3.0GHz Processor, DirectX 9 GPU", null, 1, "https://www.youtube.com/watch?v=UKA7JkV51Jw" },
@@ -1288,6 +1288,16 @@ namespace SteamHub.Api.Migrations
                     { 12, 19, "A visor that enhances your vision in the neon-lit battles of Cyberstrike 2077.", "https://www.motocentral.co.uk/cdn/shop/files/Ruroc-EOX-Cyberstrike_-From-Moto-Central-_-Fast-Free-UK-Delivery-257043288_1024x.jpg?v=1744036882", false, "Neon Visor", 24.99f },
                     { 13, 20, "A mighty axe for the warriors of Shadow of Valhalla.", "https://valhalla-vikings.co.uk/cdn/shop/products/il_fullxfull.3370240260_td4v.jpg?v=1679150085&width=1080", false, "Viking Axe", 44.99f },
                     { 14, 20, "A robust shield forged for the bravest of fighters in Shadow of Valhalla.", "https://www.vikingsroar.com/cdn/shop/products/d7f00df1f2c5a9059ec5dd319139da24.webp?v=1652049514", true, "Valhalla Shield", 34.99f }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Reviews",
+                columns: new[] { "ReviewIdentifier", "DateAndTimeWhenReviewWasCreated", "GameIdentifier", "IsRecommended", "NumericRatingGivenByUser", "ReviewContentText", "ReviewTitleText", "TotalFunnyVotesReceived", "TotalHelpfulVotesReceived", "TotalHoursPlayedByReviewer", "UserIdentifier" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2024, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, true, 4.5m, "Risk of Rain 2 is a blast to play with friends. Highly recommended.", "Amazing Game!", 2, 10, 50, 4 },
+                    { 2, new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 19, false, 2.5m, "Cyberstrike 2077 is too scary for me, but my friends love it.", "Not my style", 1, 3, 8, 5 },
+                    { 3, new DateTime(2024, 5, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, true, 5m, "Mario brings back the nostalgia with modern graphics.", "Classic", 4, 15, 120, 6 }
                 });
 
             migrationBuilder.InsertData(

@@ -34,10 +34,11 @@ namespace SteamHub.Pages
         public HomePage(
             IGameService gameService,
             ICartService cartService,
-            IUserGameService userGameService)
+            IUserGameService userGameService,
+            IReviewService reviewService)
         {
             this.InitializeComponent();
-            this.HomePageViewModel = new HomePageViewModel(gameService, userGameService, cartService);
+            this.HomePageViewModel = new HomePageViewModel(gameService, userGameService, cartService, reviewService);
             this.DataContext = this.HomePageViewModel;
             this.Loaded += async (_, __) => await this.HomePageViewModel.InitAsync();
         }
