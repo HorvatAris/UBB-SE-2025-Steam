@@ -24,7 +24,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\SteamHub.Api\SteamHub.Api.csproj" />
-		<ProjectReference Include="..\SteamHub\SteamHub.csproj" />
 	</ItemGroup>
 
 </Project>
