@@ -1,16 +1,21 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BusinessLayer.Models;
-using BusinessLayer.Repositories;
-using BusinessLayer.Services.Interfaces;
+using SteamHub.ApiContract.Models;
+using SteamHub.ApiContract.Repositories;
+using SteamHub.ApiContract.Services.Interfaces;
 
-namespace BusinessLayer.Services
+/* TODO: */
+/* UNCOMMENT AND MODIFY IFriendService instances to IFriendsService once IFriendsService is implemented */
+/*
+namespace SteamHub.ApiContract.Services
 {
     public class FriendRequestService : IFriendRequestService
     {
         private readonly IFriendRequestRepository friendRequestRepository;
+        
         private readonly IFriendService friendService;
+        
 
         public FriendRequestService(IFriendRequestRepository friendRequestRepository, IFriendService friendService)
         {
@@ -100,3 +105,4 @@ namespace BusinessLayer.Services
         }
     }
 }
+*/

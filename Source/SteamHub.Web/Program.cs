@@ -31,8 +31,10 @@ builder.Services.AddScoped<IInventoryService, InventoryServiceProxy>();
 builder.Services.AddScoped<ITradeService, TradeServiceProxy>();
 builder.Services.AddScoped<IMarketplaceService, MarketplaceServiceProxy>();
 builder.Services.AddScoped<IAchievementsService, AchievementsServiceProxy>();
+builder.Services.AddScoped<IFriendRequestService, FriendRequestServiceProxy>();
 builder.Services.AddScoped<IReviewService, ReviewServiceProxy>(_ => new ReviewServiceProxy(apiBaseUri));
 builder.Services.AddScoped<IWalletService, WalletServiceProxy>();
+builder.Services.AddScoped<IFriendsService, FriendsServiceProxy>();
 
 
 builder.Services.AddHttpClient("SteamHubApi", client =>
