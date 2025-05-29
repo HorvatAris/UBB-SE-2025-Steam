@@ -19,6 +19,13 @@ namespace SteamHub.Web.ViewModels
         public string FriendButtonText { get; set; }
         public string ErrorMessage { get; set; }
         public AchievementWithStatus FriendshipsAchievement { get; set; }
+        public AchievementWithStatus OwnedGamesAchievement { get; set; }
+        public AchievementWithStatus SoldGamesAchievement { get; set; }
+        public AchievementWithStatus NumberOfReviewsAchievement { get; set; }
+        public AchievementWithStatus NumberOfReviewsReceived { get; set; }
+        public AchievementWithStatus DeveloperAchievement { get; set; }
+        public AchievementWithStatus YearsOfActivity { get; set; }
+        public AchievementWithStatus NumberOfPostsGetTopAchievement { get; set; }
         // Add more achievement properties as needed
         public bool IsProfileOwner { get; set; }
         public bool IsDeveloper { get; set; }
