@@ -12,10 +12,11 @@ using SteamHub.ApiContract.Services.Interfaces;
 
 namespace SteamHub.ViewModels
 {
-    public partial class AchievementsViewModel : BaseViewModel
+    public partial class AchievementsViewModel : ObservableObject
     {
         private readonly IAchievementsService achievementsService;
-       
+        private readonly IUserService userService;
+
         [ObservableProperty]
         private ObservableCollection<AchievementWithStatus> allAchievements = new();
 
@@ -49,33 +50,29 @@ namespace SteamHub.ViewModels
         [ObservableProperty]
         private string errorMessage;
 
-        public AchievementsViewModel(IAchievementsService achievementsService, IUserService userService, User currentUser)
-            : base(userService, currentUser)
+        public AchievementsViewModel(IAchievementsService achievementsService, IUserService userService)
         {
             this.achievementsService = achievementsService ?? throw new ArgumentNullException(nameof(achievementsService));
-            Debug.WriteLine($"AchievementsViewModel initialized for user: {currentUser.Username}");
+            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _ = LoadAchievementsAsync();
         }
 
-        protected override void OnUserChanged()
-        {
-            base.OnUserChanged();
-            Debug.WriteLine($"User changed in AchievementsViewModel - refreshing achievements for user: {CurrentUser.Username}");
-            _ = LoadAchievementsAsync();
-        }
 
         [RelayCommand]
         public async Task LoadAchievementsAsync()
         {
             try
             {
-                isLoading = true;
-                errorMessage = string.Empty;
+                IsLoading = true;
+                ErrorMessage = string.Empty;
 
-                Debug.WriteLine($"Loading achievements for user: {CurrentUser.Username} (ID: {CurrentUser.UserId})");
-                
+                var currentUser = await this.userService.GetCurrentUserAsync();
+
+                Debug.WriteLine($"Loading achievements for user: {currentUser.Username} (ID: {currentUser.UserId})");
+
+
                 // Get grouped achievements
-                var groupedAchievements = await achievementsService.GetGroupedAchievementsForUser(CurrentUser.UserId);
+                var groupedAchievements = await achievementsService.GetGroupedAchievementsForUser(currentUser.UserId);
              
                 try
                 {
@@ -90,11 +87,11 @@ namespace SteamHub.ViewModels
                     NumberOfReviewsReceivedAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.NumberOfReviewsReceived);
                     DeveloperAchievements = new ObservableCollection<AchievementWithStatus>(groupedAchievements.Developer);
 
-                    Debug.WriteLine($"Successfully loaded achievements for user: {CurrentUser.Username}");
+                    Debug.WriteLine($"Successfully loaded achievements for user: {currentUser.Username}");
                 }
                 catch (Exception ex)
                 {
-                    errorMessage = "Error assigning achievements to collections";
+                    ErrorMessage = "Error assigning achievements to collections";
                     Debug.WriteLine($"Error assigning achievements to collections: {ex}");
                     Debug.WriteLine($"Stack trace: {ex.StackTrace}");
                     throw;
@@ -102,24 +99,24 @@ namespace SteamHub.ViewModels
             }
             catch (Exception ex)
             {
-                errorMessage = "Error loading achievements";
+                ErrorMessage = "Error loading achievements";
                 Debug.WriteLine($"Error in LoadAchievementsAsync: {ex}");
                 Debug.WriteLine($"Stack trace: {ex.StackTrace}");
             }
             finally
             {
-                isLoading = false;
+                IsLoading = false;
             }
         }
 
         [RelayCommand]
         private void BackToProfile()
         {
-            if (CurrentUser != null)
-            {
-                Debug.WriteLine($"Navigating back to profile for user: {CurrentUser.Username}");
-                //NavigationService.Instance.Navigate(typeof(ProfilePage), CurrentUser.UserId);
-            }
+            //if (CurrentUser != null)
+            //{
+            //    Debug.WriteLine($"Navigating back to profile for user: {CurrentUser.Username}");
+            //    //NavigationService.Instance.Navigate(typeof(ProfilePage), CurrentUser.UserId);
+            //}
         }
     }
 }

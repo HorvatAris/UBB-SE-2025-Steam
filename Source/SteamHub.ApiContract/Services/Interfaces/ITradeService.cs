@@ -17,8 +17,6 @@ namespace SteamHub.ApiContract.Services.Interfaces
     {
         Task<List<ItemTrade>> GetActiveTradesAsync(int userId);
 
-        IUserDetails GetCurrentUser();
-
         Task AddItemTradeAsync(ItemTrade trade);
 
         Task MarkTradeAsCompletedAsync(int tradeId);

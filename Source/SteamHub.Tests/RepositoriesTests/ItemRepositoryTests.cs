@@ -14,6 +14,8 @@ using SteamHub.ApiContract.Models.Game;
 using SteamHub.ApiContract.Models.Item;
 using Xunit;
 
+using SteamHub.ApiContract.Models.Common;
+
 namespace SteamHub.Tests.Repositories
 {
     public class ItemRepositoryTests : IDisposable
@@ -44,17 +46,17 @@ namespace SteamHub.Tests.Repositories
         private void SeedData()
         {
             var gameStatus = new GameStatus { Id = GameStatusEnum.Approved, Name = "Approved" };
-            var role = new Role { Id = RoleEnum.User, Name = "User" };
             // User
             var user = new User
             {
                 UserId = 1,
-                UserName = "test_user",
+                Username = "test_user",
                 Email = "user@example.com",
+                Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
+                ProfilePicture = "",
                 WalletBalance = 100.0f,
                 PointsBalance = 500.0f,
-                RoleId = RoleEnum.User,
-                UserRole = role,
+                UserRole = UserRole.User,
                 UserPointShopItemsInventory = new List<UserPointShopItemInventory>(),
                 StoreTransactions = new List<StoreTransaction>()
             };

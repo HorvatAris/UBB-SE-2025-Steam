@@ -8,13 +8,12 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class WalletServiceProxy : ServiceProxy, IWalletService
     {
-        public WalletServiceProxy(IUserDetails user, string baseUrl = "https://localhost:7241/api/") : base(baseUrl)
+        public WalletServiceProxy(string baseUrl = "https://localhost:7241/api/") : base(baseUrl)
         {
-            this.user = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
+
         }
 
         private const int InitialZeroSum = 0;
-        private IUserDetails user;
 
         public async Task CreateWallet(int userIdentifier)
         {
@@ -90,11 +89,6 @@ namespace SteamHub.ApiContract.ServiceProxies
             {
                 throw new Exception($"Failed to buy with money: {ex.Message}", ex);
             }
-        }
-
-        public IUserDetails GetUser()
-        {
-            return user ?? throw new InvalidOperationException("User is not set. Ensure the WalletServiceProxy is initialized with a valid user.");
         }
     }
 

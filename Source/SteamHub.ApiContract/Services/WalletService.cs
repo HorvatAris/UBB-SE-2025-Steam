@@ -7,7 +7,6 @@ namespace SteamHub.ApiContext.Services
     public class WalletService : IWalletService
     {
         private readonly IWalletRepository walletRepository;
-        private readonly IUserDetails user;
 
         public WalletService(IWalletRepository walletRepository)
         {
@@ -87,11 +86,6 @@ namespace SteamHub.ApiContext.Services
                 throw new ArgumentOutOfRangeException(nameof(amount), "Amount must be greater than 0.");
             }
             await walletRepository.BuyWithMoney(amount, userId);
-        }
-
-        public IUserDetails GetUser()
-        {
-            return user;
         }
     }
 }

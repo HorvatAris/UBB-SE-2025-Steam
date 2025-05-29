@@ -10,12 +10,6 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class AchievementsServiceProxy : ServiceProxy, IAchievementsService
     {
-        private readonly JsonSerializerOptions _options = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-        };
-
         public AchievementsServiceProxy(string baseUrl = "https://localhost:7241/api/")
             : base(baseUrl)
         {

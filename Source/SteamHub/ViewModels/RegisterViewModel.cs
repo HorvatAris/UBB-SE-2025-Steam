@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls;
@@ -9,6 +10,7 @@ using SteamHub.ApiContract.Models.Common;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ApiContract.Validators;
 using SteamHub.Pages;
+using SteamHub.Helpers;
 
 namespace SteamHub.ViewModels;
 
@@ -18,7 +20,7 @@ namespace SteamHub.ViewModels;
 public partial class RegisterViewModel : ObservableObject
 {
     private IUserService UserService { get; set; }
-    private readonly Frame frame;
+    private readonly Frame navigationFrame;
 
     /// <summary>
     /// Gets or sets the username entered by the user.
@@ -57,14 +59,20 @@ public partial class RegisterViewModel : ObservableObject
     private bool isDeveloper;
 
     /// <summary>
+    /// Gets or sets whether the registration is in progress.
+    /// </summary>
+    [ObservableProperty]
+    private bool isLoading;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="RegisterViewModel"/> class.
     /// </summary>
-    /// <param name="frame">The navigation frame used to move between pages.</param>
+    /// <param name="navigationFrame">The navigation frame used to move between pages.</param>
     /// <param name="userService">The service used to handle user registration and validation.</param>
-    public RegisterViewModel(Frame frame, IUserService userService)
+    public RegisterViewModel(Frame navigationFrame, IUserService userService)
     {
         UserService = userService;
-        this.frame = frame;
+        this.navigationFrame = navigationFrame;
     }
 
     /// <summary>
@@ -77,6 +85,7 @@ public partial class RegisterViewModel : ObservableObject
     {
         try
         {
+            IsLoading = true;
             ErrorMessage = string.Empty;
 
             if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Email) ||
@@ -109,37 +118,59 @@ public partial class RegisterViewModel : ObservableObject
                 return;
             }
 
+            Debug.WriteLine($"Attempting to register user: {Username}");
+
             var user = new User
             {
                 Username = Username,
                 Email = Email,
                 Password = Password,
-                UserRole = IsDeveloper ? UserRole.Developer : UserRole.User
+                UserRole = IsDeveloper ? UserRole.Developer : UserRole.User,
+                ProfilePicture = string.Empty
             };
 
             var createdUser = await UserService.CreateUserAsync(user);
 
             if (createdUser != null)
             {
+                Debug.WriteLine($"Registration successful for user: {createdUser.Username}");
                 // Navigate to login page on successful registration
-                frame.Navigate(typeof(LoginPage));
+                if (navigationFrame != null)
+                {
+                    // Create the LoginPage with the callback from NavigationHelper
+                    var loginPage = new LoginPage(navigationFrame, UserService, NavigationHelper.OnLoginSuccess);
+                    navigationFrame.Content = loginPage;
+                }
+                else
+                {
+                    Debug.WriteLine("Navigation frame is null - cannot navigate to login page");
+                }
             }
             else
             {
+                Debug.WriteLine("Registration failed: CreateUserAsync returned null");
                 ErrorMessage = "Failed to create account. Please try again.";
             }
         }
         catch (EmailAlreadyExistsException ex)
         {
+            Debug.WriteLine($"Registration failed: Email already exists - {ex.Message}");
             ErrorMessage = ex.Message;
         }
         catch (UsernameAlreadyTakenException ex)
         {
+            Debug.WriteLine($"Registration failed: Username already taken - {ex.Message}");
             ErrorMessage = ex.Message;
         }
         catch (Exception ex)
         {
+            Debug.WriteLine($"Registration error: {ex.Message}");
+            Debug.WriteLine($"Stack trace: {ex.StackTrace}");
             ErrorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 
@@ -149,6 +180,15 @@ public partial class RegisterViewModel : ObservableObject
     [RelayCommand]
     private void NavigateToLogin()
     {
-        frame.Navigate(typeof(LoginPage));
+        if (navigationFrame != null)
+        {
+            // Create the LoginPage with the callback from NavigationHelper
+            var loginPage = new LoginPage(navigationFrame, UserService, NavigationHelper.OnLoginSuccess);
+            navigationFrame.Content = loginPage;
+        }
+        else
+        {
+            Debug.WriteLine("Navigation frame is null - cannot navigate to login page");
+        }
     }
 }
