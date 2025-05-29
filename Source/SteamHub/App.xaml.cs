@@ -48,6 +48,8 @@ namespace SteamHub
         public static IFeaturesService FeaturesService { get; private set; }
         public static IAchievementsService AchievementsService { get; private set; }
 
+        public static ICollectionsService CollectionsService { get; private set; }
+
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             MainWindow = new MainWindow();

@@ -727,6 +727,21 @@ namespace SteamHub.ViewModels
         }
 
         [RelayCommand]
+        private void ShowAllAchievements()
+        {
+            // Navigate to Achievements page
+            NavigationService.Instance.Navigate(typeof(AchievementsPage));
+        }
+
+        [RelayCommand]
+        private void AddCollection()
+        {
+            // Navigate to Collections page
+            NavigationService.Instance.Navigate(typeof(CollectionsPage));
+        }
+
+
+        [RelayCommand]
         private async Task BackToProfile()
         {
             try
@@ -770,6 +785,8 @@ namespace SteamHub.ViewModels
             }
         }
     }
+
+
 
     public static partial class DispatcherQueueExtensions
     {
