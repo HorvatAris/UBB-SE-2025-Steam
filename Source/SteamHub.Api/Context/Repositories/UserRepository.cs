@@ -43,11 +43,17 @@ namespace SteamHub.Api.Context.Repositories
             return user;
         }
 
-        private static void ApplyUserDtoToEntity(UserDTO userEntity, User userDto)
+        private static void ApplyUserDtoToEntity(UserDTO userDTO, User userEntity)
         {
-            userEntity.Username = userDto.Username;
-            userEntity.Email = userDto.Email;
-            userEntity.UserRole = userDto.UserRole;
+            userDTO.Username = userEntity.Username;
+            userDTO.Email = userEntity.Email;
+            userDTO.UserRole = userEntity.UserRole;
+            userDTO.Password = userEntity.Password;
+            userDTO.ProfilePicture = userEntity.ProfilePicture;
+            userDTO.Bio = string.Empty;
+            userDTO.CreatedAt = userEntity.CreatedAt;
+            userDTO.PointsBalance = userEntity.PointsBalance;
+            userDTO.WalletBalance = userEntity.WalletBalance;
         }
 
         public async Task<GetUsersResponse?> GetUsersAsync()
