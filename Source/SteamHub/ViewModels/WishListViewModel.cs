@@ -25,6 +25,7 @@ namespace SteamHub.ViewModels
         private readonly IUserGameService userGameService;
         private readonly IGameService gameService;
         private readonly ICartService cartService;
+        private readonly IReviewService reviewService;
         private ObservableCollection<Game> wishListGames = new ObservableCollection<Game>();
         private string searchText = WishListSearchStrings.INITIALSEARCHSTRING;
 
@@ -32,11 +33,12 @@ namespace SteamHub.ViewModels
         private string selectedSort;
         private IUserDetails user;
 
-        public WishListViewModel(IUserGameService userGameService, IGameService gameService, ICartService cartService)
+        public WishListViewModel(IUserGameService userGameService, IGameService gameService, ICartService cartService, IReviewService reviewService)
         {
             this.userGameService = userGameService;
             this.gameService = gameService;
             this.cartService = cartService;
+            this.reviewService = reviewService; // Assuming gameService has a property for review service
             this.wishListGames = new ObservableCollection<Game>();
             this.user = this.userGameService.GetUser();
             this.RemoveFromWishlistCommand = new RelayCommand<Game>(async (game) => await this.ConfirmAndRemoveFromWishlist(game));
@@ -181,13 +183,13 @@ namespace SteamHub.ViewModels
 
         public void BackToHomePage(Frame frame)
         {
-            HomePage homePage = new HomePage(this.GameService, this.CartService, this.UserGameService);
+            HomePage homePage = new HomePage(this.GameService, this.CartService, this.UserGameService, this.reviewService);
             frame.Content = homePage;
         }
 
         public void ViewGameDetails(Frame frame, Game game)
         {
-            GamePage gamePage = new GamePage(this.GameService, this.CartService, this.UserGameService, game);
+            GamePage gamePage = new GamePage(this.GameService, this.CartService, this.UserGameService, this.reviewService, game);
             frame.Content = gamePage;
         }
 

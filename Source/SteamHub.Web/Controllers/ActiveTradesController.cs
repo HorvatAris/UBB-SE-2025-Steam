@@ -76,6 +76,10 @@ namespace SteamHub.Web.Controllers
 			if (action == "Accept")
 			{
 				bool isSourceUser = trade.SourceUser.UserId == _userDetails.UserId;
+				trade.SourceUser.Password = "";
+				trade.SourceUser.ProfilePicture = "";
+                trade.DestinationUser.Password = "";
+                trade.DestinationUser.ProfilePicture = "";
 				await _tradeService.AcceptTradeAsync(trade, isSourceUser);
 			}
 			else if (action == "Decline")
