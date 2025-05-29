@@ -67,7 +67,7 @@ namespace SteamHub.Pages
 
         private void BackButton_Click(object sender, RoutedEventArgs eventArgs)
         {
-            Frame.Navigate(typeof(CollectionGamesPage), (collectionIdentifier, string.Empty));
+            Frame.Navigate(typeof(CollectionGamesPage), (collectionsService, userService, collectionIdentifier));
         }
 
         private async void AddGame_Click(object sender, RoutedEventArgs eventArgs)

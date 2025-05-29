@@ -187,7 +187,7 @@
                                                     Tag="{Binding GameId}"  
                                                     Style="{StaticResource AccentButtonStyle}"  
                                                     MinWidth="100"  
-                                                    Visibility="{Binding DataContext.IsAllOwnedGamesCollection, ElementName=RootGrid, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"/>  
+                                                    />  
                                         </StackPanel>  
                                     </StackPanel>  
                                 </Grid>  

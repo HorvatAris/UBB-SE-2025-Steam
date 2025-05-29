@@ -78,7 +78,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         {
             try
             {
-                await PostAsync("Collection/remove-game", new
+                await PostAsync("Collections/remove-game", new
                 {
                     CollectionId = collectionIdentifier,
                     GameId = gameIdentifier
