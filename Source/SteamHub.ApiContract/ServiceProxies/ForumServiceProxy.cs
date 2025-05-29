@@ -5,7 +5,7 @@ using SteamHub.ApiContract.Models;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ApiContract.ServiceProxies;
 
-namespace SteamHub.ApiContract.Services.Proxies
+namespace SteamHub.ApiContract.ServiceProxies
 {
     public class ForumServiceProxy : ServiceProxy, IForumService
     {
