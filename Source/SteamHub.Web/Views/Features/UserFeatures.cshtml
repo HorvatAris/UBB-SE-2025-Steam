@@ -1,0 +1,67 @@
+@model SteamHub.Web.ViewModels.UserFeaturesViewModel
+@{
+    ViewData["Title"] = "My Features";
+}
+
+<div class="container">
+    <h1>My Features</h1>
+    @Html.AntiForgeryToken() <!-- Hidden token for AJAX -->
+    <h3>Equipped Features</h3>
+    <ul id="equipped-features-list">
+        @foreach (var feature in Model.EquippedFeatures)
+        {
+            <li id="equipped-@feature.FeatureId">
+                @feature.Name (@feature.Type)
+                <button type="button" class="btn btn-warning btn-sm" onclick="unequipFeature(@feature.FeatureId)">Unequip</button>
+            </li>
+        }
+    </ul>
+    <h3>All My Features</h3>
+    <ul id="all-features-list">
+        @foreach (var feature in Model.UserFeatures)
+        {
+            if (!Model.EquippedFeatures.Any(f => f.FeatureId == feature.FeatureId))
+            {
+                <li id="all-@feature.FeatureId">
+                    @feature.Name (@feature.Type)
+                    <button type="button" class="btn btn-success btn-sm" onclick="equipFeature(@feature.FeatureId)">Equip</button>
+                </li>
+            }
+        }
+    </ul>
+    <a href="@Url.Action("Index", "Features")" class="btn btn-secondary mt-3">Back to Features</a>
+</div>
+
+@section Scripts {
+<script>
+    function getAntiForgeryToken() {
+        return $('input[name="__RequestVerificationToken"]').val();
+    }
+    function equipFeature(featureId) {
+        $.ajax({
+            url: '@Url.Action("EquipFeature", "Features")',
+            type: 'POST',
+            data: { featureId: featureId },
+            headers: {
+                'RequestVerificationToken': getAntiForgeryToken()
+            },
+            success: function () {
+                location.reload();
+            }
+        });
+    }
+    function unequipFeature(featureId) {
+        $.ajax({
+            url: '@Url.Action("UnequipFeature", "Features")',
+            type: 'POST',
+            data: { featureId: featureId },
+            headers: {
+                'RequestVerificationToken': getAntiForgeryToken()
+            },
+            success: function () {
+                location.reload();
+            }
+        });
+    }
+</script>
+} 

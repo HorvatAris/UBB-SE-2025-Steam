@@ -1,0 +1,60 @@
+@model SteamHub.Web.ViewModels.FeaturesViewModel
+@{
+    ViewData["Title"] = "Features";
+}
+
+@if (TempData["LoginRequired"] != null)
+{
+    <div class="alert alert-warning" role="alert">
+        @TempData["LoginRequired"]
+    </div>
+}
+
+<div class="container">
+    <div class="mb-3 text-end">
+        <a href="@Url.Action("UserFeatures", "Features")" class="btn btn-info">
+            See My Features
+        </a>
+    </div>
+    <h1 class="mb-4">Features Store</h1>
+
+    @foreach (var category in Model.FeaturesByCategories)
+    {
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 class="h4 mb-0">@category.Key</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @foreach (var feature in category.Value)
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">@feature.Name</h5>
+                                    <p class="card-text">@feature.Description</p>
+                                    <p class="card-text">
+                                        <small class="text-muted">Price: @feature.Value points</small>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="@Url.Action("PreviewFeature", "Features", new { featureId = feature.FeatureId })" class="btn btn-primary">
+                                        Preview
+                                    </a>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <form asp-action="PurchaseFeature" method="post" class="d-inline">
+                                            <input type="hidden" name="featureId" value="@feature.FeatureId" />
+                                            <button type="submit" class="btn btn-success">Purchase</button>
+                                            @Html.AntiForgeryToken()
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div> 

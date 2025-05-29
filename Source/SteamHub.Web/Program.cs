@@ -30,6 +30,7 @@ builder.Services.AddScoped<IInventoryService, InventoryServiceProxy>();
 builder.Services.AddScoped<ITradeService, TradeServiceProxy>();
 builder.Services.AddScoped<IMarketplaceService, MarketplaceServiceProxy>();
 builder.Services.AddScoped<IAchievementsService, AchievementsServiceProxy>();
+builder.Services.AddScoped<IFeaturesService, FeaturesServiceProxy>();
 
 var apiBaseUri = new Uri(builder.Configuration["ApiSettings:BaseUrl"]!);
 
@@ -37,8 +38,8 @@ builder.Services.AddHttpClient("SteamHubApi", client =>
 {
     client.BaseAddress = apiBaseUri;
     client.DefaultRequestHeaders.Add("Accept", "application/json");
-    
-}).ConfigurePrimaryHttpMessageHandler(() => new NoSslCertificateValidationHandler());
+    client.DefaultRequestVersion = new Version(1, 1);
+});
 
 
 builder.Services.AddAuthentication("SteamHubAuth")

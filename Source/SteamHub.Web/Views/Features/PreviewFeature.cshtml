@@ -1,0 +1,12 @@
+@model SteamHub.Web.ViewModels.FeaturePreviewViewModel
+@{
+    ViewData["Title"] = "Preview Feature";
+}
+
+<div class="container">
+    <h1>Preview: @Model.PreviewedFeature.Name</h1>
+    <img src="/@Model.PreviewedFeature.Source" alt="@Model.PreviewedFeature.Name" class="img-fluid" />
+    <p><strong>Bio:</strong> @Model.PreviewedFeature.Description</p>
+    <p><strong>Price:</strong> @Model.PreviewedFeature.Value points</p>
+    <a href="@Url.Action("Index", "Features")" class="btn btn-secondary mt-3">Back to Features</a>
+</div> 
