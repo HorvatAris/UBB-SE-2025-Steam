@@ -47,7 +47,8 @@ namespace SteamHub
         private FriendRequestServiceProxy friendRequestService;
         private AchievementsServiceProxy achievementsService;
         private CollectionsServiceProxy collectionServiceProxy;
-
+        private NewsServiceProxy newsService;
+        
         private readonly IHttpClientFactory _httpClientFactory;
         public Frame MainContentFrame => this.ContentFrame;
 
@@ -122,8 +123,8 @@ namespace SteamHub
                     Content = "Are you sure you want to logout?",
                     PrimaryButtonText = "Yes",
                     SecondaryButtonText = "No",
-                    DefaultButton = ContentDialogButton.Secondary,
-                    XamlRoot = this.Content.XamlRoot
+                    XamlRoot = this.Content.XamlRoot,
+                    Style = (Style)Application.Current.Resources["ModernSteamDialog"]
                 };
 
                 var result = await dialog.ShowAsync();
@@ -152,7 +153,6 @@ namespace SteamHub
                 }
             }
             catch (Exception ex)
-
             {
                 // Show error dialog
                 var errorDialog = new ContentDialog
@@ -160,7 +160,8 @@ namespace SteamHub
                     Title = "Error",
                     Content = $"An error occurred during logout: {ex.Message}",
                     CloseButtonText = "OK",
-                    XamlRoot = this.Content.XamlRoot
+                    XamlRoot = this.Content.XamlRoot,
+                    Style = (Style)Application.Current.Resources["ModernSteamDialog"]
                 };
                 await errorDialog.ShowAsync();
             }
@@ -217,7 +218,8 @@ namespace SteamHub
                 this.reviewService = new ReviewServiceProxy();
                 this.walletService = new WalletServiceProxy();
                 this.friendRequestService = new FriendRequestServiceProxy(_httpClientFactory);
-
+                this.newsService = new NewsServiceProxy(_httpClientFactory);
+                
                 Debug.WriteLine("User services initialized successfully");
             }
             catch (Exception ex)
@@ -243,7 +245,7 @@ namespace SteamHub
                 switch (tag)
                 {
                     case "HomePage":
-                        this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService, this.reviewService);
+                        this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService, this.reviewService, this.userService);
                         break;
                     case "CartPage":
                         this.ContentFrame.Content = new CartPage(this.cartService, this.userGameService);
@@ -252,7 +254,7 @@ namespace SteamHub
                         this.ContentFrame.Content = new PointsShopPage(this.pointShopService);
                         break;
                     case "WishlistPage":
-                        this.ContentFrame.Content = new WishListView(this.userGameService, this.gameService, this.cartService, this.reviewService);
+                        this.ContentFrame.Content = new WishListView(this.userGameService, this.gameService, this.cartService, this.reviewService, this.userService);
                         break;
                     case "DeveloperModePage":
                         this.ContentFrame.Content = new DeveloperModePage(this.developerService);
@@ -291,6 +293,9 @@ namespace SteamHub
                     case "Wallet":
                         this.ContentFrame.Navigate(typeof(WalletPage), (this.walletService, this.userService));
                         break;
+                    case "NewsPage":
+                        this.ContentFrame.Content = new NewsPage(this.newsService, this.userService, this.user);
+                        break;
                     case "AddFriendsPage":
                         this.ContentFrame.Content = new AddFriendsPage(this.friendsService, this.userService);
                         break;
@@ -321,7 +326,8 @@ namespace SteamHub
                 Title = title,
                 Content = message,
                 CloseButtonText = "OK",
-                XamlRoot = this.Content.XamlRoot
+                XamlRoot = this.Content.XamlRoot,
+                Style = (Style)Application.Current.Resources["ModernSteamDialog"]
             };
             await dialog.ShowAsync();
         }

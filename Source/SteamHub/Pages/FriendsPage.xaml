@@ -9,62 +9,64 @@
     xmlns:vm="using:SteamHub.ViewModels"
     xmlns:converters="using:SteamHub.Pages.Converters"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource PrimaryBrush}">
 
     <Page.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
         <DataTemplate x:Key="FriendItemTemplate" x:DataType="models:Friendship">
-            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            <Border Background="{StaticResource SecondaryBrush}"
                     CornerRadius="8"
-                    Padding="12"
-                    Margin="8"
-                    Width="240">
-                <StackPanel Spacing="12">
+                    Padding="20"
+                    Margin="10"
+                    Width="280">
+                <StackPanel Spacing="15">
                     <!-- Profile Picture -->
-                    <Image Source="{Binding FriendProfilePicture}"
-                           Stretch="UniformToFill"
-                           Height="120"
-                           Width="120"
-                           HorizontalAlignment="Center"/>
+                    <Border Background="{StaticResource PrimaryBrush}"
+                            CornerRadius="8"
+                            Padding="10">
+                        <Image Source="{Binding FriendProfilePicture}"
+                               Stretch="UniformToFill"
+                               Height="120"
+                               Width="120"
+                               HorizontalAlignment="Center"/>
+                    </Border>
 
                     <!-- Username -->
                     <TextBlock Text="{Binding FriendUsername}"
-                               Style="{ThemeResource BodyStrongTextBlockStyle}"
-                               TextWrapping="NoWrap"
-                               TextTrimming="CharacterEllipsis"
-                               TextAlignment="Center"/>
+                             Foreground="{StaticResource AccentBrush}"
+                             FontSize="20"
+                             FontWeight="SemiBold"
+                             TextWrapping="NoWrap"
+                             TextTrimming="CharacterEllipsis"
+                             TextAlignment="Center"/>
 
                     <!-- Action Buttons -->
                     <StackPanel Orientation="Horizontal" 
-                                HorizontalAlignment="Center"
-                                Spacing="8">
+                              HorizontalAlignment="Center"
+                              Spacing="10">
                         <Button Content="View"
                                 CommandParameter="{Binding FriendId}"
-                                Style="{StaticResource AccentButtonStyle}"
+                                Style="{StaticResource ModernSteamButton}"
                                 MinWidth="80"/>
 
                         <Button Content="Chat"
                                 CommandParameter="{Binding FriendId}"
-                                Style="{StaticResource AccentButtonStyle}"
+                                Style="{StaticResource ModernSteamButton}"
                                 MinWidth="80"/>
 
                         <Button Content="Remove"
                                 Command="{Binding DataContext.RemoveFriendshipCommand, ElementName=PageRoot}"
                                 CommandParameter="{Binding FriendshipId}"
-                                Style="{StaticResource AccentButtonStyle}"
+                                Style="{StaticResource ModernSteamDangerButton}"
                                 MinWidth="80"/>
-
-
-
                     </StackPanel>
                 </StackPanel>
             </Border>
         </DataTemplate>
     </Page.Resources>
 
-    <Grid x:Name="PageRoot"
-          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:Name="PageRoot">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -72,43 +74,54 @@
         </Grid.RowDefinitions>
 
         <!-- Header Section -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20" Spacing="12">
-
-            <TextBlock Text="FRIENDS" 
-                       FontSize="30" 
-                       FontWeight="Bold"
-                       VerticalAlignment="Center"/>
-        </StackPanel>
+        <Border Grid.Row="0" 
+                Background="{StaticResource SecondaryBrush}"
+                CornerRadius="8"
+                Padding="20"
+                Margin="20">
+            <TextBlock Text="Friends" 
+                      Foreground="{StaticResource AccentBrush}"
+                      FontSize="32"
+                      FontWeight="SemiBold"/>
+        </Border>
 
         <!-- Loading and Error Indicators -->
-        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Grid.Row="1" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center"
+                    Margin="20">
             <ProgressRing IsActive="{Binding IsLoading}"
-                          Width="50" 
-                          Height="50"
-                          Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                         Width="50" 
+                         Height="50"
+                         Foreground="{StaticResource AccentBrush}"
+                         Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
             <TextBlock Text="{Binding ErrorMessage}"
-                       Foreground="{ThemeResource SystemFillColorCriticalBrush}"
-                       TextWrapping="Wrap"
-                       TextAlignment="Center"
-                       Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+                      Foreground="#c94141"
+                      FontSize="16"
+                      TextWrapping="Wrap"
+                      TextAlignment="Center"
+                      Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
         </StackPanel>
 
         <!-- Friends List -->
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="2" 
+                     VerticalScrollMode="Enabled"
+                     VerticalScrollBarVisibility="Auto"
+                     Style="{StaticResource ModernScrollViewer}">
             <StackPanel Margin="20" Spacing="20">
-                <TextBlock Text="MY FRIENDS" 
-                           FontSize="20" 
-                           FontWeight="Bold"/>
+                <TextBlock Text="My Friends" 
+                          Foreground="{StaticResource AccentBrush}"
+                          FontSize="24"
+                          FontWeight="SemiBold"/>
 
-                <!-- Using ItemsWrapGrid instead of WrapPanel -->
                 <ItemsControl ItemsSource="{Binding Friendships}"
-                              ItemTemplate="{StaticResource FriendItemTemplate}">
+                            ItemTemplate="{StaticResource FriendItemTemplate}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <ItemsWrapGrid Orientation="Horizontal" 
-                                          MaximumRowsOrColumns="3"
-                                          HorizontalAlignment="Center"/>
+                                         MaximumRowsOrColumns="3"
+                                         HorizontalAlignment="Center"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>

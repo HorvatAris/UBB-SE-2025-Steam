@@ -12,6 +12,7 @@ namespace SteamHub.ViewModels
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Microsoft.UI.Xaml.Controls;
+    using Microsoft.UI.Xaml;
     using SteamHub.ApiContract.Constants;
     using SteamHub.ApiContract.Models;
     using SteamHub.ApiContract.Models.Game;
@@ -26,6 +27,7 @@ namespace SteamHub.ViewModels
         private readonly IGameService gameService;
         private readonly ICartService cartService;
         private readonly IReviewService reviewService;
+        private readonly IUserService userService;
         private ObservableCollection<Game> wishListGames = new ObservableCollection<Game>();
         private string searchText = WishListSearchStrings.INITIALSEARCHSTRING;
 
@@ -33,7 +35,7 @@ namespace SteamHub.ViewModels
         private string selectedSort;
         private IUserDetails user;
 
-        public WishListViewModel(IUserGameService userGameService, IGameService gameService, ICartService cartService, IReviewService reviewService)
+        public WishListViewModel(IUserGameService userGameService, IGameService gameService, ICartService cartService, IReviewService reviewService, IUserService userService)
         {
             this.userGameService = userGameService;
             this.gameService = gameService;
@@ -43,6 +45,7 @@ namespace SteamHub.ViewModels
             this.user = this.userGameService.GetUser();
             this.RemoveFromWishlistCommand = new RelayCommand<Game>(async (game) => await this.ConfirmAndRemoveFromWishlist(game));
             this.LoadWishListGames(user.UserId);
+            this.userService = userService;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -183,13 +186,13 @@ namespace SteamHub.ViewModels
 
         public void BackToHomePage(Frame frame)
         {
-            HomePage homePage = new HomePage(this.GameService, this.CartService, this.UserGameService, this.reviewService);
+            HomePage homePage = new HomePage(this.GameService, this.CartService, this.UserGameService, this.reviewService, this.userService);
             frame.Content = homePage;
         }
 
         public void ViewGameDetails(Frame frame, Game game)
         {
-            GamePage gamePage = new GamePage(this.GameService, this.CartService, this.UserGameService, this.reviewService, game);
+            GamePage gamePage = new GamePage(this.GameService, this.CartService, this.UserGameService, this.reviewService, this.userService, game);
             frame.Content = gamePage;
         }
 
@@ -208,8 +211,8 @@ namespace SteamHub.ViewModels
                     Content = string.Format(ConfirmationDialogStrings.CONFIRMREMOVALMESSAGE, game.GameTitle),
                     PrimaryButtonText = ConfirmationDialogStrings.YESBUTTONTEXT,
                     CloseButtonText = ConfirmationDialogStrings.NOBUTTONTEXT,
-                    DefaultButton = ContentDialogButton.Primary,
                     XamlRoot = App.MainWindow.Content.XamlRoot,
+                    Style = (Style)Application.Current.Resources["ModernSteamDialog"]
                 };
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Primary)

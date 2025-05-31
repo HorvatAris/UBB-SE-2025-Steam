@@ -1,0 +1,90 @@
+<Page
+    x:Class="SteamHub.Pages.NewsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamHub.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:SteamHub.ViewModels"
+    xmlns:models="using:SteamHub.ApiContract.Models"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Page.Resources>
+		<x:String x:Key="DateFormat">{}{0:yyyy-MM-dd HH:mm}</x:String>
+
+		<!-- Style for Post Container -->
+		<Style x:Key="PostContainerStyle" TargetType="StackPanel">
+			<Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+			<Setter Property="Padding" Value="16"/>
+			<Setter Property="Margin" Value="0,10"/>
+			<Setter Property="CornerRadius" Value="8"/>
+		</Style>
+
+		<!-- Style for Buttons -->
+		<Style x:Key="LikeDislikeButtonStyle" TargetType="Button">
+			<Setter Property="MinWidth" Value="60"/>
+			<Setter Property="Padding" Value="6,2"/>
+			<Setter Property="Margin" Value="0,0,10,0"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+		</Style>
+
+		<!-- Style for TextBlocks -->
+		<Style x:Key="PostContentTextStyle" TargetType="TextBlock">
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+			<Setter Property="TextWrapping" Value="WrapWholeWords"/>
+			<Setter Property="Margin" Value="0,0,0,5"/>
+		</Style>
+
+		<Style x:Key="CommentTextStyle" TargetType="TextBlock">
+			<Setter Property="FontSize" Value="13"/>
+			<Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+			<Setter Property="Margin" Value="10,2"/>
+		</Style>
+
+	</Page.Resources>
+
+	<Grid>
+		<StackPanel Padding="20" Spacing="10">
+			<TextBlock Text="News Feed" FontSize="24" FontWeight="Bold" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+			<TextBox PlaceholderText="Search..." Text="{x:Bind ViewModel.SearchText, Mode=TwoWay}" />
+
+			<Button Content="Create Post" Click="CreatePostButton_Click" />
+
+			<ItemsControl ItemsSource="{x:Bind ViewModel.Posts}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate x:DataType="vm:PostViewModel">
+						<StackPanel Style="{StaticResource PostContainerStyle}">
+							<TextBlock Text="{x:Bind Post.Content}" Style="{StaticResource PostContentTextStyle}" />
+
+							<StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
+								<Button Style="{StaticResource LikeDislikeButtonStyle}" Content="{x:Bind Post.NrLikes}" Tag="{x:Bind Post.Id}" Click="LikePost_Click" />
+								<Button Style="{StaticResource LikeDislikeButtonStyle}" Content="{x:Bind Post.NrDislikes}" Tag="{x:Bind Post.Id}" Click="DislikePost_Click" />
+							</StackPanel>
+
+							<!-- Comments -->
+							<ItemsControl ItemsSource="{x:Bind Comments}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate x:DataType="models:Comment">
+										<TextBlock Text="{x:Bind Content}" Style="{StaticResource CommentTextStyle}" />
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+
+							<!-- Add Comment -->
+							<Grid Margin="0,10,0,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
+								<TextBox x:Name="CommentBox" PlaceholderText="Add comment..." Margin="0,0,10,0"/>
+								<Button Grid.Column="1" Content="Comment" Tag="{x:Bind Post.Id}" Click="AddComment_Click"/>
+							</Grid>
+						</StackPanel>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</StackPanel>
+	</Grid>
+</Page>

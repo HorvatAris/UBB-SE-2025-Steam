@@ -4,19 +4,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SteamHub.Pages"
     xmlns:utils="using:SteamHub.Utils"
+    xmlns:converters="using:SteamHub.Converters"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    mc:Ignorable="d">
 
     <Page.Resources>
         <utils:BoolToOwnedStatusConverter x:Key="BoolToOwnedStatusConverter"/>
         <utils:UrlToPrettyTextConverter x:Key="UrlToPrettyTextConverter"/>
+        <converters:RatingToDoubleConverter x:Key="RatingToDoubleConverter"/>
     </Page.Resources>
 
     <ScrollViewer>
-        <Grid Margin="20">
+        <Grid Margin="10" Background="{StaticResource PrimaryBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -35,167 +36,325 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Game Image -->
-                <Image Grid.Column="0" Source="{Binding Game.ImagePath}" Width="300" Height="200" Stretch="UniformToFill"/>
+                <Border Background="{StaticResource SecondaryBrush}" CornerRadius="8" Padding="2" Margin="10,8,0,0">
+                    <Image Grid.Column="0" Source="{Binding Game.ImagePath}" Width="280" Height="240" Stretch="Fill"/>
+                </Border>
 
                 <!-- Game Info -->
-                <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Game.GameTitle}" Style="{StaticResource TitleTextBlockStyle}" />
-                    </Grid>
-                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
-                        <TextBlock Text="Tags: " Style="{StaticResource BodyTextBlockStyle}"/>
+                <StackPanel Grid.Column="1" Margin="20,12,0,4">
+                    <TextBlock Text="{Binding Game.GameTitle}" 
+                             FontSize="28" 
+                             FontWeight="Bold" 
+                             Foreground="{StaticResource AccentBrush}"
+                             CharacterSpacing="50"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,10">
+                        <TextBlock Text="Tags: " Foreground="White" FontSize="16"/>
                         <ItemsRepeater ItemsSource="{Binding GameTags}">
                             <ItemsRepeater.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding}" 
-                                             Style="{StaticResource BodyTextBlockStyle}"
-                                             Margin="0,0,8,0"/>
+                                    <Border Background="{StaticResource SecondaryBrush}" 
+                                            CornerRadius="4" 
+                                            Padding="8,4" 
+                                            Margin="0,0,8,0">
+                                        <TextBlock Text="{Binding}" 
+                                                 Foreground="White"
+                                                 FontSize="14"/>
+                                    </Border>
                                 </DataTemplate>
                             </ItemsRepeater.ItemTemplate>
                             <ItemsRepeater.Layout>
-                                <UniformGridLayout MinItemWidth="100" MinItemHeight="32" MinRowSpacing="8" MinColumnSpacing="8"/>
+                                <UniformGridLayout MinItemWidth="100" MinItemHeight="22" MinRowSpacing="8" MinColumnSpacing="8"/>
                             </ItemsRepeater.Layout>
                         </ItemsRepeater>
                     </StackPanel>
 
-                    <!--  <TextBlock Text="{Binding Game.Genre}" Style="{StaticResource BodyTextBlockStyle}" Margin="0,5,0,0" />-->
-                    <TextBlock Text="{Binding Game.GameTitle}" Style="{StaticResource BodyTextBlockStyle}" Margin="0,5,0,0" />
-                    <TextBlock Text="{Binding Developer}" Style="{StaticResource BodyTextBlockStyle}" Margin="0,5,0,0" />
+                    <TextBlock Text="{Binding Developer}" 
+                             Foreground="White" 
+                             FontSize="16" 
+                             Margin="0,8,0,4" />
                     
-					<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <TextBlock Text="Rating: " Style="{StaticResource BodyTextBlockStyle}" />
-                        <RatingControl Value="{Binding Rating}" IsReadOnly="True"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Rating:" 
+                                 Foreground="White" 
+                                 FontSize="16" 
+                                 VerticalAlignment="Center"
+                                 Margin="0,0,5,0"/>
+                        <RatingControl Value="{Binding Rating}" 
+                                     IsReadOnly="True"
+                                     Style="{StaticResource ModernSteamRatingControl}"/>
                     </StackPanel>
+
+                    <TextBlock Text="{Binding FormattedPrice}"  
+                        Foreground="#75b022" 
+                        FontSize="28"
+                        FontWeight="SemiBold"
+                        HorizontalAlignment="Left"
+                        Margin="0,20,0,10" />
                 </StackPanel>
 
                 <!-- Action Buttons -->
                 <StackPanel Grid.Column="2" Margin="0,10,0,0">
-                    <TextBlock Text="{Binding FormattedPrice}"  Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,0,0,10" />
-                      <TextBlock 
-                             Text="{Binding IsOwned, Converter={StaticResource BoolToOwnedStatusConverter}}" 
+                    <TextBlock Text="{Binding IsOwned, Converter={StaticResource BoolToOwnedStatusConverter}}" 
                              Foreground="#75b022" 
                              FontWeight="Bold" 
-                             FontSize="14"
+                             FontSize="24"
                              HorizontalAlignment="Center"
-                             Margin="0,0,0,10"/>
-                    <Button Content="Add to Cart" Click="BuyButton_Click" 
-                            Margin="0,0,0,10" Width="150"/>
-                    <Button Content="Add to Wishlist" Click="WishlistButton_Click" 
-                            Width="150"/>
+                             Margin="0,10,10,10"/>
+                    <Button Content="Add to Cart" 
+                            Click="BuyButton_Click" 
+                            Style="{StaticResource ModernSteamButton}"
+                            Margin="0,0,18,10" 
+                            Width="160"/>
+                    <Button Content="Add to Wishlist" 
+                            Click="WishlistButton_Click" 
+                            Style="{StaticResource ModernSteamButton}"
+                            Width="160"/>
                 </StackPanel>
             </Grid>
 
             <!-- Game Description -->
-            <StackPanel Grid.Row="1" Margin="0,20,0,0">
-                <TextBlock Text="Description" Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,0,0,10"/>
-                <TextBlock Text="{Binding Game.GameDescription}" TextWrapping="Wrap"/>
-            </StackPanel>
+            <Border Grid.Row="1" 
+                    Background="{StaticResource SecondaryBrush}" 
+                    CornerRadius="8" 
+                    Padding="20" 
+                    Margin="10,20,10,0">
+                <StackPanel>
+                    <TextBlock Text="Description" 
+                             Foreground="{StaticResource AccentBrush}"
+                             FontSize="24"
+                             FontWeight="SemiBold" 
+                             Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding Game.GameDescription}" 
+                             TextWrapping="Wrap"
+                             Foreground="White"
+                             FontSize="16"/>
+                </StackPanel>
+            </Border>
 
             <!-- System Requirements -->
-            <StackPanel Grid.Row="2" Margin="0,20,0,0">
-                <TextBlock Text="System Requirements" Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,0,0,10"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+            <Border Grid.Row="2" 
+                    Background="{StaticResource SecondaryBrush}" 
+                    CornerRadius="8" 
+                    Padding="20" 
+                    Margin="10,20,10,0">
+                <StackPanel>
+                    <TextBlock Text="System Requirements" 
+                             Foreground="{StaticResource AccentBrush}"
+                             FontSize="24"
+                             FontWeight="SemiBold" 
+                             Margin="0,0,0,10"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Minimum Requirements -->
-                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                        <TextBlock Text="Minimum" FontWeight="Bold" Margin="0,0,0,10"/>
-                        <TextBlock Text="{Binding Game.MinimumRequirements}" TextWrapping="Wrap"/>
-                    </StackPanel>
+                        <!-- Minimum Requirements -->
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="Minimum" 
+                                     Foreground="White"
+                                     FontSize="18"
+                                     FontWeight="SemiBold" 
+                                     Margin="0,0,0,10"/>
+                            <TextBlock Text="{Binding Game.MinimumRequirements}" 
+                                     TextWrapping="Wrap"
+                                     Foreground="White"
+                                     FontSize="16"/>
+                        </StackPanel>
 
-                    <!-- Recommended Requirements -->
-                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                        <TextBlock Text="Recommended" FontWeight="Bold" Margin="0,0,0,10"/>
-                        <TextBlock Text="{Binding Game.RecommendedRequirements}" TextWrapping="Wrap"/>
-                    </StackPanel>
-                </Grid>
-            </StackPanel>
+                        <!-- Recommended Requirements -->
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                            <TextBlock Text="Recommended" 
+                                     Foreground="White"
+                                     FontSize="18"
+                                     FontWeight="SemiBold" 
+                                     Margin="0,0,0,10"/>
+                            <TextBlock Text="{Binding Game.RecommendedRequirements}" 
+                                     TextWrapping="Wrap"
+                                     Foreground="White"
+                                     FontSize="16"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
 
             <!-- Media Links Section -->
-            <StackPanel Grid.Row="3" Margin="0,20,0,0">
-                <TextBlock Text="Media" Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,0,0,10"/>
-				<ItemsRepeater ItemsSource="{Binding MediaLinks}">
-					<ItemsRepeater.ItemTemplate>
-						<DataTemplate>
-                            <HyperlinkButton
-                    Content="{Binding Converter={StaticResource UrlToPrettyTextConverter}}"
-                    NavigateUri="{Binding}"
-                    HorizontalAlignment="Left"
-                    Margin="0,5,0,5"
-                    FontSize="14"
-                    />
-                        </DataTemplate>
-					</ItemsRepeater.ItemTemplate>
-				</ItemsRepeater>
-			</StackPanel>
+            <Border Grid.Row="3" 
+                    Background="{StaticResource SecondaryBrush}" 
+                    CornerRadius="8" 
+                    Padding="20" 
+                    Margin="10,20,10,0">
+                <StackPanel>
+                    <TextBlock Text="Media" 
+                             Foreground="{StaticResource AccentBrush}"
+                             FontSize="24"
+                             FontWeight="SemiBold" 
+                             Margin="0,0,0,10"/>
+                    <ItemsRepeater ItemsSource="{Binding MediaLinks}">
+                        <ItemsRepeater.ItemTemplate>
+                            <DataTemplate>
+                                <HyperlinkButton Content="{Binding Converter={StaticResource UrlToPrettyTextConverter}}"
+                                               NavigateUri="{Binding}"
+                                               Foreground="{StaticResource AccentBrush}"
+                                               FontSize="16"
+                                               Margin="0,5,0,5"/>
+                            </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+                </StackPanel>
+            </Border>
 
-            <!-- User Reviews -->
-            <!--
-            <StackPanel Grid.Row="4" Margin="0,20,0,0">
-                <TextBlock Text="User Reviews" Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,0,0,10"/>
-                 TODO: Uncomment and bind Reviews when Review model is implemented
-                <ListView ItemsSource="{Binding Reviews}" Height="300" BorderThickness="1" 
-                         BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,5,0,10">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0" Text="{Binding username}" FontWeight="Bold"/>
-                                <RatingControl Grid.Row="1" Value="{Binding rating}" IsReadOnly="True" Margin="0,5,0,5"/>
-                                <TextBlock Grid.Row="2" Text="{Binding comment}" TextWrapping="Wrap"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>s
-            </StackPanel>
-            -->
             <!-- User Reviews Row -->
-            <StackPanel Grid.Row="4" Margin="0,20,0,0">
-                <TextBlock Text="User Reviews" Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,0,0,10"/>
-                <Button Content="View Reviews" Click="ViewReviewsButton_Click" Width="150" Margin="0,10,0,0"/>
-            </StackPanel>
+            <Border Grid.Row="4" 
+                    Background="{StaticResource SecondaryBrush}" 
+                    CornerRadius="8" 
+                    Padding="20" 
+                    Margin="10,20,10,0">
+                <StackPanel>
+                    <TextBlock Text="User Reviews" 
+                             Foreground="{StaticResource AccentBrush}"
+                             FontSize="24"
+                             FontWeight="SemiBold" 
+                             Margin="0,0,0,10"/>
+                    <Button Content="View Reviews" 
+                            Click="ViewReviewsButton_Click" 
+                            Style="{StaticResource ModernSteamButton}"
+                            Width="150" 
+                            Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
             
             <!-- Similar Games -->
-            <StackPanel Grid.Row="5" Margin="0,20,0,0">
-                <TextBlock Text="Similar Games" Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,0,0,10"/>
-				<ItemsControl ItemsSource="{Binding SimilarGames}">
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<StackPanel Orientation="Horizontal" />
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<Button Click="SimilarGame_Click" Margin="5,0,5,0" Width="180">
-								<StackPanel>
-									<Image Source="{Binding ImagePath}" Width="180" Height="100" Stretch="UniformToFill"/>
-									<TextBlock Text="{Binding GameTitle}" TextWrapping="Wrap" />
-									<TextBlock Text="{Binding Rating}" TextWrapping="Wrap" />
-								</StackPanel>
-							</Button>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
-            </StackPanel>
+            <Border Grid.Row="5" 
+                    Background="{StaticResource SecondaryBrush}" 
+                    CornerRadius="8" 
+                    Padding="20" 
+                    Margin="10,20,10,12">
+                <StackPanel>
+                    <TextBlock Text="Similar Games" 
+                             Foreground="{StaticResource AccentBrush}"
+                             FontSize="24"
+                             FontWeight="SemiBold" 
+                             Margin="0,0,0,0"/>
+                    <ScrollViewer Style="{StaticResource ModernScrollViewer}"
+                                HorizontalScrollMode="Enabled"
+                                HorizontalScrollBarVisibility="Hidden"
+                                VerticalScrollMode="Disabled"
+                                VerticalScrollBarVisibility="Hidden"
+                                Padding="0,0,16,0">
+                        <ItemsControl ItemsSource="{Binding SimilarGames}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Width="160" Height="240" Margin="12,0,12,0">
+                                        <Button x:Name="CardButton"
+                                                Background="Transparent"
+                                                BorderBrush="{StaticResource CardBorderBrush}"
+                                                BorderThickness="2"
+                                                CornerRadius="10"
+                                                Padding="0"
+                                                Click="SimilarGame_Click"
+                                                Tag="{Binding}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Grid x:Name="CardGrid">
+                                                        <Border x:Name="CardBorder"
+                                                                Background="{StaticResource CardBackgroundBrush}"
+                                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                                CornerRadius="{TemplateBinding CornerRadius}"
+                                                                Shadow="{StaticResource CardShadow}"
+                                                                RenderTransformOrigin="0.5,0.5">
+                                                            <Border.RenderTransform>
+                                                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                                            </Border.RenderTransform>
+                                                            <Grid>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="120"/>
+                                                                    <RowDefinition Height="75"/>
+                                                                </Grid.RowDefinitions>
+                                                                <Image Source="{Binding ImagePath}"
+                                                                    Grid.Row="0"
+                                                                    Width="150" Height="120" 
+                                                                    Stretch="UniformToFill"/>
+                                                                <Border Grid.Row="1" 
+                                                                        Background="{StaticResource CardBackgroundBrush}"
+                                                                        BorderThickness="0,1,0,0"
+                                                                        BorderBrush="{StaticResource CardBorderBrush}">
+                                                                    <StackPanel Padding="8" Spacing="6">
+                                                                        <Border Background="#CC1B2838" 
+                                                                                CornerRadius="4" 
+                                                                                Padding="6,3">
+                                                                            <TextBlock Text="{Binding GameTitle}" 
+                                                                                     FontWeight="Bold" 
+                                                                                     FontSize="16"
+                                                                                     TextWrapping="Wrap"
+                                                                                     LineHeight="20"
+                                                                                     MaxHeight="40"
+                                                                                     TextTrimming="CharacterEllipsis"
+                                                                                     Foreground="White"/>
+                                                                        </Border>
+                                                                        <RatingControl Value="{Binding Rating, Converter={StaticResource RatingToDoubleConverter}}"
+                                                                                     Style="{StaticResource ModernSteamRatingControl}"
+                                                                                     HorizontalAlignment="Center"/>
+                                                                    </StackPanel>
+                                                                </Border>
+                                                            </Grid>
+                                                        </Border>
+                                                        <VisualStateManager.VisualStateGroups>
+                                                            <VisualStateGroup x:Name="CommonStates">
+                                                                <VisualState x:Name="Normal">
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation Storyboard.TargetName="CardBorder" 
+                                                                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                                                     To="1" Duration="0:0:0.2"/>
+                                                                        <DoubleAnimation Storyboard.TargetName="CardBorder" 
+                                                                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                                                     To="1" Duration="0:0:0.2"/>
+                                                                    </Storyboard>
+                                                                </VisualState>
+                                                                <VisualState x:Name="PointerOver">
+                                                                    <Storyboard>
+                                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CardBorder" 
+                                                                                                   Storyboard.TargetProperty="BorderBrush">
+                                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource AccentBrush}"/>
+                                                                        </ObjectAnimationUsingKeyFrames>
+                                                                        <DoubleAnimation Storyboard.TargetName="CardBorder" 
+                                                                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                                                     To="1.05" Duration="0:0:0.2"/>
+                                                                        <DoubleAnimation Storyboard.TargetName="CardBorder" 
+                                                                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                                                     To="1.05" Duration="0:0:0.2"/>
+                                                                    </Storyboard>
+                                                                </VisualState>
+                                                                <VisualState x:Name="Pressed"/>
+                                                                <VisualState x:Name="Disabled"/>
+                                                            </VisualStateGroup>
+                                                        </VisualStateManager.VisualStateGroups>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+
             <muxc:TeachingTip x:Name="NotificationTip"
-                              Title="Notification"
-                              Subtitle=""
-                              IsOpen="False"
-                              PreferredPlacement="TopRight"
-                              CloseButtonContent="OK">
-          
+                             Title="Notification"
+                             Subtitle=""
+                             IsOpen="False"
+                             PreferredPlacement="TopRight"
+                             CloseButtonContent="OK">
             </muxc:TeachingTip>
         </Grid>
     </ScrollViewer>

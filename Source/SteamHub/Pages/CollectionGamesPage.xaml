@@ -8,16 +8,18 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
     xmlns:models="using:SteamHub.ApiContract.Models.Game"  
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"  
-    xmlns:converters="using:SteamHub.Pages.Converters" xmlns:viewmodels="using:SteamHub.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:CollectionGamesViewModel}"  
+    xmlns:converters="using:SteamHub.Pages.Converters" 
+    xmlns:viewmodels="using:SteamHub.ViewModels" 
+    d:DataContext="{d:DesignInstance Type=viewmodels:CollectionGamesViewModel}"  
     mc:Ignorable="d"  
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">  
+    Background="{StaticResource PrimaryBrush}">  
 
-    <Grid x:Name="RootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">  
+    <Grid x:Name="RootGrid" Padding="20">  
         <Grid.Resources>  
             <converters:GameCountToStringConverter x:Key="GameCountToStringConverter"/>
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <DataTemplate x:Key="GameItemTemplate" x:DataType="models:OwnedGame">  
-                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"  
+                <Border Background="{StaticResource SecondaryBrush}"  
                         CornerRadius="8"  
                         Padding="12"  
                         Margin="12,12,12,12"  
@@ -30,26 +32,29 @@
                         </Grid.ColumnDefinitions>  
 
                         <!-- Game Cover Picture -->  
-                        <Grid Grid.Column="0"   
-                              Width="120"   
-                              Height="120"  
-                              Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"  
-                              CornerRadius="8">  
+                        <Border Grid.Column="0"   
+                               Width="120"   
+                               Height="120"  
+                               Background="{StaticResource PrimaryBrush}"  
+                               CornerRadius="8">  
                             <Image Source="{Binding CoverPicture}"  
                                    Stretch="UniformToFill"  
                                    Height="120"  
                                    Width="120"/>  
-                        </Grid>  
+                        </Border>  
 
                         <StackPanel Grid.Column="1"   
                                   Margin="12,0,0,0"  
                                   VerticalAlignment="Center">  
                             <TextBlock Text="{Binding GameTitle}"  
-                                     Style="{ThemeResource BodyStrongTextBlockStyle}"  
+                                     Foreground="{StaticResource AccentBrush}"
+                                     FontSize="18"
+                                     FontWeight="SemiBold"
                                      TextWrapping="NoWrap"  
                                      TextTrimming="CharacterEllipsis"/>  
                             <TextBlock Text="{Binding Description}"  
-                                     Style="{ThemeResource CaptionTextBlockStyle}"  
+                                     Foreground="White"
+                                     FontSize="14"
                                      TextWrapping="Wrap"  
                                      MaxLines="2"  
                                      TextTrimming="CharacterEllipsis"  
@@ -62,14 +67,14 @@
                                 <Button Content="View"  
                                         Click="ViewGame_Click"  
                                         Tag="{Binding GameId}"  
-                                        Style="{StaticResource AccentButtonStyle}"  
+                                        Style="{StaticResource ModernSteamButton}"  
                                         MinWidth="100"/>  
 
                                 <!-- Remove Button -->  
                                 <Button Content="Remove"  
                                         Click="RemoveGame_Click"  
                                         Tag="{Binding GameId}"  
-                                        Style="{StaticResource AccentButtonStyle}"  
+                                        Style="{StaticResource ModernSteamDangerButton}"  
                                         MinWidth="100"  
                                         Visibility="{Binding DataContext.IsAllOwnedGamesCollection, ElementName=RootGrid, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"/>  
                             </StackPanel>  
@@ -85,42 +90,57 @@
             <RowDefinition Height="*"/>  
         </Grid.RowDefinitions>  
 
-        <!-- Back Button -->  
-        <Button Content="Back"  
-                Click="BackButton_Click"  
-                Style="{StaticResource AccentButtonStyle}"  
-                HorizontalAlignment="Left"  
-                Margin="20"/>  
+        <!-- Header Section -->
+        <Border Grid.Row="0"
+                Background="{StaticResource SecondaryBrush}"
+                CornerRadius="8"
+                Padding="20"
+                Margin="0,0,0,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-        <!-- Collection Name -->  
-        <StackPanel Grid.Row="1"  
-                  Orientation="Vertical"   
-                  Spacing="4"  
-                  HorizontalAlignment="Left"  
-                  VerticalAlignment="Center"  
-                  Margin="20">  
-            <TextBlock Text="{Binding CollectionName}"  
-                      Style="{StaticResource TitleLargeTextBlockStyle}"  
-                      TextWrapping="Wrap"  
-                      TextTrimming="CharacterEllipsis"  
-                      MaxLines="1"/>  
-            <TextBlock Text="{Binding OwnedGames.Count, Converter={StaticResource GameCountToStringConverter}}"  
-                      Style="{StaticResource BodyTextBlockStyle}"/>  
-        </StackPanel>  
+                <!-- Back Button -->  
+                <Button Content="Back"  
+                        Click="BackButton_Click"  
+                        Style="{StaticResource ModernSteamButton}"  
+                        HorizontalAlignment="Left"/>
+
+                <!-- Collection Info -->
+                <StackPanel Grid.Column="1"
+                          Orientation="Vertical"   
+                          Spacing="4"  
+                          HorizontalAlignment="Left"  
+                          VerticalAlignment="Center"  
+                          Margin="20,0,0,0">  
+                    <TextBlock Text="{Binding CollectionName}"  
+                              Foreground="{StaticResource AccentBrush}"
+                              FontSize="24"
+                              FontWeight="SemiBold"
+                              TextWrapping="Wrap"  
+                              TextTrimming="CharacterEllipsis"  
+                              MaxLines="1"/>  
+                    <TextBlock Text="{Binding OwnedGames.Count, Converter={StaticResource GameCountToStringConverter}}"
+                              Foreground="White"
+                              FontSize="16"/>  
+                </StackPanel>
+            </Grid>
+        </Border>
 
         <!-- Scrollable Content -->  
         <ScrollViewer Grid.Row="2"   
-                      VerticalScrollBarVisibility="Auto"  
-                      HorizontalScrollBarVisibility="Disabled">  
+                     Style="{StaticResource ModernScrollViewer}">  
             <StackPanel Orientation="Vertical"   
-                        HorizontalAlignment="Center"  
-                        Padding="20">  
+                       HorizontalAlignment="Center"  
+                       Padding="20">  
                 <!-- Add Game Button -->  
                 <Button Content="Add Game To Collection"  
                         Click="AddGameToCollection_Click"  
-                        Style="{StaticResource AccentButtonStyle}"  
+                        Style="{StaticResource ModernSteamButton}"  
                         HorizontalAlignment="Center"  
-                        Margin="0,0,5,20"  
+                        Margin="0,0,0,20"  
                         Visibility="{Binding IsAllOwnedGamesCollection, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"/>  
 
                 <!-- Games Grid -->
@@ -132,8 +152,8 @@
                         </ItemsPanelTemplate>  
                     </ItemsControl.ItemsPanel>  
                     <ItemsControl.ItemTemplate>  
-                        <DataTemplate >  
-                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"  
+                        <DataTemplate>  
+                            <Border Background="{StaticResource SecondaryBrush}"  
                                     CornerRadius="8"  
                                     Padding="12"  
                                     Margin="12,12,12,12"  
@@ -146,26 +166,29 @@
                                     </Grid.ColumnDefinitions>  
 
                                     <!-- Game Cover Picture -->  
-                                    <Grid Grid.Column="0"   
-                                          Width="120"   
-                                          Height="120"  
-                                          Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"  
-                                          CornerRadius="8">  
+                                    <Border Grid.Column="0"   
+                                           Width="120"   
+                                           Height="120"  
+                                           Background="{StaticResource PrimaryBrush}"  
+                                           CornerRadius="8">  
                                         <Image Source="{Binding CoverPicture}"  
                                                Stretch="UniformToFill"  
                                                Height="120"  
                                                Width="120"/>  
-                                    </Grid>  
+                                    </Border>  
 
                                     <StackPanel Grid.Column="1"   
                                               Margin="12,0,0,0"  
                                               VerticalAlignment="Center">  
                                         <TextBlock Text="{Binding GameTitle}"  
-                                                 Style="{ThemeResource BodyStrongTextBlockStyle}"  
+                                                 Foreground="{StaticResource AccentBrush}"
+                                                 FontSize="18"
+                                                 FontWeight="SemiBold"
                                                  TextWrapping="NoWrap"  
                                                  TextTrimming="CharacterEllipsis"/>  
                                         <TextBlock Text="{Binding Description}"  
-                                                 Style="{ThemeResource CaptionTextBlockStyle}"  
+                                                 Foreground="White"
+                                                 FontSize="14"
                                                  TextWrapping="Wrap"  
                                                  MaxLines="2"  
                                                  TextTrimming="CharacterEllipsis"  
@@ -178,16 +201,15 @@
                                             <Button Content="View"  
                                                     Click="ViewGame_Click"  
                                                     Tag="{Binding GameId}"  
-                                                    Style="{StaticResource AccentButtonStyle}"  
+                                                    Style="{StaticResource ModernSteamButton}"  
                                                     MinWidth="100"/>  
 
                                             <!-- Remove Button -->  
                                             <Button Content="Remove"  
                                                     Click="RemoveGame_Click"  
                                                     Tag="{Binding GameId}"  
-                                                    Style="{StaticResource AccentButtonStyle}"  
-                                                    MinWidth="100"  
-                                                    />  
+                                                    Style="{StaticResource ModernSteamDangerButton}"  
+                                                    MinWidth="100"/>  
                                         </StackPanel>  
                                     </StackPanel>  
                                 </Grid>  
@@ -200,21 +222,24 @@
 
         <!-- Loading Indicator -->  
         <ProgressRing Grid.Row="1"  
-                      IsActive="{Binding IsLoading}"  
-                      Width="50"  
-                      Height="50"  
-                      HorizontalAlignment="Center"  
-                      VerticalAlignment="Center"/>  
+                     IsActive="{Binding IsLoading}"  
+                     Width="50"  
+                     Height="50"  
+                     HorizontalAlignment="Center"  
+                     VerticalAlignment="Center"/>  
 
         <!-- Error Message -->  
-        <TextBlock Grid.Row="1"  
-                   Text="{Binding ErrorMessage}"  
-                   Foreground="{ThemeResource SystemFillColorCriticalBrush}"  
-                   HorizontalAlignment="Center"  
-                   VerticalAlignment="Center"  
-                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+        <Border Grid.Row="1"
+                Background="{StaticResource PrimaryBrush}"
+                CornerRadius="4"
+                Padding="10"
+                Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}">
+            <TextBlock Text="{Binding ErrorMessage}"  
+                      Foreground="#c94141"
+                      HorizontalAlignment="Center"  
+                      VerticalAlignment="Center"/>
+        </Border>
+
         <Frame x:Name="ContentFrame" Grid.Row="3"/>
-
     </Grid>
-
 </Page> 

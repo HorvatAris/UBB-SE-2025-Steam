@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     xmlns:itemModel="using:SteamHub.ApiContract.Models.Item"
     xmlns:converters="using:SteamHub.Pages.Converters"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource PrimaryBrush}">
 
     <Page.Resources>
         <converters:PriceConverter x:Key="PriceConverter"/>
@@ -22,55 +22,104 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,20">
-            <ComboBox x:Name="UserComboBox" 
-                  ItemsSource="{x:Bind ViewModel.AvailableUsers, Mode=OneWay}"
-                  SelectedItem="{x:Bind ViewModel.SelectedUser, Mode=TwoWay}"
-                  DisplayMemberPath="Username"
-                  Width="200"/>
+        <TextBlock Text="Inventory" 
+                   Foreground="{StaticResource AccentBrush}"
+                   FontSize="32"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,20"/>
 
-            <ComboBox x:Name="GameComboBox"
-                  ItemsSource="{x:Bind ViewModel.AvailableGames, Mode=OneWay}"
-                  SelectedItem="{x:Bind ViewModel.SelectedGame, Mode=TwoWay}"
-                  DisplayMemberPath="GameTitle"
-                  Width="200"/>
+        <Border Grid.Row="0" 
+                Background="{StaticResource SecondaryBrush}"
+                CornerRadius="8"
+                Padding="20"
+                Margin="0,0,0,20">
+            <StackPanel Orientation="Horizontal" 
+                        Spacing="20">
+                <ComboBox x:Name="UserComboBox" 
+                         ItemsSource="{x:Bind ViewModel.AvailableUsers, Mode=OneWay}"
+                         SelectedItem="{x:Bind ViewModel.SelectedUser, Mode=TwoWay}"
+                         DisplayMemberPath="Username"
+                         Width="200"
+                         Style="{StaticResource ModernSteamComboBox}"/>
 
-            <TextBox x:Name="SearchBox"
-                 PlaceholderText="Search items..."
-                 Text="{x:Bind ViewModel.SearchText, Mode=TwoWay}"
-                 Width="200"/>
-        </StackPanel>
+                <ComboBox x:Name="GameComboBox"
+                         ItemsSource="{x:Bind ViewModel.AvailableGames, Mode=OneWay}"
+                         SelectedItem="{x:Bind ViewModel.SelectedGame, Mode=TwoWay}"
+                         DisplayMemberPath="GameTitle"
+                         Width="200"
+                         Style="{StaticResource ModernSteamComboBox}"/>
+
+                <TextBox x:Name="SearchBox"
+                        PlaceholderText="Search items..."
+                        Text="{x:Bind ViewModel.SearchText, Mode=TwoWay}"
+                        Width="300"
+                        Style="{StaticResource ModernSteamTextBox}"/>
+            </StackPanel>
+        </Border>
 
         <ListView Grid.Row="1" 
-              ItemsSource="{x:Bind ViewModel.InventoryItems, Mode=OneWay}"
-              IsItemClickEnabled="True"
-              ItemClick="OnInventoryItemClicked">
+                  ItemsSource="{x:Bind ViewModel.InventoryItems, Mode=OneWay}"
+                  IsItemClickEnabled="True"
+                  ItemClick="OnInventoryItemClicked">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsWrapGrid Orientation="Horizontal"
+                                 MaximumRowsOrColumns="3"
+                                 HorizontalAlignment="Center"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="itemModel:Item">
-                    <Grid Width="200" Height="250" Margin="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                    <Border Background="{StaticResource SecondaryBrush}"
+                            CornerRadius="8"
+                            Width="200" 
+                            Height="300"
+                            Margin="10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <Image Grid.Row="0"
-       Source="{Binding ImagePath}" 
-       Height="150" Width="150"
-       Stretch="Uniform"
-       HorizontalAlignment="Center"/>
+                            <Border Grid.Row="0"
+                                    Background="Transparent"
+                                    CornerRadius="8"
+                                    Padding="10">
+                                <Image Source="{Binding ImagePath}" 
+                                       Height="150" 
+                                       Width="150"
+                                       Stretch="Uniform"
+                                       HorizontalAlignment="Center"/>
+                            </Border>
 
+                            <TextBlock Grid.Row="1" 
+                                     Text="{x:Bind ItemName}" 
+                                     Foreground="White"
+                                     FontSize="16"
+                                     FontWeight="SemiBold"
+                                     HorizontalAlignment="Center" 
+                                     TextWrapping="Wrap"
+                                     Margin="10,5"/>
 
-                        <TextBlock Grid.Row="1" Text="{x:Bind ItemName}" 
-                               HorizontalAlignment="Center" TextWrapping="Wrap"/>
-                        <TextBlock Grid.Row="2" Text="{x:Bind Price}" 
-                               HorizontalAlignment="Center"/>
-                        <Button Grid.Row="3" Content="Sell Item" 
-                            Click="OnSellItemButtonClicked" 
-                            HorizontalAlignment="Center"
-                            IsEnabled="{x:Bind IsListed, Converter={StaticResource InverseBooleanConverter}}"/>
-                    </Grid>
+                            <TextBlock Grid.Row="2" 
+                                     Text="{x:Bind Price, Converter={StaticResource PriceConverter}}" 
+                                     Foreground="#75b022"
+                                     FontSize="18"
+                                     FontWeight="SemiBold"
+                                     HorizontalAlignment="Center"
+                                     Margin="10,5"/>
+
+                            <Button Grid.Row="3" 
+                                    Content="Sell Item" 
+                                    Click="OnSellItemButtonClicked" 
+                                    HorizontalAlignment="Center"
+                                    Margin="10"
+                                    Style="{StaticResource ModernSteamButton}"
+                                    IsEnabled="{x:Bind IsListed, Converter={StaticResource InverseBooleanConverter}}"/>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

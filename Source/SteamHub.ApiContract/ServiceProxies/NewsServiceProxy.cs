@@ -106,7 +106,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             catch (Exception)
             {
                 // If server formatting fails, provide client-side basic formatting
-                return $"<html><body>{text}</body></html>";
+                return $"{text}";
             }
         }
 
@@ -147,7 +147,19 @@ namespace SteamHub.ApiContract.ServiceProxies
                 var response = await _httpClient.GetAsync($"api/News/{userId}/posts?page={pageNumber}&search={Uri.EscapeDataString(searchedText ?? string.Empty)}");
                 response.EnsureSuccessStatusCode();
                 var result = await response.Content.ReadFromJsonAsync<List<Post>>(_options);
+                if (result == null)
+                {
+                    Console.WriteLine("Server returned null response");
+                    return new List<Post>();
+                }
+
+                Console.WriteLine($"Successfully loaded {result.Count} posts");
                 return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Network error while loading posts: {ex.Message}");
+                throw new Exception("Network error while loading posts. Please check your connection and try again.", ex);
             }
             catch (Exception ex)
             {
