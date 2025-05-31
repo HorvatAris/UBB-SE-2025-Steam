@@ -14,8 +14,10 @@
             <p>Customize your profile with points earned from purchases</p>
         </div>
         <div class="col-md-2 text-end">
-            <i class="bi bi-coin text-primary"></i>
-            <span id="userPointsDisplay" class="text-primary fw-bold">@Model.UserPointBalance</span> Points
+            <div class="d-flex flex-column align-items-end">
+                <span id="userPointsDisplay" class="display-4 text-primary fw-bold">@Model.UserPointBalance</span>
+                <span class="text-primary">Points</span>
+            </div>
         </div>
     </div>
 

@@ -58,7 +58,7 @@
 					<ul class="list-group mb-3">
 						@foreach (var item in Model.SourceUserItems)
 						{
-							<li class="list-group-item">
+							<li class="list-group-item bg-secondary text-white">
 								<img src="@item.ImagePath" width="50" class="me-2" />
 								<strong>@item.ItemName</strong> - @item.Price
 								<input type="checkbox" name="SelectedSourceItemIds" value="@item.ItemId" class="float-end" />
@@ -72,7 +72,7 @@
 					<ul class="list-group mb-3">
 						@foreach (var item in Model.DestinationUserItems)
 						{
-							<li class="list-group-item">
+							<li class="list-group-item bg-secondary text-white">
 								<img src="@item.ImagePath" width="50" class="me-2" />
 								<strong>@item.ItemName</strong> - @item.Price
 								<input type="checkbox" name="SelectedDestinationItemIds" value="@item.ItemId" class="float-end" />

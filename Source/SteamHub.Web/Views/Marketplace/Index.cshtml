@@ -13,8 +13,12 @@
     <!-- Current User -->
     <div class="row mb-4">
         <div class="col-md-4">
-            <label class="form-label">Current User</label>
-            <input type="text" class="form-control" value="@(User.Identity?.Name ?? "Unknown")" disabled />
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Current User</h5>
+                    <p class="card-text display-6">@(User.Identity?.Name ?? "Unknown")</p>
+                </div>
+            </div>
         </div>
     </div>
 

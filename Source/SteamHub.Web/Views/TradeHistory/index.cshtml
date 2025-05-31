@@ -3,45 +3,61 @@
 	ViewData["Title"] = "Trade History";
 }
 
-<h1 class="mb-4">Trade History</h1>
+<div class="container mt-4">
+	<h1 class="mb-4">Trade History</h1>
 
-@if (Model.TradeHistory != null && Model.TradeHistory.Any())
-{
-	<div class="list-group">
-		@foreach (var trade in Model.TradeHistory)
-		{
-			<div class="list-group-item mb-3 border rounded p-3">
-				<div class="d-flex justify-content-between">
-					<div>
-						<strong>@trade.TradeDescription</strong>
-						<div class="text-muted">@trade.TradeStatus</div>
+	@if (Model.TradeHistory != null && Model.TradeHistory.Any())
+	{
+		<div class="row">
+			@foreach (var trade in Model.TradeHistory)
+			{
+				<div class="col-md-6 mb-4">
+					<div class="card bg-dark text-white border-primary">
+						<div class="card-header d-flex justify-content-between align-items-center bg-dark border-primary">
+							<h5 class="mb-0">Trade with @trade.DestinationUser.UserName</h5>
+							<span class="badge @(trade.TradeStatus == "Completed" ? "bg-success" : "bg-danger")">@trade.TradeStatus</span>
+						</div>
+						<div class="card-body">
+							<p class="card-text">@trade.TradeDescription</p>
+							
+							<div class="mt-4">
+								<div class="d-flex justify-content-between">
+									<div class="flex-grow-1 me-3">
+										<h6 class="text-primary mb-2">@trade.SourceUser.UserName's Items:</h6>
+										<ul class="list-group list-group-flush bg-transparent">
+											@foreach (var item in trade.SourceUserItems)
+											{
+												<li class="list-group-item bg-dark text-white border-primary">
+													<div class="fw-bold">@item.ItemName</div>
+												</li>
+											}
+										</ul>
+									</div>
+									<div class="flex-grow-1">
+										<h6 class="text-primary mb-2">@trade.DestinationUser.UserName's Items:</h6>
+										<ul class="list-group list-group-flush bg-transparent">
+											@foreach (var item in trade.DestinationUserItems)
+											{
+												<li class="list-group-item bg-dark text-white border-primary">
+													<div class="fw-bold">@item.ItemName</div>
+												</li>
+											}
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-
-				<div class="mt-3">
-					<h6>@trade.SourceUser.UserName</h6>
-					<ul class="list-inline">
-						@foreach (var item in trade.SourceUserItems)
-						{
-							<li class="list-inline-item">@item.ItemName</li>
-						}
-					</ul>
-				</div>
-
-				<div>
-					<h6>@trade.DestinationUser.UserName</h6>
-					<ul class="list-inline">
-						@foreach (var item in trade.DestinationUserItems)
-						{
-							<li class="list-inline-item">@item.ItemName</li>
-						}
-					</ul>
-				</div>
+			}
+		</div>
+	}
+	else
+	{
+		<div class="card bg-dark text-white border-primary">
+			<div class="card-body text-center">
+				<p class="lead mb-0">No trade history.</p>
 			</div>
-		}
-	</div>
-}
-else
-{
-	<p>No trade history.</p>
-}
+		</div>
+	}
+</div>

@@ -1,45 +1,86 @@
 ﻿@model SteamHub.Web.ViewModels.AchievementsViewModel
 @using System.Security.Claims
 
-<div class="container mt-5 text-center">
-    <h1 class="mb-4">ACHIEVEMENTS</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-5">ACHIEVEMENTS</h1>
 
     @if (User.Identity.IsAuthenticated)
     {
         @foreach (var sectionData in new[] {
-    new { Title = "👥 FRIENDSHIPS", Items = Model.FriendshipsAchievements },
-    new { Title = "📚 OWNED GAMES", Items = Model.OwnedGamesAchievements },
-    new { Title = "💰 SOLD GAMES", Items = Model.SoldGamesAchievements },
-    new { Title = "📝 NUMBER OF POSTS", Items = Model.NumberOfPostsAchievements },
-    new { Title = "✍️ NUMBER OF REVIEWS GIVEN", Items = Model.NumberOfReviewsGivenAchievements },
-    new { Title = "📨 NUMBER OF REVIEWS RECEIVED", Items = Model.NumberOfReviewsReceivedAchievements },
-    new { Title = "⏳ YEARS OF ACTIVITY", Items = Model.YearsOfActivityAchievements },
-    new { Title = "🛠️ DEVELOPER", Items = Model.DeveloperAchievements }
-    })
+            new { Title = "👥 FRIENDSHIPS", Items = Model.FriendshipsAchievements },
+            new { Title = "📚 OWNED GAMES", Items = Model.OwnedGamesAchievements },
+            new { Title = "💰 SOLD GAMES", Items = Model.SoldGamesAchievements },
+            new { Title = "📝 NUMBER OF POSTS", Items = Model.NumberOfPostsAchievements },
+            new { Title = "✍️ NUMBER OF REVIEWS GIVEN", Items = Model.NumberOfReviewsGivenAchievements },
+            new { Title = "📨 NUMBER OF REVIEWS RECEIVED", Items = Model.NumberOfReviewsReceivedAchievements },
+            new { Title = "⏳ YEARS OF ACTIVITY", Items = Model.YearsOfActivityAchievements },
+            new { Title = "🛠️ DEVELOPER", Items = Model.DeveloperAchievements }
+        })
         {
-            <h3 class="mt-4 mb-3">@sectionData.Title</h3>
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                @foreach (var a in sectionData.Items)
-                {
-                    <div style="width: 120px; text-align: center;">
-                        <div style="width: 70px; height: 70px; border-radius: 35px; background-color: lightgray; margin: 0 auto;">
-                            <img src="@a.Achievement.Icon" alt="icon"
-                                 style="width: 100%; height: 100%; opacity: @a.Opacity;"
-                                 title="@a.Achievement.AchievementName - @a.Achievement.Description - @a.UnlockedDate" />
-                        </div>
-                        <div style="font-size: 0.8rem; margin-top: 5px;">
-                            <strong>@a.Achievement.AchievementName</strong><br />
-                            <span>@a.Achievement.Description</span>
-                        </div>
+            <div class="card bg-secondary mb-4">
+                <div class="card-header">
+                    <h3 class="mb-0">@sectionData.Title</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-4">
+                        @foreach (var a in sectionData.Items)
+                        {
+                            <div class="col">
+                                <div class="card h-100 bg-dark text-white achievement-card @(a.Opacity < 1 ? "locked" : "unlocked")">
+                                    <div class="card-body text-center">
+                                        <div class="achievement-icon mb-3">
+                                            <img src="@a.Achievement.Icon" alt="icon"
+                                                 style="width: 64px; height: 64px; opacity: @a.Opacity;"
+                                                 title="@a.Achievement.AchievementName - @a.Achievement.Description - @a.UnlockedDate" />
+                                        </div>
+                                        <h6 class="card-title">@a.Achievement.AchievementName</h6>
+                                        <p class="card-text small">@a.Achievement.Description</p>
+                                        @if (a.UnlockedDate.HasValue)
+                                        {
+                                            <small class="text-muted">Unlocked: @a.UnlockedDate.Value.ToString("d")</small>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
-                }
+                </div>
             </div>
         }
     }
     else
     {
-        <div class="mt-5">
-            <p class="lead">You must be <a href="/Account/Login">logged in</a> to view your achievements.</p>
+        <div class="card bg-secondary text-white">
+            <div class="card-body text-center">
+                <p class="lead mb-0">You must be <a href="/Account/Login" class="text-primary">logged in</a> to view your achievements.</p>
+            </div>
         </div>
     }
 </div>
+
+<style>
+    .achievement-card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .achievement-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .achievement-card.locked {
+        opacity: 0.7;
+    }
+
+    .achievement-card.unlocked {
+        border: 2px solid var(--steamhub-accent);
+    }
+
+    .achievement-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
