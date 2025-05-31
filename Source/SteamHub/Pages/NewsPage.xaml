@@ -8,83 +8,100 @@
     xmlns:vm="using:SteamHub.ViewModels"
     xmlns:models="using:SteamHub.ApiContract.Models"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource PrimaryBrush}">
 
-	<Page.Resources>
-		<x:String x:Key="DateFormat">{}{0:yyyy-MM-dd HH:mm}</x:String>
+    <Grid Padding="20">
+        <StackPanel Spacing="12">
+            <TextBlock Text="News Feed"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="{StaticResource TextBrush}"
+                       FontFamily="{StaticResource SteamFont}" />
 
-		<!-- Style for Post Container -->
-		<Style x:Key="PostContainerStyle" TargetType="StackPanel">
-			<Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
-			<Setter Property="Padding" Value="16"/>
-			<Setter Property="Margin" Value="0,10"/>
-			<Setter Property="CornerRadius" Value="8"/>
-		</Style>
+            <TextBox PlaceholderText="Search..."
+                     Text="{x:Bind ViewModel.SearchText, Mode=TwoWay}"
+                     Style="{StaticResource ModernSteamTextBox}" />
 
-		<!-- Style for Buttons -->
-		<Style x:Key="LikeDislikeButtonStyle" TargetType="Button">
-			<Setter Property="MinWidth" Value="60"/>
-			<Setter Property="Padding" Value="6,2"/>
-			<Setter Property="Margin" Value="0,0,10,0"/>
-			<Setter Property="FontWeight" Value="SemiBold"/>
-		</Style>
+            <Button Content="Create Post"
+                    Click="CreatePostButton_Click"
+                    Style="{StaticResource ModernSteamButton}" />
 
-		<!-- Style for TextBlocks -->
-		<Style x:Key="PostContentTextStyle" TargetType="TextBlock">
-			<Setter Property="FontSize" Value="14"/>
-			<Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-			<Setter Property="TextWrapping" Value="WrapWholeWords"/>
-			<Setter Property="Margin" Value="0,0,0,5"/>
-		</Style>
+            <ScrollViewer Style="{StaticResource ModernScrollViewer}">
+                <ItemsControl ItemsSource="{x:Bind ViewModel.Posts}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:PostViewModel">
+                            <Border Style="{StaticResource ModernCardStyle}">
+                                <StackPanel Padding="16" Spacing="8">
+                                    <TextBlock Text="{x:Bind Post.Content}"
+                                               Foreground="{StaticResource TextBrush}"
+                                               FontSize="14"
+                                               TextWrapping="WrapWholeWords"
+                                               FontFamily="{StaticResource SteamFont}" />
 
-		<Style x:Key="CommentTextStyle" TargetType="TextBlock">
-			<Setter Property="FontSize" Value="13"/>
-			<Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
-			<Setter Property="Margin" Value="10,2"/>
-		</Style>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4">
+                                            <Button Style="{StaticResource ReactionIconButton}"
+                Content="&#xE10A;"
+                ToolTipService.ToolTip="Like"
+                Tag="{x:Bind Post.Id}"
+                Click="LikePost_Click" />
 
-	</Page.Resources>
+                                            <TextBlock Text="{x:Bind Post.NrLikes}"
+                   VerticalAlignment="Center"
+                   Foreground="{StaticResource TextBrush}" />
+                                        </StackPanel>
 
-	<Grid>
-		<StackPanel Padding="20" Spacing="10">
-			<TextBlock Text="News Feed" FontSize="24" FontWeight="Bold" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-			<TextBox PlaceholderText="Search..." Text="{x:Bind ViewModel.SearchText, Mode=TwoWay}" />
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4">
+                                            <Button Style="{StaticResource ReactionIconButton}"
+                Content="&#xE111;"
+                ToolTipService.ToolTip="Dislike"
+                Tag="{x:Bind Post.Id}"
+                Click="DislikePost_Click" />
 
-			<Button Content="Create Post" Click="CreatePostButton_Click" />
+                                            <TextBlock Text="{x:Bind Post.NrDislikes}"
+                   VerticalAlignment="Center"
+                   Foreground="{StaticResource TextBrush}" />
+                                        </StackPanel>
+                                    </StackPanel>
 
-			<ItemsControl ItemsSource="{x:Bind ViewModel.Posts}">
-				<ItemsControl.ItemTemplate>
-					<DataTemplate x:DataType="vm:PostViewModel">
-						<StackPanel Style="{StaticResource PostContainerStyle}">
-							<TextBlock Text="{x:Bind Post.Content}" Style="{StaticResource PostContentTextStyle}" />
 
-							<StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
-								<Button Style="{StaticResource LikeDislikeButtonStyle}" Content="{x:Bind Post.NrLikes}" Tag="{x:Bind Post.Id}" Click="LikePost_Click" />
-								<Button Style="{StaticResource LikeDislikeButtonStyle}" Content="{x:Bind Post.NrDislikes}" Tag="{x:Bind Post.Id}" Click="DislikePost_Click" />
-							</StackPanel>
+                                    <!-- Comments -->
+                                    <ItemsControl ItemsSource="{x:Bind Comments}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="models:Comment">
+                                                <TextBlock Text="{x:Bind Content}"
+                                                           Foreground="{StaticResource TextBrush}"
+                                                           FontSize="13"
+                                                           Margin="10,2"
+                                                           FontFamily="{StaticResource SteamFont}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
 
-							<!-- Comments -->
-							<ItemsControl ItemsSource="{x:Bind Comments}">
-								<ItemsControl.ItemTemplate>
-									<DataTemplate x:DataType="models:Comment">
-										<TextBlock Text="{x:Bind Content}" Style="{StaticResource CommentTextStyle}" />
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
+                                    <!-- Add Comment -->
+                                    <Grid Margin="0,10,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-							<!-- Add Comment -->
-							<Grid Margin="0,10,0,0">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*"/>
-									<ColumnDefinition Width="Auto"/>
-								</Grid.ColumnDefinitions>
-								<TextBox x:Name="CommentBox" PlaceholderText="Add comment..." Margin="0,0,10,0"/>
-								<Button Grid.Column="1" Content="Comment" Tag="{x:Bind Post.Id}" Click="AddComment_Click"/>
-							</Grid>
-						</StackPanel>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-		</StackPanel>
-	</Grid>
+                                        <TextBox x:Name="CommentBox"
+                                                 PlaceholderText="Add comment..."
+                                                 Style="{StaticResource ModernSteamTextBox}"
+                                                 Margin="0,0,10,0"/>
+
+                                        <Button Grid.Column="1"
+                                                Content="Comment"
+                                                Style="{StaticResource ModernSteamButton}"
+                                                Tag="{x:Bind Post.Id}"
+                                                Click="AddComment_Click"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </StackPanel>
+    </Grid>
 </Page>
