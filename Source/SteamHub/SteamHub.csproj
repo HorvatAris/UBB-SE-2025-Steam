@@ -19,6 +19,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Remove="Assets\CustomSteamLogo.scale-100.png" />
+	  <Content Remove="Assets\CustomSteamLogo.scale-125.png" />
+	  <Content Remove="Assets\CustomSteamLogo.scale-150.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="Assets\CustomSteamLogo.scale-200.png" />
+		<None Remove="Assets\CustomSteamLogo.scale-400.png" />
 		<None Remove="Assets\Fonts\CafeDeParisSans-BWwJx.ttf" />
 		<None Remove="Pages\AddGameToCollectionPage.xaml" />
 		<None Remove="Pages\CollectionsForVisitorsPage.xaml" />
