@@ -503,9 +503,12 @@ namespace SteamHub.Api.Migrations
                     b.Property<int>("GameId")
                         .HasColumnType("int");
 
-                    b.HasKey("CollectionId", "GameId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("GameId");
+                    b.HasKey("CollectionId", "GameId", "UserId");
+
+                    b.HasIndex("UserId", "GameId");
 
                     b.ToTable("CollectionGames");
                 });
@@ -3014,18 +3017,18 @@ namespace SteamHub.Api.Migrations
                     b.HasOne("SteamHub.Api.Entities.Collection", "Collection")
                         .WithMany("CollectionGames")
                         .HasForeignKey("CollectionId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SteamHub.Api.Entities.OwnedGame", "OwnedGame")
+                    b.HasOne("SteamHub.Api.Entities.UsersGames", "UsersGames")
                         .WithMany("CollectionGames")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("UserId", "GameId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Collection");
 
-                    b.Navigation("OwnedGame");
+                    b.Navigation("UsersGames");
                 });
 
             modelBuilder.Entity("SteamHub.Api.Entities.Comment", b =>
@@ -3570,11 +3573,6 @@ namespace SteamHub.Api.Migrations
                     b.Navigation("ItemTradeDetails");
                 });
 
-            modelBuilder.Entity("SteamHub.Api.Entities.OwnedGame", b =>
-                {
-                    b.Navigation("CollectionGames");
-                });
-
             modelBuilder.Entity("SteamHub.Api.Entities.PointShopItem", b =>
                 {
                     b.Navigation("UserPointShopItemsInventory");
@@ -3625,6 +3623,11 @@ namespace SteamHub.Api.Migrations
 
                     b.Navigation("Wallet")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SteamHub.Api.Entities.UsersGames", b =>
+                {
+                    b.Navigation("CollectionGames");
                 });
 #pragma warning restore 612, 618
         }

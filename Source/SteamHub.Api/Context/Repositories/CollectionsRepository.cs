@@ -64,7 +64,8 @@ namespace SteamHub.Api.Context.Repositories
         {
             var c = await context.Collections
                 .Include(col => col.CollectionGames)
-                    .ThenInclude(cg => cg.OwnedGame)
+                    .ThenInclude(cg => cg.UsersGames)
+                        .ThenInclude(ug => ug.Game)
                 .FirstOrDefaultAsync(col => col.CollectionId == collectionIdentifier && col.UserId == userIdentifier);
 
             return c == null ? null : new ModelCollection
@@ -78,18 +79,17 @@ namespace SteamHub.Api.Context.Repositories
             };
         }
 
-
         public async Task<List<ModelOwnedGame>> GetGamesInCollectionAsync(int collectionIdentifier)
         {
             return await context.CollectionGames
                 .Where(cg => cg.CollectionId == collectionIdentifier)
                 .Select(cg => new ModelOwnedGame
                 {
-                    GameId = cg.OwnedGame.GameId,
-                    UserId = cg.OwnedGame.UserId,
-                    GameTitle = cg.OwnedGame.GameTitle,
-                    Description = cg.OwnedGame.Description,
-                    CoverPicture = cg.OwnedGame.CoverPicture
+                    GameId = cg.UsersGames.GameId,
+                    UserId = cg.UsersGames.UserId,
+                    GameTitle = cg.UsersGames.Game.Name,
+                    Description = cg.UsersGames.Game.Description,
+                    CoverPicture = cg.UsersGames.Game.ImagePath
                 })
                 .ToListAsync();
         }
@@ -97,31 +97,35 @@ namespace SteamHub.Api.Context.Repositories
         public async Task<List<ModelOwnedGame>> GetGamesInCollectionAsync(int collectionId, int userId)
         {
             return await context.CollectionGames
-                .Where(cg => cg.CollectionId == collectionId && cg.OwnedGame.UserId == userId)
+                .Where(cg => cg.CollectionId == collectionId && cg.UsersGames.UserId == userId)
                 .Select(cg => new ModelOwnedGame
                 {
-                    GameId = cg.OwnedGame.GameId,
-                    UserId = cg.OwnedGame.UserId,
-                    GameTitle = cg.OwnedGame.GameTitle,
-                    Description = cg.OwnedGame.Description,
-                    CoverPicture = cg.OwnedGame.CoverPicture
+                    GameId = cg.UsersGames.GameId,
+                    UserId = cg.UsersGames.UserId,
+                    GameTitle = cg.UsersGames.Game.Name,
+                    Description = cg.UsersGames.Game.Description,
+                    CoverPicture = cg.UsersGames.Game.ImagePath
                 })
                 .ToListAsync();
         }
 
-        public async Task AddGameToCollectionAsync(int collectionIdentifier, int gameIdentifier)
+        public async Task AddGameToCollectionAsync(int collectionIdentifier, int gameIdentifier, int userIdentifier)
         {
             context.CollectionGames.Add(new EntityCollectionGame
             {
                 CollectionId = collectionIdentifier,
-                GameId = gameIdentifier
+                GameId = gameIdentifier,
+                UserId = userIdentifier,
             });
             await context.SaveChangesAsync();
         }
 
-        public async Task RemoveGameFromCollectionAsync(int collectionIdentifier, int gameIdentifier)
+        public async Task RemoveGameFromCollectionAsync(int collectionIdentifier, int gameIdentifier, int userIdentifier)
         {
-            var link = await context.CollectionGames.FindAsync(collectionIdentifier, gameIdentifier);
+            var link = await context.CollectionGames
+                .FirstOrDefaultAsync(cg => cg.CollectionId == collectionIdentifier 
+                    && cg.GameId == gameIdentifier 
+                    && cg.UserId == userIdentifier);
             if (link != null)
             {
                 context.CollectionGames.Remove(link);
@@ -190,16 +194,16 @@ namespace SteamHub.Api.Context.Repositories
                 .Where(cg => cg.CollectionId == collectionIdentifier)
                 .Select(cg => cg.GameId);
 
-            return await context.OwnedGames
-                .Where(g => g.UserId == userIdentifier && !inCollection.Contains(g.GameId))
-                .OrderBy(g => g.GameTitle)
-                .Select(g => new ModelOwnedGame
+            return await context.UsersGames
+                .Where(ug => ug.UserId == userIdentifier && !inCollection.Contains(ug.GameId))
+                .OrderBy(ug => ug.Game.Name)
+                .Select(ug => new ModelOwnedGame
                 {
-                    GameId = g.GameId,
-                    UserId = g.UserId,
-                    GameTitle = g.GameTitle,
-                    Description = g.Description,
-                    CoverPicture = g.CoverPicture
+                    GameId = ug.GameId,
+                    UserId = ug.UserId,
+                    GameTitle = ug.Game.Name,
+                    Description = ug.Game.Description,
+                    CoverPicture = ug.Game.ImagePath
                 })
                 .ToListAsync();
         }

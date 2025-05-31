@@ -208,6 +208,7 @@ public class CartViewModel : INotifyPropertyChanged
             Content = message,
             CloseButtonText = ConfirmationDialogStrings.OKBUTTONTEXT,
             XamlRoot = App.MainWindow.Content.XamlRoot,
+            Style = (Style)Application.Current.Resources["ModernSteamDialog"]
         };
 
         await dialog.ShowAsync();
@@ -221,8 +222,8 @@ public class CartViewModel : INotifyPropertyChanged
             Content = ConfirmationDialogStrings.CONFIRMPURCHASEASSURANCE,
             PrimaryButtonText = ConfirmationDialogStrings.YESBUTTONTEXT,
             CloseButtonText = ConfirmationDialogStrings.NOBUTTONTEXT,
-            DefaultButton = ContentDialogButton.Primary,
             XamlRoot = App.MainWindow.Content.XamlRoot,
+            Style = (Style)Application.Current.Resources["ModernSteamDialog"]
         };
         ContentDialogResult result = await confirmDialog.ShowAsync();
 
@@ -236,8 +237,8 @@ public class CartViewModel : INotifyPropertyChanged
             Title = ConfirmationDialogStrings.POINTSEARNEDTITLE,
             Content = string.Format(ConfirmationDialogStrings.POINTSEARNEDMESSAGE, pointsEarned),
             CloseButtonText = ConfirmationDialogStrings.OKBUTTONTEXT,
-            DefaultButton = ContentDialogButton.Close,
             XamlRoot = App.MainWindow.Content.XamlRoot,
+            Style = (Style)Application.Current.Resources["ModernSteamDialog"]
         };
 
         await pointsDialog.ShowAsync();

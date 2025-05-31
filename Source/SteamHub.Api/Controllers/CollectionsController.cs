@@ -40,14 +40,14 @@ namespace SteamHub.Api.Controllers
         [HttpPost("add-game")]
         public async Task<ActionResult> AddGameToCollection([FromBody] AddGameRequest request)
         {
-            await _collectionsService.AddGameToCollection(request.CollectionId, request.GameId);
+            await _collectionsService.AddGameToCollection(request.CollectionId, request.GameId, request.UserId);
             return Ok();
         }
 
         [HttpPost("remove-game")]
         public async Task<ActionResult> RemoveGameFromCollection([FromBody] RemoveGameRequest request)
         {
-            await _collectionsService.RemoveGameFromCollection(request.CollectionId, request.GameId);
+            await _collectionsService.RemoveGameFromCollection(request.CollectionId, request.GameId, request.UserId);
             return Ok();
         }
 
@@ -109,12 +109,14 @@ namespace SteamHub.Api.Controllers
     {
         public int CollectionId { get; set; }
         public int GameId { get; set; }
+        public int UserId { get; set; }
     }
 
     public class RemoveGameRequest
     {
         public int CollectionId { get; set; }
         public int GameId { get; set; }
+        public int UserId { get; set; }
     }
 
     public class UpdateCollectionRequest

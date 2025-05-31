@@ -35,7 +35,7 @@
         
         <!-- Style for notifications -->
         <Style x:Key="PointsNotificationStyle" TargetType="InfoBar">
-            <Setter Property="Background" Value="#75b022"/>
+            <Setter Property="Background" Value="#66bb6a"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="IsClosable" Value="True"/>
             <Setter Property="Width" Value="450"/>
@@ -44,7 +44,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid>
+    <Grid Background="#1a1a1a">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -54,7 +54,7 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Background="#1a2233" Padding="20">
+        <Grid Grid.Row="0" Background="#2d2d2d" Padding="20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -62,11 +62,10 @@
             </Grid.ColumnDefinitions>
             
             <!-- Points Shop Logo -->
-            <!-- Coin icon -->
             <FontIcon Grid.Column="0" 
                       Glyph="&#xE8C9;" 
                       FontSize="36" 
-                      Foreground="#75b022"
+                      Foreground="#66bb6a"
                       Margin="0,0,20,0" 
                       VerticalAlignment="Center"/>
             
@@ -76,9 +75,9 @@
             </StackPanel>
             
             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                <FontIcon Glyph="&#xE8C9;" FontSize="22" Foreground="#75b022" Margin="0,0,5,0"/>
-                <TextBlock x:Name="PointsBalance" Text="{Binding UserPointBalance}" FontSize="20" FontWeight="Bold" Foreground="#75b022"/>
-                <TextBlock Text=" Points" FontSize="20" FontWeight="Bold" Foreground="#75b022" Margin="0,0,10,0"/>
+                <FontIcon Glyph="&#xE8C9;" FontSize="22" Foreground="#66bb6a" Margin="0,0,5,0"/>
+                <TextBlock x:Name="PointsBalance" Text="{Binding UserPointBalance}" FontSize="20" FontWeight="Bold" Foreground="#66bb6a"/>
+                <TextBlock Text=" Points" FontSize="20" FontWeight="Bold" Foreground="#66bb6a" Margin="0,0,10,0"/>
                 <Button x:Name="HelpButton"
                         Background="Transparent"
                         BorderBrush="Transparent"
@@ -90,7 +89,7 @@
                         <TextBlock Text="Help" Margin="4,0,0,0" Foreground="#aaaaaa" VerticalAlignment="Center"/>
                     </StackPanel>
                     <ToolTipService.ToolTip>
-                        <ToolTip Background="#2a3a4a" BorderBrush="#75b022">
+                        <ToolTip Background="#2d2d2d" BorderBrush="#66bb6a">
                             <StackPanel Width="600" Margin="2">
                                 <TextBlock Text="Earning Points" FontWeight="Bold" Margin="0,0,0,5" Foreground="White"/>
                                 <TextBlock TextWrapping="WrapWholeWords" Margin="5,5,0,0" Foreground="#cccccc">
@@ -113,7 +112,7 @@
         </Grid>
 
         <!-- Simple Notification Bar -->
-        <Border Grid.Row="1" Visibility="{Binding NotificationVisibility}" Background="#75b022" Padding="15,10">
+        <Border Grid.Row="1" Visibility="{Binding NotificationVisibility}" Background="#66bb6a" Padding="15,10">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -121,10 +120,9 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding NotificationMessage}" Foreground="White" FontWeight="SemiBold"/>
                 <Button Grid.Column="1" Content="✕" Click="CloseNotification_Click" 
-                Background="Transparent" BorderBrush="Transparent" Foreground="White"/>
+                        Background="Transparent" BorderBrush="Transparent" Foreground="White"/>
             </Grid>
         </Border>
-
 
         <!-- Shop Controls Grid -->
         <Grid Grid.Row="2" Margin="20,10,20,10">
@@ -136,26 +134,28 @@
             
             <!-- Filter Controls -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="Filter:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                <ComboBox x:Name="ItemTypeFilter" Width="200" Margin="0,0,20,0" SelectionChanged="ItemTypeFilter_SelectionChanged">
-                    <ComboBoxItem Content="All" IsSelected="True"/>
-                    <ComboBoxItem Content="ProfileBackground"/>
-                    <ComboBoxItem Content="Avatar"/>
-                    <ComboBoxItem Content="AvatarFrame"/>
-                    <ComboBoxItem Content="Emoticon"/>
-                    <ComboBoxItem Content="MiniProfile"/>
+                <TextBlock Text="Filter:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="White"/>
+                <ComboBox x:Name="ItemTypeFilter" Width="200" Margin="0,0,20,0" SelectionChanged="ItemTypeFilter_SelectionChanged"
+                          Background="#2d2d2d" Foreground="White" BorderBrush="#66bb6a">
+                    <ComboBoxItem Content="All" IsSelected="True" Foreground="White"/>
+                    <ComboBoxItem Content="ProfileBackground" Foreground="White"/>
+                    <ComboBoxItem Content="Avatar" Foreground="White"/>
+                    <ComboBoxItem Content="AvatarFrame" Foreground="White"/>
+                    <ComboBoxItem Content="Emoticon" Foreground="White"/>
+                    <ComboBoxItem Content="MiniProfile" Foreground="White"/>
                 </ComboBox>
                 
                 <TextBox x:Name="SearchBox" Width="200" PlaceholderText="Search..." 
-                         Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                         Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Background="#2d2d2d" Foreground="White" BorderBrush="#66bb6a"/>
                          
                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
                     <FontIcon Glyph="&#xE8C9;" FontSize="16" Foreground="#aaaaaa" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBlock Text="Price:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBlock Text="Price:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="White"/>
                     <Slider x:Name="PriceSlider" Minimum="0" Maximum="10000" StepFrequency="100" 
                             Value="{Binding MaximumPrice, Mode=TwoWay}" 
                             Width="150"/>
-                    <TextBlock Text="{Binding MaximumPrice}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    <TextBlock Text="{Binding MaximumPrice}" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="White"/>
                 </StackPanel>
             </StackPanel>
             
@@ -164,7 +164,7 @@
                     Content="View Inventory" 
                     Click="ViewInventoryButton_Click" 
                     Margin="10,0,10,0"
-                    Background="#417eb5"
+                    Background="#66bb6a"
                     Foreground="White"/>
             
             <!-- Transaction History Button -->
@@ -172,7 +172,7 @@
                     Content="Transaction History" 
                     Click="ViewTransactionHistoryButton_Click" 
                     Margin="0,0,0,0"
-                    Background="#417eb5"
+                    Background="#66bb6a"
                     Foreground="White"/>
         </Grid>
 
@@ -186,7 +186,7 @@
                           SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="pointShopItemModel:PointShopItem">
-                            <Grid Width="200" Height="250" Margin="10" Background="#2a3a4a">
+                            <Grid Width="200" Height="250" Margin="10" Background="#2d2d2d">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
@@ -198,14 +198,14 @@
 
                                 <!-- Item Info -->
                                 <StackPanel Grid.Row="1" Padding="10">
-                                    <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="White"/>
                                     <TextBlock Text="{x:Bind ItemType}" Foreground="#aaaaaa" FontSize="12"/>
                                 </StackPanel>
 
                                 <!-- Item Price -->
                                 <StackPanel Grid.Row="2" Orientation="Horizontal" Padding="10">
-                                    <TextBlock Text="{x:Bind PointPrice}" FontWeight="Bold" Foreground="#75b022"/>
-                                    <TextBlock Text=" Points" FontWeight="Bold" Foreground="#75b022"/>
+                                    <TextBlock Text="{x:Bind PointPrice}" FontWeight="Bold" Foreground="#66bb6a"/>
+                                    <TextBlock Text=" Points" FontWeight="Bold" Foreground="#66bb6a"/>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>
@@ -216,8 +216,8 @@
 
         <!-- Selected Item Details -->
         <Grid Grid.Row="4" x:Name="ItemDetailPanel" 
-      Visibility="{Binding ItemDetailVisibility}" 
-      Background="#2a3a4a" Padding="20">
+              Visibility="{Binding ItemDetailVisibility}" 
+              Background="#2d2d2d" Padding="20">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -227,21 +227,20 @@
             </Grid.ColumnDefinitions>
 
             <!-- Item Image -->
-            <Image
-    Grid.Column="0"
-    Width="100" Height="100" 
-    Margin="0,0,20,0" 
-    Source="{Binding SelectedItemImageUri}"
-    Style="{StaticResource ItemImageStyle}" 
-    ImageFailed="Image_ImageFailed"/>
+            <Image Grid.Column="0"
+                   Width="100" Height="100" 
+                   Margin="0,0,20,0" 
+                   Source="{Binding SelectedItemImageUri}"
+                   Style="{StaticResource ItemImageStyle}" 
+                   ImageFailed="Image_ImageFailed"/>
 
             <!-- Item Details -->
             <StackPanel Grid.Column="1">
-                <TextBlock Text="{Binding SelectedItemName}" FontSize="18" FontWeight="Bold"/>
+                <TextBlock Text="{Binding SelectedItemName}" FontSize="18" FontWeight="Bold" Foreground="White"/>
                 <TextBlock Text="{Binding SelectedItemType}" Foreground="#aaaaaa" Margin="0,5,0,0"/>
-                <TextBlock Text="{Binding SelectedItemDescription}" TextWrapping="Wrap" Margin="0,10,0,0"/>
+                <TextBlock Text="{Binding SelectedItemDescription}" TextWrapping="Wrap" Margin="0,10,0,0" Foreground="White"/>
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                    <TextBlock Text="{Binding SelectedItemPrice}" FontWeight="Bold" Foreground="#75b022"/>
+                    <TextBlock Text="{Binding SelectedItemPrice}" FontWeight="Bold" Foreground="#66bb6a"/>
                 </StackPanel>
             </StackPanel>
 
@@ -249,7 +248,9 @@
             <Button Grid.Column="2" x:Name="PurchaseButton" Content="Purchase" 
                     Click="PurchaseButton_Click" 
                     IsEnabled="{Binding CanPurchase}" 
-                    Margin="10,0,10,0"/>
+                    Margin="10,0,10,0"
+                    Background="#66bb6a"
+                    Foreground="White"/>
             
             <!-- Close Button -->
             <Button Grid.Column="3" x:Name="CloseDetailButton" Content="✕" 
@@ -263,7 +264,7 @@
         </Grid>
 
         <!-- Inventory Panel -->
-        <Grid Grid.Row="3" Grid.RowSpan="2" x:Name="InventoryPanel" Visibility="{Binding InventoryPanelVisibility}" Background="#1a2233" Padding="20">
+        <Grid Grid.Row="3" Grid.RowSpan="2" x:Name="InventoryPanel" Visibility="{Binding InventoryPanelVisibility}" Background="#1a1a1a" Padding="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -277,16 +278,16 @@
                 </Grid.ColumnDefinitions>
                 
                 <TextBlock Grid.Column="0" Text="My Inventory" FontSize="24" FontWeight="Bold" Foreground="White"/>
-                <Button Grid.Column="1" x:Name="CloseInventoryButton" Content="Back to Shop" Click="CloseInventoryButton_Click"/>
+                <Button Grid.Column="1" x:Name="CloseInventoryButton" Content="Back to Shop" Click="CloseInventoryButton_Click"
+                        Background="#66bb6a" Foreground="White"/>
             </Grid>
 
             <!-- Inventory Items -->
             <ScrollViewer Grid.Row="1" Margin="0,20,0,0">
                 <GridView x:Name="InventoryGridView" ItemsSource="{Binding FilteredUserItems}">
-
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="pointShopItemModel:PointShopItem">
-                            <Grid Width="200" Height="250" Margin="10" Background="#2a3a4a">
+                            <Grid Width="200" Height="250" Margin="10" Background="#2d2d2d">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
@@ -298,7 +299,7 @@
 
                                 <!-- Item Info -->
                                 <StackPanel Grid.Row="1" Padding="10">
-                                    <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="White"/>
                                     <TextBlock Text="{x:Bind ItemType}" Foreground="#aaaaaa" FontSize="12"/>
                                     <TextBlock Text="{x:Bind IsActive, Converter={StaticResource BoolToStatusTextConverter}}" 
                                                Foreground="{x:Bind IsActive, Converter={StaticResource BoolToActiveColorConverter}}" 
@@ -309,7 +310,9 @@
                                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Padding="10">
                                     <Button Content="{x:Bind IsActive, Converter={StaticResource BoolToActivateButtonTextConverter}}" 
                                             Tag="{x:Bind ItemIdentifier}" 
-                                            Click="RemoveButtons_Click"/>
+                                            Click="RemoveButtons_Click"
+                                            Background="#66bb6a"
+                                            Foreground="White"/>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>
@@ -318,15 +321,15 @@
             </ScrollViewer>
         </Grid>
 
-        <!-- Add Transaction History Panel -->
+        <!-- Transaction History Panel -->
         <Grid x:Name="TransactionHistoryPanel" 
-      Visibility="{Binding TransactionHistoryPanelVisibility}" 
-      Grid.RowSpan="5" 
-      Background="#1a2233E6" 
-      Padding="20">
+              Visibility="{Binding TransactionHistoryPanelVisibility}" 
+              Grid.RowSpan="5" 
+              Background="#1a1a1aE6" 
+              Padding="20">
 
-            <Border Background="#2a3a4a" 
-                    BorderBrush="#417eb5" 
+            <Border Background="#2d2d2d" 
+                    BorderBrush="#66bb6a" 
                     BorderThickness="1" 
                     CornerRadius="4">
                 <Grid>
@@ -338,7 +341,7 @@
                     </Grid.RowDefinitions>
                     
                     <!-- Header -->
-                    <Grid Grid.Row="0" Background="#2a3a4a" Padding="15">
+                    <Grid Grid.Row="0" Background="#2d2d2d" Padding="15">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
@@ -361,7 +364,7 @@
                     <ListView Grid.Row="1" 
                               x:Name="TransactionHistoryListView"
                               ItemsSource="{Binding TransactionHistory}"
-                              Background="#2a3a4a"
+                              Background="#2d2d2d"
                               Margin="15"
                               Padding="10"
                               BorderThickness="0"
@@ -403,9 +406,9 @@
                                              FontSize="13"/>
                                              
                                     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                        <FontIcon Glyph="&#xE8C9;" FontSize="16" Foreground="#75b022" Margin="0,0,5,0"/>
+                                        <FontIcon Glyph="&#xE8C9;" FontSize="16" Foreground="#66bb6a" Margin="0,0,5,0"/>
                                         <TextBlock Text="{x:Bind PointsSpent}" 
-                                                 Foreground="#75b022" 
+                                                 Foreground="#66bb6a" 
                                                  FontWeight="SemiBold"/>
                                     </StackPanel>
                                 </Grid>

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SteamHub.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class MainMigr : Migration
+    public partial class MigrationNew : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -843,29 +843,6 @@ namespace SteamHub.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CollectionGames",
-                columns: table => new
-                {
-                    CollectionId = table.Column<int>(type: "int", nullable: false),
-                    GameId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CollectionGames", x => new { x.CollectionId, x.GameId });
-                    table.ForeignKey(
-                        name: "FK_CollectionGames_Collections_CollectionId",
-                        column: x => x.CollectionId,
-                        principalTable: "Collections",
-                        principalColumn: "CollectionId");
-                    table.ForeignKey(
-                        name: "FK_CollectionGames_OwnedGames_GameId",
-                        column: x => x.GameId,
-                        principalTable: "OwnedGames",
-                        principalColumn: "GameId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ForumComments",
                 columns: table => new
                 {
@@ -949,6 +926,30 @@ namespace SteamHub.Api.Migrations
                         principalTable: "Items",
                         principalColumn: "ItemId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CollectionGames",
+                columns: table => new
+                {
+                    CollectionId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    GameId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CollectionGames", x => new { x.CollectionId, x.GameId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_CollectionGames_Collections_CollectionId",
+                        column: x => x.CollectionId,
+                        principalTable: "Collections",
+                        principalColumn: "CollectionId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CollectionGames_UsersGames_UserId_GameId",
+                        columns: x => new { x.UserId, x.GameId },
+                        principalTable: "UsersGames",
+                        principalColumns: new[] { "UserId", "GameId" });
                 });
 
             migrationBuilder.CreateTable(
@@ -1406,9 +1407,9 @@ namespace SteamHub.Api.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CollectionGames_GameId",
+                name: "IX_CollectionGames_UserId_GameId",
                 table: "CollectionGames",
-                column: "GameId");
+                columns: new[] { "UserId", "GameId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Collections_UserId",
@@ -1673,6 +1674,9 @@ namespace SteamHub.Api.Migrations
                 name: "NewsPostRatingTypes");
 
             migrationBuilder.DropTable(
+                name: "OwnedGames");
+
+            migrationBuilder.DropTable(
                 name: "PasswordResetCodes");
 
             migrationBuilder.DropTable(
@@ -1709,9 +1713,6 @@ namespace SteamHub.Api.Migrations
                 name: "UserSessions");
 
             migrationBuilder.DropTable(
-                name: "UsersGames");
-
-            migrationBuilder.DropTable(
                 name: "Wallets");
 
             migrationBuilder.DropTable(
@@ -1721,7 +1722,7 @@ namespace SteamHub.Api.Migrations
                 name: "Collections");
 
             migrationBuilder.DropTable(
-                name: "OwnedGames");
+                name: "UsersGames");
 
             migrationBuilder.DropTable(
                 name: "Features");

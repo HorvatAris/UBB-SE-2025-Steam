@@ -10,5 +10,4 @@ public class OwnedGame
 
     // Navigation properties
     public User User { get; set; }
-    public ICollection<CollectionGame> CollectionGames { get; set; }
 }

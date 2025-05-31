@@ -12,5 +12,6 @@ namespace SteamHub.Api.Entities
         public bool IsInCart { get; set; }
         public User User { get; set; }
         public Game Game { get; set; }
+        public ICollection<CollectionGame> CollectionGames { get; set; }
     }
 }

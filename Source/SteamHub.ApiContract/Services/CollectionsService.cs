@@ -99,11 +99,11 @@ namespace SteamHub.ApiContract.Services
             }
         }
 
-        public async Task AddGameToCollection(int collectionId, int gameId)
+        public async Task AddGameToCollection(int collectionId, int gameId, int userId)
         {
             try
             {
-                await collectionsRepository.AddGameToCollectionAsync(collectionId, gameId);
+                await collectionsRepository.AddGameToCollectionAsync(collectionId, gameId, userId);
             }
             catch (RepositoryException ex)
             {
@@ -115,11 +115,11 @@ namespace SteamHub.ApiContract.Services
             }
         }
 
-        public async Task RemoveGameFromCollection(int collectionId, int gameId)
+        public async Task RemoveGameFromCollection(int collectionId, int gameId, int userId)
         {
             try
             {
-                await collectionsRepository.RemoveGameFromCollectionAsync(collectionId, gameId);
+                await collectionsRepository.RemoveGameFromCollectionAsync(collectionId, gameId, userId);
             }
             catch (RepositoryException ex)
             {

@@ -178,7 +178,7 @@ namespace SteamHub.ViewModels
                     return;
                 }
 
-                await collectionsService.AddGameToCollection(selectedCollection.CollectionId, gameId);
+                await collectionsService.AddGameToCollection(selectedCollection.CollectionId, gameId, userIdentifier);
 
                 await LoadCollectionsAsync(); // Reload collections to update the UI
             }
@@ -199,7 +199,7 @@ namespace SteamHub.ViewModels
                     return;
                 }
 
-                await collectionsService.RemoveGameFromCollection(selectedCollection.CollectionId, gameId);
+                await collectionsService.RemoveGameFromCollection(selectedCollection.CollectionId, gameId, userIdentifier);
 
                 await LoadCollectionsAsync(); // Reload collections to update the UI
             }
@@ -252,17 +252,43 @@ namespace SteamHub.ViewModels
 
         public async Task<List<Collection>> GetPublicCollectionsForUserAsync(int userId)
         {
-            return await collectionsService.GetPublicCollectionsForUser(userId);
+            try
+            {
+                return await collectionsService.GetPublicCollectionsForUser(userId);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in GetCollectionByIdentifier: {ex.Message}");
+                errorMessage = "Couldn't retrieve public collections!";
+                return new List<Collection>();
+            }
         }
 
         public async Task<Collection> GetCollectionByIdAsync(int collectionId, int userId)
         {
-            return await collectionsService.GetCollectionByIdentifier(collectionId, userId);
+            try
+            {
+                return await collectionsService.GetCollectionByIdentifier(collectionId, userId);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in GetCollectionByIdentifier: {ex.Message}");
+                errorMessage = "Couldn't retrieve collection!";
+                return new Collection();
+            }
         }
 
         public async Task RemoveGameFromCollectionAsync(int collectionId, int gameId)
         {
-            await collectionsService.RemoveGameFromCollection(collectionId, gameId);
+            try
+            {
+                await collectionsService.RemoveGameFromCollection(collectionId, gameId, userIdentifier);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in Removing Game: {ex.Message}");
+                errorMessage = "Couldn't remove game from collection";
+            }
         }
     }
 }
