@@ -8,40 +8,53 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <StackPanel VerticalAlignment="Center" 
-                    HorizontalAlignment="Center" 
-                    Spacing="10"
-                    Padding="40"
-                    MaxWidth="400">
-            
-            <TextBlock Text="Welcome Back!"
-                       Style="{ThemeResource TitleLargeTextBlockStyle}"
-                       HorizontalAlignment="Center"
-                       Padding="0,0,0,20"/>
+    <Grid Background="{StaticResource PrimaryBrush}">
+        <Border Background="{StaticResource SecondaryBrush}"
+                CornerRadius="8"
+                Width="400"
+                Height="500"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel VerticalAlignment="Center" 
+                        HorizontalAlignment="Center" 
+                        Spacing="20"
+                        Padding="40">
+                
+                <TextBlock Text="Welcome Back!"
+                           FontSize="28"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource AccentBrush}"
+                           HorizontalAlignment="Center"
+                           CharacterSpacing="50"/>
 
-            <TextBox PlaceholderText="Username or Email"
-                     Text="{Binding Username, Mode=TwoWay}"
-                     Margin="0,0,0,5"/>
+                <TextBox PlaceholderText="Username or Email"
+                         Text="{Binding Username, Mode=TwoWay}"
+                         Style="{StaticResource ModernSteamTextBox}"
+                         Margin="0,0,0,10"/>
 
-            <PasswordBox PlaceholderText="Password"
-                        Password="{Binding Password, Mode=TwoWay}"
-                        Margin="0,0,0,0"/>
+                <PasswordBox PlaceholderText="Password"
+                            Password="{Binding Password, Mode=TwoWay}"
+                            Style="{StaticResource ModernSteamPasswordBox}"
+                            Margin="0,0,0,10"/>
 
-            <TextBlock Text="{Binding ErrorMessage}"
-                       Foreground="Red"
-                       TextWrapping="Wrap"
-                       HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="Red"
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,8"/>
 
-            <Button Content="Login"
-                    Command="{Binding LoginCommand}"
-                    Style="{ThemeResource AccentButtonStyle}"
-                    HorizontalAlignment="Center"
-                    Width="200"/>
+                <Button Content="Login"
+                        Command="{Binding LoginCommand}"
+                        Style="{StaticResource ModernSteamButton}"
+                        HorizontalAlignment="Center"
+                        Width="200"
+                        Height="45"/>
 
-            <Button Content="Don't have an account yet? Register now!"
-                    Command="{Binding NavigateToRegisterCommand}"
-                    Style="{ThemeResource TextBlockButtonStyle}"/>
-        </StackPanel>
+                <Button Content="Don't have an account yet? Register now!"
+                        Command="{Binding NavigateToRegisterCommand}"
+                        Style="{StaticResource ModernSteamTextButton}"
+                        HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Page>

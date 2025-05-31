@@ -10,12 +10,20 @@
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <!-- Other merged dictionaries here -->
+                <ResourceDictionary Source="Themes/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <!-- Other app resources here -->
             
+            <!-- Other app resources here -->
+
             <!-- Converters -->
             <converters:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter"/>
             <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+
+            <!-- Title Bar Customization -->
+            <SolidColorBrush x:Key="WindowCaptionBackground" Color="#1B2838"/>
+            <SolidColorBrush x:Key="WindowCaptionBackgroundDisabled" Color="#1B2838"/>
+            <SolidColorBrush x:Key="WindowCaptionForeground" Color="White"/>
+            <SolidColorBrush x:Key="WindowCaptionForegroundDisabled" Color="#666666"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -22,10 +22,10 @@ namespace SteamHub.Pages
     {
         private WishListViewModel viewModel;
 
-        public WishListView(IUserGameService userGameService, IGameService gameService, ICartService cartService, IReviewService reviewService)
+        public WishListView(IUserGameService userGameService, IGameService gameService, ICartService cartService, IReviewService reviewService, IUserService userService)
         {
             this.InitializeComponent();
-            this.viewModel = new WishListViewModel(userGameService, gameService, cartService, reviewService);
+            this.viewModel = new WishListViewModel(userGameService, gameService, cartService, reviewService, userService);
             this.DataContext = this.viewModel;
         }
 

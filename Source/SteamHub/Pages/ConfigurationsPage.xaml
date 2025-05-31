@@ -7,34 +7,41 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource PrimaryBrush}">
 
     <Grid>
-        <StackPanel VerticalAlignment="Center" 
-                    HorizontalAlignment="Center" 
-                    Spacing="10"
-                    Padding="40"
-                    MaxWidth="400">
-            
-            <TextBlock Text="Configurations"
-                       Style="{ThemeResource TitleLargeTextBlockStyle}"
-                       HorizontalAlignment="Center"
-                       Padding="0,0,0,20"/>
+        <Border Background="{StaticResource SecondaryBrush}"
+                CornerRadius="8"
+                Padding="40"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel Spacing="20"
+                       MaxWidth="400">
+                
+                <TextBlock Text="Configurations"
+                          Foreground="{StaticResource AccentBrush}"
+                          FontSize="32"
+                          FontWeight="SemiBold"
+                          HorizontalAlignment="Center"
+                          Margin="0,0,0,10"/>
 
-            <!-- <Button Content="Manage Features"
-                    Command="{Binding NavigateToFeaturesCommand}"
-                    Style="{ThemeResource AccentButtonStyle}"
-                    HorizontalAlignment="Center"
-                    Width="200"/> -->
-            <!--<Button Content="Account Settings"
-                    Command="{Binding NavigateToAccountSettingsCommand}"
-                    HorizontalAlignment="Center" 
-                    Width="200"/> -->
-            <Button Content="Modify Profile"
-                    Command="{Binding NavigateToProfileSettingsCommand}"
-                    HorizontalAlignment="Center" 
-                    Width="200"/>
-           
-        </StackPanel>
+                <!-- <Button Content="Manage Features"
+                        Command="{Binding NavigateToFeaturesCommand}"
+                        Style="{StaticResource ModernSteamButton}"
+                        HorizontalAlignment="Center"
+                        Width="200"/> -->
+                <!--<Button Content="Account Settings"
+                        Command="{Binding NavigateToAccountSettingsCommand}"
+                        Style="{StaticResource ModernSteamButton}"
+                        HorizontalAlignment="Center" 
+                        Width="200"/> -->
+                <Button Content="Modify Profile"
+                        Command="{Binding NavigateToProfileSettingsCommand}"
+                        Style="{StaticResource ModernSteamButton}"
+                        HorizontalAlignment="Center" 
+                        Width="200"/>
+               
+            </StackPanel>
+        </Border>
     </Grid>
 </Page>

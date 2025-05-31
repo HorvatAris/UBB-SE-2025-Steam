@@ -10,7 +10,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource PrimaryBrush}">
 
     <Grid Padding="20">
         <Grid.RowDefinitions>
@@ -19,462 +19,608 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" 
-                Text="Trading" 
-                Style="{StaticResource TitleTextBlockStyle}"
-                Margin="0,0,0,20"/>
+                   Text="Trading" 
+                   Foreground="{StaticResource AccentBrush}"
+                   FontSize="32"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,20"/>
 
-        <TabView Grid.Row="1">
-            <TabView.TabItems>
-                <TabViewItem Header="Create Offer">
-                    <Grid Padding="20">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="1" 
+                     VerticalScrollMode="Enabled"
+                     HorizontalScrollMode="Disabled"
+                     Style="{StaticResource ModernScrollViewer}">
+            <TabView Style="{StaticResource ModernSteamTabView}">
+                <TabView.TabItems>
+                    <TabViewItem Header="Create Offer">
+                        <Grid Padding="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <!-- User Selection -->
-                        <Grid Grid.Row="0" Margin="0,0,0,20">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="20"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                            <!-- User Selection -->
+                            <Border Grid.Row="0" 
+                                    Background="{StaticResource SecondaryBrush}"
+                                    CornerRadius="8"
+                                    Padding="20"
+                                    Margin="0,0,0,20">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
 
-                            <ComboBox Header="Current User" 
-                                 x:Name="UserComboBox"
-                                 ItemsSource="{x:Bind ViewModel.Users, Mode=OneWay}"
-                                 SelectedItem="{x:Bind ViewModel.CurrentUser, Mode=TwoWay}"
-                                 DisplayMemberPath="Username"
-                                 Width="300"
-                                 HorizontalAlignment="Left"/>
+                                    <TextBlock Text="Select Users for Trade"
+                                             Foreground="{StaticResource AccentBrush}"
+                                             FontSize="20"
+                                             FontWeight="SemiBold"
+                                             Grid.ColumnSpan="3"
+                                             Margin="0,0,0,10"/>
 
-                            <ComboBox Header="Trade With" 
-                                 x:Name="RecipientComboBox"
-                                 ItemsSource="{x:Bind ViewModel.AvailableUsers, Mode=OneWay}"
-                                 SelectedItem="{x:Bind ViewModel.SelectedUser, Mode=TwoWay}"
-                                 DisplayMemberPath="Username"
-                                 Grid.Column="2"
-                                 Width="300"
-                                 HorizontalAlignment="Left"/>
-                        </Grid>
+                                    <ComboBox Header="Current User" 
+                                             x:Name="UserComboBox"
+                                             ItemsSource="{x:Bind ViewModel.Users, Mode=OneWay}"
+                                             SelectedItem="{x:Bind ViewModel.CurrentUser, Mode=TwoWay}"
+                                             DisplayMemberPath="Username"
+                                             Width="300"
+                                             Grid.Row="1"
+                                             Style="{StaticResource ModernSteamComboBox}"
+                                             HorizontalAlignment="Left"/>
 
-                        <!-- Game Selection and Trade Info -->
-                        <StackPanel Grid.Row="1" Spacing="10" Margin="0,0,0,20">
-                            <TextBlock Text="Create New Trade Offer" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                            <ComboBox x:Name="GameComboBox" 
-                                 PlaceholderText="Select Game" 
-                                 Width="300"
-                                 ItemsSource="{x:Bind ViewModel.Games, Mode=OneWay}"
-                                 SelectedItem="{x:Bind ViewModel.SelectedGame, Mode=TwoWay}"
-                                 DisplayMemberPath="GameTitle"/>
-                            <TextBox x:Name="DescriptionTextBox" 
-                                PlaceholderText="Trade Description"
-                                Text="{x:Bind ViewModel.TradeDescription, Mode=TwoWay}"
-                                Width="300" 
-                                Height="60" 
-                                TextWrapping="Wrap"/>
-                        </StackPanel>
+                                    <ComboBox Header="Trade With" 
+                                             x:Name="RecipientComboBox"
+                                             ItemsSource="{x:Bind ViewModel.AvailableUsers, Mode=OneWay}"
+                                             SelectedItem="{x:Bind ViewModel.SelectedUser, Mode=TwoWay}"
+                                             DisplayMemberPath="Username"
+                                             Grid.Row="1"
+                                             Grid.Column="2"
+                                             Width="300"
+                                             Style="{StaticResource ModernSteamComboBox}"
+                                             HorizontalAlignment="Left"/>
+                                </Grid>
+                            </Border>
 
-                        <!-- Items Selection -->
-                        <Grid Grid.Row="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                            <!-- Game Selection and Trade Info -->
+                            <Border Grid.Row="1" 
+                                    Background="{StaticResource SecondaryBrush}"
+                                    CornerRadius="8"
+                                    Padding="20"
+                                    Margin="0,0,0,20">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
 
-                            <!-- Your Items -->
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
+                                    <TextBlock Text="Create New Trade Offer" 
+                                             Foreground="{StaticResource AccentBrush}"
+                                             FontSize="20"
+                                             FontWeight="SemiBold"
+                                             Grid.ColumnSpan="2"
+                                             Margin="0,0,0,10"/>
 
-                                <TextBlock Text="Your Inventory" 
-                                      Style="{StaticResource SubtitleTextBlockStyle}"/>
+                                    <ComboBox x:Name="GameComboBox" 
+                                             PlaceholderText="Select Game"
+                                             Width="300"
+                                             Grid.Row="1"
+                                             Grid.Column="0"
+                                             Margin="0,0,10,0"
+                                             ItemsSource="{x:Bind ViewModel.Games, Mode=OneWay}"
+                                             SelectedItem="{x:Bind ViewModel.SelectedGame, Mode=TwoWay}"
+                                             DisplayMemberPath="GameTitle"
+                                             Style="{StaticResource ModernSteamComboBox}"/>
 
-                                <ListView x:Name="SourceItemsListView"
-                                     Grid.Row="1"
-                                     ItemsSource="{x:Bind ViewModel.SourceUserItems, Mode=OneWay}"
-                                     SelectionMode="Multiple"
-                                     Margin="0,10"
-                                     BorderThickness="1"
-                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Padding="10">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Image Source="{Binding ImagePath}" 
-                                                  Width="50" Height="50" 
-                                                  Margin="0,0,10,0"/>
-                                                <StackPanel Grid.Column="1">
-                                                    <TextBlock Text="{Binding ItemName}" 
-                                                          Style="{StaticResource BodyTextBlockStyle}"/>
-                                                    <TextBlock Text="{Binding Price}" 
-                                                          Style="{StaticResource CaptionTextBlockStyle}"/>
-                                                </StackPanel>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
+                                    <TextBox x:Name="DescriptionTextBox" 
+                                            PlaceholderText="Trade Description"
+                                            Text="{x:Bind ViewModel.TradeDescription, Mode=TwoWay}"
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            Margin="10,0,0,0"
+                                            Height="60" 
+                                            TextWrapping="Wrap"
+                                            Style="{StaticResource ModernSteamTextBox}"/>
+                                </Grid>
+                            </Border>
 
-                                <TextBlock Text="Your Selected Items" 
-                                      Style="{StaticResource SubtitleTextBlockStyle}"
-                                      Grid.Row="2"
-                                      Margin="0,10,0,0"/>
+                            <!-- Items Selection -->
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                                <ListView x:Name="SelectedSourceItemsListView"
-                                     Grid.Row="3"
-                                     ItemsSource="{x:Bind ViewModel.SelectedSourceItems, Mode=OneWay}"
-                                     Margin="0,10"
-                                     BorderThickness="1"
-                                     BorderBrush="{ThemeResource SystemFillColorSuccessBrush}"
-                                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Padding="10">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Image Source="{Binding ImagePath}" 
-                                                  Width="50" Height="50" 
-                                                  Margin="0,0,10,0"/>
-                                                <StackPanel Grid.Column="1">
-                                                    <TextBlock Text="{Binding ItemName}" 
-                                                          Style="{StaticResource BodyTextBlockStyle}"/>
-                                                    <TextBlock Text="{Binding Price}" 
-                                                          Style="{StaticResource CaptionTextBlockStyle}"/>
-                                                </StackPanel>
-                                                <Button Grid.Column="2"
-                                                     Content="Remove"
-                                                     Click="RemoveSourceItem_Click"
-                                                     Tag="{Binding}"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
+                                <!-- Your Items -->
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="Your Inventory" 
+                                             Foreground="{StaticResource AccentBrush}"
+                                             FontSize="20"
+                                             FontWeight="SemiBold"/>
+
+                                    <Border Grid.Row="1"
+                                            Background="{StaticResource SecondaryBrush}"
+                                            CornerRadius="8"
+                                            Margin="0,10">
+                                        <ListView x:Name="SourceItemsListView"
+                                                 ItemsSource="{x:Bind ViewModel.SourceUserItems, Mode=OneWay}"
+                                                 SelectionMode="Multiple"
+                                                 Margin="10"
+                                                 Height="200">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Padding="10">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Image Source="{Binding ImagePath}" 
+                                                               Width="50" Height="50" 
+                                                               Margin="0,0,10,0"/>
+                                                        <StackPanel Grid.Column="1">
+                                                            <TextBlock Text="{Binding ItemName}" 
+                                                                     Foreground="White"
+                                                                     FontSize="16"/>
+                                                            <TextBlock Text="{Binding Price}" 
+                                                                     Foreground="#75b022"
+                                                                     FontSize="14"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </Border>
+
+                                    <TextBlock Text="Your Selected Items" 
+                                             Foreground="{StaticResource AccentBrush}"
+                                             FontSize="20"
+                                             FontWeight="SemiBold"
+                                             Grid.Row="2"
+                                             Margin="0,10,0,0"/>
+
+                                    <Border Grid.Row="3"
+                                            Background="{StaticResource SecondaryBrush}"
+                                            CornerRadius="8"
+                                            Margin="0,10">
+                                        <ListView x:Name="SelectedSourceItemsListView"
+                                                 ItemsSource="{x:Bind ViewModel.SelectedSourceItems, Mode=OneWay}"
+                                                 Margin="10"
+                                                 Height="200">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Padding="10">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Image Source="{Binding ImagePath}" 
+                                                               Width="50" Height="50" 
+                                                               Margin="0,0,10,0"/>
+                                                        <StackPanel Grid.Column="1">
+                                                            <TextBlock Text="{Binding ItemName}" 
+                                                                     Foreground="White"
+                                                                     FontSize="16"/>
+                                                            <TextBlock Text="{Binding Price}" 
+                                                                     Foreground="#75b022"
+                                                                     FontSize="14"/>
+                                                        </StackPanel>
+                                                        <Button Grid.Column="2"
+                                                                Content="Remove"
+                                                                Click="RemoveSourceItem_Click"
+                                                                Tag="{Binding}"
+                                                                Style="{StaticResource ModernSteamDangerButton}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </Border>
+                                </Grid>
+
+                                <!-- Middle Controls -->
+                                <StackPanel Grid.Column="1" 
+                                           VerticalAlignment="Center" 
+                                           Margin="20,0">
+                                    <Button Content="Add &#x3E;" 
+                                            Click="AddSourceItem_Click"
+                                            Style="{StaticResource ModernSteamButton}"
+                                            Margin="0,0,0,10"/>
+                                    <Button Content="&#x3C; Add" 
+                                            Click="AddDestinationItem_Click"
+                                            Style="{StaticResource ModernSteamButton}"/>
+                                </StackPanel>
+
+                                <!-- Their Items -->
+                                <Grid Grid.Column="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="Their Inventory" 
+                                             Foreground="{StaticResource AccentBrush}"
+                                             FontSize="20"
+                                             FontWeight="SemiBold"/>
+
+                                    <Border Grid.Row="1"
+                                            Background="{StaticResource SecondaryBrush}"
+                                            CornerRadius="8"
+                                            Margin="0,10">
+                                        <ListView x:Name="DestinationItemsListView"
+                                                 ItemsSource="{x:Bind ViewModel.DestinationUserItems, Mode=OneWay}"
+                                                 SelectionMode="Multiple"
+                                                 Margin="10"
+                                                 Height="200">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Padding="10">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Image Source="{Binding ImagePath}" 
+                                                               Width="50" Height="50" 
+                                                               Margin="0,0,10,0"/>
+                                                        <StackPanel Grid.Column="1">
+                                                            <TextBlock Text="{Binding ItemName}" 
+                                                                     Foreground="White"
+                                                                     FontSize="16"/>
+                                                            <TextBlock Text="{Binding Price}" 
+                                                                     Foreground="#75b022"
+                                                                     FontSize="14"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </Border>
+
+                                    <TextBlock Text="Their Selected Items" 
+                                             Foreground="{StaticResource AccentBrush}"
+                                             FontSize="20"
+                                             FontWeight="SemiBold"
+                                             Grid.Row="2"
+                                             Margin="0,10,0,0"/>
+
+                                    <Border Grid.Row="3"
+                                            Background="{StaticResource SecondaryBrush}"
+                                            CornerRadius="8"
+                                            Margin="0,10">
+                                        <ListView x:Name="SelectedDestinationItemsListView"
+                                                 ItemsSource="{x:Bind ViewModel.SelectedDestinationItems, Mode=OneWay}"
+                                                 Margin="10"
+                                                 Height="200">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Padding="10">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Image Source="{Binding ImagePath}" 
+                                                               Width="50" Height="50" 
+                                                               Margin="0,0,10,0"/>
+                                                        <StackPanel Grid.Column="1">
+                                                            <TextBlock Text="{Binding ItemName}" 
+                                                                     Foreground="White"
+                                                                     FontSize="16"/>
+                                                            <TextBlock Text="{Binding Price}" 
+                                                                     Foreground="#75b022"
+                                                                     FontSize="14"/>
+                                                        </StackPanel>
+                                                        <Button Grid.Column="2"
+                                                                Content="Remove"
+                                                                Click="RemoveDestinationItem_Click"
+                                                                Tag="{Binding}"
+                                                                Style="{StaticResource ModernSteamDangerButton}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </Border>
+                                </Grid>
                             </Grid>
 
-                            <!-- Middle Controls -->
-                            <StackPanel Grid.Column="1" 
-                                   VerticalAlignment="Center" 
-                                   Margin="20,0">
-                                <Button Content="Add &#x3E;" 
-                                     Click="AddSourceItem_Click"
-                                     Margin="0,0,0,10"/>
-                                <Button Content="&#x3C; Add" 
-                                     Click="AddDestinationItem_Click"/>
+                            <!-- Footer -->
+                            <Border Grid.Row="3" 
+                                    Background="{StaticResource SecondaryBrush}"
+                                    CornerRadius="8"
+                                    Padding="20"
+                                    Margin="0,20,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock x:Name="ErrorMessage"
+                                                 Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
+                                                 Foreground="#c94141" 
+                                                 TextWrapping="Wrap"/>
+                                        <TextBlock x:Name="SuccessMessage" 
+                                                 Text="{x:Bind ViewModel.SuccessMessage, Mode=OneWay}"
+                                                 Foreground="#75b022" 
+                                                 TextWrapping="Wrap"/>
+                                    </StackPanel>
+
+                                    <Button Content="Create Trade Offer" 
+                                            Grid.Column="1"
+                                            Style="{StaticResource ModernSteamButton}"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Top"
+                                            Click="CreateTradeOffer_Click"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </TabViewItem>
+
+                    <TabViewItem Header="Active Trades">
+                        <Grid RowSpacing="10" Padding="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- User Selection -->
+                            <Border Grid.Row="0" 
+                                    Background="{StaticResource SecondaryBrush}"
+                                    CornerRadius="8"
+                                    Padding="20"
+                                    Margin="0,0,0,20">
+                                <StackPanel Orientation="Horizontal" Spacing="20">
+                                    <TextBlock Text="Current User:" 
+                                             Foreground="White"
+                                             VerticalAlignment="Center"
+                                             FontSize="16"/>
+                                    <ComboBox x:Name="ActiveTradesUserComboBox" 
+                                             ItemsSource="{x:Bind ViewModel.Users}"
+                                             SelectedItem="{x:Bind ViewModel.CurrentUser, Mode=TwoWay}"
+                                             PlaceholderText="Select your user"
+                                             Width="200"
+                                             Style="{StaticResource ModernSteamComboBox}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate x:DataType="userModel:User">
+                                                <TextBlock Text="{x:Bind Username}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Active Trades List -->
+                            <Border Grid.Row="1"
+                                    Background="{StaticResource SecondaryBrush}"
+                                    CornerRadius="8"
+                                    Padding="20">
+                                <ListView ItemsSource="{x:Bind ViewModel.ActiveTrades}"
+                                        SelectionMode="Single"
+                                        SelectionChanged="ActiveTradesListView_SelectionChanged">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="itemTradeModel:ItemTrade">
+                                            <Border Background="{StaticResource PrimaryBrush}"
+                                                    CornerRadius="8"
+                                                    Padding="15"
+                                                    Margin="0,0,0,10">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+
+                                                    <!-- Trade Header -->
+                                                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="{x:Bind TradeDescription}" 
+                                                                 Foreground="White"
+                                                                 FontSize="16"/>
+                                                        <TextBlock Grid.Column="1" 
+                                                                 Foreground="{StaticResource AccentBrush}"
+                                                                 Text="{x:Bind TradeStatus}" 
+                                                                 FontSize="16"/>
+                                                    </Grid>
+
+                                                    <!-- Source User Items -->
+                                                    <StackPanel Grid.Row="1" Margin="0,0,0,10">
+                                                        <TextBlock Text="{x:Bind SourceUser.Username}" 
+                                                                 Foreground="{StaticResource AccentBrush}"
+                                                                 FontSize="18"
+                                                                 FontWeight="SemiBold"/>
+                                                        <ItemsRepeater ItemsSource="{x:Bind SourceUserItems}">
+                                                            <ItemsRepeater.ItemTemplate>
+                                                                <DataTemplate x:DataType="itemModel:Item">
+                                                                    <TextBlock Text="{x:Bind ItemName}" 
+                                                                             Foreground="White"
+                                                                             FontSize="16"/>
+                                                                </DataTemplate>
+                                                            </ItemsRepeater.ItemTemplate>
+                                                        </ItemsRepeater>
+                                                    </StackPanel>
+
+                                                    <!-- Destination User Items -->
+                                                    <StackPanel Grid.Row="2">
+                                                        <TextBlock Text="{x:Bind DestinationUser.Username}" 
+                                                                 Foreground="{StaticResource AccentBrush}"
+                                                                 FontSize="18"
+                                                                 FontWeight="SemiBold"/>
+                                                        <ItemsRepeater ItemsSource="{x:Bind DestinationUserItems}">
+                                                            <ItemsRepeater.ItemTemplate>
+                                                                <DataTemplate x:DataType="itemModel:Item">
+                                                                    <TextBlock Text="{x:Bind ItemName}" 
+                                                                             Foreground="White"
+                                                                             FontSize="16"/>
+                                                                </DataTemplate>
+                                                            </ItemsRepeater.ItemTemplate>
+                                                        </ItemsRepeater>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </Border>
+
+                            <!-- Trade Controls -->
+                            <StackPanel Grid.Row="2" 
+                                       Orientation="Horizontal" 
+                                       Spacing="10" 
+                                       HorizontalAlignment="Right"
+                                       Margin="0,10,0,0">
+                                <Button Content="Accept Trade" 
+                                        Click="AcceptTrade_Click"
+                                        Style="{StaticResource ModernSteamButton}"
+                                        IsEnabled="{x:Bind ViewModel.CanAcceptOrDeclineTrade, Mode=OneWay}"/>
+                                <Button Content="Decline Trade" 
+                                        Click="DeclineTrade_Click"
+                                        Style="{StaticResource ModernSteamDangerButton}"
+                                        IsEnabled="{x:Bind ViewModel.CanAcceptOrDeclineTrade, Mode=OneWay}"/>
                             </StackPanel>
+                        </Grid>
+                    </TabViewItem>
 
-                            <!-- Their Items -->
-                            <Grid Grid.Column="2">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
+                    <TabViewItem Header="Trade History">
+                        <Grid Padding="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
 
-                                <TextBlock Text="Their Inventory" 
-                                      Style="{StaticResource SubtitleTextBlockStyle}"/>
+                            <!-- User Selection -->
+                            <Border Grid.Row="0" 
+                                    Background="{StaticResource SecondaryBrush}"
+                                    CornerRadius="8"
+                                    Padding="20"
+                                    Margin="0,0,0,20">
+                                <StackPanel Orientation="Horizontal" Spacing="20">
+                                    <TextBlock Text="Current User:" 
+                                             Foreground="White"
+                                             VerticalAlignment="Center"
+                                             FontSize="16"/>
+                                    <ComboBox x:Name="HistoryUserComboBox" 
+                                             ItemsSource="{x:Bind ViewModel.Users}"
+                                             SelectedItem="{x:Bind ViewModel.CurrentUser, Mode=TwoWay}"
+                                             PlaceholderText="Select your user"
+                                             Width="200"
+                                             Style="{StaticResource ModernSteamComboBox}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate x:DataType="userModel:User">
+                                                <TextBlock Text="{x:Bind Username}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Border>
 
-                                <ListView x:Name="DestinationItemsListView"
-                                     Grid.Row="1"
-                                     ItemsSource="{x:Bind ViewModel.DestinationUserItems, Mode=OneWay}"
-                                     SelectionMode="Multiple"
-                                     Margin="0,10"
-                                     BorderThickness="1"
-                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                            <TextBlock Grid.Row="1" 
+                                     Text="Trade History" 
+                                     Foreground="{StaticResource AccentBrush}"
+                                     FontSize="24"
+                                     FontWeight="SemiBold"
+                                     Margin="0,0,0,20"/>
+
+                            <Border Grid.Row="2"
+                                    Background="{StaticResource SecondaryBrush}"
+                                    CornerRadius="8"
+                                    Padding="20">
+                                <ListView ItemsSource="{x:Bind ViewModel.TradeHistory}"
+                                        SelectionMode="None">
                                     <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Padding="10">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Image Source="{Binding ImagePath}" 
-                                                  Width="50" Height="50" 
-                                                  Margin="0,0,10,0"/>
-                                                <StackPanel Grid.Column="1">
-                                                    <TextBlock Text="{Binding ItemName}" 
-                                                          Style="{StaticResource BodyTextBlockStyle}"/>
-                                                    <TextBlock Text="{Binding Price}" 
-                                                          Style="{StaticResource CaptionTextBlockStyle}"/>
-                                                </StackPanel>
-                                            </Grid>
+                                        <DataTemplate x:DataType="itemTradeModel:ItemTrade">
+                                            <Border Background="{StaticResource PrimaryBrush}"
+                                                    CornerRadius="8"
+                                                    Padding="15"
+                                                    Margin="0,0,0,10">
+                                                <Grid ColumnSpacing="20">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!-- Trade Header -->
+                                                    <Grid Grid.Column="0" Width="200">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+                                                        <TextBlock Text="{x:Bind TradeDescription}" 
+                                                                 Foreground="White"
+                                                                 FontSize="16"/>
+                                                        <TextBlock Grid.Row="1"
+                                                                 Foreground="{StaticResource AccentBrush}"
+                                                                 Text="{x:Bind TradeStatus}" 
+                                                                 FontSize="16"/>
+                                                    </Grid>
+
+                                                    <!-- Source User Items -->
+                                                    <StackPanel Grid.Column="1" Margin="0,0,0,10">
+                                                        <TextBlock Text="{x:Bind SourceUser.Username}" 
+                                                                 Foreground="{StaticResource AccentBrush}"
+                                                                 FontSize="18"
+                                                                 FontWeight="SemiBold"/>
+                                                        <ItemsRepeater ItemsSource="{x:Bind SourceUserItems}">
+                                                            <ItemsRepeater.ItemTemplate>
+                                                                <DataTemplate x:DataType="itemModel:Item">
+                                                                    <TextBlock Text="{x:Bind ItemName}" 
+                                                                             Foreground="White"
+                                                                             FontSize="16"/>
+                                                                </DataTemplate>
+                                                            </ItemsRepeater.ItemTemplate>
+                                                        </ItemsRepeater>
+                                                    </StackPanel>
+
+                                                    <!-- Destination User Items -->
+                                                    <StackPanel Grid.Column="2">
+                                                        <TextBlock Text="{x:Bind DestinationUser.Username}" 
+                                                                 Foreground="{StaticResource AccentBrush}"
+                                                                 FontSize="18"
+                                                                 FontWeight="SemiBold"/>
+                                                        <ItemsRepeater ItemsSource="{x:Bind DestinationUserItems}">
+                                                            <ItemsRepeater.ItemTemplate>
+                                                                <DataTemplate x:DataType="itemModel:Item">
+                                                                    <TextBlock Text="{x:Bind ItemName}" 
+                                                                             Foreground="White"
+                                                                             FontSize="16"/>
+                                                                </DataTemplate>
+                                                            </ItemsRepeater.ItemTemplate>
+                                                        </ItemsRepeater>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
                                 </ListView>
-
-                                <TextBlock Text="Their Selected Items" 
-                                      Style="{StaticResource SubtitleTextBlockStyle}"
-                                      Grid.Row="2"
-                                      Margin="0,10,0,0"/>
-
-                                <ListView x:Name="SelectedDestinationItemsListView"
-                                     Grid.Row="3"
-                                     ItemsSource="{x:Bind ViewModel.SelectedDestinationItems, Mode=OneWay}"
-                                     Margin="0,10"
-                                     BorderThickness="1"
-                                     BorderBrush="{ThemeResource SystemFillColorSuccessBrush}"
-                                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Padding="10">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Image Source="{Binding ImagePath}" 
-                                                  Width="50" Height="50" 
-                                                  Margin="0,0,10,0"/>
-                                                <StackPanel Grid.Column="1">
-                                                    <TextBlock Text="{Binding ItemName}" 
-                                                          Style="{StaticResource BodyTextBlockStyle}"/>
-                                                    <TextBlock Text="{Binding Price}" 
-                                                          Style="{StaticResource CaptionTextBlockStyle}"/>
-                                                </StackPanel>
-                                                <Button Grid.Column="2"
-                                                     Content="Remove"
-                                                     Click="RemoveDestinationItem_Click"
-                                                     Tag="{Binding}"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                            </Grid>
+                            </Border>
                         </Grid>
-
-                        <!-- Footer -->
-                        <Grid Grid.Row="3" Margin="0,20,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock x:Name="ErrorMessage"
-                                  Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
-                                  Foreground="Red" 
-                                  TextWrapping="Wrap"/>
-                            <TextBlock x:Name="SuccessMessage" 
-                                  Text="{x:Bind ViewModel.SuccessMessage, Mode=OneWay}"
-                                  Foreground="Green" 
-                                  TextWrapping="Wrap"/>
-
-                            <Button Content="Create Trade Offer" 
-                                 Grid.Column="1"
-                                 Style="{StaticResource AccentButtonStyle}" 
-                                 Click="CreateTradeOffer_Click"
-                             />
-                        </Grid>
-                    </Grid>
-                </TabViewItem>
-
-                <TabViewItem Header="Active Trades">
-                    <Grid RowSpacing="10" Padding="20">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <!-- User Selection -->
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="Current User:" VerticalAlignment="Center"/>
-                            <ComboBox x:Name="ActiveTradesUserComboBox" 
-                                 ItemsSource="{x:Bind ViewModel.Users}"
-                                 SelectedItem="{x:Bind ViewModel.CurrentUser, Mode=TwoWay}"
-                                 PlaceholderText="Select your user"
-                                 Width="200">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate x:DataType="userModel:User">
-                                        <TextBlock Text="{x:Bind Username}"/>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                        </StackPanel>
-
-                        <!-- Active Trades List -->
-                        <ListView Grid.Row="1" 
-                              ItemsSource="{x:Bind ViewModel.ActiveTrades}"
-                              SelectionMode="Single"
-                              SelectionChanged="ActiveTradesListView_SelectionChanged"
-                            >
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="itemTradeModel:ItemTrade">
-                                    <Grid Padding="10">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-
-                                        <!-- Trade Header -->
-                                        <Grid Grid.Row="0" Margin="0,0,0,10">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Text="{x:Bind TradeDescription}" 
-                                                  Style="{StaticResource BodyTextBlockStyle}"/>
-                                            <TextBlock Grid.Column="1" 
-                                                  Text="{x:Bind TradeStatus}" 
-                                                  Style="{StaticResource BodyTextBlockStyle}"/>
-                                        </Grid>
-
-                                        <!-- Source User Items -->
-                                        <StackPanel Grid.Row="1" Margin="0,0,0,10">
-                                            <TextBlock Text="{x:Bind SourceUser.Username}" 
-                                                  Style="{StaticResource SubtitleTextBlockStyle}"/>
-                                            <ItemsRepeater ItemsSource="{x:Bind SourceUserItems}">
-                                                <ItemsRepeater.ItemTemplate>
-                                                    <DataTemplate x:DataType="itemModel:Item">
-                                                        <TextBlock Text="{x:Bind ItemName}" 
-                                                              Style="{StaticResource BodyTextBlockStyle}"/>
-                                                    </DataTemplate>
-                                                </ItemsRepeater.ItemTemplate>
-                                            </ItemsRepeater>
-                                        </StackPanel>
-
-                                        <!-- Destination User Items -->
-                                        <StackPanel Grid.Row="2">
-                                            <TextBlock Text="{x:Bind DestinationUser.Username}" 
-                                                  Style="{StaticResource SubtitleTextBlockStyle}"/>
-                                            <ItemsRepeater ItemsSource="{x:Bind DestinationUserItems}">
-                                                <ItemsRepeater.ItemTemplate>
-                                                    <DataTemplate x:DataType="itemModel:Item">
-                                                        <TextBlock Text="{x:Bind ItemName}" 
-                                                              Style="{StaticResource BodyTextBlockStyle}"/>
-                                                    </DataTemplate>
-                                                </ItemsRepeater.ItemTemplate>
-                                            </ItemsRepeater>
-                                        </StackPanel>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-
-                        <!-- Trade Controls -->
-                        <StackPanel Grid.Row="2" 
-                               Orientation="Horizontal" 
-                               Spacing="10" 
-                               HorizontalAlignment="Right"
-                               Margin="0,10,0,0">
-                            <Button Content="Accept Trade" 
-                               Click="AcceptTrade_Click"
-                               IsEnabled="{x:Bind ViewModel.CanAcceptOrDeclineTrade, Mode=OneWay}"/>
-                            <Button Content="Decline Trade" 
-                               Click="DeclineTrade_Click"
-                               IsEnabled="{x:Bind ViewModel.CanAcceptOrDeclineTrade, Mode=OneWay}"/>
-                        </StackPanel>
-                    </Grid>
-                </TabViewItem>
-
-                <TabViewItem Header="Trade History">
-                    <Grid Padding="20">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <!-- User Selection -->
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,20">
-                            <TextBlock Text="Current User:" VerticalAlignment="Center"/>
-                            <ComboBox x:Name="HistoryUserComboBox" 
-                                 ItemsSource="{x:Bind ViewModel.Users}"
-                                 SelectedItem="{x:Bind ViewModel.CurrentUser, Mode=TwoWay}"
-                                 PlaceholderText="Select your user"
-                                 Width="200">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate x:DataType="userModel:User">
-                                        <TextBlock Text="{x:Bind Username}"/>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                        </StackPanel>
-
-                        <TextBlock Grid.Row="1" 
-                              Text="Trade History" 
-                              Style="{StaticResource SubtitleTextBlockStyle}"
-                              Margin="0,0,0,20"/>
-
-                        <ListView Grid.Row="2"
-                             ItemsSource="{x:Bind ViewModel.TradeHistory}"
-                             SelectionMode="None">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="itemTradeModel:ItemTrade">
-                                    <Grid Padding="12" 
-                                       ColumnSpacing="20" 
-                                       BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                       BorderThickness="1"
-                                       CornerRadius="8"
-                                       Margin="0,0,0,8">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <!-- Trade Header -->
-                                        <Grid Grid.Column="0" Width="200">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <TextBlock Text="{x:Bind TradeDescription}" 
-                                                  Style="{StaticResource BodyTextBlockStyle}"/>
-                                            <TextBlock Grid.Row="1"
-                                                  Text="{x:Bind TradeStatus}" 
-                                                  Style="{StaticResource BodyTextBlockStyle}"/>
-                                        </Grid>
-
-                                        <!-- Source User Items -->
-                                        <StackPanel Grid.Column="1" Margin="0,0,0,10">
-                                            <TextBlock Text="{x:Bind SourceUser.Username}" 
-                                                  Style="{StaticResource SubtitleTextBlockStyle}"/>
-                                            <ItemsRepeater ItemsSource="{x:Bind SourceUserItems}">
-                                                <ItemsRepeater.ItemTemplate>
-                                                    <DataTemplate x:DataType="itemModel:Item">
-                                                        <TextBlock Text="{x:Bind ItemName}" 
-                                                              Style="{StaticResource BodyTextBlockStyle}"/>
-                                                    </DataTemplate>
-                                                </ItemsRepeater.ItemTemplate>
-                                            </ItemsRepeater>
-                                        </StackPanel>
-
-                                        <!-- Destination User Items -->
-                                        <StackPanel Grid.Column="2">
-                                            <TextBlock Text="{x:Bind DestinationUser.Username}" 
-                                                  Style="{StaticResource SubtitleTextBlockStyle}"/>
-                                            <ItemsRepeater ItemsSource="{x:Bind DestinationUserItems}">
-                                                <ItemsRepeater.ItemTemplate>
-                                                    <DataTemplate x:DataType="itemModel:Item">
-                                                        <TextBlock Text="{x:Bind ItemName}" 
-                                                              Style="{StaticResource BodyTextBlockStyle}"/>
-                                                    </DataTemplate>
-                                                </ItemsRepeater.ItemTemplate>
-                                            </ItemsRepeater>
-                                        </StackPanel>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </Grid>
-                </TabViewItem>
-            </TabView.TabItems>
-        </TabView>
+                    </TabViewItem>
+                </TabView.TabItems>
+            </TabView>
+        </ScrollViewer>
     </Grid>
 </Page>

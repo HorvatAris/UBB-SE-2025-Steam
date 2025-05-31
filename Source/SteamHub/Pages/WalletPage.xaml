@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="SteamHub.Pages.WalletPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -5,31 +6,17 @@
     xmlns:local="using:SteamHub.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Background="{StaticResource PrimaryBrush}">
 
     <Grid Padding="20">
         <StackPanel Spacing="20">
-            <TextBlock Text="Your Wallet" Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock Text="Your Wallet" 
+                      Foreground="{StaticResource AccentBrush}"
+                      FontSize="32"
+                      FontWeight="SemiBold"/>
 
-            <!-- Error Messages -->
-            <TextBlock x:Name="ErrorText"
-                      Foreground="Red"
-                      TextWrapping="Wrap"
-                      Visibility="Collapsed"/>
-            
-            <TextBlock Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
-                      Foreground="Red"
-                      TextWrapping="Wrap"
-                      Visibility="{x:Bind ViewModel.ErrorMessage, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}}"/>
-
-            <!-- Loading State -->
-            <ProgressRing 
-                IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
-                Width="50" 
-                Height="50"
-                HorizontalAlignment="Center"/>
-
-            <Grid RowSpacing="5" ColumnSpacing="20">
+            <Grid RowSpacing="20" ColumnSpacing="20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -40,26 +27,65 @@
                 </Grid.RowDefinitions>
 
                 <!-- Balance Section -->
-                <StackPanel Grid.Row="0" Grid.Column="0">
-                    <TextBlock Text="Current Balance" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <TextBlock Text="{x:Bind ViewModel.BalanceText, Mode=OneWay}" 
-                               Style="{StaticResource HeaderTextBlockStyle}" 
-                               Foreground="#107C10"/>
-                </StackPanel>
+                <Border Grid.Row="0" Grid.Column="0"
+                        Background="{StaticResource SecondaryBrush}"
+                        CornerRadius="8"
+                        Padding="20">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Current Balance" 
+                                 Foreground="{StaticResource AccentBrush}"
+                                 FontSize="20"
+                                 FontWeight="SemiBold"/>
+                        <TextBlock Text="{x:Bind ViewModel.BalanceText, Mode=OneWay}" 
+                                 FontSize="32"
+                                 FontWeight="Bold"
+                                 Foreground="#75b022"/>
+                    </StackPanel>
+                </Border>
 
                 <Button Grid.Row="1" Grid.Column="0" 
                         Content="Add Money" 
-                        Click="AddMoneyButton_Click" 
+                        Click="AddMoneyButton_Click"
+                        Style="{StaticResource ModernSteamButton}"
                         HorizontalAlignment="Stretch"/>
 
                 <!-- Points Section -->
-                <StackPanel Grid.Row="0" Grid.Column="1">
-                    <TextBlock Text="Available Points" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <TextBlock Text="{x:Bind ViewModel.PointsText, Mode=OneWay}" 
-                               Style="{StaticResource HeaderTextBlockStyle}" 
-                               Foreground="#5B4DFF"/>
-                </StackPanel>
+                <Border Grid.Row="0" Grid.Column="1"
+                        Background="{StaticResource SecondaryBrush}"
+                        CornerRadius="8"
+                        Padding="20">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Available Points" 
+                                 Foreground="{StaticResource AccentBrush}"
+                                 FontSize="20"
+                                 FontWeight="SemiBold"/>
+                        <TextBlock Text="{x:Bind ViewModel.PointsText, Mode=OneWay}" 
+                                 FontSize="32"
+                                 FontWeight="Bold"
+                                 Foreground="#5B4DFF"/>
+                    </StackPanel>
+                </Border>
             </Grid>
+
+            <!-- Error Messages -->
+            <TextBlock x:Name="ErrorText"
+               Foreground="#c94141"
+               TextWrapping="Wrap"
+               Visibility="Collapsed"/>
+
+            <TextBlock Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
+               Foreground="#c94141"
+               TextWrapping="Wrap"
+               Visibility="{x:Bind ViewModel.ErrorMessage, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}}"/>
+
+            <!-- Loading State -->
+            <ProgressRing 
+             IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
+             Width="50" 
+             Height="50"
+             Foreground="{StaticResource AccentBrush}"
+             HorizontalAlignment="Center"/>
+
             <!--  <Button Click="GoBack" Content="Back to profile"/>
             Transaction History Section could go here -->
         </StackPanel>

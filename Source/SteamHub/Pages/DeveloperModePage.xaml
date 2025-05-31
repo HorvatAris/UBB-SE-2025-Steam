@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:utils="using:SteamHub.Utils" 
     mc:Ignorable="d"
+    Background="{StaticResource PrimaryBrush}"
     Loaded="DeveloperModePage_Loaded">
 
     <Grid Padding="20">
@@ -19,56 +20,65 @@
 
         <!-- Page Title -->
         <TextBlock x:Name="PageTitle"
-                 FontSize="28" 
-                 FontWeight="Bold" 
+                 FontSize="32" 
+                 FontWeight="SemiBold" 
+                 Foreground="{StaticResource AccentBrush}"
                  Margin="0,0,0,20"
-                   Text="{Binding PageTitle}"/>
+                 Text="{Binding PageTitle}"/>
 
         <!-- Developer Games List -->
         <ListView ItemsSource="{Binding DeveloperGames}"
                  x:Name="DeveloperGamesList"
                  Grid.Row="1" 
                  Margin="0,0,0,20"
-                  IsEnabled="{Binding IsDeveloper}"
-                  Visibility="Visible">
+                 IsEnabled="{Binding IsDeveloper}"
+                 Visibility="Visible"
+                 Background="Transparent">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Margin="0,10" Width="800">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                    <Border Background="{StaticResource SecondaryBrush}"
+                            CornerRadius="8"
+                            Margin="0,5"
+                            Padding="15">
+                        <Grid Width="800">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="{Binding GameTitle}" 
-                                 Grid.Column="0" 
-                                 VerticalAlignment="Center" 
-                                 FontSize="16" 
-                                 FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding Status}" 
-                                 Grid.Column="1" 
-                                 VerticalAlignment="Center" 
-                                 FontSize="14"/>
-                        <Button Content="Edit" 
-                                Grid.Column="2" 
-                                Margin="10,0"
-                                Click="EditButton_Click"
-                                Background="DarkGray"
-                                CommandParameter="{Binding GameId}"/>
-                        <Button Content="Remove" 
-                                Grid.Column="3"
-                                Margin="10,0"
-                                Click="RemoveButton_Click"
-                                Background="Red"
-                                CommandParameter="{Binding GameId}"/>
-                        <Button Content="Reject Message" 
-                                Grid.Column="4"
-                                Background="Orange"
-                                Click="RejectionButton_Click"
-                                CommandParameter="{Binding GameId}"/>
-                    </Grid>
+                            <TextBlock Text="{Binding GameTitle}" 
+                                     Grid.Column="0" 
+                                     VerticalAlignment="Center" 
+                                     FontSize="18" 
+                                     FontWeight="SemiBold"
+                                     Foreground="White"/>
+                            <TextBlock Text="{Binding Status}" 
+                                     Grid.Column="1" 
+                                     VerticalAlignment="Center" 
+                                     FontSize="14"
+                                     Foreground="White"/>
+                            <Button Content="Edit" 
+                                    Grid.Column="2" 
+                                    Margin="10,0"
+                                    Click="EditButton_Click"
+                                    Style="{StaticResource ModernSteamButton}"
+                                    CommandParameter="{Binding GameId}"/>
+                            <Button Content="Remove" 
+                                    Grid.Column="3"
+                                    Margin="10,0"
+                                    Click="RemoveButton_Click"
+                                    Style="{StaticResource ModernSteamDangerButton}"
+                                    CommandParameter="{Binding GameId}"/>
+                            <Button Content="Reject Message" 
+                                    Grid.Column="4"
+                                    Style="{StaticResource ModernSteamButton}"
+                                    Click="RejectionButton_Click"
+                                    CommandParameter="{Binding GameId}"/>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -78,39 +88,47 @@
                 x:Name="ReviewGamesList"
                  Grid.Row="1" 
                  Margin="0,0,0,20"
-                  IsEnabled="{Binding IsDeveloper}"
-                  Visibility="Collapsed">
+                 IsEnabled="{Binding IsDeveloper}"
+                 Visibility="Collapsed"
+                 Background="Transparent">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Margin="0,10" Width="800">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                    <Border Background="{StaticResource SecondaryBrush}"
+                            CornerRadius="8"
+                            Margin="0,5"
+                            Padding="15">
+                        <Grid Width="800">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="{Binding GameTitle}" 
-                                 Grid.Column="0" 
-                                 VerticalAlignment="Center" 
-                                 FontSize="16" 
-                                 FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding Status}" 
-                                 Grid.Column="1" 
-                                 VerticalAlignment="Center" 
-                                 FontSize="14"/>
-                        <Button Content="Accept" 
-                                Grid.Column="2" 
-                                Margin="10,0"
-                                Background="Green"
-                                Click="AcceptButton_Click"
-                                CommandParameter="{Binding GameId}"/>
-                        <Button Content="Reject" 
-                                Grid.Column="3"
-                                Background="Red"
-                                Click="RejectButton_Click"
-                                CommandParameter="{Binding GameId}"/>
-                    </Grid>
+                            <TextBlock Text="{Binding GameTitle}" 
+                                     Grid.Column="0" 
+                                     VerticalAlignment="Center" 
+                                     FontSize="18" 
+                                     FontWeight="SemiBold"
+                                     Foreground="White"/>
+                            <TextBlock Text="{Binding Status}" 
+                                     Grid.Column="1" 
+                                     VerticalAlignment="Center" 
+                                     FontSize="14"
+                                     Foreground="White"/>
+                            <Button Content="Accept" 
+                                    Grid.Column="2" 
+                                    Margin="10,0"
+                                    Style="{StaticResource ModernSteamButton}"
+                                    Click="AcceptButton_Click"
+                                    CommandParameter="{Binding GameId}"/>
+                            <Button Content="Reject" 
+                                    Grid.Column="3"
+                                    Style="{StaticResource ModernSteamDangerButton}"
+                                    Click="RejectButton_Click"
+                                    CommandParameter="{Binding GameId}"/>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -124,16 +142,19 @@
                     Content="My Games" 
                     Width="150"
                     Click="MyGamesButton_Click"
+                    Style="{StaticResource ModernSteamButton}"
                     IsEnabled="{Binding IsDeveloper}"/>
             <Button x:Name="ReviewGamesButton"
                     Content="Review Games" 
                     Width="150"
                     Click="ReviewGamesButton_Click"
+                    Style="{StaticResource ModernSteamButton}"
                     IsEnabled="{Binding IsDeveloper}"/>
             <Button x:Name="AddGameButton"
                     Content="Add Game" 
                     Width="150"
                     Click="AddGameButton_Click"
+                    Style="{StaticResource ModernSteamButton}"
                     IsEnabled="{Binding IsDeveloper}"/>
         </StackPanel>
 
@@ -141,20 +162,24 @@
         <ContentDialog x:Name="AddGameDialog"
                       Title="Add New Game" 
                       CloseButtonText="Cancel" 
-                      PrimaryButtonText="Add Game">
+                      PrimaryButtonText="Add Game"
+                      Background="{StaticResource SecondaryBrush}">
             <ScrollViewer MaxHeight="600" VerticalScrollBarVisibility="Auto">
-                <StackPanel Spacing="10">
+                <StackPanel Spacing="15">
                     <TextBox x:Name="AddGameId"
                              Header="Game ID" 
                              PlaceholderText="Enter game ID"
+                             Style="{StaticResource ModernSteamTextBox}"
                              Text="{Binding AddGameId, Mode=TwoWay}"/>
                     <TextBox x:Name="AddGameName"
                              Header="Game Name" 
                              PlaceholderText="Enter game name"
+                             Style="{StaticResource ModernSteamTextBox}"
                              Text="{Binding AddGameName, Mode=TwoWay}"/>
                     <TextBox x:Name="AddGameDescription"
                              Header="Description" 
                              PlaceholderText="Enter game description" 
+                             Style="{StaticResource ModernSteamTextBox}"
                              AcceptsReturn="True" 
                              TextWrapping="Wrap" 
                              Height="100"
@@ -162,22 +187,27 @@
                     <TextBox x:Name="AddGamePrice"
                              Header="Price" 
                              PlaceholderText="Enter price"
+                             Style="{StaticResource ModernSteamTextBox}"
                              Text="{Binding AddGamePrice, Mode=TwoWay}"/>
                     <TextBox x:Name="AddGameImageUrl"
                              Header="Image URL" 
                              PlaceholderText="Enter image URL"
+                             Style="{StaticResource ModernSteamTextBox}"
                              Text="{Binding AddGameImageUrl, Mode=TwoWay}"/>
                     <TextBox x:Name="AddGameplayUrl"
                              Header="Gameplay URL" 
                              PlaceholderText="Enter gameplay video URL"
+                             Style="{StaticResource ModernSteamTextBox}"
                              Text="{Binding AddGameplayUrl, Mode=TwoWay}"/>
                     <TextBox x:Name="AddTrailerUrl"
                              Header="Trailer URL" 
                              PlaceholderText="Enter trailer video URL"
+                             Style="{StaticResource ModernSteamTextBox}"
                              Text="{Binding AddTrailerUrl, Mode=TwoWay}"/>
                     <TextBox x:Name="AddGameMinimumRequirement"
                              Header="Minimum Requirements" 
                              PlaceholderText="Enter minimum requirements" 
+                             Style="{StaticResource ModernSteamTextBox}"
                              AcceptsReturn="True" 
                              TextWrapping="Wrap" 
                              Height="100"
@@ -185,6 +215,7 @@
                     <TextBox x:Name="AddGameRecommendedRequirement"
                              Header="Recommended Requirements" 
                              PlaceholderText="Enter recommended requirements" 
+                             Style="{StaticResource ModernSteamTextBox}"
                              AcceptsReturn="True" 
                              TextWrapping="Wrap" 
                              Height="100"
@@ -192,23 +223,8 @@
                     <TextBox x:Name="AddGameDiscount"
                              Header="Discount" 
                              PlaceholderText="Enter discount (0-100)"
+                             Style="{StaticResource ModernSteamTextBox}"
                              Text="{Binding AddGameDiscount, Mode=TwoWay}"/>
-
-                    <!-- Tag Selection 
-                    <TextBlock Text="Select Tags" 
-                             FontSize="16" 
-                             FontWeight="SemiBold" 
-                             Margin="0,10,0,5"/>
-                    <ListView x:Name="AddGameTagList"
-                             Height="150"
-                             SelectionMode="Multiple"
-                             ItemsSource="{Binding Tags}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Tag_name}"/>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>--> 
                 </StackPanel>
             </ScrollViewer>
         </ContentDialog>
@@ -217,21 +233,25 @@
         <ContentDialog x:Name="EditGameDialog"
                       Title="Edit Game" 
                       CloseButtonText="Cancel" 
-                      PrimaryButtonText="Save Changes">
+                      PrimaryButtonText="Save Changes"
+                      Background="{StaticResource SecondaryBrush}">
             <ScrollViewer MaxHeight="600" VerticalScrollBarVisibility="Auto">
-                <StackPanel Spacing="10">
+                <StackPanel Spacing="15">
                     <TextBox x:Name="EditGameId"
                              Header="Game ID" 
                              PlaceholderText="Enter game ID"
+                             Style="{StaticResource ModernSteamTextBox}"
                              IsEnabled="False"
                              Text="{Binding EditGameId, Mode=TwoWay}"/>
                     <TextBox x:Name="EditGameName"
                              Header="Game Name" 
                              PlaceholderText="Enter game name"
+                             Style="{StaticResource ModernSteamTextBox}"
                              Text="{Binding EditGameName, Mode=TwoWay}"/>
                     <TextBox x:Name="EditGameDescription"
                              Header="Description" 
                              PlaceholderText="Enter game description" 
+                             Style="{StaticResource ModernSteamTextBox}"
                              AcceptsReturn="True" 
                              TextWrapping="Wrap" 
                              Height="100"
@@ -239,22 +259,27 @@
                     <TextBox x:Name="EditGamePrice"
                              Header="Price" 
                              PlaceholderText="Enter price"
+                             Style="{StaticResource ModernSteamTextBox}"
                              Text="{Binding EditGamePrice, Mode=TwoWay}"/>
                     <TextBox x:Name="EditGameImageUrl"
                              Header="Image URL" 
                              PlaceholderText="Enter image URL"
+                             Style="{StaticResource ModernSteamTextBox}"
                              Text="{Binding EditGameImageUrl, Mode=TwoWay}"/>
                     <TextBox x:Name="EditGameplayUrl"
                              Header="Gameplay URL" 
                              PlaceholderText="Enter gameplay video URL"
+                             Style="{StaticResource ModernSteamTextBox}"
                              Text="{Binding EditGameplayUrl, Mode=TwoWay}"/>
                     <TextBox x:Name="EditTrailerUrl"
                              Header="Trailer URL" 
                              PlaceholderText="Enter trailer video URL"
+                             Style="{StaticResource ModernSteamTextBox}"
                              Text="{Binding EditTrailerUrl, Mode=TwoWay}"/>
                     <TextBox x:Name="EditGameMinReq"
                              Header="Minimum Requirements" 
                              PlaceholderText="Enter minimum requirements" 
+                             Style="{StaticResource ModernSteamTextBox}"
                              AcceptsReturn="True" 
                              TextWrapping="Wrap" 
                              Height="100"
@@ -262,6 +287,7 @@
                     <TextBox x:Name="EditGameRecReq"
                              Header="Recommended Requirements" 
                              PlaceholderText="Enter recommended requirements" 
+                             Style="{StaticResource ModernSteamTextBox}"
                              AcceptsReturn="True" 
                              TextWrapping="Wrap" 
                              Height="100"
@@ -269,20 +295,25 @@
                     <TextBox x:Name="EditGameDiscount"
                              Header="Discount" 
                              PlaceholderText="Enter discount (0-100)"
+                             Style="{StaticResource ModernSteamTextBox}"
                              Text="{Binding EditGameDiscount, Mode=TwoWay}"/>
 
                     <!-- Tag Selection -->
                     <TextBlock Text="Select Tags" 
                              FontSize="16" 
                              FontWeight="SemiBold" 
+                             Foreground="{StaticResource AccentBrush}"
                              Margin="0,10,0,5"/>
                     <ListView x:Name="EditGameTagList"
                              Height="150"
                              SelectionMode="Multiple"
+                             Background="{StaticResource PrimaryBrush}"
                              ItemsSource="{Binding Tags}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Tag_name}"/>
+                                <TextBlock Text="{Binding Tag_name}"
+                                         Foreground="White"
+                                         Margin="5"/>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
@@ -295,9 +326,11 @@
                       Title="Confirm Delete" 
                       CloseButtonText="Cancel"
                       PrimaryButtonText="Delete"
-                      DefaultButton="Close">
+                      DefaultButton="Close"
+                      Background="{StaticResource SecondaryBrush}">
             <TextBlock Text="Are you sure you want to delete this game?" 
-                      TextWrapping="Wrap"/>
+                      TextWrapping="Wrap"
+                      Foreground="White"/>
         </ContentDialog>
 
         <!-- Delete Warning Dialog -->
@@ -305,17 +338,20 @@
                       Title="Warning: Game Owned by Users" 
                       CloseButtonText="Cancel"
                       PrimaryButtonText="Delete Anyway"
-                      DefaultButton="Close">
+                      DefaultButton="Close"
+                      Background="{StaticResource SecondaryBrush}">
             <StackPanel Spacing="10">
                 <TextBlock Text="Warning: This game is currently owned by users. Deleting it will remove it from their libraries and transaction history." 
                          TextWrapping="Wrap"
-                         Foreground="Red"/>
+                         Foreground="#c94141"/>
                 <TextBlock x:Name="OwnerCountText"
                          TextWrapping="Wrap"
-                           Text="{Binding OwnerCountText, Mode=TwoWay}"/>
+                         Foreground="White"
+                         Text="{Binding OwnerCountText, Mode=TwoWay}"/>
                 <TextBlock Text="Are you sure you want to proceed with deletion?" 
                          TextWrapping="Wrap"
-                         FontWeight="SemiBold"/>
+                         FontWeight="SemiBold"
+                         Foreground="White"/>
             </StackPanel>
         </ContentDialog>
 
@@ -323,12 +359,14 @@
         <ContentDialog x:Name="RejectionMessageDialog"
                       Title="Rejection Message" 
                       CloseButtonText="Close"
-                      DefaultButton="Close">
+                      DefaultButton="Close"
+                      Background="{StaticResource SecondaryBrush}">
             <ScrollViewer MaxHeight="400" VerticalScrollBarVisibility="Auto">
                 <TextBlock x:Name="RejectionMessageText"
                           TextWrapping="Wrap"
                           FontSize="14"
-                           Text="{Binding RejectionMessage, Mode=TwoWay}"/>
+                          Foreground="White"
+                          Text="{Binding RejectionMessage, Mode=TwoWay}"/>
             </ScrollViewer>
         </ContentDialog>
 
@@ -337,15 +375,19 @@
                       Title="Reject Game" 
                       CloseButtonText="Cancel"
                       PrimaryButtonText="Reject"
-                      DefaultButton="Close">
+                      DefaultButton="Close"
+                      Background="{StaticResource SecondaryBrush}">
             <StackPanel Spacing="10">
-                <TextBlock Text="Enter rejection reason:" FontSize="14"/>
+                <TextBlock Text="Enter rejection reason:" 
+                          FontSize="14"
+                          Foreground="White"/>
                 <TextBox x:Name="RejectReasonTextBox"
                        Height="100"
                        AcceptsReturn="True"
                        TextWrapping="Wrap"
+                       Style="{StaticResource ModernSteamTextBox}"
                        PlaceholderText="Explain why this game is being rejected..."
-                        Text="{Binding RejectReason, Mode=TwoWay}"/>
+                       Text="{Binding RejectReason, Mode=TwoWay}"/>
             </StackPanel>
         </ContentDialog>
     </Grid>

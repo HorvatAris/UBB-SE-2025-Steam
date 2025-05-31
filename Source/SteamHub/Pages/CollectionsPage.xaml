@@ -10,7 +10,7 @@
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"  
     xmlns:converters="using:SteamHub.Pages.Converters"  
     mc:Ignorable="d"  
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">  
+    Background="{StaticResource PrimaryBrush}">  
 
     <Page.Resources>  
         <converters:NumberToVisibilityConverter x:Key="NumberToVisibilityConverter"/>  
@@ -19,113 +19,131 @@
         <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>  
     </Page.Resources>  
 
-    <Grid x:Name="RootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">  
+    <Grid x:Name="RootGrid" Padding="20">  
         <Grid.RowDefinitions>  
             <RowDefinition Height="Auto"/>  
             <RowDefinition Height="Auto"/>  
             <RowDefinition Height="*"/>  
         </Grid.RowDefinitions>  
 
-        <TextBlock Grid.Row="0"   
-                   Text="COLLECTIONS"   
-                   FontSize="30"   
-                   FontWeight="Bold"   
-                   TextAlignment="Center"  
-                   HorizontalAlignment="Center"  
-                   Margin="0,10,0,20"/>  
+        <!-- Header -->
+        <Border Grid.Row="0"
+                Background="{StaticResource SecondaryBrush}"
+                CornerRadius="8"
+                Padding="20"
+                Margin="0,0,0,20">
+            <TextBlock Text="COLLECTIONS"   
+                      Foreground="{StaticResource AccentBrush}"
+                      FontSize="32"   
+                      FontWeight="SemiBold"   
+                      TextAlignment="Center"  
+                      HorizontalAlignment="Center"/>
+        </Border>
 
+        <!-- Create Collection Button -->
         <Button Grid.Row="1"  
                 Content="Create Collection"  
                 Click="CreateCollection_Click"  
-                Style="{StaticResource AccentButtonStyle}"  
+                Style="{StaticResource ModernSteamButton}"  
                 HorizontalAlignment="Right"  
-                Margin="0,0,35,20"/>  
+                Margin="0,0,0,20"/>  
 
+        <!-- Collections Grid -->
         <Grid Grid.Row="2">  
+            <!-- Empty State -->
             <TextBlock Text="You don't have any collections yet. Create one to get started!"  
-                       Style="{StaticResource BodyTextBlockStyle}"  
-                       HorizontalAlignment="Center"  
-                       VerticalAlignment="Center"  
-                       TextAlignment="Center"  
-                       Visibility="{Binding Collections.Count, Converter={StaticResource NumberToVisibilityConverter}, ConverterParameter=0}"/>  
+                      Foreground="White"
+                      FontSize="16"
+                      HorizontalAlignment="Center"  
+                      VerticalAlignment="Center"  
+                      TextAlignment="Center"  
+                      Visibility="{Binding Collections.Count, Converter={StaticResource NumberToVisibilityConverter}, ConverterParameter=0}"/>  
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto"  
-                         HorizontalScrollBarVisibility="Disabled"  
+            <!-- Collections List -->
+            <ScrollViewer Style="{StaticResource ModernScrollViewer}"
                          Visibility="{Binding Collections.Count, Converter={StaticResource NumberToVisibilityConverter}, ConverterParameter=inverse}">  
                 <ItemsControl ItemsSource="{Binding Collections}"  
                             Margin="0,0,0,20">  
                     <ItemsControl.ItemsPanel>  
                         <ItemsPanelTemplate>  
                             <controls:WrapGrid Orientation="Horizontal"   
-                                              MaxWidth="680"  
-                                              HorizontalAlignment="Center"/>  
+                                             MaxWidth="680"  
+                                             HorizontalAlignment="Center"/>  
                         </ItemsPanelTemplate>  
                     </ItemsControl.ItemsPanel>  
                     <ItemsControl.ItemTemplate>  
                         <DataTemplate x:DataType="models:Collection">  
-                            <Grid Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"  
-                                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"  
-                                  BorderThickness="1"  
-                                  CornerRadius="8"  
-                                  Padding="16"  
-                                  Margin="10">  
-                                <Grid.RowDefinitions>  
-                                    <RowDefinition Height="132"/>  
-                                    <RowDefinition Height="Auto"/>  
-                                    <RowDefinition Height="Auto"/>  
-                                </Grid.RowDefinitions>  
-
-                                <Grid Grid.Row="0"   
-                                      Width="120"   
-                                      Height="120"  
-                                      Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"  
-                                      CornerRadius="8">  
-                                    <Image Source="{Binding CoverPicture, TargetNullValue='ms-appx:///Assets/Placeholder.png'}"  
-                                           Stretch="UniformToFill"  
-                                           Height="120"  
-                                           Width="120"/>  
-                                </Grid>  
-
-                                <TextBlock Grid.Row="1"  
-                                           Text="{Binding CollectionName, TargetNullValue='Unnamed Collection'}"  
-                                           Style="{ThemeResource BodyStrongTextBlockStyle}"  
-                                           HorizontalAlignment="Center"  
-                                           Margin="0,12,0,8"/>  
-
-                                <Grid Grid.Row="2">  
+                            <Border Background="{StaticResource SecondaryBrush}"  
+                                   CornerRadius="8"  
+                                   Padding="16"  
+                                   Margin="10">  
+                                <Grid>  
                                     <Grid.RowDefinitions>  
+                                        <RowDefinition Height="132"/>  
                                         <RowDefinition Height="Auto"/>  
                                         <RowDefinition Height="Auto"/>  
                                     </Grid.RowDefinitions>  
 
-                                    <StackPanel Grid.Row="0"  
-                                                Orientation="Horizontal"   
-                                                HorizontalAlignment="Center"  
-                                                Spacing="8">  
-                                        <Button Content="View"  
-                                                Click="ViewCollection_Click"  
-                                                CommandParameter="{Binding}"  
-                                                Style="{StaticResource AccentButtonStyle}"/>  
+                                    <!-- Collection Cover -->
+                                    <Border Grid.Row="0"   
+                                           Width="120"   
+                                           Height="120"  
+                                           Background="{StaticResource PrimaryBrush}"  
+                                           CornerRadius="8">  
+                                        <Image Source="{Binding CoverPicture, TargetNullValue='ms-appx:///Assets/Placeholder.png'}"  
+                                               Stretch="UniformToFill"  
+                                               Height="120"  
+                                               Width="120"/>  
+                                    </Border>  
 
-                                        <Button Content="Edit"  
-                                                Click="EditCollection_Click"  
-                                                CommandParameter="{Binding}"  
-                                                Style="{StaticResource AccentButtonStyle}"/>  
-
-                                        <Button Content="Delete"  
-                                                Click="DeleteCollection_Click"  
-                                                CommandParameter="{Binding CollectionId}"  
-                                                Style="{StaticResource AccentButtonStyle}"  
-                                                Visibility="{Binding IsAllOwnedGamesCollection, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse, TargetNullValue=Collapsed}"/>  
-                                    </StackPanel>  
-
+                                    <!-- Collection Name -->
                                     <TextBlock Grid.Row="1"  
-                                               Text="{Binding CreatedAt, Converter={StaticResource DateOnlyToStringConverter}, TargetNullValue='Unknown'}"  
-                                               Style="{ThemeResource BodyTextBlockStyle}"  
-                                               HorizontalAlignment="Center"  
-                                               Margin="0,8,0,0"/>  
+                                             Text="{Binding CollectionName, TargetNullValue='Unnamed Collection'}"  
+                                             Foreground="{StaticResource AccentBrush}"
+                                             FontSize="18"
+                                             FontWeight="SemiBold"
+                                             HorizontalAlignment="Center"  
+                                             Margin="0,12,0,8"/>  
+
+                                    <!-- Actions and Date -->
+                                    <Grid Grid.Row="2">  
+                                        <Grid.RowDefinitions>  
+                                            <RowDefinition Height="Auto"/>  
+                                            <RowDefinition Height="Auto"/>  
+                                        </Grid.RowDefinitions>  
+
+                                        <!-- Action Buttons -->
+                                        <StackPanel Grid.Row="0"  
+                                                  Orientation="Horizontal"   
+                                                  HorizontalAlignment="Center"  
+                                                  Spacing="8">  
+                                            <Button Content="View"  
+                                                    Click="ViewCollection_Click"  
+                                                    CommandParameter="{Binding}"  
+                                                    Style="{StaticResource ModernSteamButton}"/>  
+
+                                            <Button Content="Edit"  
+                                                    Click="EditCollection_Click"  
+                                                    CommandParameter="{Binding}"  
+                                                    Style="{StaticResource ModernSteamButton}"/>  
+
+                                            <Button Content="Delete"  
+                                                    Click="DeleteCollection_Click"  
+                                                    CommandParameter="{Binding CollectionId}"  
+                                                    Style="{StaticResource ModernSteamDangerButton}"  
+                                                    Visibility="{Binding IsAllOwnedGamesCollection, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse, TargetNullValue=Collapsed}"/>  
+                                        </StackPanel>  
+
+                                        <!-- Creation Date -->
+                                        <TextBlock Grid.Row="1"  
+                                                 Text="{Binding CreatedAt, Converter={StaticResource DateOnlyToStringConverter}, TargetNullValue='Unknown'}"  
+                                                 Foreground="White"
+                                                 FontSize="14"
+                                                 HorizontalAlignment="Center"  
+                                                 Margin="0,8,0,0"/>  
+                                    </Grid>  
                                 </Grid>  
-                            </Grid>  
+                            </Border>  
                         </DataTemplate>  
                     </ItemsControl.ItemTemplate>  
                 </ItemsControl>  

@@ -5,13 +5,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls" xmlns:viewmodels="using:SteamHub.ViewModels" d:DataContext="{d:DesignInstance Type=viewModels1:AddFriendsViewModel}"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls" 
+    xmlns:viewmodels="using:SteamHub.ViewModels" 
+    d:DataContext="{d:DesignInstance Type=viewModels1:AddFriendsViewModel}"
     mc:Ignorable="d"
     xmlns:utils="using:SteamHub.Utils"
     xmlns:models1="using:SteamHub.ApiContract.Models"
     xmlns:viewModels1="using:SteamHub.ViewModels"
     x:Name="PageRoot"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource PrimaryBrush}">
 
     <Page.Resources>
         <utils:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -19,7 +21,7 @@
         <utils:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
     </Page.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -27,25 +29,62 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Back to Profile Button -->
-        <Button Grid.Row="0"
-        Content="Back to Profile"
-        Click="BackToProfileButton_Click"
-        Style="{StaticResource AccentButtonStyle}"
-        HorizontalAlignment="Left"
-        Margin="20"/>
-        <!-- Title -->
-        <TextBlock Grid.Row="1" 
-                  Text="DISCOVER FRIENDS" 
-                  FontSize="30" 
-                  FontWeight="Bold" 
-                  TextAlignment="Center"
-                  Margin="20"/>
+        <!-- Header Section -->
+        <Border Grid.Row="0"
+                Background="{StaticResource SecondaryBrush}"
+                CornerRadius="8"
+                Padding="20"
+                Margin="20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Back to Profile Button -->
+                <Button Content="Back to Profile"
+                        Click="BackToProfileButton_Click"
+                        Style="{StaticResource ModernSteamButton}"
+                        HorizontalAlignment="Left"/>
+
+                <!-- Title -->
+                <TextBlock Grid.Column="1"
+                          Text="Discover Friends" 
+                          Foreground="{StaticResource AccentBrush}"
+                          FontSize="32"
+                          FontWeight="SemiBold"
+                          TextAlignment="Center"
+                          VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- Loading and Error Indicators -->
+        <StackPanel Grid.Row="1" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center"
+                    Margin="20">
+            <ProgressRing IsActive="{Binding IsLoading}"
+                         Width="50" 
+                         Height="50"
+                         Foreground="{StaticResource AccentBrush}"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"/>
+
+            <TextBlock Text="{Binding ErrorMessage}"
+                      Foreground="#c94141"
+                      FontSize="16"
+                      TextWrapping="Wrap"
+                      TextAlignment="Center"
+                      VerticalAlignment="Center"
+                      Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+        </StackPanel>
 
         <!-- Scrollable Content -->
         <ScrollViewer Grid.Row="2" 
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled">
+                     VerticalScrollMode="Enabled"
+                     VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Disabled"
+                     Style="{StaticResource ModernScrollViewer}">
             <StackPanel Orientation="Vertical" 
                         HorizontalAlignment="Center"
                         Padding="20">
@@ -58,77 +97,63 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models1:PossibleFriendship">
-                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-            CornerRadius="8"
-            Padding="12"
-            Margin="12">
-                                <StackPanel Spacing="12" Width="200">
+                            <Border Background="{StaticResource SecondaryBrush}"
+                                    CornerRadius="8"
+                                    Padding="20"
+                                    Margin="12">
+                                <StackPanel Spacing="15" Width="240">
                                     <!-- Profile Picture -->
-                                    <Grid Height="170" Width="120" HorizontalAlignment="Center">
+                                    <Border Background="{StaticResource PrimaryBrush}"
+                                            CornerRadius="8"
+                                            Padding="10">
                                         <Image Source="{x:Bind User.ProfilePicture}"
-                       Stretch="UniformToFill"
-                       Height="120"
-                       Width="120"/>
-                                    </Grid>
+                                               Stretch="UniformToFill"
+                                               Height="120"
+                                               Width="120"
+                                               HorizontalAlignment="Center"/>
+                                    </Border>
 
                                     <!-- Username -->
                                     <TextBlock Text="{x:Bind User.Username}"
-                       Style="{ThemeResource BodyStrongTextBlockStyle}"
-                       TextWrapping="NoWrap"
-                       TextTrimming="CharacterEllipsis"
-                       TextAlignment="Center"
-                       HorizontalAlignment="Center"/>
+                                             Foreground="{StaticResource AccentBrush}"
+                                             FontSize="20"
+                                             FontWeight="SemiBold"
+                                             TextWrapping="NoWrap"
+                                             TextTrimming="CharacterEllipsis"
+                                             TextAlignment="Center"
+                                             HorizontalAlignment="Center"/>
 
                                     <!-- IF NOT FRIEND -->
                                     <Button Content="Add Friend"
-                    MinWidth="150"
-                    Visibility="{Binding IsFriend, Converter={StaticResource InvertedBoolToVisibilityConverter}}"
-                    Click="AddFriend_Click"
-                    Tag="{x:Bind User.UserId}"
-                    Style="{StaticResource AccentButtonStyle}"
-                    HorizontalAlignment="Center"/>
+                                            MinWidth="150"
+                                            Visibility="{Binding IsFriend, Converter={StaticResource InvertedBoolToVisibilityConverter}}"
+                                            Click="AddFriend_Click"
+                                            Tag="{x:Bind User.UserId}"
+                                            Style="{StaticResource ModernSteamButton}"
+                                            HorizontalAlignment="Center"/>
 
                                     <!-- IF FRIEND -->
                                     <StackPanel Orientation="Vertical"
-                        Spacing="6"
-                        Visibility="{Binding IsFriend, Converter={StaticResource BoolToVisibilityConverter}}"
-                        HorizontalAlignment="Center">
+                                              Spacing="10"
+                                              Visibility="{Binding IsFriend, Converter={StaticResource BoolToVisibilityConverter}}"
+                                              HorizontalAlignment="Center">
                                         <Button Content="Already Friends"
-                        MinWidth="150"
-                        IsEnabled="False"
-                        Style="{StaticResource AccentButtonStyle}"/>
+                                                MinWidth="150"
+                                                IsEnabled="False"
+                                                Style="{StaticResource ModernSteamButton}"/>
                                         
                                         <Button Content="Remove Friend"
-                        MinWidth="150"
-                        Click="RemoveFriend_Click"
-                        Tag="{x:Bind User.UserId}"
-                        Style="{StaticResource AccentButtonStyle}"/>
+                                                MinWidth="150"
+                                                Click="RemoveFriend_Click"
+                                                Tag="{x:Bind User.UserId}"
+                                                Style="{StaticResource ModernSteamDangerButton}"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
-
-
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
         </ScrollViewer>
-
-        <!-- Loading Indicator -->
-        <ProgressRing Grid.Row="1"
-                      IsActive="{Binding IsLoading}"
-                      Width="50" 
-                      Height="50"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Center"/>
-
-        <!-- Error Message -->
-        <TextBlock Grid.Row="1"
-                   Text="{Binding ErrorMessage}"
-                   Foreground="{ThemeResource SystemFillColorCriticalBrush}"
-                   TextWrapping="Wrap"
-                   TextAlignment="Center"
-                   VerticalAlignment="Center"
-                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
     </Grid>
 </Page>

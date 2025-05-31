@@ -123,8 +123,8 @@ namespace SteamHub
                     Content = "Are you sure you want to logout?",
                     PrimaryButtonText = "Yes",
                     SecondaryButtonText = "No",
-                    DefaultButton = ContentDialogButton.Secondary,
-                    XamlRoot = this.Content.XamlRoot
+                    XamlRoot = this.Content.XamlRoot,
+                    Style = (Style)Application.Current.Resources["ModernSteamDialog"]
                 };
 
                 var result = await dialog.ShowAsync();
@@ -153,7 +153,6 @@ namespace SteamHub
                 }
             }
             catch (Exception ex)
-
             {
                 // Show error dialog
                 var errorDialog = new ContentDialog
@@ -161,7 +160,8 @@ namespace SteamHub
                     Title = "Error",
                     Content = $"An error occurred during logout: {ex.Message}",
                     CloseButtonText = "OK",
-                    XamlRoot = this.Content.XamlRoot
+                    XamlRoot = this.Content.XamlRoot,
+                    Style = (Style)Application.Current.Resources["ModernSteamDialog"]
                 };
                 await errorDialog.ShowAsync();
             }
@@ -245,7 +245,7 @@ namespace SteamHub
                 switch (tag)
                 {
                     case "HomePage":
-                        this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService, this.reviewService);
+                        this.ContentFrame.Content = new HomePage(this.gameService, this.cartService, this.userGameService, this.reviewService, this.userService);
                         break;
                     case "CartPage":
                         this.ContentFrame.Content = new CartPage(this.cartService, this.userGameService);
@@ -254,7 +254,7 @@ namespace SteamHub
                         this.ContentFrame.Content = new PointsShopPage(this.pointShopService);
                         break;
                     case "WishlistPage":
-                        this.ContentFrame.Content = new WishListView(this.userGameService, this.gameService, this.cartService, this.reviewService);
+                        this.ContentFrame.Content = new WishListView(this.userGameService, this.gameService, this.cartService, this.reviewService, this.userService);
                         break;
                     case "DeveloperModePage":
                         this.ContentFrame.Content = new DeveloperModePage(this.developerService);
@@ -326,7 +326,8 @@ namespace SteamHub
                 Title = title,
                 Content = message,
                 CloseButtonText = "OK",
-                XamlRoot = this.Content.XamlRoot
+                XamlRoot = this.Content.XamlRoot,
+                Style = (Style)Application.Current.Resources["ModernSteamDialog"]
             };
             await dialog.ShowAsync();
         }

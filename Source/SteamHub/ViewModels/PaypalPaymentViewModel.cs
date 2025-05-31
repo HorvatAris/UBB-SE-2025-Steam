@@ -32,6 +32,7 @@ namespace SteamHub.ViewModels
         private decimal amountToPay;
         private string email;
         private string password;
+        private decimal totalAmount;
 
         // Updated constructor to be async and return Task
         public PaypalPaymentViewModel(ICartService cartService, IUserGameService userGameService)
@@ -45,6 +46,16 @@ namespace SteamHub.ViewModels
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public decimal TotalAmount
+        {
+            get => this.totalAmount;
+            set
+            {
+                this.totalAmount = value;
+                this.OnPropertyChanged();
+            }
+        }
 
         public string Email
             {
@@ -134,6 +145,7 @@ namespace SteamHub.ViewModels
         private async void InitAmountToPayAsync()
         {
             this.amountToPay = await this.cartService.GetTotalSumToBePaidAsync();
+            this.TotalAmount = this.amountToPay;
         }
 
         private async Task ShowNotification(string title, string message)

@@ -144,7 +144,7 @@
 
                                     <!-- Username + Timestamp -->
                                     <StackPanel>
-                                        <TextBlock Text="{Binding UserName}"
+                                        <TextBlock Text="{Binding Username}"
                                             FontWeight="Bold"
                                             FontSize="14" />
                                         <TextBlock Text="{Binding DateAndTimeWhenReviewWasCreated, Converter={StaticResource RelativeTimeConverter}}"

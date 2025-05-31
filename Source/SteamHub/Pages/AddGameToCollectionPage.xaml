@@ -10,37 +10,50 @@
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"  
     xmlns:converters="using:SteamHub.Pages.Converters"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource PrimaryBrush}">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Padding="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Back Button -->
-        <Button Content="Back"
-                Click="BackButton_Click"
-                Style="{StaticResource AccentButtonStyle}"
-                HorizontalAlignment="Left"
-                Margin="20"/>
+        <!-- Header Section -->
+        <Border Grid.Row="0"
+                Background="{StaticResource SecondaryBrush}"
+                CornerRadius="8"
+                Padding="20"
+                Margin="0,0,0,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-        <!-- Page Title -->
-        <TextBlock Grid.Row="1"
-                  Text="Add Games to Collection" 
-                  FontSize="30" 
-                  FontWeight="Bold" 
-                  TextAlignment="Center"
-                  Margin="20"/>
+                <!-- Back Button -->
+                <Button Content="Back"
+                        Click="BackButton_Click"
+                        Style="{StaticResource ModernSteamButton}"
+                        HorizontalAlignment="Left"/>
+
+                <!-- Page Title -->
+                <TextBlock Grid.Column="1"
+                          Text="Add Games to Collection" 
+                          Foreground="{StaticResource AccentBrush}"
+                          FontSize="32"
+                          FontWeight="SemiBold"
+                          TextAlignment="Center"
+                          Margin="20,0,0,0"/>
+            </Grid>
+        </Border>
 
         <!-- Scrollable Content -->
         <ScrollViewer Grid.Row="2" 
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled">
+                     Style="{StaticResource ModernScrollViewer}">
             <StackPanel Orientation="Vertical" 
-                        HorizontalAlignment="Center"
-                        Padding="20">
+                       HorizontalAlignment="Center"
+                       Padding="20">
                 <!-- Games Grid -->
                 <ItemsControl ItemsSource="{Binding AvailableGames}"
                             Margin="0,0,0,20">
@@ -51,12 +64,12 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                CornerRadius="8"
-                Padding="12"
-                Margin="12,12,12,12"
-                Width="400"
-                Height="152">
+                            <Border Background="{StaticResource SecondaryBrush}"
+                                    CornerRadius="8"
+                                    Padding="12"
+                                    Margin="12,12,12,12"
+                                    Width="400"
+                                    Height="152">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="120"/>
@@ -64,35 +77,38 @@
                                     </Grid.ColumnDefinitions>
 
                                     <!-- Game Cover Picture -->
-                                    <Grid Grid.Column="0" 
-                      Width="120" 
-                      Height="120"
-                      Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                      CornerRadius="8">
+                                    <Border Grid.Column="0" 
+                                           Width="120" 
+                                           Height="120"
+                                           Background="{StaticResource PrimaryBrush}"
+                                           CornerRadius="8">
                                         <Image Source="{Binding CoverPicture}"
-                           Stretch="UniformToFill"
-                           Height="120"
-                           Width="120"/>
-                                    </Grid>
+                                               Stretch="UniformToFill"
+                                               Height="120"
+                                               Width="120"/>
+                                    </Border>
 
                                     <StackPanel Grid.Column="1" 
-                          Margin="12,0,0,0"
-                          VerticalAlignment="Center">
+                                              Margin="12,0,0,0"
+                                              VerticalAlignment="Center">
                                         <TextBlock Text="{Binding GameTitle}"
-                             Style="{ThemeResource BodyStrongTextBlockStyle}"
-                             TextWrapping="NoWrap"
-                             TextTrimming="CharacterEllipsis"/>
+                                                 Foreground="{StaticResource AccentBrush}"
+                                                 FontSize="18"
+                                                 FontWeight="SemiBold"
+                                                 TextWrapping="NoWrap"
+                                                 TextTrimming="CharacterEllipsis"/>
                                         <TextBlock Text="{Binding Description}"
-                             Style="{ThemeResource CaptionTextBlockStyle}"
-                             TextWrapping="Wrap"
-                             MaxLines="2"
-                             TextTrimming="CharacterEllipsis"
-                             Opacity="0.8"/>
+                                                 Foreground="White"
+                                                 FontSize="14"
+                                                 TextWrapping="Wrap"
+                                                 MaxLines="2"
+                                                 TextTrimming="CharacterEllipsis"
+                                                 Opacity="0.8"/>
                                         <Button Content="Add to Collection"
-                            Click="AddGame_Click"
-                            Style="{StaticResource AccentButtonStyle}"
-                            Margin="0,8,0,0"
-                            Tag="{Binding GameId}"/>
+                                                Click="AddGame_Click"
+                                                Style="{StaticResource ModernSteamButton}"
+                                                Margin="0,8,0,0"
+                                                Tag="{Binding GameId}"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -104,18 +120,22 @@
 
         <!-- Loading Indicator -->
         <ProgressRing Grid.Row="1"
-                      IsActive="{Binding IsLoading}"
-                      Width="50"
-                      Height="50"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Center"/>
+                     IsActive="{Binding IsLoading}"
+                     Width="50"
+                     Height="50"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"/>
 
         <!-- Error Message -->
-        <TextBlock Grid.Row="1"
-                   Text="{Binding ErrorMessage}"
-                   Foreground="{ThemeResource SystemFillColorCriticalBrush}"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+        <Border Grid.Row="1"
+                Background="{StaticResource PrimaryBrush}"
+                CornerRadius="4"
+                Padding="10"
+                Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}">
+            <TextBlock Text="{Binding ErrorMessage}"
+                      Foreground="#c94141"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"/>
+        </Border>
     </Grid>
 </Page> 

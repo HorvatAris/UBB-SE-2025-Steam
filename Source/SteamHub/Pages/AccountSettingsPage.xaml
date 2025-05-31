@@ -7,76 +7,143 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource PrimaryBrush}">
 
     <Grid Margin="30" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <StackPanel Width="400" Spacing="15">
-            <TextBlock Text="Account Settings" FontSize="30" FontWeight="Bold" Margin="0,0,0,20"/>
+        <Border Background="{StaticResource SecondaryBrush}"
+                CornerRadius="8"
+                Padding="30">
+            <StackPanel Width="500" Spacing="20">
+                <!-- Header -->
+                <TextBlock Text="Account Settings" 
+                          Foreground="{StaticResource AccentBrush}"
+                          FontSize="32"
+                          FontWeight="SemiBold"
+                          Margin="0,0,0,10"/>
 
-            <!-- Success Message -->
-            <TextBlock Text="{x:Bind ViewModel.SuccessMessage, Mode=OneWay}" 
-                       Foreground="Green" 
-                       Visibility="{x:Bind ViewModel.SuccessMessageVisibility, Mode=OneWay}"
-                       TextWrapping="Wrap"
-                       HorizontalAlignment="Center"
-                       FontWeight="SemiBold"/>
+                <!-- Success Message -->
+                <Border Background="{StaticResource PrimaryBrush}"
+                        CornerRadius="4"
+                        Padding="10"
+                        Visibility="{x:Bind ViewModel.SuccessMessageVisibility, Mode=OneWay}">
+                    <TextBlock Text="{x:Bind ViewModel.SuccessMessage, Mode=OneWay}" 
+                              Foreground="#75b022"
+                              TextWrapping="Wrap"
+                              HorizontalAlignment="Center"
+                              FontWeight="SemiBold"/>
+                </Border>
 
-            <!-- Username Section -->
-            <TextBlock Text="Modify Username" FontSize="18" FontWeight="SemiBold"/>
-            <StackPanel Orientation="Horizontal" Spacing="10">
-                <TextBox Width="250" PlaceholderText="New username"
-                         Text="{x:Bind ViewModel.Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Content="Update" Width="100" 
-                        Command="{x:Bind ViewModel.UpdateUsernameCommand}"
-                        IsEnabled="{x:Bind ViewModel.UpdateUsernameEnabled, Mode=OneWay}"/>
+                <!-- Username Section -->
+                <Border Background="{StaticResource PrimaryBrush}"
+                        CornerRadius="8"
+                        Padding="20">
+                    <StackPanel Spacing="15">
+                        <TextBlock Text="Modify Username" 
+                                 Foreground="{StaticResource AccentBrush}"
+                                 FontSize="20"
+                                 FontWeight="SemiBold"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBox Width="300" 
+                                    PlaceholderText="New username"
+                                    Text="{x:Bind ViewModel.Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Style="{StaticResource ModernSteamTextBox}"/>
+                            <Button Content="Update" 
+                                    Width="120"
+                                    Command="{x:Bind ViewModel.UpdateUsernameCommand}"
+                                    IsEnabled="{x:Bind ViewModel.UpdateUsernameEnabled, Mode=OneWay}"
+                                    Style="{StaticResource ModernSteamButton}"/>
+                        </StackPanel>
+                        <TextBlock Text="Username must be unique" 
+                                 Foreground="#c94141"
+                                 Visibility="{x:Bind ViewModel.UsernameErrorMessageVisibility, Mode=OneWay}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Email Section -->
+                <Border Background="{StaticResource PrimaryBrush}"
+                        CornerRadius="8"
+                        Padding="20">
+                    <StackPanel Spacing="15">
+                        <TextBlock Text="Modify Email" 
+                                 Foreground="{StaticResource AccentBrush}"
+                                 FontSize="20"
+                                 FontWeight="SemiBold"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBox Width="300" 
+                                    PlaceholderText="New email"
+                                    Text="{x:Bind ViewModel.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Style="{StaticResource ModernSteamTextBox}"/>
+                            <Button Content="Update" 
+                                    Width="120"
+                                    Command="{x:Bind ViewModel.UpdateEmailCommand}"
+                                    IsEnabled="{x:Bind ViewModel.UpdateEmailEnabled, Mode=OneWay}"
+                                    Style="{StaticResource ModernSteamButton}"/>
+                        </StackPanel>
+                        <TextBlock Text="Please enter a valid email address" 
+                                 Foreground="#c94141"
+                                 Visibility="{x:Bind ViewModel.EmailErrorMessageVisibility, Mode=OneWay}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Password Section -->
+                <Border Background="{StaticResource PrimaryBrush}"
+                        CornerRadius="8"
+                        Padding="20">
+                    <StackPanel Spacing="15">
+                        <TextBlock Text="Modify Password" 
+                                 Foreground="{StaticResource AccentBrush}"
+                                 FontSize="20"
+                                 FontWeight="SemiBold"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <PasswordBox Width="300" 
+                                       PlaceholderText="New password"
+                                       Password="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       Style="{StaticResource ModernSteamTextBox}"/>
+                            <Button Content="Update" 
+                                    Width="120"
+                                    Command="{x:Bind ViewModel.UpdatePasswordCommand}"
+                                    IsEnabled="{x:Bind ViewModel.UpdatePasswordEnabled, Mode=OneWay}"
+                                    Style="{StaticResource ModernSteamButton}"/>
+                        </StackPanel>
+                        <TextBlock Text="Password must be at least 8 characters, include uppercase, lowercase, and special characters" 
+                                 TextWrapping="Wrap"
+                                 Foreground="#c94141"
+                                 Visibility="{x:Bind ViewModel.PasswordErrorMessageVisibility, Mode=OneWay}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Error Message -->
+                <Border Background="{StaticResource PrimaryBrush}"
+                        CornerRadius="4"
+                        Padding="10"
+                        Visibility="{x:Bind ViewModel.ErrorMessage, Mode=OneWay, Converter={StaticResource StringLengthToVisibilityConverter}}">
+                    <TextBlock Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}" 
+                              Foreground="#c94141"
+                              TextWrapping="Wrap"
+                              HorizontalAlignment="Center"/>
+                </Border>
+
+                <!-- Action Buttons --><!--
+                <StackPanel Orientation="Vertical" 
+                           HorizontalAlignment="Center" 
+                           Spacing="15" 
+                           Margin="0,20,0,0">
+                    <Button Content="Delete Account" 
+                            Width="200" 
+                            Height="40"
+                            Style="{StaticResource ModernSteamDangerButton}"
+                            Command="{x:Bind ViewModel.DeleteAccountCommand}"/>
+                    <Button Content="Log out" 
+                            Width="200" 
+                            Height="40"
+                            Style="{StaticResource ModernSteamButton}"
+                            Command="{x:Bind ViewModel.LogoutCommand}"/>
+                    <Button Content="Go Back" 
+                            Width="200"
+                            Style="{StaticResource ModernSteamButton}"
+                            Click="GoBack"/>
+                </StackPanel>-->
             </StackPanel>
-            <TextBlock Text="Username must be unique" 
-                       Foreground="Red" 
-                       Visibility="{x:Bind ViewModel.UsernameErrorMessageVisibility, Mode=OneWay}"/>
-
-            <!-- Email Section -->
-            <TextBlock Text="Modify Email" FontSize="18" FontWeight="SemiBold"/>
-            <StackPanel Orientation="Horizontal" Spacing="10">
-                <TextBox Width="250" PlaceholderText="New email"
-                         Text="{x:Bind ViewModel.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Content="Update" Width="100" 
-                        Command="{x:Bind ViewModel.UpdateEmailCommand}"
-                        IsEnabled="{x:Bind ViewModel.UpdateEmailEnabled, Mode=OneWay}"/>
-            </StackPanel>
-            <TextBlock Text="Please enter a valid email address" 
-                       Foreground="Red" 
-                       Visibility="{x:Bind ViewModel.EmailErrorMessageVisibility, Mode=OneWay}"/>
-
-            <!-- Password Section -->
-            <TextBlock Text="Modify Password" FontSize="18" FontWeight="SemiBold"/>
-            <StackPanel Orientation="Horizontal" Spacing="10">
-                <PasswordBox Width="250" PlaceholderText="New password"
-                             Password="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Content="Update" Width="100" 
-                        Command="{x:Bind ViewModel.UpdatePasswordCommand}"
-                        IsEnabled="{x:Bind ViewModel.UpdatePasswordEnabled, Mode=OneWay}"/>
-            </StackPanel>
-            <TextBlock Text="Password must be at least 8 characters, include uppercase, lowercase, and special characters" 
-                       TextWrapping="Wrap"
-                       Foreground="Red" 
-                       Visibility="{x:Bind ViewModel.PasswordErrorMessageVisibility, Mode=OneWay}"/>
-
-            <!-- Error Message -->
-            <TextBlock Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}" 
-                       Foreground="Red" 
-                       Visibility="{x:Bind ViewModel.ErrorMessage, Mode=OneWay, Converter={StaticResource StringLengthToVisibilityConverter}}"
-                       TextWrapping="Wrap"
-                       HorizontalAlignment="Center"/>
-
-            <!-- Action Buttons -->
-            <!--<StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="20" Margin="0,30,0,0">
-                <Button Content="Delete Account" Width="200" Height="40" 
-                        Background="#E53935" Foreground="White"
-                        Command="{x:Bind ViewModel.DeleteAccountCommand}"/>
-                <Button Content="Log out" Width="200" Height="40"
-                        Command="{x:Bind ViewModel.LogoutCommand}"/>
-                <Button Content="Go Back" Click="GoBack" Width="200"/>
-            </StackPanel> -->
-        </StackPanel>
+        </Border>
     </Grid>
 </Page>

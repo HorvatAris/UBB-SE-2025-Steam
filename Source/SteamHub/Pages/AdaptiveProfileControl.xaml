@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <UserControl
     x:Class="SteamHub.Pages.AdaptiveProfileControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -42,9 +43,13 @@
                             <ImageBrush x:Name="ProfilePictureBrush" 
                                        Stretch="UniformToFill"/>
                         </Ellipse.Fill>
+                        <Ellipse.Stroke>
+                            <SolidColorBrush Color="{StaticResource AccentColor}"/>
+                        </Ellipse.Stroke>
+                        <Ellipse.StrokeThickness>2</Ellipse.StrokeThickness>
                     </Ellipse>
                     
-                    <!-- Hat positioned at the top - only show if source is not empty/transparent -->
+                    <!-- Hat positioned at the top -->
                     <Image x:Name="HatImage" 
                            Width="{x:Bind HatSize, Mode=OneWay}"
                            Height="{x:Bind HatSize, Mode=OneWay}"
@@ -53,7 +58,7 @@
                            Margin="0,-20,0,0"
                            Visibility="Collapsed"/>
                     
-                    <!-- Pet positioned at bottom right - matching the original layout -->
+                    <!-- Pet positioned at bottom right -->
                     <Image x:Name="PetImage" 
                            Width="{x:Bind PetSize, Mode=OneWay}"
                            Height="{x:Bind PetSize, Mode=OneWay}"
@@ -75,7 +80,8 @@
                            HorizontalAlignment="Center"
                            Spacing="5">
                     <TextBlock x:Name="UsernameTextBlock"
-                             FontSize="20"
+                             Foreground="{StaticResource AccentBrush}"
+                             FontSize="24"
                              FontWeight="SemiBold"/>
                     <Image x:Name="EmojiImage" 
                            Height="24" 
@@ -83,11 +89,13 @@
                            Visibility="Collapsed"/>
                 </StackPanel>
 
-                <!-- Description - more compact with smaller text -->
+                <!-- Description -->
                 <TextBlock x:Name="DescriptionTextBlock"
+                          Foreground="White"
                           TextWrapping="Wrap"
                           TextAlignment="Center"
-                          FontSize="12"
+                          FontSize="14"
+                          Opacity="0.8"
                           Margin="0,5,0,0"/>
             </StackPanel>
         </Grid>

@@ -7,20 +7,83 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource PrimaryBrush}">
 
-    <Grid>
-        <StackPanel Padding="20" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock Text="PayPal Payment" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+    <Grid Margin="20">
+        <StackPanel>
+            <!-- Header -->
+            <TextBlock Text="PayPal Payment" 
+                     Foreground="{StaticResource AccentBrush}"
+                     FontSize="28" 
+                     FontWeight="SemiBold" 
+                     Margin="0,0,0,20"/>
 
-            <TextBox x:Name="EmailTextBox" Header="Email" Text="{Binding Email, Mode=TwoWay}" PlaceholderText="Enter your PayPal email" Margin="0,0,0,10"/>
-            <PasswordBox x:Name="PasswordBox" Header="Password" Password="{Binding Password, Mode=TwoWay}" PlaceholderText="Enter your PayPal password" Margin="0,0,0,20"/>
+            <!-- Price Card -->
+            <Border Background="{StaticResource SecondaryBrush}"
+                    CornerRadius="8"
+                    Padding="20"
+                    Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="Total Amount"
+                             Foreground="White"
+                             FontSize="16"
+                             Margin="0,0,0,8"/>
+                    <TextBlock Text="{Binding TotalAmount}" 
+                             Foreground="#75b022"
+                             FontSize="28"
+                             FontWeight="SemiBold"/>
+                </StackPanel>
+            </Border>
 
-            <Button x:Name="ValidateButton" Content="Validate Payment" Click="ValidateButton_Click" HorizontalAlignment="Center"/>
+            <!-- Payment Form -->
+            <Border Background="{StaticResource SecondaryBrush}"
+                    CornerRadius="8"
+                    Padding="20">
+                <StackPanel Spacing="16">
+                    <TextBox x:Name="EmailTextBox" 
+                            Header="Email" 
+                            Text="{Binding Email, Mode=TwoWay}" 
+                            PlaceholderText="Enter your PayPal email"
+                            Style="{StaticResource ModernSteamTextBox}"
+                            Height="80">
+                        <TextBox.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" Foreground="White"/>
+                            </DataTemplate>
+                        </TextBox.HeaderTemplate>
+                    </TextBox>
+                    
+                    <PasswordBox x:Name="PasswordBox" 
+                                Header="Password" 
+                                Password="{Binding Password, Mode=TwoWay}" 
+                                PlaceholderText="Enter your PayPal password"
+                                Style="{StaticResource ModernSteamTextBox}"
+                                Height="80">
+                        <PasswordBox.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" Foreground="White"/>
+                            </DataTemplate>
+                        </PasswordBox.HeaderTemplate>
+                    </PasswordBox>
+
+                    <Button x:Name="ValidateButton" 
+                            Content="Validate Payment" 
+                            Click="ValidateButton_Click" 
+                            Style="{StaticResource ModernSteamButton}"
+                            Margin="0,20,0,0"/>
+                </StackPanel>
+            </Border>
         </StackPanel>
+
+        <!-- Notification Dialog -->
         <ContentDialog x:Name="NotificationDialog"
                       Title="Notification"
                       CloseButtonText="OK"
-                      Opened="NotificationDialog_Opened"/>
+                      Opened="NotificationDialog_Opened"
+                      Background="{StaticResource SecondaryBrush}"
+                      Foreground="White">
+            <TextBlock x:Name="NotificationMessageTextBlock" 
+                      Foreground="White"/>
+        </ContentDialog>
     </Grid>
 </Page>

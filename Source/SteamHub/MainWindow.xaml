@@ -6,50 +6,119 @@
     xmlns:local="using:SteamHub"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Title="Steam Store">
+    mc:Ignorable="d">
 
-    <Grid>
+    <Grid Background="{StaticResource PrimaryBrush}">
         <NavigationView x:Name="NavView"
-                        PaneTitle="Menu"
                         IsBackButtonVisible="Collapsed"
                         IsSettingsVisible="False"
                         PaneDisplayMode="Left"
-                        SelectionChanged="NavView_SelectionChanged">
-            <NavigationView.MenuItems>
-                <NavigationViewItem Content="Homepage" Tag="HomePage" Icon="Home" />
-                <NavigationViewItem Content="Cart" Tag="CartPage">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE7BF;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Points Shop" Tag="PointsShopPage">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE1CB;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Icon="Favorite" />
-                <NavigationViewItem Content="Developer Mode" Tag="DeveloperModePage">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE943;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Icon="Shop" Content="Marketplace" Tag="marketplace" />
-                <NavigationViewItem Icon="List" Content="Inventory" Tag="inventory" />
-                <NavigationViewItem Icon="Switch" Content="Trading" Tag="trading" />
-                <NavigationViewItem Icon="Account" Content="Profile" Tag="profile" />
-                <NavigationViewItem Icon="People" Content="Friends" Tag="friends" />
-                <NavigationViewItem Icon="AddFriend" Content="Add Friends" Tag="AddFriendsPage" />
-                <NavigationViewItem Icon="Like" Content="Achievements" Tag="AchievementsPage" />
-                <NavigationViewItem Icon="NewFolder" Content="News" Tag="NewsPage" />
-                <NavigationViewItem Icon="Library" Content="Collections" Tag="CollectionsPage" />
-                <NavigationViewItem Icon="Scan" Content="Wallet" Tag="Wallet" />
+                        IsPaneToggleButtonVisible="True"
+                        CompactPaneLength="60"
+                        OpenPaneLength="240"
+                        SelectionChanged="NavView_SelectionChanged"
+                        Background="{StaticResource SecondaryBrush}"
+                        Foreground="{StaticResource AccentBrush}"
+                        FontFamily="{StaticResource SteamFont}">
+            <NavigationView.Resources>
+                <SolidColorBrush x:Key="NavigationViewItemForeground" Color="White"/>
+                <SolidColorBrush x:Key="NavigationViewItemForegroundPointerOver" Color="White"/>
+                <SolidColorBrush x:Key="NavigationViewItemForegroundPressed" Color="White"/>
+                <SolidColorBrush x:Key="NavigationViewItemForegroundSelected" Color="White"/>
+                <SolidColorBrush x:Key="NavigationViewItemBackgroundSelected" Color="#33FFFFFF"/>
+                <SolidColorBrush x:Key="NavigationViewItemBackgroundSelectedPointerOver" Color="#33FFFFFF"/>
+                <SolidColorBrush x:Key="NavigationViewItemBackgroundSelectedPressed" Color="#33FFFFFF"/>
+            </NavigationView.Resources>
 
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Homepage" Tag="HomePage" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE80F;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Cart" Tag="CartPage" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7BF;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Points Shop" Tag="PointsShopPage" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE1CB;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE113;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Developer Mode" Tag="DeveloperModePage" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE943;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Marketplace" Tag="marketplace" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE719;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Inventory" Tag="inventory" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8D5;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Trading" Tag="trading" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8EE;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Profile" Tag="profile" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE77B;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Friends" Tag="friends" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE125;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Add Friends" Tag="AddFriendsPage" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8FA;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Achievements" Tag="AchievementsPage" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8A1;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="News" Tag="NewsPage" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8A5;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Collections" Tag="CollectionsPage" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8D5;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Wallet" Tag="Wallet" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8C8;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem Icon="Setting" Content="Settings" Tag="profileSettings"/>
-                <NavigationViewItem Content="Logout" Tag="Logout" Icon="LeaveChat" Tapped="LogoutButton_Click"/>
+                <NavigationViewItem Content="Settings" Tag="profileSettings" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE713;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Logout" Tag="Logout" Tapped="LogoutButton_Click" Style="{StaticResource ModernSteamNavItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7E8;" Foreground="{StaticResource TextBrush}"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
             </NavigationView.FooterMenuItems>
 
             <Frame x:Name="ContentFrame" />
@@ -57,9 +126,19 @@
 
         <!-- Login Overlay -->
         <Grid x:Name="LoginOverlay" 
-              Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+              Background="{StaticResource PrimaryBrush}"
               Visibility="Visible">
             <Frame x:Name="LoginFrame" Navigated="LoginFrame_Navigated"/>
+        </Grid>
+
+        <!-- Loading Indicator -->
+        <Grid x:Name="LoadingOverlay" 
+              Background="#80000000"
+              Visibility="Collapsed">
+            <ProgressRing IsActive="True" 
+                         Width="50" 
+                         Height="50"
+                         Foreground="{StaticResource AccentBrush}"/>
         </Grid>
     </Grid>
 </Window>

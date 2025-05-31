@@ -28,7 +28,9 @@ public class GamePageViewModel : INotifyPropertyChanged
     private readonly IUserGameService userGameService;
     private readonly IGameService gameService;
     private readonly IReviewService reviewService;
+    private readonly IUserService userService;
     private IUserDetails user;
+    private string publisherName;
 
     private Game game;
     private ObservableCollection<Game> similarGames;
@@ -36,17 +38,17 @@ public class GamePageViewModel : INotifyPropertyChanged
     private ObservableCollection<string> gameTags;
     private ObservableCollection<string> mediaLinks;
 
-    public GamePageViewModel(IGameService gameService, ICartService cartService, IUserGameService userGameService, IReviewService reviewService)
+    public GamePageViewModel(IGameService gameService, ICartService cartService, IUserGameService userGameService, IReviewService reviewService, IUserService userService)
     {
         this.cartService = cartService;
         this.userGameService = userGameService;
         this.gameService = gameService;
         this.reviewService = reviewService;
+        this.userService = userService;
         this.user = this.cartService.GetUser();
         this.SimilarGames = new ObservableCollection<Game>();
         this.GameTags = new ObservableCollection<string>();
         this.MediaLinks = new ObservableCollection<string>();
-        this.reviewService = reviewService;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -55,7 +57,7 @@ public class GamePageViewModel : INotifyPropertyChanged
 
     public string GameDescription => this.Game?.GameDescription ?? string.Empty;
 
-    public string Developer => this.Game != null ? $"Developer: {this.Game.GameTitle}" : string.Empty;
+    public string Developer => $"Game Developer: {this.publisherName ?? "Loading..."}";
 
     public string MinimumRequirements => this.Game?.MinimumRequirements ?? string.Empty;
 
@@ -74,13 +76,13 @@ public class GamePageViewModel : INotifyPropertyChanged
         {
             this.game = value;
             this.OnPropertyChanged();
+            this.OnPropertyChanged(nameof(FormattedPrice));
             this.UpdateMediaLinks();
             _ = this.UpdateIsOwnedStatusAsync();
             _ = this.UpdateGameTagsAsync();
         }
     }
 
-    // public string FormattedPrice => this.Game != null ? $"${this.Game.Price:F2}" : string.Empty;
     public string FormattedPrice => this.Game != null ? $"{CurrencySymbol}{this.Game.Price.ToString(PriceFormat)}" : string.Empty;
 
     public ObservableCollection<string> GameTags
@@ -132,6 +134,7 @@ public class GamePageViewModel : INotifyPropertyChanged
         this.OnPropertyChanged(nameof(this.Game));
         this.OnPropertyChanged(nameof(this.Rating));
         await this.LoadSimilarGamesAsync();
+        await this.LoadPublisherInfoAsync();
     }
 
     public async Task LoadGameById(int gameId)
@@ -144,9 +147,9 @@ public class GamePageViewModel : INotifyPropertyChanged
         this.Game = await this.gameService.GetGameByIdAsync(gameId);
         if (this.Game != null)
         {
-            this.OnPropertyChanged(nameof(this.Game)); // Let UI know the Game has changed
-
+            this.OnPropertyChanged(nameof(this.Game));
             await this.LoadSimilarGamesAsync();
+            await this.LoadPublisherInfoAsync();
         }
     }
 
@@ -197,7 +200,7 @@ public class GamePageViewModel : INotifyPropertyChanged
     {
         if (frame != null)
         {
-            var gamePage = new GamePage(this.gameService, this.cartService, this.userGameService, this.reviewService, game);
+            var gamePage = new GamePage(this.gameService, this.cartService, this.userGameService, this.reviewService, this.userService, game);
 
             frame.Content = gamePage;
         }
@@ -277,6 +280,28 @@ public class GamePageViewModel : INotifyPropertyChanged
 
         var similarGames = await this.gameService.GetSimilarGamesAsync(this.Game.GameId);
         this.SimilarGames = new ObservableCollection<Game>(similarGames.Take(MaxSimilarGamesToDisplay));
+    }
+
+    private async Task LoadPublisherInfoAsync()
+    {
+        if (this.Game == null || this.userService == null)
+        {
+            this.publisherName = "Unknown";
+            this.OnPropertyChanged(nameof(this.Developer));
+            return;
+        }
+
+        try
+        {
+            var publisher = await this.userService.GetUserByIdentifierAsync(this.Game.PublisherIdentifier);
+            this.publisherName = publisher?.Username ?? "Unknown";
+            this.OnPropertyChanged(nameof(this.Developer));
+        }
+        catch (Exception)
+        {
+            this.publisherName = "Unknown";
+            this.OnPropertyChanged(nameof(this.Developer));
+        }
     }
 
     public void NavigateToReviewsPage(Frame parentFrame, int gameId)

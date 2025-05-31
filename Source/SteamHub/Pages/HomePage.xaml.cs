@@ -35,10 +35,11 @@ namespace SteamHub.Pages
             IGameService gameService,
             ICartService cartService,
             IUserGameService userGameService,
-            IReviewService reviewService)
+            IReviewService reviewService,
+            IUserService userService)
         {
             this.InitializeComponent();
-            this.HomePageViewModel = new HomePageViewModel(gameService, userGameService, cartService, reviewService);
+            this.HomePageViewModel = new HomePageViewModel(gameService, userGameService, cartService, reviewService, userService);
             this.DataContext = this.HomePageViewModel;
             this.Loaded += async (_, __) => await this.HomePageViewModel.InitAsync();
         }
@@ -100,6 +101,14 @@ namespace SteamHub.Pages
             {
                 this.HomePageViewModel.NavigateToGamePage(this.Parent as Frame, selectedGame);
                 listView.SelectedItem = null;
+            }
+        }
+
+        private void CardButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is Game game)
+            {
+                this.HomePageViewModel.NavigateToGamePage(this.Parent as Frame, game);
             }
         }
     }

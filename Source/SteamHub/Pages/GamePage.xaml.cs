@@ -38,12 +38,13 @@ namespace SteamHub.Pages
             ICartService cartService,
             IUserGameService userGameService,
             IReviewService reviewService,
+            IUserService userService,
             Game game = null)
         {
             this.InitializeComponent();
             this._reviewService = reviewService;
 
-            this.ViewModel = new GamePageViewModel(gameService, cartService, userGameService, reviewService);
+            this.ViewModel = new GamePageViewModel(gameService, cartService, userGameService, reviewService, userService);
 
             this.DataContext = this.ViewModel;
 
