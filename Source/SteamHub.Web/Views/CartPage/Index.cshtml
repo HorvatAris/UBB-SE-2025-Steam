@@ -11,43 +11,57 @@
     <div class="alert alert-success">You earned @TempData["PointsEarned"] points!</div>
 }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Image</th>
-            <th>Game</th>
-            <th>Price</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="row">
+    <div class="col-md-8">
         @foreach (var game in Model.CartGames)
         {
-            <tr>
-                <td><img src="@game.ImagePath" width="100" /></td>
-                <td>@game.GameTitle</td>
-                <td>@game.Price</td>
-                <td>
-                    <form method="post" asp-action="RemoveFromCart" asp-route-gameId="@game.GameId">
-                        <button class="btn btn-danger" type="submit">Remove</button>
-                    </form>
-                </td>
-            </tr>
+            <div class="card mb-3">
+                <div class="row g-0">
+                    <div class="col-md-2">
+                        <img src="@game.ImagePath" class="img-fluid rounded-start h-100" style="object-fit: cover;" alt="@game.GameTitle" />
+                    </div>
+                    <div class="col-md-10">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title mb-1">@game.GameTitle</h5>
+                                <p class="card-text text-light mb-0">@game.Price.ToString("C")</p>
+                            </div>
+                            <form method="post" asp-action="RemoveFromCart" asp-route-gameId="@game.GameId">
+                                <button class="btn btn-danger" type="submit">
+                                    <i class="bi bi-trash"></i> Remove
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
-
-<form method="post" asp-controller="CartPage" asp-action="Checkout">
-    <div class="form-group">
-        <label>Select Payment Method</label>
-        <select class="form-control" name="selectedPaymentMethod">
-            <option>Steam Wallet</option>
-            <option>PayPal</option>
-            <option>Credit Card</option>
-        </select>
     </div>
-    <div class="form-group mt-3">
-        <span class="fw-bold">Total: @Model.TotalPrice</span>
-        <button type="submit" class="btn btn-primary float-end">Checkout</button>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Order Summary</h5>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Subtotal</span>
+                    <span>@Model.TotalPrice.ToString("C")</span>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="fw-bold">Total</span>
+                    <span class="fw-bold">@Model.TotalPrice.ToString("C")</span>
+                </div>
+                <form method="post" asp-controller="CartPage" asp-action="Checkout">
+                    <div class="mb-3">
+                        <label class="form-label">Select Payment Method</label>
+                        <select class="form-control" name="selectedPaymentMethod">
+                            <option>Steam Wallet</option>
+                            <option>PayPal</option>
+                            <option>Credit Card</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Proceed to Checkout</button>
+                </form>
+            </div>
+        </div>
     </div>
-</form>
+</div>

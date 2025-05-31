@@ -3,114 +3,140 @@
     ViewData["Title"] = $"{Model.Username}'s Profile";
 }
 
-<div class="container-fluid" style=" min-height: 100vh;">
+<div class="container-fluid py-4">
     <div class="row">
         <!-- Left Sidebar -->
-        <div class="col-md-3" style=" padding: 20px;">
-            <div class="text-center">
-                <img src="@Model.ProfilePhotoPath" alt="Profile Picture" style="width:160px;height:160px;border-radius:10px;" />
-
-                <div style=" padding: 5px; border-radius: 5px; margin: 10px 0; font-size: 16px; font-weight: bold">
-                    @Model.Username
-                </div>
-
-                @if (@Model.IsProfileOwner)
-                {
-                    <div style=" padding: 5px; border-radius: 5px; margin: 10px 0; font-size: 12px;">
-                        No. friends: @Model.FriendCount
-                    </div>
-                }
-
-
-                @if (Model.IsDeveloper)
-                {
-                    <div style="background-color: #FFD700; color: black; padding: 3px 8px; border-radius: 3px; font-size: 12px; margin: 10px 0;">
-                        Developer
-                    </div>
-                }
-            </div>
-
-            <div style="background-color: rgba(64, 64, 64, 0.5); padding: 15px; margin: 15px 0; border-radius: 5px;">
-                <h6>Bio</h6>
-                <p style="font-size: 12px;">@Model.Biography</p>
-            </div>
-            <div>
-                <h2>Achievements</h2>
-                <div class="row">
-                    <div class="col-6 col-sm-4 col-md-3 text-center mb-4" style="color: white;">
-                        <div style="width: 80px; height: 80px; border-radius: 5px; margin: auto;">
-                            <img src="@Model.FriendshipsAchievement.Achievement.Icon" style="opacity: @Model.FriendshipsAchievement.Opacity; width: 100%; height: 100%;" />
+        <div class="col-md-3">
+            <div class="card bg-dark text-white border-primary mb-4">
+                <div class="card-body text-center">
+                    <img src="@Model.ProfilePhotoPath" alt="Profile Picture" class="rounded-circle mb-3" style="width: 160px; height: 160px; object-fit: cover;" />
+                    <h4 class="card-title mb-2">@Model.Username</h4>
+                    
+                    @if (@Model.IsProfileOwner)
+                    {
+                        <div class="text-light mb-2">
+                            <i class="bi bi-people-fill"></i> @Model.FriendCount Friends
                         </div>
-                        <div class="mt-2" style="font-size: 14px;">@Model.FriendshipsAchievement.Achievement.AchievementName</div>
-                    </div>
+                    }
 
-                    <div class="col-6 col-sm-4 col-md-3 text-center mb-4" style="color: white;">
-                        <div style="width: 80px; height: 80px; border-radius: 5px; margin: auto;">
-                            <img src="@Model.OwnedGamesAchievement.Achievement.Icon" style="opacity: @Model.OwnedGamesAchievement.Opacity; width: 100%; height: 100%;" />
+                    @if (Model.IsDeveloper)
+                    {
+                        <div class="badge bg-warning text-dark mb-3">
+                            <i class="bi bi-code-square"></i> Developer
                         </div>
-                        <div class="mt-2" style="font-size: 14px;">@Model.OwnedGamesAchievement.Achievement.AchievementName</div>
-                    </div>
-
-                    <div class="col-6 col-sm-4 col-md-3 text-center mb-4" style="color: white;">
-                        <div style="width: 80px; height: 80px; border-radius: 5px; margin: auto;">
-                            <img src="@Model.SoldGamesAchievement.Achievement.Icon" style="opacity: @Model.SoldGamesAchievement.Opacity; width: 100%; height: 100%;" />
-                        </div>
-                        <div class="mt-2" style="font-size: 14px;">@Model.SoldGamesAchievement.Achievement.AchievementName</div>
-                    </div>
-
-                    <div class="col-6 col-sm-4 col-md-3 text-center mb-4" style="color: white;">
-                        <div style="width: 80px; height: 80px; border-radius: 5px; margin: auto;">
-                            <img src="@Model.NumberOfReviewsAchievement.Achievement.Icon" style="opacity: @Model.NumberOfReviewsAchievement.Opacity; width: 100%; height: 100%;" />
-                        </div>
-                        <div class="mt-2" style="font-size: 14px;">@Model.NumberOfReviewsAchievement.Achievement.AchievementName</div>
-                    </div>
-
-                    <div class="col-6 col-sm-4 col-md-3 text-center mb-4" style="color: white;">
-                        <div style="width: 80px; height: 80px; border-radius: 5px; margin: auto;">
-                            <img src="@Model.NumberOfReviewsReceived.Achievement.Icon" style="opacity: @Model.NumberOfReviewsReceived.Opacity; width: 100%; height: 100%;" />
-                        </div>
-                        <div class="mt-2" style="font-size: 14px;">@Model.NumberOfReviewsReceived.Achievement.AchievementName</div>
-                    </div>
-
-                    <div class="col-6 col-sm-4 col-md-3 text-center mb-4" style="color: white;">
-                        <div style="width: 80px; height: 80px; border-radius: 5px; margin: auto;">
-                            <img src="@Model.DeveloperAchievement.Achievement.Icon" style="opacity: @Model.DeveloperAchievement.Opacity; width: 100%; height: 100%;" />
-                        </div>
-                        <div class="mt-2" style="font-size: 14px;">@Model.DeveloperAchievement.Achievement.AchievementName</div>
-                    </div>
-
-                    <div class="col-6 col-sm-4 col-md-3 text-center mb-4" style="color: white;">
-                        <div style="width: 80px; height: 80px; border-radius: 5px; margin: auto;">
-                            <img src="@Model.YearsOfActivity.Achievement.Icon" style="opacity: @Model.YearsOfActivity.Opacity; width: 100%; height: 100%;" />
-                        </div>
-                        <div class="mt-2" style="font-size: 14px;">@Model.YearsOfActivity.Achievement.AchievementName</div>
-                    </div>
-
-                    <div class="col-6 col-sm-4 col-md-3 text-center mb-4" style="color: white;">
-                        <div style="width: 80px; height: 80px; border-radius: 5px; margin: auto;">
-                            <img src="@Model.NumberOfPostsGetTopAchievement.Achievement.Icon" style="opacity: @Model.NumberOfPostsGetTopAchievement.Opacity; width: 100%; height: 100%;" />
-                        </div>
-                        <div class="mt-2" style="font-size: 14px;">@Model.NumberOfPostsGetTopAchievement.Achievement.AchievementName</div>
-                    </div>
+                    }
                 </div>
             </div>
 
+            <div class="card bg-dark text-white border-primary mb-4">
+                <div class="card-header bg-dark border-primary">
+                    <h5 class="mb-0">Bio</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">@Model.Biography</p>
+                </div>
+            </div>
+
+            <div class="card bg-dark text-white border-primary">
+                <div class="card-header bg-dark border-primary">
+                    <h5 class="mb-0">Achievements</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        @foreach (var achievement in new[] {
+                            Model.FriendshipsAchievement,
+                            Model.OwnedGamesAchievement,
+                            Model.SoldGamesAchievement,
+                            Model.NumberOfReviewsAchievement,
+                            Model.NumberOfReviewsReceived,
+                            Model.DeveloperAchievement,
+                            Model.YearsOfActivity,
+                            Model.NumberOfPostsGetTopAchievement
+                        })
+                        {
+                            <div class="col-6">
+                                <div class="achievement-card @(achievement.Opacity < 1 ? "locked" : "unlocked")">
+                                    <div class="text-center d-flex flex-column justify-content-between h-100">
+                                        <div>
+                                            <img src="@achievement.Achievement.Icon" 
+                                                 style="width: 64px; height: 64px; opacity: @achievement.Opacity;" 
+                                                 class="mb-2" />
+                                        </div>
+                                        <div class="small text-truncate">@achievement.Achievement.AchievementName</div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Main Content -->
-        <div class="col-md-9" style="padding: 20px;">
-            <h2>Collections</h2>
-
-            <div class="row mt-3">
-                @foreach (var collection in Model.GameCollections)
-                {
-                    <div class="col-md-3 mb-3">
-                        <div style="width: 180px; height: 120px; background-color: #E6D5B8; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: black;">
-                            @collection.CollectionName
-                        </div>
+        <div class="col-md-9">
+            <div class="card bg-dark text-white border-primary">
+                <div class="card-header bg-dark border-primary">
+                    <h5 class="mb-0">Collections</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        @foreach (var collection in Model.GameCollections)
+                        {
+                            <div class="col-md-4">
+                                <div class="card bg-dark text-white border-primary collection-card">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title mb-0">@collection.CollectionName</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
-                }
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .achievement-card {
+        background-color: var(--steamhub-primary);
+        border-radius: 8px;
+        padding: 10px;
+        transition: transform 0.2s ease-in-out;
+        border: 2px solid var(--steamhub-accent);
+        height: 140px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .achievement-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .achievement-card.locked {
+        opacity: 0.7;
+        border-color: var(--steamhub-secondary);
+    }
+
+    .achievement-card.unlocked {
+        border-color: var(--steamhub-accent);
+    }
+
+    .achievement-card .text-center {
+        height: 100%;
+    }
+
+    .achievement-card img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .collection-card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .collection-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--steamhub-accent);
+    }
+</style>

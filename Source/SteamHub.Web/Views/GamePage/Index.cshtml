@@ -28,21 +28,21 @@
             @(Model.IsOwned ? "Owned" : "Not Owned")
         </p>
 
-        <a asp-controller="Reviews" asp-action="Index" asp-route-gameId="@Model.Game.GameId" class="btn btn-secondary mt-2">
-            View Reviews
-        </a>
-        
-        <form asp-action="AddToCart" method="post" id="add-to-cart-form">
-            <input type="hidden" name="id" value="@Model.Game.GameId" />
-            <button type="submit" class="btn btn-primary">Add to Cart</button>
-        </form>
+        <div class="d-flex flex-column gap-3">
+            <a asp-controller="Reviews" asp-action="Index" asp-route-gameId="@Model.Game.GameId" class="btn btn-secondary">
+                View Reviews
+            </a>
+            
+            <form asp-action="AddToCart" method="post" id="add-to-cart-form">
+                <input type="hidden" name="id" value="@Model.Game.GameId" />
+                <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
+            </form>
 
-        <form asp-action="AddToWishlist" method="post" id="add-to-wishlist-form" class="mt-2">
-            <input type="hidden" name="id" value="@Model.Game.GameId" />
-            <button type="submit" class="btn btn-secondary">Add to Wishlist</button>
-        </form>
-
-
+            <form asp-action="AddToWishlist" method="post" id="add-to-wishlist-form">
+                <input type="hidden" name="id" value="@Model.Game.GameId" />
+                <button type="submit" class="btn btn-secondary w-100">Add to Wishlist</button>
+            </form>
+        </div>
 
         <!-- Alerts with dismiss buttons -->
         <div id="success-message" class="alert alert-success alert-dismissible fade show d-none mt-2" role="alert">
@@ -111,19 +111,18 @@
 {
     <div class="mb-4">
         <h4>Similar Games</h4>
-        <div class="row">
+        <div class="horizontal-scroll">
             @foreach (var game in Model.SimilarGames)
             {
-                <div class="col-md-4">
-                    <div class="card mb-3">
+                <a asp-controller="GamePage" asp-action="Index" asp-route-id="@game.GameId" class="text-decoration-none text-dark">
+                    <div class="card game-card me-2">
                         <img src="@game.ImagePath" class="card-img-top" alt="@game.GameTitle" />
-                        <div class="card-body">
-                            <h5 class="card-title">@game.GameTitle</h5>
-                            <p class="card-text">Rating: @game.Rating.ToString("F1")</p>
-                            <a asp-action="Index" asp-route-id="@game.GameId" class="btn btn-outline-primary">View</a>
+                        <div class="card-body p-2">
+                            <h6 class="card-title text-truncate mb-1" title="@game.GameTitle">@game.GameTitle</h6>
+                            <p class="card-text mb-0">@game.Price.ToString("C")</p>
                         </div>
                     </div>
-                </div>
+                </a>
             }
         </div>
     </div>

@@ -59,7 +59,10 @@
             <!-- Rating -->
             <div class="mb-3 text-center">
                 <label>Minimum Rating</label>
-                <input id="ratingFilter" type="range" min="0" max="5" step="1" class="form-range" />
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                    <input id="ratingFilter" type="range" min="0" max="5" step="1" value="0" class="form-range" oninput="updateRatingValue(this.value)" />
+                    <span id="ratingValue" class="text-light">0</span>
+                </div>
             </div>
 
             <!-- Price Range -->
@@ -68,11 +71,17 @@
                 <div class="d-flex justify-content-center gap-4">
                     <div>
                         <label>Min</label>
-                        <input id="minPriceFilter" type="range" min="0" max="200" step="10" class="form-range" />
+                        <div class="d-flex align-items-center gap-2">
+                            <input id="minPriceFilter" type="range" min="0" max="200" step="10" value="0" class="form-range" oninput="updateMinPriceValue(this.value)" />
+                            <span id="minPriceValue" class="text-light">$0</span>
+                        </div>
                     </div>
                     <div>
                         <label>Max</label>
-                        <input id="maxPriceFilter" type="range" min="0" max="200" step="10" class="form-range" />
+                        <div class="d-flex align-items-center gap-2">
+                            <input id="maxPriceFilter" type="range" min="0" max="200" step="10" value="200" class="form-range" oninput="updateMaxPriceValue(this.value)" />
+                            <span id="maxPriceValue" class="text-light">$200</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -101,10 +110,41 @@
 
 @section Scripts {
     <script>
+        // Initialize sliders when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial values
+            const ratingFilter = document.getElementById('ratingFilter');
+            const minPriceFilter = document.getElementById('minPriceFilter');
+            const maxPriceFilter = document.getElementById('maxPriceFilter');
+
+            // Set initial positions
+            ratingFilter.value = 0;
+            minPriceFilter.value = 0;
+            maxPriceFilter.value = 200;
+
+            // Update displays
+            updateRatingValue(0);
+            updateMinPriceValue(0);
+            updateMaxPriceValue(200);
+        });
+
         // Show and hide filter modal
         function toggleFilterPopup() {
             const modal = document.getElementById('filterModal');
             modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Update value displays
+        function updateRatingValue(value) {
+            document.getElementById('ratingValue').textContent = value;
+        }
+
+        function updateMinPriceValue(value) {
+            document.getElementById('minPriceValue').textContent = '$' + value;
+        }
+
+        function updateMaxPriceValue(value) {
+            document.getElementById('maxPriceValue').textContent = '$' + value;
         }
 
         // AJAX search request
@@ -121,6 +161,11 @@
             document.getElementById('ratingFilter').value = 0;
             document.getElementById('minPriceFilter').value = 0;
             document.getElementById('maxPriceFilter').value = 200;
+            
+            // Update value displays
+            updateRatingValue(0);
+            updateMinPriceValue(0);
+            updateMaxPriceValue(200);
 
             // Uncheck all tag checkboxes
             document.querySelectorAll('#tagCheckboxList input[type="checkbox"]').forEach(cb => cb.checked = false);

@@ -1,22 +1,444 @@
+:root {
+    --steamhub-primary: #1B2838;
+    --steamhub-secondary: #2A475E;
+    --steamhub-accent: #66C0F4;
+    --steamhub-text: #FFFFFF;
+    --steamhub-text-secondary: #C7D5E0;
+    --steamhub-hover: #2A475E;
+    --steamhub-active: #66C0F4;
+}
+
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.steamhub-theme {
+    background-color: var(--steamhub-primary);
+    color: var(--steamhub-text);
+    min-height: 100vh;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+/* Navbar styling */
+.navbar {
+    background-color: var(--steamhub-primary) !important;
+    border-bottom: 1px solid var(--steamhub-secondary) !important;
 }
 
-body {
-  margin-bottom: 60px;
+.navbar-dark .navbar-nav .nav-link {
+    color: var(--steamhub-text-secondary);
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: var(--steamhub-text);
+    background-color: var(--steamhub-hover);
+    border-radius: 4px;
+}
+
+.navbar-dark .navbar-nav .nav-link.active {
+    color: var(--steamhub-active);
+}
+
+.navbar-brand {
+    color: var(--steamhub-text) !important;
+    font-weight: bold;
+}
+
+/* Card styling */
+.card {
+    background-color: var(--steamhub-secondary);
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Button styling */
+.btn-primary {
+    background-color: var(--steamhub-accent);
+    border-color: var(--steamhub-accent);
+    color: var(--steamhub-primary);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #4BA3D9;
+    border-color: #4BA3D9;
+    color: var(--steamhub-primary);
+    transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+    color: var(--steamhub-accent);
+    border-color: var(--steamhub-accent);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--steamhub-accent);
+    color: var(--steamhub-primary);
+}
+
+/* Form controls */
+.form-control {
+    background-color: var(--steamhub-primary);
+    border: 1px solid var(--steamhub-hover);
+    color: var(--steamhub-text);
+    transition: all 0.2s ease-in-out;
+}
+
+.form-control:focus {
+    background-color: var(--steamhub-primary);
+    border-color: var(--steamhub-accent);
+    color: var(--steamhub-text);
+    box-shadow: 0 0 0 0.25rem rgba(102, 192, 244, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--steamhub-text-secondary);
+    opacity: 0.7;
+}
+
+/* Search box specific styling */
+#SearchBox {
+    background-color: var(--steamhub-primary);
+    border: 1px solid var(--steamhub-accent);
+    color: var(--steamhub-text);
+}
+
+#SearchBox:focus {
+    background-color: var(--steamhub-primary);
+    border-color: var(--steamhub-accent);
+    box-shadow: 0 0 0 0.25rem rgba(102, 192, 244, 0.25);
+}
+
+/* Footer */
+.footer {
+    background-color: var(--steamhub-primary);
+    border-top: 1px solid var(--steamhub-secondary);
+    color: var(--steamhub-text-secondary);
+    padding: 1rem 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--steamhub-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--steamhub-secondary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--steamhub-accent);
+}
+
+/* Links */
+a {
+    color: var(--steamhub-accent);
+    text-decoration: none;
+}
+
+a:hover {
+    color: #4BA3D9;
+    text-decoration: underline;
+}
+
+/* Table styling */
+.table {
+    color: var(--steamhub-text);
+}
+
+.table thead th {
+    background-color: var(--steamhub-secondary);
+    border-bottom: 2px solid var(--steamhub-accent);
+}
+
+.table tbody tr {
+    background-color: var(--steamhub-primary);
+}
+
+.table tbody tr:hover {
+    background-color: var(--steamhub-hover);
+}
+
+/* Modal styling */
+.modal-content {
+    background-color: var(--steamhub-primary);
+    border: 1px solid var(--steamhub-secondary);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--steamhub-secondary);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--steamhub-secondary);
+}
+
+/* Badge styling */
+.badge {
+    background-color: var(--steamhub-accent);
+    color: var(--steamhub-primary);
+}
+
+/* Alert styling */
+.alert {
+    background-color: var(--steamhub-secondary);
+    border: 1px solid var(--steamhub-accent);
+    color: var(--steamhub-text);
+}
+
+/* Pagination */
+.page-link {
+    background-color: var(--steamhub-secondary);
+    border-color: var(--steamhub-hover);
+    color: var(--steamhub-text);
+}
+
+.page-link:hover {
+    background-color: var(--steamhub-hover);
+    border-color: var(--steamhub-accent);
+    color: var(--steamhub-text);
+}
+
+.page-item.active .page-link {
+    background-color: var(--steamhub-accent);
+    border-color: var(--steamhub-accent);
+    color: var(--steamhub-primary);
+}
+
+/* Game card styling */
+.game-card {
+    width: 160px;
+    border: 2px solid var(--steamhub-accent);
+    transition: all 0.2s ease-in-out;
+}
+
+.game-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(102, 192, 244, 0.2);
+}
+
+.game-card .card-img-top {
+    height: 144px;
+    object-fit: cover;
+}
+
+.game-card .card-body {
+    background-color: var(--steamhub-secondary);
+}
+
+.game-card .card-title {
+    color: var(--steamhub-text);
+    font-size: 0.9rem;
+    line-height: 1.2;
+    height: 1.2em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.game-card .card-text {
+    color: var(--steamhub-text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Horizontal scroll for game cards */
+.horizontal-scroll {
+    display: flex;
+    overflow-x: auto;
+    padding: 1rem 0;
+    gap: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--steamhub-secondary) var(--steamhub-primary);
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-track {
+    background: var(--steamhub-primary);
+    border-radius: 4px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb {
+    background: var(--steamhub-secondary);
+    border-radius: 4px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--steamhub-accent);
+}
+
+/* Sidebar styling */
+.sidebar {
+    width: 280px;
+    min-height: 100vh;
+    background-color: var(--steamhub-primary);
+    border-right: 1px solid var(--steamhub-secondary);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+.sidebar-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--steamhub-secondary);
+}
+
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 0;
+}
+
+.sidebar-nav .nav-link {
+    color: var(--steamhub-text-secondary);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+}
+
+.sidebar-nav .nav-link i {
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.sidebar-nav .nav-link:hover {
+    color: var(--steamhub-text);
+    background-color: var(--steamhub-hover);
+}
+
+.sidebar-nav .nav-link.active {
+    color: var(--steamhub-active);
+    background-color: var(--steamhub-hover);
+}
+
+.sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid var(--steamhub-secondary);
+    background-color: var(--steamhub-primary);
+}
+
+.profile-section {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 8px;
+    background-color: var(--steamhub-secondary);
+}
+
+.profile-info {
+    color: var(--steamhub-text);
+}
+
+.profile-info i {
+    color: var(--steamhub-accent);
+}
+
+.profile-link {
+    text-decoration: none;
+    display: block;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out;
+}
+
+.profile-link:hover {
+    background-color: var(--steamhub-hover);
+    text-decoration: none;
+}
+
+.profile-link:hover i,
+.profile-link:hover span {
+    color: var(--steamhub-accent);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-danger:hover {
+    background-color: #bb2d3b;
+    border-color: #b02a37;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.main-content {
+    flex: 1;
+    margin-left: 280px;
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+#sidebarToggle {
+    top: 1rem;
+    left: 1rem;
+    z-index: 1001;
+    display: block;
+    color: var(--steamhub-text);
+    background-color: var(--steamhub-secondary);
+    border: 1px solid var(--steamhub-accent);
+    padding: 0.5rem 1rem;
+}
+
+#sidebarToggle:hover {
+    background-color: var(--steamhub-hover);
+    color: var(--steamhub-text);
+}
+
+@media (min-width: 768px) {
+    #sidebarToggle {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    #sidebarToggle {
+        display: block;
+    }
 }
