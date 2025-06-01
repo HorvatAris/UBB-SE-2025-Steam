@@ -1008,8 +1008,22 @@ namespace SteamHub.Api.Migrations
                     { 3, "FRIENDSHIP3", "Friendships", "You made 10 friends, you get 5 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 5 },
                     { 4, "FRIENDSHIP4", "Friendships", "You made 50 friends, you get 10 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 10 },
                     { 5, "FRIENDSHIP5", "Friendships", "You made 100 friends, you get 15 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 15 },
-                    { 6, "OWNEDGAMES1", "Owned Games", "You own 1 game, you get 1 point", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 1 },
-                    { 7, "OWNEDGAMES2", "Owned Games", "You own 5 games, you get 3 points", "https://cdn-icons-png.flaticon.com/512/5139/5139999.png", 3 }
+                    { 6, "OWNEDGAMES1", "Owned Games", "You own 1 game, you get 1 point", "https://cdn-icons-png.flaticon.com/512/3659/3659784.png", 1 },
+                    { 7, "OWNEDGAMES2", "Owned Games", "You own 5 games, you get 3 points", "https://cdn-icons-png.flaticon.com/512/3659/3659784.png", 3 },
+                    { 8, "SOLDGAMES1", "Sold Games", "You sold your first game, you get 2 points", "https://cdn-icons-png.flaticon.com/512/3081/3081559.png", 2 },
+                    { 9, "SOLDGAMES2", "Sold Games", "You sold 5 games, you get 5 points", "https://cdn-icons-png.flaticon.com/512/3081/3081559.png", 5 },
+                    { 10, "SOLDGAMES3", "Sold Games", "You sold 10 games, you get 10 points", "https://cdn-icons-png.flaticon.com/512/3081/3081559.png", 10 },
+                    { 11, "YEARSOFACTIVITY1", "Years of Activity", "You've been active for 1 year, you get 5 points", "https://cdn-icons-png.flaticon.com/512/2972/2972543.png", 5 },
+                    { 12, "YEARSOFACTIVITY2", "Years of Activity", "You've been active for 3 years, you get 10 points", "https://cdn-icons-png.flaticon.com/512/2972/2972543.png", 10 },
+                    { 13, "YEARSOFACTIVITY3", "Years of Activity", "You've been active for 5 years, you get 15 points", "https://cdn-icons-png.flaticon.com/512/2972/2972543.png", 15 },
+                    { 14, "NUMBEROFPOSTS1", "Number of Posts", "You made your first post, you get 1 point", "https://cdn-icons-png.flaticon.com/512/1380/1380338.png", 1 },
+                    { 15, "NUMBEROFPOSTS2", "Number of Posts", "You made 10 posts, you get 3 points", "https://cdn-icons-png.flaticon.com/512/1380/1380338.png", 3 },
+                    { 16, "NUMBEROFPOSTS3", "Number of Posts", "You made 50 posts, you get 5 points", "https://cdn-icons-png.flaticon.com/512/1380/1380338.png", 5 },
+                    { 17, "NUMBEROFREVIEWSGIVEN1", "Number of Reviews Given", "You wrote your first review, you get 2 points", "https://cdn-icons-png.flaticon.com/512/1828/1828395.png", 2 },
+                    { 18, "NUMBEROFREVIEWSGIVEN2", "Number of Reviews Given", "You wrote 5 reviews, you get 5 points", "https://cdn-icons-png.flaticon.com/512/1828/1828395.png", 5 },
+                    { 19, "NUMBEROFREVIEWSGIVEN3", "Number of Reviews Given", "You wrote 20 reviews, you get 10 points", "https://cdn-icons-png.flaticon.com/512/1828/1828395.png", 10 },
+                    { 20, "NUMBEROFREVIEWSRECEIVED1", "Number of Reviews Received", "You received your first review, you get 2 points", "https://cdn-icons-png.flaticon.com/512/1828/1828395.png", 2 },
+                    { 21, "NUMBEROFREVIEWSRECEIVED2", "Number of Reviews Received", "You received 5 reviews, you get 5 points", "https://cdn-icons-png.flaticon.com/512/1828/1828395.png", 5 }
                 });
 
             migrationBuilder.InsertData(
@@ -1081,14 +1095,14 @@ namespace SteamHub.Api.Migrations
                 columns: new[] { "UserId", "Bio", "CreatedAt", "Email", "LastLogin", "Password", "PointsBalance", "ProfilePicture", "UserRole", "Username", "WalletBalance" },
                 values: new object[,]
                 {
-                    { 1, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "gabe.newell@valvestudio.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 6000, "https://i.imgur.com/vixhhkC.jpeg", 1, "GabeN", 500m },
-                    { 2, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mathias.new@cdprojektred.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG", 5000, "https://i.imgur.com/Ji7D74X.jpeg", 1, "MattN", 420m },
-                    { 3, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.chen@thatgamecompany.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq", 5000, "https://i.imgur.com/Ji7D74X.jpeg", 1, "JohnC", 390m },
-                    { 4, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "alice.johnson@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6", 6000, "https://i.imgur.com/l5qkgRu.jpeg", 0, "AliceJ", 780m },
-                    { 5, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "liam.garcia@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a", 7000, "https://i.imgur.com/JPNXxsg.jpeg", 0, "LiamG", 5500m },
-                    { 6, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "sophie.williams@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y", 6000, "https://i.imgur.com/l5qkgRu.jpeg", 0, "SophieW", 950m },
-                    { 7, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "noah.smith@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu", 4000, "https://i.imgur.com/JPNXxsg.jpeg", 0, "NoahS", 3300m },
-                    { 8, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "emily.brown@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC", 5000, "https://i.imgur.com/l5qkgRu.jpeg", 0, "EmilyB", 1100m }
+                    { 1, "Gaming enthusiast", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "gabe.newell@valvestudio.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 6000, "https://i.imgur.com/vixhhkC.jpeg", 1, "GabeN", 500m },
+                    { 2, "Game designer at ThatGameCompany.", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mathias.new@cdprojektred.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 5000, "https://i.imgur.com/Ji7D74X.jpeg", 1, "MattN", 420m },
+                    { 3, "Strategy game master", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.chen@thatgamecompany.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 5000, "https://imgur.com/a/fgzQBjj", 1, "JohnC", 390m },
+                    { 4, "Competitive FPS player", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "alice.johnson@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 6000, "https://imgur.com/YlChUAS", 0, "AliceJ", 780m },
+                    { 5, "Streamer and content creator", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "liam.garcia@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 7000, "https://i.imgur.com/JPNXxsg.jpeg", 0, "LiamG", 5500m },
+                    { 6, "Gaming since '95", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "sophie.williams@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 6000, "https://i.imgur.com/l5qkgRu.jpeg", 0, "SophieW", 950m },
+                    { 7, "Collector", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "noah.smith@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 4000, "https://i.imgur.com/JPNXxsg.jpeg", 0, "NoahS", 3300m },
+                    { 8, "Testing", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "emily.brown@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka", 5000, "https://i.imgur.com/l5qkgRu.jpeg", 0, "EmilyB", 1100m }
                 });
 
             migrationBuilder.InsertData(

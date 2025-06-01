@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SteamHub.Api.Context;
 
@@ -11,9 +12,11 @@ using SteamHub.Api.Context;
 namespace SteamHub.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250601161537_MainMigration1")]
+    partial class MainMigration1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2543,7 +2546,7 @@ namespace SteamHub.Api.Migrations
                             LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                             PointsBalance = 5000,
-                            ProfilePicture = "https://imgur.com/2dMXXul.jpeg",
+                            ProfilePicture = "https://imgur.com/a/fgzQBjj.jpeg",
                             UserRole = 1,
                             Username = "JohnC",
                             WalletBalance = 390m
@@ -2573,7 +2576,7 @@ namespace SteamHub.Api.Migrations
                             LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                             PointsBalance = 7000,
-                            ProfilePicture = "https://imgur.com/dzzEUC5.jpeg",
+                            ProfilePicture = "https://i.imgur.com/JPNXxsg.jpeg",
                             UserRole = 0,
                             Username = "LiamG",
                             WalletBalance = 5500m
@@ -2603,7 +2606,7 @@ namespace SteamHub.Api.Migrations
                             LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                             PointsBalance = 4000,
-                            ProfilePicture = "https://imgur.com/vfYNvcb.jpeg",
+                            ProfilePicture = "https://i.imgur.com/JPNXxsg.jpeg",
                             UserRole = 0,
                             Username = "NoahS",
                             WalletBalance = 3300m

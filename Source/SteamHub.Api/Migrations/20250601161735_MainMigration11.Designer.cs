@@ -12,8 +12,8 @@ using SteamHub.Api.Context;
 namespace SteamHub.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250601093230_MainMigration")]
-    partial class MainMigration
+    [Migration("20250601161735_MainMigration11")]
+    partial class MainMigration11
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -319,7 +319,7 @@ namespace SteamHub.Api.Migrations
                             AchievementName = "OWNEDGAMES1",
                             AchievementType = "Owned Games",
                             Description = "You own 1 game, you get 1 point",
-                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/3659/3659784.png",
                             Points = 1
                         },
                         new
@@ -328,8 +328,134 @@ namespace SteamHub.Api.Migrations
                             AchievementName = "OWNEDGAMES2",
                             AchievementType = "Owned Games",
                             Description = "You own 5 games, you get 3 points",
-                            Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/3659/3659784.png",
                             Points = 3
+                        },
+                        new
+                        {
+                            AchievementId = 8,
+                            AchievementName = "SOLDGAMES1",
+                            AchievementType = "Sold Games",
+                            Description = "You sold your first game, you get 2 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/3081/3081559.png",
+                            Points = 2
+                        },
+                        new
+                        {
+                            AchievementId = 9,
+                            AchievementName = "SOLDGAMES2",
+                            AchievementType = "Sold Games",
+                            Description = "You sold 5 games, you get 5 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/3081/3081559.png",
+                            Points = 5
+                        },
+                        new
+                        {
+                            AchievementId = 10,
+                            AchievementName = "SOLDGAMES3",
+                            AchievementType = "Sold Games",
+                            Description = "You sold 10 games, you get 10 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/3081/3081559.png",
+                            Points = 10
+                        },
+                        new
+                        {
+                            AchievementId = 11,
+                            AchievementName = "YEARSOFACTIVITY1",
+                            AchievementType = "Years of Activity",
+                            Description = "You've been active for 1 year, you get 5 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/2972/2972543.png",
+                            Points = 5
+                        },
+                        new
+                        {
+                            AchievementId = 12,
+                            AchievementName = "YEARSOFACTIVITY2",
+                            AchievementType = "Years of Activity",
+                            Description = "You've been active for 3 years, you get 10 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/2972/2972543.png",
+                            Points = 10
+                        },
+                        new
+                        {
+                            AchievementId = 13,
+                            AchievementName = "YEARSOFACTIVITY3",
+                            AchievementType = "Years of Activity",
+                            Description = "You've been active for 5 years, you get 15 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/2972/2972543.png",
+                            Points = 15
+                        },
+                        new
+                        {
+                            AchievementId = 14,
+                            AchievementName = "NUMBEROFPOSTS1",
+                            AchievementType = "Number of Posts",
+                            Description = "You made your first post, you get 1 point",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/1380/1380338.png",
+                            Points = 1
+                        },
+                        new
+                        {
+                            AchievementId = 15,
+                            AchievementName = "NUMBEROFPOSTS2",
+                            AchievementType = "Number of Posts",
+                            Description = "You made 10 posts, you get 3 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/1380/1380338.png",
+                            Points = 3
+                        },
+                        new
+                        {
+                            AchievementId = 16,
+                            AchievementName = "NUMBEROFPOSTS3",
+                            AchievementType = "Number of Posts",
+                            Description = "You made 50 posts, you get 5 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/1380/1380338.png",
+                            Points = 5
+                        },
+                        new
+                        {
+                            AchievementId = 17,
+                            AchievementName = "NUMBEROFREVIEWSGIVEN1",
+                            AchievementType = "Number of Reviews Given",
+                            Description = "You wrote your first review, you get 2 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/1828/1828395.png",
+                            Points = 2
+                        },
+                        new
+                        {
+                            AchievementId = 18,
+                            AchievementName = "NUMBEROFREVIEWSGIVEN2",
+                            AchievementType = "Number of Reviews Given",
+                            Description = "You wrote 5 reviews, you get 5 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/1828/1828395.png",
+                            Points = 5
+                        },
+                        new
+                        {
+                            AchievementId = 19,
+                            AchievementName = "NUMBEROFREVIEWSGIVEN3",
+                            AchievementType = "Number of Reviews Given",
+                            Description = "You wrote 20 reviews, you get 10 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/1828/1828395.png",
+                            Points = 10
+                        },
+                        new
+                        {
+                            AchievementId = 20,
+                            AchievementName = "NUMBEROFREVIEWSRECEIVED1",
+                            AchievementType = "Number of Reviews Received",
+                            Description = "You received your first review, you get 2 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/1828/1828395.png",
+                            Points = 2
+                        },
+                        new
+                        {
+                            AchievementId = 21,
+                            AchievementName = "NUMBEROFREVIEWSRECEIVED2",
+                            AchievementType = "Number of Reviews Received",
+                            Description = "You received 5 reviews, you get 5 points",
+                            Icon = "https://cdn-icons-png.flaticon.com/512/1828/1828395.png",
+                            Points = 5
                         });
                 });
 
@@ -2383,7 +2509,7 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 1,
-                            Bio = "Testing",
+                            Bio = "Gaming enthusiast",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "gabe.newell@valvestudio.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2398,12 +2524,12 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 2,
-                            Bio = "Testing",
+                            Bio = "Game designer at ThatGameCompany.",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mathias.new@cdprojektred.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "$2a$11$L.BgAHQgfXZzzRf39MeLLeKDLkLCXbVHS/ij4uV5OoKm2OojiSDBG",
+                            Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                             PointsBalance = 5000,
                             ProfilePicture = "https://i.imgur.com/Ji7D74X.jpeg",
                             UserRole = 1,
@@ -2413,14 +2539,14 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 3,
-                            Bio = "Testing",
+                            Bio = "Strategy game master",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "john.chen@thatgamecompany.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "$2a$11$PSbTI5wYN/bqNZT3TT/IzeSqNkaliV/ZeautgH07hT0JMjE5VyVYq",
+                            Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                             PointsBalance = 5000,
-                            ProfilePicture = "https://i.imgur.com/Ji7D74X.jpeg",
+                            ProfilePicture = "https://imgur.com/BLQIZ4A.jpeg",
                             UserRole = 1,
                             Username = "JohnC",
                             WalletBalance = 390m
@@ -2428,14 +2554,14 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 4,
-                            Bio = "Testing",
+                            Bio = "Competitive FPS player",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "alice.johnson@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "$2a$11$m2QqrI0MQZcVa2Rs0e1Zdu/gXKwZBQ.LTGyQynQ33KbDPvRSWhYm6",
+                            Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                             PointsBalance = 6000,
-                            ProfilePicture = "https://i.imgur.com/l5qkgRu.jpeg",
+                            ProfilePicture = "https://imgur.com/YlChUAS.jpeg",
                             UserRole = 0,
                             Username = "AliceJ",
                             WalletBalance = 780m
@@ -2443,12 +2569,12 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 5,
-                            Bio = "Testing",
+                            Bio = "Streamer and content creator",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "liam.garcia@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "$2a$11$zsix20gCQb4OHlnY2pgKdOaZAEG4Cz9EwwtR7qoIcrSoceWEHOf3a",
+                            Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                             PointsBalance = 7000,
                             ProfilePicture = "https://i.imgur.com/JPNXxsg.jpeg",
                             UserRole = 0,
@@ -2458,12 +2584,12 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 6,
-                            Bio = "Testing",
+                            Bio = "Gaming since '95",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "sophie.williams@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "$2a$11$f6Fwypz3hHQzfxRvQKuHBO6/usICItpW2/enOPs2pEyRBU7Aakj/y",
+                            Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                             PointsBalance = 6000,
                             ProfilePicture = "https://i.imgur.com/l5qkgRu.jpeg",
                             UserRole = 0,
@@ -2473,12 +2599,12 @@ namespace SteamHub.Api.Migrations
                         new
                         {
                             UserId = 7,
-                            Bio = "Testing",
+                            Bio = "Collector",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "noah.smith@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "$2a$11$hfsZhti3nPkX8X7jhF8PR.ZuQzwF0W.L/8VqOcfzXic3PfFVbKrCu",
+                            Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                             PointsBalance = 4000,
                             ProfilePicture = "https://i.imgur.com/JPNXxsg.jpeg",
                             UserRole = 0,
@@ -2493,7 +2619,7 @@ namespace SteamHub.Api.Migrations
                             Email = "emily.brown@example.com",
                             LastLogin = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "$2a$11$vTuuHlSawwHhJPxOPAePquBqh.7BRqiLfsBbh4eC81dJNsz14HTWC",
+                            Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                             PointsBalance = 5000,
                             ProfilePicture = "https://i.imgur.com/l5qkgRu.jpeg",
                             UserRole = 0,
