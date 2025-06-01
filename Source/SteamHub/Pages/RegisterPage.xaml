@@ -12,7 +12,7 @@
         <Border Background="{StaticResource SecondaryBrush}"
                 CornerRadius="8"
                 Width="400"
-                Height="600"
+                Height="700"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
             <StackPanel VerticalAlignment="Center" 
@@ -20,8 +20,22 @@
                         Spacing="20"
                         Padding="40">
                 
+                <!-- Logo and Title -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                    <Image Source="/Assets/Images/CustomSteamLogo.png" 
+                           Width="80" 
+                           Height="80" 
+                           Stretch="Uniform"/>
+                    <TextBlock Text="SteamHub"
+                             FontSize="35"
+                             FontWeight="Bold"
+                             Foreground="{StaticResource AccentBrush}"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"/>
+                </StackPanel>
+
                 <TextBlock Text="Create Account"
-                           FontSize="28"
+                           FontSize="26"
                            FontWeight="SemiBold"
                            Foreground="{StaticResource AccentBrush}"
                            HorizontalAlignment="Center"

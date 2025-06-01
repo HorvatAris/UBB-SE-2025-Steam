@@ -12,9 +12,9 @@ namespace SteamHub.Pages
     {
         private ReviewViewModel reviewViewModel { get; }
 
-        public ReviewsPage(IReviewService reviewService)
+        public ReviewsPage(IReviewService reviewService, IGameService gameService)
         {
-            this.reviewViewModel = new ReviewViewModel(reviewService);
+            this.reviewViewModel = new ReviewViewModel(reviewService, gameService);
             this.DataContext = reviewViewModel;
             reviewViewModel.OnValidationFailed = ShowValidationMessage;
             this.InitializeComponent();

@@ -33,6 +33,7 @@ namespace SteamHub.Pages
     public sealed partial class GamePage : Page
     {
         private readonly IReviewService _reviewService;
+        private readonly IGameService _gameService;
         public GamePage(
             IGameService gameService,
             ICartService cartService,
@@ -43,6 +44,7 @@ namespace SteamHub.Pages
         {
             this.InitializeComponent();
             this._reviewService = reviewService;
+            this._gameService = gameService;
 
             this.ViewModel = new GamePageViewModel(gameService, cartService, userGameService, reviewService, userService);
 
@@ -129,14 +131,14 @@ namespace SteamHub.Pages
 
             if (parent is Frame parentFrame && this._reviewService != null && this.ViewModel.Game != null)
             {
-                var reviewsPage = new ReviewsPage(this._reviewService);
+                var reviewsPage = new ReviewsPage(this._reviewService, this._gameService);
                 parentFrame.Content = reviewsPage;
 
                 reviewsPage.NavigateToGameReviews(this.ViewModel.Game.GameId);
             }
             else if (parent is ContentControl parentContent && this._reviewService != null && this.ViewModel.Game != null)
             {
-                var reviewsPage = new ReviewsPage(this._reviewService);
+                var reviewsPage = new ReviewsPage(this._reviewService, this._gameService);
                 parentContent.Content = reviewsPage;
 
                 reviewsPage.NavigateToGameReviews(this.ViewModel.Game.GameId);

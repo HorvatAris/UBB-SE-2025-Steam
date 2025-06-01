@@ -86,7 +86,7 @@ namespace SteamHub
             // Set window icon
             try
             {
-                var iconPath = System.IO.Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "..", "Assets", "CustomSteamLogo.png");
+                var iconPath = System.IO.Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "..", "Assets", "Images", "CustomSteamLogo.png");
                 if (System.IO.File.Exists(iconPath))
                 {
                     var hIcon = LoadImage(IntPtr.Zero, iconPath, IMAGE_ICON, 32, 32, LR_LOADFROMFILE);

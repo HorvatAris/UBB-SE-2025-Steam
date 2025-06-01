@@ -45,16 +45,6 @@
                     <StackPanel Orientation="Horizontal" 
                               HorizontalAlignment="Center"
                               Spacing="10">
-                        <Button Content="View"
-                                CommandParameter="{Binding FriendId}"
-                                Style="{StaticResource ModernSteamButton}"
-                                MinWidth="80"/>
-
-                        <Button Content="Chat"
-                                CommandParameter="{Binding FriendId}"
-                                Style="{StaticResource ModernSteamButton}"
-                                MinWidth="80"/>
-
                         <Button Content="Remove"
                                 Command="{Binding DataContext.RemoveFriendshipCommand, ElementName=PageRoot}"
                                 CommandParameter="{Binding FriendshipId}"
@@ -110,11 +100,6 @@
                      VerticalScrollBarVisibility="Auto"
                      Style="{StaticResource ModernScrollViewer}">
             <StackPanel Margin="20" Spacing="20">
-                <TextBlock Text="My Friends" 
-                          Foreground="{StaticResource AccentBrush}"
-                          FontSize="24"
-                          FontWeight="SemiBold"/>
-
                 <ItemsControl ItemsSource="{Binding Friendships}"
                             ItemTemplate="{StaticResource FriendItemTemplate}">
                     <ItemsControl.ItemsPanel>

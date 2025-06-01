@@ -75,9 +75,8 @@
             </StackPanel>
             
             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                <FontIcon Glyph="&#xE8C9;" FontSize="22" Foreground="{StaticResource AccentBrush}" Margin="0,0,5,0"/>
-                <TextBlock x:Name="PointsBalance" Text="{Binding UserPointBalance}" FontSize="20" FontWeight="Bold" Foreground="{StaticResource AccentBrush}"/>
-                <TextBlock Text=" Points" FontSize="20" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" Margin="0,0,10,0"/>
+                <TextBlock x:Name="PointsBalance" Text="{Binding UserPointBalance}" FontSize="26" FontWeight="Bold" Foreground="{StaticResource AccentBrush}"/>
+                <TextBlock Text=" Points" FontSize="26" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" Margin="0,0,10,0"/>
                 <Button x:Name="HelpButton"
                         Style="{StaticResource ModernSteamButton}"
                         Padding="8"
@@ -179,7 +178,7 @@
 
         <!-- Content -->
         <Grid Grid.Row="3" Padding="20">
-            <ScrollViewer Style="{StaticResource ModernScrollViewer}">
+            <ScrollViewer>
                 <GridView x:Name="ItemsGridView" 
                           ItemsSource="{Binding ShopItems}"
                           SelectionMode="Single"
