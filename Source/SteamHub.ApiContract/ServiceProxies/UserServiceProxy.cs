@@ -14,7 +14,7 @@ namespace SteamHub.ApiContract.ServiceProxies
     /// </summary>
     public class UserServiceProxy : ServiceProxy, IUserService
     {
-        public UserServiceProxy(string baseUrl = "https://localhost:7241/api/")
+        public UserServiceProxy(string baseUrl = "http://172.30.245.56:8000/api/")
             : base(baseUrl)
         {
         }

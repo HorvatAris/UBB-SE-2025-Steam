@@ -8,7 +8,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class WalletServiceProxy : ServiceProxy, IWalletService
     {
-        public WalletServiceProxy(string baseUrl = "https://localhost:7241/api/") : base(baseUrl)
+        public WalletServiceProxy(string baseUrl = "http://172.30.245.56:8000/api/") : base(baseUrl)
         {
 
         }

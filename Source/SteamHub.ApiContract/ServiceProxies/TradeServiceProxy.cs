@@ -12,7 +12,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class TradeServiceProxy : ServiceProxy, ITradeService
     {
-        public TradeServiceProxy(string baseUrl = "https://localhost:7241/api/")
+        public TradeServiceProxy(string baseUrl = "http://172.30.245.56:8000/api/")
             : base(baseUrl)
         {
 

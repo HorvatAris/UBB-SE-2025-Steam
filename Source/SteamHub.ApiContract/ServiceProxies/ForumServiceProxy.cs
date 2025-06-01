@@ -10,7 +10,7 @@ namespace SteamHub.ApiContract.Services.Proxies
     {
         private readonly IUserService userService;
 
-        public ForumServiceProxy(IUserService userService, string baseUrl = "https://localhost:7262/api/")
+        public ForumServiceProxy(IUserService userService, string baseUrl = "http://172.30.245.56:8000/api/")
             : base(baseUrl)
         {
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
