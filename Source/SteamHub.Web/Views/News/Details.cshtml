@@ -171,15 +171,8 @@
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
-                    @{
-                        var imageBase64 = Model.Author?.ProfilePicture != null
-                        ? (Model.Author.ProfilePicture)
-                        : string.Empty;
-                        var imgSrc = !string.IsNullOrEmpty(imageBase64)
-                        ? $"data:image/png;base64,{imageBase64}"
-                        : "/images/default-avatar.png";
-                    }
-                    <img src="@imgSrc" alt="@(Model.Author?.Username ?? "Unknown")" class="rounded-circle me-3" width="48" height="48" />
+                    
+                    <img src=@Model.Author?.ProfilePicture alt="@(Model.Author?.Username ?? "Unknown")" class="rounded-circle me-3" width="48" height="48" />
                     <div>
                         <h5 class="mb-0">@(Model.Author?.Username ?? "Unknown")</h5>
                         <small class="text-muted">@Model.Post.UploadDate.ToString("MMM d, yyyy HH:mm")</small>
@@ -271,7 +264,7 @@
                                 <div class="d-flex justify-content-between">
                                     <div class="d-flex mb-2">
                                         
-                                        <img src="@comment.Author.ProfilePicturePath" alt="@(comment.Author?.Username ?? "Unknown")"
+                                        <img src="@comment.Author.ProfilePicture" alt="@(comment.Author?.Username ?? "Unknown")"
                                         class="rounded-circle me-2" width="36" height="36">
 
                                         <div>
