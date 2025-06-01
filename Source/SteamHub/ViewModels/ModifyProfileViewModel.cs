@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using SteamHub.ApiContract.Exceptions;
 using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.Pages;
 using Windows.Storage;
@@ -112,7 +114,8 @@ namespace SteamHub.ViewModels
                     // Save new picture if changed
                     if (selectedImageFile != null && SelectedImagePath != originalImagePath)
                     {
-                        await userService.UpdateProfilePictureAsync(currentUser.UserId, selectedImageFile.Path);
+                        var imgurPath = await UploadImageToImgurAsync(selectedImageFile.Path, "bbf48913b385d7b");
+                        await userService.UpdateProfilePictureAsync(currentUser.UserId, imgurPath);
                         originalImagePath = SelectedImagePath;
                         changesMade = true;
                     }
@@ -146,6 +149,32 @@ namespace SteamHub.ViewModels
                 await Task.Delay(3000);
                 SuccessMessageVisibility = Visibility.Collapsed;
             }
+        }
+
+        private async Task<string> UploadImageToImgurAsync(string imagePath, string clientId)
+        {
+            using var client = new HttpClient();
+            using var form = new MultipartFormDataContent();
+            using var image = new ByteArrayContent(System.IO.File.ReadAllBytes(imagePath));
+
+            image.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+            form.Add(image, "image");
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Client-ID", clientId);
+
+            var response = await client.PostAsync("https://api.imgur.com/3/image", form);
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new RepositoryException("Imgur upload failed: " + json);
+            }
+
+            var link = System.Text.Json.JsonDocument.Parse(json)
+                        .RootElement.GetProperty("data")
+                        .GetProperty("link").GetString();
+
+            return link ?? throw new RepositoryException("Imgur returned null link.");
         }
 
         private bool ValidateDescription()

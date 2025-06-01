@@ -36,8 +36,9 @@ namespace SteamHub.Pages
         private ICollectionsService collectionsService;
         private IFeaturesService featureService;
         private IAchievementsService achievementsService;
+        private Frame frame;
 
-        public ProfilePage(IUserService userService, IFriendsService friendsService, IFeaturesService featureService, ICollectionsService collectionsService, IAchievementsService achievementsService, User user)
+        public ProfilePage(IUserService userService, IFriendsService friendsService, IFeaturesService featureService, ICollectionsService collectionsService, IAchievementsService achievementsService, User user, Frame frame)
         {
             try
             {
@@ -61,6 +62,7 @@ namespace SteamHub.Pages
                     this.friendsService = friendsService ?? throw new ArgumentNullException(nameof(friendsService));
                     this.featureService = featureService ?? throw new ArgumentNullException(nameof(featureService));
                     this.collectionsService = collectionsService ?? throw new ArgumentNullException(nameof(collectionsService));
+                    this.frame = frame ?? throw new ArgumentNullException(nameof(frame));
                     ViewModel = new ProfileViewModel(userService, friendsService, Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread(),collectionsService, featureService, achievementsService);
                 }
 
@@ -288,6 +290,11 @@ namespace SteamHub.Pages
             {
                 Debug.WriteLine($"Error showing dialog: {exception.Message}");
             }
+        }
+
+        public void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            frame.Content = new ConfigurationsPage(userService, frame);
         }
 
         private async void UnfriendButton_Click(object sender, RoutedEventArgs e)

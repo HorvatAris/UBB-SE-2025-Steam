@@ -1,0 +1,252 @@
+﻿@model SteamHub.Web.ViewModels.ModifyProfileViewModel
+@{
+    ViewData["Title"] = "Modify Profile";
+}
+
+<div class="container steamhub-theme py-5 d-flex justify-content-center">
+    <div class="card shadow-lg border-0" style="width: 100%; max-width: 500px; background: linear-gradient(145deg, #f8f9fa, #e9ecef);">
+        <div class="card-body p-4">
+            <h2 class="text-center mb-4 fw-bold text-primary">Modify Profile</h2>
+
+            <!-- Success Message -->
+            @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+            {
+                <div class="alert alert-success text-center fw-semibold mb-4" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>@Model.SuccessMessage
+                </div>
+            }
+
+            <!-- Error Message -->
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger text-center mb-4" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>@Model.ErrorMessage
+                </div>
+            }
+
+            <form asp-action="Modify" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                @Html.AntiForgeryToken()
+
+                <!-- Modify Picture Section -->
+                <div class="mb-4">
+                    <h5 class="fw-semibold text-secondary mb-3">
+                        <i class="fas fa-camera me-2"></i>Modify Picture
+                    </h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="flex-grow-1">
+                            <input type="file"
+                                   asp-for="ProfilePicture"
+                                   class="form-control"
+                                   accept="image/*"
+                                   onchange="updateFileName(this)" />
+                            <div class="form-text">Max file size: 5MB. Supported formats: JPG, PNG, GIF</div>
+                        </div>
+                    </div>
+                    <div id="selectedFileName" class="mt-2 text-muted small"></div>
+                    <span asp-validation-for="ProfilePicture" class="text-danger small"></span>
+                </div>
+
+                <!-- Modify Description Section -->
+                <div class="mb-4">
+                    <h5 class="fw-semibold text-secondary mb-3">
+                        <i class="fas fa-edit me-2"></i>Modify Description
+                    </h5>
+                    <div class="mb-3">
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  rows="4"
+                                  placeholder="Enter new description..."
+                                  maxlength="500"
+                                  oninput="updateCharCount(this)"></textarea>
+                        <div class="d-flex justify-content-between mt-1">
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                            <small id="charCount" class="text-muted">0/500 characters</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <button type="submit"
+                            class="btn btn-primary btn-lg px-4"
+                            style="min-width: 140px;">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                    <a asp-action="GoBack"
+                       class="btn btn-outline-secondary btn-lg px-4"
+                       style="min-width: 140px;">
+                        <i class="fas fa-arrow-left me-2"></i>Go Back
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+                       console.log('Script loading...');
+
+        function updateFileName(input) {
+            console.log('updateFileName called');
+            try {
+                console.log('File selected:', input.files[0]);
+                const fileNameDisplay = document.getElementById('selectedFileName');
+
+                if (input.files && input.files[0]) {
+                    const file = input.files[0];
+                    console.log('File details:', {
+                        name: file.name,
+                        size: file.size,
+                        type: file.type
+                    });
+
+                    // Validate file size (5MB limit)
+                    if (file.size > 5 * 1024 * 1024) {
+                        fileNameDisplay.textContent = 'Error: File size exceeds 5MB limit';
+                        fileNameDisplay.className = 'mt-2 text-danger small fw-semibold';
+                        input.value = ''; // Clear the input
+                        console.log('File rejected: too large');
+                        return;
+                    }
+
+                    // Validate file type
+                    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                    if (!allowedTypes.includes(file.type.toLowerCase())) {
+                        fileNameDisplay.textContent = 'Error: Only JPG, PNG, and GIF files are allowed';
+                        fileNameDisplay.className = 'mt-2 text-danger small fw-semibold';
+                        input.value = ''; // Clear the input
+                        console.log('File rejected: invalid type');
+                        return;
+                    }
+
+                    fileNameDisplay.textContent = 'Selected: ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+                    fileNameDisplay.className = 'mt-2 text-success small fw-semibold';
+                    console.log('File accepted and display updated');
+                } else {
+                    console.log('No file selected');
+                    fileNameDisplay.textContent = '';
+                }
+            } catch (error) {
+                console.error('Error in updateFileName:', error);
+            }
+            console.log('updateFileName completed');
+        }
+
+        function updateCharCount(textarea) {
+            console.log('updateCharCount called');
+            try {
+                const charCount = document.getElementById('charCount');
+                const currentLength = textarea.value.length;
+                charCount.textContent = currentLength + '/500 characters';
+
+                if (currentLength > 450) {
+                    charCount.className = 'text-warning';
+                } else if (currentLength > 500) {
+                    charCount.className = 'text-danger';
+                } else {
+                    charCount.className = 'text-muted';
+                }
+
+                console.log('Character count updated:', currentLength);
+            } catch (error) {
+                console.error('Error in updateCharCount:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+
+            try {
+                // Try multiple selectors for the textarea
+                let textarea = document.querySelector('textarea[asp-for="Description"]');
+                if (!textarea) {
+                    textarea = document.querySelector('textarea');
+                    console.log('Found textarea using generic selector');
+                }
+
+                if (textarea) {
+                    console.log('Textarea found, initializing character count');
+                    updateCharCount(textarea);
+                } else {
+                    console.log('Textarea not found with any selector');
+                }
+
+                // Try multiple selectors for the form
+                let form = document.querySelector('form[asp-action="Modify"]');
+                if (!form) {
+                    form = document.querySelector('form');
+                    console.log('Found form using generic selector');
+                }
+
+                if (form) {
+                    console.log('Form found, adding submit listener');
+                    form.addEventListener('submit', function(event) {
+                        console.log('Form submission intercepted!');
+
+                        try {
+                            const fileInput = document.querySelector('input[type="file"]');
+                            const descriptionInput = textarea;
+
+                            console.log('Validating form...');
+
+                            // Check if file exists and validate it
+                            if (fileInput && fileInput.files.length > 0) {
+                                const file = fileInput.files[0];
+                                console.log('File in submission:', {
+                                    name: file.name,
+                                    size: file.size,
+                                    type: file.type
+                                });
+
+                                // Validate file size
+                                if (file.size > 5 * 1024 * 1024) {
+                                    console.log('Blocking submission: file too large');
+                                    alert('File size cannot exceed 5MB');
+                                    event.preventDefault();
+                                    return false;
+                                }
+
+                                // Validate file type
+                                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                                if (!allowedTypes.includes(file.type.toLowerCase())) {
+                                    console.log('Blocking submission: invalid file type');
+                                    alert('Only JPG, PNG, and GIF files are allowed');
+                                    event.preventDefault();
+                                    return false;
+                                }
+                            }
+
+                            // For now, let's prevent ALL form submissions to test if this stops the crash
+                            console.log('PREVENTING form submission for testing');
+                            event.preventDefault();
+                            alert('Form submission prevented for testing. Check console for details.');
+                            return false;
+
+                        } catch (error) {
+                            console.error('Error during form validation:', error);
+                            event.preventDefault();
+                            return false;
+                        }
+                    });
+
+                    console.log('Form submit listener added successfully');
+                } else {
+                    console.log('Form not found with any selector');
+                    // Let's see what forms exist
+                    const allForms = document.querySelectorAll('form');
+                    console.log('All forms found:', allForms.length);
+                    allForms.forEach((f, index) => {
+                        console.log(`Form ${index}:`, f.getAttribute('action'), f.getAttribute('method'));
+                    });
+                }
+
+            } catch (error) {
+                console.error('Error in DOMContentLoaded:', error);
+            }
+        });
+
+        console.log('Script setup completed');
+    </script>
+}
+}

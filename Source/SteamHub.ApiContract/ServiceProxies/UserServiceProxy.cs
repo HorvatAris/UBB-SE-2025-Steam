@@ -306,7 +306,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             try
             {
                 EnsureAuthorized();
-                await PutAsync<object>($"User/{userId}/profilePicture", new { ProfilePicture = profilePicturePath });
+                await PostAsync<object>($"User/updatePFP", new { ProfilePicture = profilePicturePath });
 				return true;
             }
             catch (Exception ex)
@@ -320,7 +320,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             try
             {
                 EnsureAuthorized();
-                await PutAsync<object>($"User/{userId}/bio", new { Bio = profileBio });
+                await PostAsync<object>($"User/updateBio", new { Bio = profileBio });
 				return true;
             }
             catch (Exception ex)
