@@ -18,6 +18,7 @@ using SteamHub.ApiContract.Models.Game;
 using SteamHub.ApiContract.Models.Tag;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.ApiContract.Services;
+using System.Diagnostics; // Added for Debug.WriteLine
 
 
 public class HomePageViewModel : INotifyPropertyChanged
@@ -119,65 +120,100 @@ public class HomePageViewModel : INotifyPropertyChanged
 
     public async Task InitAsync()
     {
-        await this.LoadAllGames();
-        await this.LoadTrendingGames();
-        await this.LoadRecommendedGames();
-        await this.LoadDiscountedGames();
-        await this.LoadTags();
+        try
+        {
+            await this.LoadAllGames();
+            await this.LoadTrendingGames();
+            await this.LoadRecommendedGames();
+            await this.LoadDiscountedGames();
+            await this.LoadTags();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in InitAsync: {ex.Message}");
+        }
     }
 
     public async Task LoadAllGames()
     {
-        this.SearchedOrFilteredGames.Clear();
-        this.Search_filter_text = HomePageConstants.ALLGAMESFILTER;
-        var games = await this.gameService.GetAllApprovedGamesAsync();
-        foreach (var game in games)
+        try
         {
-            this.SearchedOrFilteredGames.Add(game);
+            this.SearchedOrFilteredGames.Clear();
+            this.Search_filter_text = HomePageConstants.ALLGAMESFILTER;
+            var games = await this.gameService.GetAllApprovedGamesAsync();
+            foreach (var game in games)
+            {
+                this.SearchedOrFilteredGames.Add(game);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in LoadAllGames: {ex.Message}");
+            // Optionally clear the list or show an error to the user
+            this.SearchedOrFilteredGames.Clear(); // Clear results on error
         }
     }
 
     public async Task SearchGames(string search_query)
     {
-        this.SearchedOrFilteredGames.Clear();
-        var filteredGames = await this.gameService.SearchGamesAsync(search_query);
-        foreach (var game in filteredGames)
+        try
         {
-            this.SearchedOrFilteredGames.Add(game);
-        }
+            this.SearchedOrFilteredGames.Clear();
+            var filteredGames = await this.gameService.SearchGamesAsync(search_query);
+            foreach (var game in filteredGames)
+            {
+                this.SearchedOrFilteredGames.Add(game);
+            }
 
-        if (search_query == string.Empty)
+            if (search_query == string.Empty)
+            {
+                this.Search_filter_text = HomePageConstants.ALLGAMESFILTER;
+                return;
+            }
+
+            if (filteredGames.Count == EmptyGameListLength)
+            {
+                this.Search_filter_text = HomePageConstants.NOGAMESFOUND + search_query;
+                return;
+            }
+
+            this.Search_filter_text = HomePageConstants.SEARCHRESULTSFOR + search_query;
+        }
+        catch (Exception ex)
         {
-            this.Search_filter_text = HomePageConstants.ALLGAMESFILTER;
-            return;
+            Debug.WriteLine($"Error in SearchGames: {ex.Message}");
+            // Optionally clear the list or show an error to the user
+            this.SearchedOrFilteredGames.Clear(); // Clear results on error
         }
-
-        if (filteredGames.Count == EmptyGameListLength)
-        {
-            this.Search_filter_text = HomePageConstants.NOGAMESFOUND + search_query;
-            return;
-        }
-
-        this.Search_filter_text = HomePageConstants.SEARCHRESULTSFOR + search_query;
     }
 
     public async Task ApplyFilters()
     {
-        this.SearchedOrFilteredGames.Clear();
-        var games = await this.gameService.FilterGamesAsync(this.RatingFilter, this.MinPrice, this.MaxPrice, this.SelectedTags.ToArray());
-
-        foreach (var game in games)
+        try
         {
-            this.SearchedOrFilteredGames.Add(game);
-        }
+            this.SearchedOrFilteredGames.Clear();
+            var games = await this.gameService.FilterGamesAsync(this.RatingFilter, this.MinPrice, this.MaxPrice, this.SelectedTags.ToArray());
 
-        this.Search_filter_text = games.Count == 0
-            ? HomePageConstants.NOGAMESFOUND
-            : HomePageConstants.FILTEREDGAMES;
+            foreach (var game in games)
+            {
+                this.SearchedOrFilteredGames.Add(game);
+            }
+
+            this.Search_filter_text = games.Count == 0
+                ? HomePageConstants.NOGAMESFOUND
+                : HomePageConstants.FILTEREDGAMES;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in ApplyFilters: {ex.Message}");
+            // Optionally clear the list or show an error to the user
+            this.SearchedOrFilteredGames.Clear(); // Clear results on error
+        }
     }
 
     public void ResetFilters()
     {
+        // LoadAllGames called here has its own error handling
         this.RatingFilter = 0;
         this.MinPrice = 0;
         this.MaxPrice = 200;
@@ -201,41 +237,90 @@ public class HomePageViewModel : INotifyPropertyChanged
 
     private async Task LoadTrendingGames()
     {
-        this.TrendingGames.Clear();
-        var trendingGames = await this.gameService.GetTrendingGamesAsync();
-        foreach (var game in trendingGames)
+        try
         {
-            this.TrendingGames.Add(game);
+            this.TrendingGames.Clear();
+            var trendingGames = await this.gameService.GetTrendingGamesAsync();
+            foreach (var game in trendingGames)
+            {
+                this.TrendingGames.Add(game);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in LoadTrendingGames: {ex.Message}");
+            // Optionally clear the list or show an error to the user
+            this.TrendingGames.Clear(); // Clear results on error
         }
     }
 
     private async Task LoadTags()
     {
-        this.Tags.Clear();
-        var tagsList = await this.gameService.GetAllTagsAsync();
-        foreach (var tag in tagsList)
+        try
         {
-            this.Tags.Add(tag);
+            this.Tags.Clear();
+            var tagsList = await this.gameService.GetAllTagsAsync();
+            foreach (var tag in tagsList)
+            {
+                this.Tags.Add(tag);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in LoadTags: {ex.Message}");
+            // Optionally clear the list or show an error to the user
+            this.Tags.Clear(); // Clear results on error
         }
     }
 
     private async Task LoadRecommendedGames()
     {
-        this.RecommendedGames.Clear();
-        var reccomendedGames = await this.userGameService.GetRecommendedGamesAsync(this.user.UserId);
-        foreach (var game in reccomendedGames)
+        try
         {
-            this.RecommendedGames.Add(game);
+            this.RecommendedGames.Clear();
+            // Assuming GetRecommendedGamesAsync can return null or throw
+            var recommendedGames = await this.userGameService.GetRecommendedGamesAsync(this.user.UserId);
+            if (recommendedGames != null)
+            {
+                foreach (var game in recommendedGames)
+                {
+                    this.RecommendedGames.Add(game);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in LoadRecommendedGames: {ex.Message}");
+            // Optionally clear the list or show an error to the user
+            this.RecommendedGames.Clear(); // Clear results on error
         }
     }
 
     private async Task LoadDiscountedGames()
     {
-        this.DiscountedGames.Clear();
-        var discountedGames = await this.gameService.GetDiscountedGamesAsync();
-        foreach (var game in discountedGames)
+        try
         {
-            this.DiscountedGames.Add(game);
+            this.DiscountedGames.Clear();
+            var discountedGames = await this.gameService.GetDiscountedGamesAsync();
+            foreach (var game in discountedGames)
+            {
+                this.DiscountedGames.Add(game);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in LoadDiscountedGames: {ex.Message}");
+            // Optionally clear the list or show an error to the user
+            this.DiscountedGames.Clear(); // Clear results on error
+        }
+    }
+
+    public void NavigateToReviewsPage(Frame parentFrame, int gameId)
+    {
+        if (parentFrame != null)
+        {
+            // No need to create new ReviewsPage instance here, Navigate does it
+            parentFrame.Navigate(typeof(ReviewsPage), gameId);
         }
     }
 }
