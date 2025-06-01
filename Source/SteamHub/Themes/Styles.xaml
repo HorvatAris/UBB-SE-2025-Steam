@@ -157,10 +157,6 @@
         </Setter>
     </Style>
 
-
-
-
-
     <!-- Modern Navigation View Item Style -->
     <Style x:Key="ModernSteamNavItemStyle" TargetType="NavigationViewItem">
         <Setter Property="Background" Value="Transparent"/>
@@ -618,4 +614,14 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- Modern Steam Slider Style -->
+    <Style x:Key="ModernSteamSlider" TargetType="Slider">
+        <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Height" Value="32"/>
+    </Style>
+
 </ResourceDictionary>

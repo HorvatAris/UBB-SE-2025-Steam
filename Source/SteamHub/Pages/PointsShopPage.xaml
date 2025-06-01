@@ -44,7 +44,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="#1a1a1a">
+    <Grid Background="{StaticResource PrimaryBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -54,7 +54,7 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Background="#2d2d2d" Padding="20">
+        <Grid Grid.Row="0" Background="{StaticResource SecondaryBrush}" Padding="20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -65,43 +65,42 @@
             <FontIcon Grid.Column="0" 
                       Glyph="&#xE8C9;" 
                       FontSize="36" 
-                      Foreground="#66bb6a"
+                      Foreground="{StaticResource AccentBrush}"
                       Margin="0,0,20,0" 
                       VerticalAlignment="Center"/>
             
             <StackPanel Grid.Column="1">
-                <TextBlock Text="Points Shop" FontSize="32" FontWeight="Bold" Foreground="White"/>
-                <TextBlock Text="Customize your profile with points earned from purchases" FontSize="14" Foreground="#aaaaaa" Margin="0,10,0,0"/>
+                <TextBlock Text="Points Shop" FontSize="32" FontWeight="Bold" Foreground="{StaticResource TextBrush}"/>
+                <TextBlock Text="Customize your profile with points earned from purchases" FontSize="14" Foreground="{StaticResource TextBrush}" Opacity="0.7" Margin="0,10,0,0"/>
             </StackPanel>
             
             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                <FontIcon Glyph="&#xE8C9;" FontSize="22" Foreground="#66bb6a" Margin="0,0,5,0"/>
-                <TextBlock x:Name="PointsBalance" Text="{Binding UserPointBalance}" FontSize="20" FontWeight="Bold" Foreground="#66bb6a"/>
-                <TextBlock Text=" Points" FontSize="20" FontWeight="Bold" Foreground="#66bb6a" Margin="0,0,10,0"/>
+                <FontIcon Glyph="&#xE8C9;" FontSize="22" Foreground="{StaticResource AccentBrush}" Margin="0,0,5,0"/>
+                <TextBlock x:Name="PointsBalance" Text="{Binding UserPointBalance}" FontSize="20" FontWeight="Bold" Foreground="{StaticResource AccentBrush}"/>
+                <TextBlock Text=" Points" FontSize="20" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" Margin="0,0,10,0"/>
                 <Button x:Name="HelpButton"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
+                        Style="{StaticResource ModernSteamButton}"
                         Padding="8"
                         Margin="5,0,0,0"
                         VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal">
-                        <FontIcon Glyph="&#xE897;" FontSize="16" Foreground="#aaaaaa"/>
-                        <TextBlock Text="Help" Margin="4,0,0,0" Foreground="#aaaaaa" VerticalAlignment="Center"/>
+                        <FontIcon Glyph="&#xE897;" FontSize="16" Foreground="{StaticResource TextBrush}"/>
+                        <TextBlock Text="Help" Margin="4,0,0,0" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center"/>
                     </StackPanel>
                     <ToolTipService.ToolTip>
-                        <ToolTip Background="#2d2d2d" BorderBrush="#66bb6a">
+                        <ToolTip Background="{StaticResource SecondaryBrush}" BorderBrush="{StaticResource AccentBrush}">
                             <StackPanel Width="600" Margin="2">
-                                <TextBlock Text="Earning Points" FontWeight="Bold" Margin="0,0,0,5" Foreground="White"/>
-                                <TextBlock TextWrapping="WrapWholeWords" Margin="5,5,0,0" Foreground="#cccccc">
+                                <TextBlock Text="Earning Points" FontWeight="Bold" Margin="0,0,0,5" Foreground="{StaticResource TextBrush}"/>
+                                <TextBlock TextWrapping="WrapWholeWords" Margin="5,5,0,0" Foreground="{StaticResource TextBrush}">
                                     • Users earn <Bold>121 points for every $1 spent</Bold> 
                                 </TextBlock>
-                                <TextBlock TextWrapping="WrapWholeWords" Margin="13,1,0,0" Foreground="#cccccc">
+                                <TextBlock TextWrapping="WrapWholeWords" Margin="13,1,0,0" Foreground="{StaticResource TextBrush}">
                                     in the Steam Store
                                 </TextBlock>
-                                <TextBlock TextWrapping="WrapWholeWords" Margin="5,5,0,0" Foreground="#cccccc">
+                                <TextBlock TextWrapping="WrapWholeWords" Margin="5,5,0,0" Foreground="{StaticResource TextBrush}">
                                     • Points accumulate with every cart purchase
                                 </TextBlock>
-                                <TextBlock TextWrapping="WrapWholeWords" Margin="5,5,0,0" Foreground="#cccccc">
+                                <TextBlock TextWrapping="WrapWholeWords" Margin="5,5,0,0" Foreground="{StaticResource TextBrush}">
                                     • You can't earn points from Points Shop purchases
                                 </TextBlock>
                             </StackPanel>
@@ -112,15 +111,18 @@
         </Grid>
 
         <!-- Simple Notification Bar -->
-        <Border Grid.Row="1" Visibility="{Binding NotificationVisibility}" Background="#66bb6a" Padding="15,10">
+        <Border Grid.Row="1" Visibility="{Binding NotificationVisibility}" Background="{StaticResource AccentBrush}" Padding="15,10">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding NotificationMessage}" Foreground="White" FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding NotificationMessage}" Foreground="{StaticResource TextBrush}" FontWeight="SemiBold"/>
                 <Button Grid.Column="1" Content="✕" Click="CloseNotification_Click" 
-                        Background="Transparent" BorderBrush="Transparent" Foreground="White"/>
+                        Style="{StaticResource ModernSteamButton}"
+                        Background="Transparent" 
+                        BorderBrush="Transparent" 
+                        Foreground="{StaticResource TextBrush}"/>
             </Grid>
         </Border>
 
@@ -134,28 +136,29 @@
             
             <!-- Filter Controls -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="Filter:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="White"/>
+                <TextBlock Text="Filter:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="{StaticResource TextBrush}"/>
                 <ComboBox x:Name="ItemTypeFilter" Width="200" Margin="0,0,20,0" SelectionChanged="ItemTypeFilter_SelectionChanged"
-                          Background="#2d2d2d" Foreground="White" BorderBrush="#66bb6a">
-                    <ComboBoxItem Content="All" IsSelected="True" Foreground="White"/>
-                    <ComboBoxItem Content="ProfileBackground" Foreground="White"/>
-                    <ComboBoxItem Content="Avatar" Foreground="White"/>
-                    <ComboBoxItem Content="AvatarFrame" Foreground="White"/>
-                    <ComboBoxItem Content="Emoticon" Foreground="White"/>
-                    <ComboBoxItem Content="MiniProfile" Foreground="White"/>
+                          Style="{StaticResource ModernSteamComboBox}">
+                    <ComboBoxItem Content="All" IsSelected="True" Foreground="{StaticResource TextBrush}"/>
+                    <ComboBoxItem Content="ProfileBackground" Foreground="{StaticResource TextBrush}"/>
+                    <ComboBoxItem Content="Avatar" Foreground="{StaticResource TextBrush}"/>
+                    <ComboBoxItem Content="AvatarFrame" Foreground="{StaticResource TextBrush}"/>
+                    <ComboBoxItem Content="Emoticon" Foreground="{StaticResource TextBrush}"/>
+                    <ComboBoxItem Content="MiniProfile" Foreground="{StaticResource TextBrush}"/>
                 </ComboBox>
                 
                 <TextBox x:Name="SearchBox" Width="200" PlaceholderText="Search..." 
                          Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         Background="#2d2d2d" Foreground="White" BorderBrush="#66bb6a"/>
+                         Style="{StaticResource ModernSteamTextBox}"/>
                          
                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
-                    <FontIcon Glyph="&#xE8C9;" FontSize="16" Foreground="#aaaaaa" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBlock Text="Price:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="White"/>
+                    <FontIcon Glyph="&#xE8C9;" FontSize="16" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <TextBlock Text="Price:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="{StaticResource TextBrush}"/>
                     <Slider x:Name="PriceSlider" Minimum="0" Maximum="10000" StepFrequency="100" 
                             Value="{Binding MaximumPrice, Mode=TwoWay}" 
+                            Style="{StaticResource ModernSteamSlider}"
                             Width="150"/>
-                    <TextBlock Text="{Binding MaximumPrice}" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="White"/>
+                    <TextBlock Text="{Binding MaximumPrice}" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="{StaticResource TextBrush}"/>
                 </StackPanel>
             </StackPanel>
             
@@ -164,21 +167,19 @@
                     Content="View Inventory" 
                     Click="ViewInventoryButton_Click" 
                     Margin="10,0,10,0"
-                    Background="#66bb6a"
-                    Foreground="White"/>
+                    Style="{StaticResource ModernSteamButton}"/>
             
             <!-- Transaction History Button -->
             <Button Grid.Column="2" 
                     Content="Transaction History" 
                     Click="ViewTransactionHistoryButton_Click" 
                     Margin="0,0,0,0"
-                    Background="#66bb6a"
-                    Foreground="White"/>
+                    Style="{StaticResource ModernSteamButton}"/>
         </Grid>
 
         <!-- Content -->
         <Grid Grid.Row="3" Padding="20">
-            <ScrollViewer>
+            <ScrollViewer Style="{StaticResource ModernScrollViewer}">
                 <GridView x:Name="ItemsGridView" 
                           ItemsSource="{Binding ShopItems}"
                           SelectionMode="Single"
@@ -186,28 +187,30 @@
                           SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="pointShopItemModel:PointShopItem">
-                            <Grid Width="200" Height="250" Margin="10" Background="#2d2d2d">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                            <Border Style="{StaticResource ModernCardStyle}">
+                                <Grid Width="200" Height="250">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                                <!-- Item Image -->
-                                <Image Grid.Row="0" Source="{x:Bind ImagePath}" Style="{StaticResource ItemImageStyle}" ImageFailed="Image_ImageFailed"/>
+                                    <!-- Item Image -->
+                                    <Image Grid.Row="0" Source="{x:Bind ImagePath}" Stretch="Uniform" Margin="10"/>
 
-                                <!-- Item Info -->
-                                <StackPanel Grid.Row="1" Padding="10">
-                                    <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="White"/>
-                                    <TextBlock Text="{x:Bind ItemType}" Foreground="#aaaaaa" FontSize="12"/>
-                                </StackPanel>
+                                    <!-- Item Info -->
+                                    <StackPanel Grid.Row="1" Padding="10">
+                                        <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{StaticResource TextBrush}"/>
+                                        <TextBlock Text="{x:Bind ItemType}" Foreground="{StaticResource TextBrush}" Opacity="0.7" FontSize="12"/>
+                                    </StackPanel>
 
-                                <!-- Item Price -->
-                                <StackPanel Grid.Row="2" Orientation="Horizontal" Padding="10">
-                                    <TextBlock Text="{x:Bind PointPrice}" FontWeight="Bold" Foreground="#66bb6a"/>
-                                    <TextBlock Text=" Points" FontWeight="Bold" Foreground="#66bb6a"/>
-                                </StackPanel>
-                            </Grid>
+                                    <!-- Item Price -->
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Padding="10">
+                                        <TextBlock Text="{x:Bind PointPrice}" FontWeight="Bold" Foreground="{StaticResource AccentBrush}"/>
+                                        <TextBlock Text=" Points" FontWeight="Bold" Foreground="{StaticResource AccentBrush}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
                         </DataTemplate>
                     </GridView.ItemTemplate>
                 </GridView>
@@ -217,7 +220,8 @@
         <!-- Selected Item Details -->
         <Grid Grid.Row="4" x:Name="ItemDetailPanel" 
               Visibility="{Binding ItemDetailVisibility}" 
-              Background="#2d2d2d" Padding="20">
+              Background="{StaticResource SecondaryBrush}" 
+              Padding="20">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -231,40 +235,43 @@
                    Width="100" Height="100" 
                    Margin="0,0,20,0" 
                    Source="{Binding SelectedItemImageUri}"
-                   Style="{StaticResource ItemImageStyle}" 
-                   ImageFailed="Image_ImageFailed"/>
+                   Stretch="Uniform"/>
 
             <!-- Item Details -->
             <StackPanel Grid.Column="1">
-                <TextBlock Text="{Binding SelectedItemName}" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                <TextBlock Text="{Binding SelectedItemType}" Foreground="#aaaaaa" Margin="0,5,0,0"/>
-                <TextBlock Text="{Binding SelectedItemDescription}" TextWrapping="Wrap" Margin="0,10,0,0" Foreground="White"/>
+                <TextBlock Text="{Binding SelectedItemName}" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextBrush}"/>
+                <TextBlock Text="{Binding SelectedItemType}" Foreground="{StaticResource TextBrush}" Opacity="0.7" Margin="0,5,0,0"/>
+                <TextBlock Text="{Binding SelectedItemDescription}" TextWrapping="Wrap" Margin="0,10,0,0" Foreground="{StaticResource TextBrush}"/>
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                    <TextBlock Text="{Binding SelectedItemPrice}" FontWeight="Bold" Foreground="#66bb6a"/>
+                    <TextBlock Text="{Binding SelectedItemPrice}" FontWeight="Bold" Foreground="{StaticResource AccentBrush}"/>
                 </StackPanel>
             </StackPanel>
 
             <!-- Purchase Button -->
-            <Button Grid.Column="2" x:Name="PurchaseButton" Content="Purchase" 
+            <Button Grid.Column="2" 
+                    x:Name="PurchaseButton" 
+                    Content="Purchase" 
                     Click="PurchaseButton_Click" 
                     IsEnabled="{Binding CanPurchase}" 
                     Margin="10,0,10,0"
-                    Background="#66bb6a"
-                    Foreground="White"/>
+                    Style="{StaticResource ModernSteamButton}"/>
             
             <!-- Close Button -->
-            <Button Grid.Column="3" x:Name="CloseDetailButton" Content="✕" 
+            <Button Grid.Column="3" 
+                    x:Name="CloseDetailButton" 
+                    Content="✕" 
                     Click="CloseDetailButton_Click"
+                    Style="{StaticResource ModernSteamButton}"
                     Background="Transparent" 
                     BorderBrush="Transparent"
-                    Foreground="White"
+                    Foreground="{StaticResource TextBrush}"
                     FontSize="16"
                     VerticalAlignment="Top"
                     HorizontalAlignment="Right"/>
         </Grid>
 
         <!-- Inventory Panel -->
-        <Grid Grid.Row="3" Grid.RowSpan="2" x:Name="InventoryPanel" Visibility="{Binding InventoryPanelVisibility}" Background="#1a1a1a" Padding="20">
+        <Grid Grid.Row="3" Grid.RowSpan="2" x:Name="InventoryPanel" Visibility="{Binding InventoryPanelVisibility}" Background="{StaticResource PrimaryBrush}" Padding="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -277,44 +284,48 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 
-                <TextBlock Grid.Column="0" Text="My Inventory" FontSize="24" FontWeight="Bold" Foreground="White"/>
-                <Button Grid.Column="1" x:Name="CloseInventoryButton" Content="Back to Shop" Click="CloseInventoryButton_Click"
-                        Background="#66bb6a" Foreground="White"/>
+                <TextBlock Grid.Column="0" Text="My Inventory" FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextBrush}"/>
+                <Button Grid.Column="1" 
+                        x:Name="CloseInventoryButton" 
+                        Content="Back to Shop" 
+                        Click="CloseInventoryButton_Click"
+                        Style="{StaticResource ModernSteamButton}"/>
             </Grid>
 
             <!-- Inventory Items -->
-            <ScrollViewer Grid.Row="1" Margin="0,20,0,0">
+            <ScrollViewer Grid.Row="1" Margin="0,20,0,0" Style="{StaticResource ModernScrollViewer}">
                 <GridView x:Name="InventoryGridView" ItemsSource="{Binding FilteredUserItems}">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="pointShopItemModel:PointShopItem">
-                            <Grid Width="200" Height="250" Margin="10" Background="#2d2d2d">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                            <Border Style="{StaticResource ModernCardStyle}">
+                                <Grid Width="200" Height="250">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                                <!-- Item Image -->
-                                <Image Grid.Row="0" Source="{x:Bind ImagePath}" Style="{StaticResource ItemImageStyle}" ImageFailed="Image_ImageFailed"/>
+                                    <!-- Item Image -->
+                                    <Image Grid.Row="0" Source="{x:Bind ImagePath}" Stretch="Uniform" Margin="10"/>
 
-                                <!-- Item Info -->
-                                <StackPanel Grid.Row="1" Padding="10">
-                                    <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="White"/>
-                                    <TextBlock Text="{x:Bind ItemType}" Foreground="#aaaaaa" FontSize="12"/>
-                                    <TextBlock Text="{x:Bind IsActive, Converter={StaticResource BoolToStatusTextConverter}}" 
-                                               Foreground="{x:Bind IsActive, Converter={StaticResource BoolToActiveColorConverter}}" 
-                                               FontSize="12" Margin="0,5,0,0"/>
-                                </StackPanel>
+                                    <!-- Item Info -->
+                                    <StackPanel Grid.Row="1" Padding="10">
+                                        <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{StaticResource TextBrush}"/>
+                                        <TextBlock Text="{x:Bind ItemType}" Foreground="{StaticResource TextBrush}" Opacity="0.7" FontSize="12"/>
+                                        <TextBlock Text="{x:Bind IsActive, Converter={StaticResource BoolToStatusTextConverter}}" 
+                                                   Foreground="{x:Bind IsActive, Converter={StaticResource BoolToActiveColorConverter}}" 
+                                                   FontSize="12" Margin="0,5,0,0"/>
+                                    </StackPanel>
 
-                                <!-- Controls -->
-                                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Padding="10">
-                                    <Button Content="{x:Bind IsActive, Converter={StaticResource BoolToActivateButtonTextConverter}}" 
-                                            Tag="{x:Bind ItemIdentifier}" 
-                                            Click="RemoveButtons_Click"
-                                            Background="#66bb6a"
-                                            Foreground="White"/>
-                                </StackPanel>
-                            </Grid>
+                                    <!-- Controls -->
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Padding="10">
+                                        <Button Content="{x:Bind IsActive, Converter={StaticResource BoolToActivateButtonTextConverter}}" 
+                                                Tag="{x:Bind ItemIdentifier}" 
+                                                Click="RemoveButtons_Click"
+                                                Style="{StaticResource ModernSteamButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
                         </DataTemplate>
                     </GridView.ItemTemplate>
                 </GridView>
@@ -325,13 +336,11 @@
         <Grid x:Name="TransactionHistoryPanel" 
               Visibility="{Binding TransactionHistoryPanelVisibility}" 
               Grid.RowSpan="5" 
-              Background="#1a1a1aE6" 
+              Background="{StaticResource PrimaryBrush}" 
+              Opacity="0.95"
               Padding="20">
 
-            <Border Background="#2d2d2d" 
-                    BorderBrush="#66bb6a" 
-                    BorderThickness="1" 
-                    CornerRadius="4">
+            <Border Style="{StaticResource ModernCardStyle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -341,7 +350,7 @@
                     </Grid.RowDefinitions>
                     
                     <!-- Header -->
-                    <Grid Grid.Row="0" Background="#2d2d2d" Padding="15">
+                    <Grid Grid.Row="0" Background="{StaticResource SecondaryBrush}" Padding="15">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
@@ -350,21 +359,22 @@
                         <TextBlock Text="Transaction History" 
                                  FontSize="22" 
                                  FontWeight="SemiBold" 
-                                 Foreground="White" 
+                                 Foreground="{StaticResource TextBrush}" 
                                  VerticalAlignment="Center"/>
                         
                         <Button Grid.Column="1" 
                                 Content="Close" 
                                 Click="CloseTransactionHistoryButton_Click" 
+                                Style="{StaticResource ModernSteamButton}"
                                 Background="Transparent"
-                                Foreground="White"/>
+                                Foreground="{StaticResource TextBrush}"/>
                     </Grid>
                     
                     <!-- Transaction Items ListView -->
                     <ListView Grid.Row="1" 
                               x:Name="TransactionHistoryListView"
                               ItemsSource="{Binding TransactionHistory}"
-                              Background="#2d2d2d"
+                              Background="{StaticResource SecondaryBrush}"
                               Margin="15"
                               Padding="10"
                               BorderThickness="0"
@@ -375,6 +385,8 @@
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                 <Setter Property="Padding" Value="5" />
                                 <Setter Property="Margin" Value="0,5" />
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
                             </Style>
                         </ListView.ItemContainerStyle>
                         <ListView.ItemTemplate>
@@ -389,26 +401,28 @@
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="{x:Bind ItemName}" 
                                                  FontWeight="SemiBold" 
-                                                 Foreground="White"/>
+                                                 Foreground="{StaticResource TextBrush}"/>
                                         
                                         <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                                             <TextBlock Text="{x:Bind ItemType}" 
-                                                     Foreground="#aaaaaa" 
+                                                     Foreground="{StaticResource TextBrush}" 
+                                                     Opacity="0.7"
                                                      FontSize="13"/>
                                         </StackPanel>
                                     </StackPanel>
                                     
                                     <TextBlock Grid.Column="1" 
                                              Text="{x:Bind PurchaseDate, Converter={StaticResource DateTimeToStringConverter}}" 
-                                             Foreground="#aaaaaa" 
+                                             Foreground="{StaticResource TextBrush}" 
+                                             Opacity="0.7"
                                              VerticalAlignment="Center"
                                              Margin="10,0,20,0"
                                              FontSize="13"/>
                                              
                                     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                        <FontIcon Glyph="&#xE8C9;" FontSize="16" Foreground="#66bb6a" Margin="0,0,5,0"/>
+                                        <FontIcon Glyph="&#xE8C9;" FontSize="16" Foreground="{StaticResource AccentBrush}" Margin="0,0,5,0"/>
                                         <TextBlock Text="{x:Bind PointsSpent}" 
-                                                 Foreground="#66bb6a" 
+                                                 Foreground="{StaticResource AccentBrush}" 
                                                  FontWeight="SemiBold"/>
                                     </StackPanel>
                                 </Grid>
@@ -419,7 +433,8 @@
                     <!-- Empty state message -->
                     <TextBlock Grid.Row="1" 
                              Text="No transactions yet. Purchase an item to see it in your history." 
-                             Foreground="#aaaaaa" 
+                             Foreground="{StaticResource TextBrush}" 
+                             Opacity="0.7"
                              HorizontalAlignment="Center" 
                              VerticalAlignment="Center" 
                              TextWrapping="Wrap"
@@ -429,7 +444,7 @@
 
                     <!-- Transaction Count Debug -->
                     <TextBlock Grid.Row="2" 
-                             Foreground="White" 
+                             Foreground="{StaticResource TextBrush}" 
                              HorizontalAlignment="Center" 
                              Margin="0,10,0,10">
                         <TextBlock.Text>
