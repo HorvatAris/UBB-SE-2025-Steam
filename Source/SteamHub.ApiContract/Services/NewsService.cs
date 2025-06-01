@@ -37,43 +37,7 @@ namespace SteamHub.ApiContract.Services
         {
             SanitizeHtml(ref text);
             ConvertSpecialTagsToHtml(ref text);
-            string parsedText = @"<html><head>
-                        <style>
-                            body { 
-                                font-family: 'Segoe UI', sans-serif; 
-                                margin: 0; 
-                                padding: 0; 
-                                color: #333;
-                                white-space: pre-wrap;
-                                overflow: scroll; 
-                            }
-                            body::-webkit-scrollbar {
-                                display: none;
-                            }
-                            img {
-                                display: block;
-                                margin: 0 auto;
-                                max-width: 80%;
-                                max-height: 500px;
-                            }
-                            h2 { 
-                                margin-top: 0; 
-                                color: #0066cc;
-                                font-size: 18px;
-                            }
-                            .spoiler {
-                                background-color: black;
-                                user-select: none;
-                                color: black;
-                                cursor: pointer;
-                                padding: 2px 5px;
-                                border-radius: 3px;
-                                transition: color 0.2s ease-in-out;
-                            }
-                            .spoiler.revealed {
-                                color: white;
-                            }
-                        </style></head><body>" + text + "</body></html>";
+            string parsedText = text;
             return Task.FromResult(parsedText);
         }
 
