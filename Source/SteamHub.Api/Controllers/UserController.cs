@@ -4,6 +4,11 @@ using SteamHub.ApiContract.Services.Interfaces;
 using SteamHub.ApiContract.Models.User;
 using SteamHub.Api.Context;
 using SteamHub.ApiContract.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace SteamHub.Api.Controllers
 {
@@ -227,6 +232,7 @@ namespace SteamHub.Api.Controllers
             return BadRequest("Failed to update email");
         }
 
+
         [HttpPost("updatePFP")]
         public async Task<IActionResult> UpdatePFP([FromBody] PFPChangeRequest request)
         {
@@ -239,7 +245,7 @@ namespace SteamHub.Api.Controllers
             var result = await userService.UpdateProfilePictureAsync(user.UserId, request.ProfilePicture);
             if (result)
             {
-                return Ok();
+                return Ok(new { success = true });
             }
             return BadRequest("Failed to update pfp");
         }
@@ -256,7 +262,7 @@ namespace SteamHub.Api.Controllers
             var result = await userService.UpdateProfileBioAsync(user.UserId, request.Bio);
             if (result)
             {
-                return Ok();
+                return Ok(new { success = true });
             }
             return BadRequest("Failed to update bio");
         }

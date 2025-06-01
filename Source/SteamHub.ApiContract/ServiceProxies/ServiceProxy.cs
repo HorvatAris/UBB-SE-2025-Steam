@@ -225,6 +225,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             var content = new StringContent(
                 JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
             var response = await StaticHttpClient.PutAsync(BaseUrl + endpoint, content).ConfigureAwait(false);
+            var responseContent = await response.Content.ReadAsStringAsync();
             return await HandleResponseAsync<T>(response).ConfigureAwait(false);
         }
 
