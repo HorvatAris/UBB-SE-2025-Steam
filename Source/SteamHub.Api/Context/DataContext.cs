@@ -137,7 +137,7 @@ namespace SteamHub.Api.Context
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "https://i.imgur.com/vixhhkC.jpeg",
-                    Bio = "Testing"
+                    Bio = "Gaming enthusiast"
                 },
                 new User
                 {
@@ -147,11 +147,11 @@ namespace SteamHub.Api.Context
                     Username = "MattN",
                     UserRole = UserRole.Developer,
                     WalletBalance = 420,
-                    Password = passwords[1],
+                    Password = passwords[0],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "https://i.imgur.com/Ji7D74X.jpeg",
-                    Bio = "Testing"
+                    Bio = "Game designer at ThatGameCompany."
                 },
                 new User
                 {
@@ -161,11 +161,11 @@ namespace SteamHub.Api.Context
                     Username = "JohnC",
                     UserRole = UserRole.Developer,
                     WalletBalance = 390,
-                    Password = passwords[2],
+                    Password = passwords[0],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = "https://i.imgur.com/Ji7D74X.jpeg",
-                    Bio = "Testing"
+                    ProfilePicture = "https://imgur.com/2dMXXul.jpeg",
+                    Bio = "Strategy game master"
                 },
                 new User
                 {
@@ -175,11 +175,11 @@ namespace SteamHub.Api.Context
                     Username = "AliceJ",
                     UserRole = UserRole.User,
                     WalletBalance = 780,
-                    Password = passwords[3],
+                    Password = passwords[0],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = "https://i.imgur.com/l5qkgRu.jpeg",
-                    Bio = "Testing"
+                    ProfilePicture = "https://imgur.com/YlChUAS.jpeg",
+                    Bio = "Competitive FPS player"
                 },
                 new User
                 {
@@ -189,11 +189,11 @@ namespace SteamHub.Api.Context
                     Username = "LiamG",
                     UserRole = UserRole.User,
                     WalletBalance = 5500,
-                    Password = passwords[4],
+                    Password = passwords[0],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = "https://i.imgur.com/JPNXxsg.jpeg",
-                    Bio = "Testing"
+                    ProfilePicture = "https://imgur.com/dzzEUC5.jpeg",
+                    Bio = "Streamer and content creator"
                 },
                 new User
                 {
@@ -203,11 +203,11 @@ namespace SteamHub.Api.Context
                     Username = "SophieW",
                     UserRole = UserRole.User,
                     WalletBalance = 950,
-                    Password = passwords[5],
+                    Password = passwords[0],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "https://i.imgur.com/l5qkgRu.jpeg",
-                    Bio = "Testing"
+                    Bio = "Gaming since '95"
                 },
                 new User
                 {
@@ -217,11 +217,11 @@ namespace SteamHub.Api.Context
                     Username = "NoahS",
                     UserRole = UserRole.User,
                     WalletBalance = 3300,
-                    Password = passwords[6],
+                    Password = passwords[0],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
-                    ProfilePicture = "https://i.imgur.com/JPNXxsg.jpeg",
-                    Bio = "Testing"
+                    ProfilePicture = "https://imgur.com/vfYNvcb.jpeg",
+                    Bio = "Collector"
                 },
                 new User
                 {
@@ -231,7 +231,7 @@ namespace SteamHub.Api.Context
                     Username = "EmilyB",
                     UserRole = UserRole.User,
                     WalletBalance = 1100,
-                    Password = passwords[7],
+                    Password = passwords[0],
                     CreatedAt = new DateTime(2024, 1, 1),
                     LastLogin = new DateTime(2024, 1, 1),
                     ProfilePicture = "https://i.imgur.com/l5qkgRu.jpeg",
@@ -2036,9 +2036,23 @@ namespace SteamHub.Api.Context
                 new Achievement { AchievementId = 3, AchievementName = "FRIENDSHIP3", Description = "You made 10 friends, you get 5 points", AchievementType = "Friendships", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
                 new Achievement { AchievementId = 4, AchievementName = "FRIENDSHIP4", Description = "You made 50 friends, you get 10 points", AchievementType = "Friendships", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
                 new Achievement { AchievementId = 5, AchievementName = "FRIENDSHIP5", Description = "You made 100 friends, you get 15 points", AchievementType = "Friendships", Points = 15, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new Achievement { AchievementId=6, AchievementName = "OWNEDGAMES1", Description = "You own 1 game, you get 1 point", AchievementType = "Owned Games", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-                new Achievement { AchievementId=7,AchievementName = "OWNEDGAMES2", Description = "You own 5 games, you get 3 points", AchievementType = "Owned Games", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/5139/5139999.png" },
-
+                new Achievement { AchievementId = 6, AchievementName = "OWNEDGAMES1", Description = "You own 1 game, you get 1 point", AchievementType = "Owned Games", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/3659/3659784.png" },
+                new Achievement { AchievementId = 7, AchievementName = "OWNEDGAMES2", Description = "You own 5 games, you get 3 points", AchievementType = "Owned Games", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/3659/3659784.png" },
+                new Achievement { AchievementId = 8, AchievementName = "SOLDGAMES1", Description = "You sold your first game, you get 2 points", AchievementType = "Sold Games", Points = 2, Icon = "https://cdn-icons-png.flaticon.com/512/3081/3081559.png" },
+                new Achievement { AchievementId = 9, AchievementName = "SOLDGAMES2", Description = "You sold 5 games, you get 5 points", AchievementType = "Sold Games", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/3081/3081559.png" },
+                new Achievement { AchievementId = 10, AchievementName = "SOLDGAMES3", Description = "You sold 10 games, you get 10 points", AchievementType = "Sold Games", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/3081/3081559.png" },
+                new Achievement { AchievementId = 11, AchievementName = "YEARSOFACTIVITY1", Description = "You've been active for 1 year, you get 5 points", AchievementType = "Years of Activity", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/2972/2972543.png" },
+                new Achievement { AchievementId = 12, AchievementName = "YEARSOFACTIVITY2", Description = "You've been active for 3 years, you get 10 points", AchievementType = "Years of Activity", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/2972/2972543.png" },
+                new Achievement { AchievementId = 13, AchievementName = "YEARSOFACTIVITY3", Description = "You've been active for 5 years, you get 15 points", AchievementType = "Years of Activity", Points = 15, Icon = "https://cdn-icons-png.flaticon.com/512/2972/2972543.png" },
+                new Achievement { AchievementId = 14, AchievementName = "NUMBEROFPOSTS1", Description = "You made your first post, you get 1 point", AchievementType = "Number of Posts", Points = 1, Icon = "https://cdn-icons-png.flaticon.com/512/1380/1380338.png" },
+                new Achievement { AchievementId = 15, AchievementName = "NUMBEROFPOSTS2", Description = "You made 10 posts, you get 3 points", AchievementType = "Number of Posts", Points = 3, Icon = "https://cdn-icons-png.flaticon.com/512/1380/1380338.png" },
+                new Achievement { AchievementId = 16, AchievementName = "NUMBEROFPOSTS3", Description = "You made 50 posts, you get 5 points", AchievementType = "Number of Posts", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/1380/1380338.png" },
+                new Achievement { AchievementId = 17, AchievementName = "NUMBEROFREVIEWSGIVEN1", Description = "You wrote your first review, you get 2 points", AchievementType = "Number of Reviews Given", Points = 2, Icon = "https://cdn-icons-png.flaticon.com/512/1828/1828395.png" },
+                new Achievement { AchievementId = 18, AchievementName = "NUMBEROFREVIEWSGIVEN2", Description = "You wrote 5 reviews, you get 5 points", AchievementType = "Number of Reviews Given", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/1828/1828395.png" },
+                new Achievement { AchievementId = 19, AchievementName = "NUMBEROFREVIEWSGIVEN3", Description = "You wrote 20 reviews, you get 10 points", AchievementType = "Number of Reviews Given", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/1828/1828395.png" },
+                new Achievement { AchievementId = 20, AchievementName = "NUMBEROFREVIEWSRECEIVED1", Description = "You received your first review, you get 2 points", AchievementType = "Number of Reviews Received", Points = 2, Icon = "https://cdn-icons-png.flaticon.com/512/1828/1828395.png" },
+                new Achievement { AchievementId = 21, AchievementName = "NUMBEROFREVIEWSRECEIVED2", Description = "You received 5 reviews, you get 5 points", AchievementType = "Number of Reviews Received", Points = 5, Icon = "https://cdn-icons-png.flaticon.com/512/1828/1828395.png" },
+                //new Achievement { AchievementId = 22, AchievementName = "NUMBEROFREVIEWSRECEIVED3", Description = "You received 20 reviews, you get 10 points", AchievementType = "Number of Reviews Received", Points = 10, Icon = "https://cdn-icons-png.flaticon.com/512/1828/1828395.png" }
             };
             var firendshipSeed = new List<Friendship>
             {
