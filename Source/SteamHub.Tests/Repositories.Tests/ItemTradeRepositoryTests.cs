@@ -21,9 +21,8 @@ namespace SteamHub.Tests.Repositories
 
         public ItemTradeRepositoryTests()
         {
-            var options = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
+            //this is probably erroneous
+            var options = new DbContextOptionsBuilder<DataContext>().Options;
 
             _mockContext = new DataContext(options, null);
             _repository = new ItemTradeRepository(_mockContext);

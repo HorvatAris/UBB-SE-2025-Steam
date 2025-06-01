@@ -84,10 +84,6 @@ namespace SteamHub.ViewModels
             {
                 currentGameIdentifier = gameIdentifier;
 
-                // Get game image path
-                var game = await gameService.GetGameByIdAsync(gameIdentifier);
-                GameImagePath = game?.ImagePath ?? "/Assets/DefaultGame.png";
-
                 var reviews = await reviewService.GetAllReviewsForAGame(gameIdentifier);
                 reviews = await reviewService.FilterReviewsByRecommendation(reviews, CurrentRecommendationFilter);
                 reviews = await reviewService.SortReviews(reviews, CurrentSortOption);

@@ -27,10 +27,6 @@
                     CornerRadius="8"
                     Padding="20">
                 <StackPanel Orientation="Horizontal" Spacing="15">
-                    <Image Source="{Binding GameImagePath, Converter={StaticResource ImagePathToImageSourceConverter}}" 
-                           Width="120" 
-                           Height="160" 
-                           Stretch="UniformToFill"/>
                     <StackPanel>
                         <TextBlock Text="Release Date: March 20, 2024" 
                                  FontWeight="Bold"
@@ -95,8 +91,8 @@
                     </ComboBox>
 
                     <ToggleSwitch Header="Recommend this game?"
-                                IsOn="{Binding ReviewCurrentlyBeingWritten.IsRecommended, Mode=TwoWay}"
-                                Style="{StaticResource ModernSteamToggleSwitch}"/>
+                              IsOn="{Binding ReviewCurrentlyBeingWritten.IsRecommended, Mode=TwoWay}"
+                              Margin="0,0,0,6"/>
 
                     <Button Content="Submit Review"
                             Click="OnSubmitReviewClicked"
@@ -140,6 +136,7 @@
                                                        Stretch="UniformToFill"/>
                                         </Ellipse.Fill>
                                     </Ellipse>
+
 
                                     <StackPanel>
                                         <TextBlock Text="{Binding Username}"

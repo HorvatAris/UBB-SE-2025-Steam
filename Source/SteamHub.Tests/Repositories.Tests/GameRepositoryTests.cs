@@ -21,9 +21,8 @@
 
         public GameRepositoryTest()
         {
-            var options = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
+            //this is probably erroneous
+            var options = new DbContextOptionsBuilder<DataContext>().Options;
 
             var inMemorySettings = new Dictionary<string, string>
             {
@@ -58,8 +57,8 @@
                 UserId = 1,
                 Username = "test_user",
                 Email = "user@example.com",
-                WalletBalance = 100.0f,
-                PointsBalance = 500.0f,
+                WalletBalance = 100,
+                PointsBalance = 500,
                 UserRole = UserRole.User,
                 Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                 ProfilePicture = "",
@@ -89,8 +88,8 @@
                 UserId = 2,
                 Username = "test_dev",
                 Email = "dev@example.com",
-                WalletBalance = 500.0f,
-                PointsBalance = 1000.0f,
+                WalletBalance = 500,
+                PointsBalance = 1000,
                 UserRole = UserRole.Developer,
                 Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                 ProfilePicture = "",

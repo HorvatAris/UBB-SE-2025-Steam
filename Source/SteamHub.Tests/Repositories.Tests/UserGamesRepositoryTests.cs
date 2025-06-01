@@ -23,9 +23,8 @@ namespace SteamHub.Tests.RepositoriesTests
 
         public UsersGamesRepositoryTests()
         {
-            var options = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
+            //this is probably erroneous
+            var options = new DbContextOptionsBuilder<DataContext>().Options;
 
             _mockContext = new DataContext(options, null);
             _repository = new UsersGamesRepository(_mockContext);
@@ -46,7 +45,7 @@ namespace SteamHub.Tests.RepositoriesTests
             Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
             ProfilePicture = "",
             UserRole = UserRole.User,
-            WalletBalance = (float)100.0m,
+            WalletBalance = 100,
             PointsBalance = 500
         },
         new User
@@ -57,7 +56,7 @@ namespace SteamHub.Tests.RepositoriesTests
             Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
             ProfilePicture = "",
             UserRole = UserRole.Developer,
-            WalletBalance = (float) 200.0m,
+            WalletBalance = 200,
             PointsBalance = 1000
         }
     };

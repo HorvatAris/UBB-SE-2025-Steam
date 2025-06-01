@@ -18,9 +18,8 @@ namespace SteamHub.Tests.RepositoriesTests
 
         public TagRepositoryTests()
         {
-            var options = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
+            //this is probably erroneous
+            var options = new DbContextOptionsBuilder<DataContext>().Options;
             var inMemorySettings = new Dictionary<string, string>
             {
                 { "SomeSetting", "SomeValue" }

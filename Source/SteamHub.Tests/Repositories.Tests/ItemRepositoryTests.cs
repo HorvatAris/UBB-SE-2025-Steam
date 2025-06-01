@@ -25,9 +25,8 @@ namespace SteamHub.Tests.Repositories
 
         public ItemRepositoryTests()
         {
-            var options = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
+            //this is probably erroneous
+            var options = new DbContextOptionsBuilder<DataContext>().Options;
 
             var inMemorySettings = new Dictionary<string, string>
             {
@@ -54,8 +53,8 @@ namespace SteamHub.Tests.Repositories
                 Email = "user@example.com",
                 Password = "$2a$11$y9nrgXGsRSSLRuf1MYvXhOmd0lI9lc6y95ZSPlNJWAVVOBIQAUvka",
                 ProfilePicture = "",
-                WalletBalance = 100.0f,
-                PointsBalance = 500.0f,
+                WalletBalance = 100,
+                PointsBalance = 500,
                 UserRole = UserRole.User,
                 UserPointShopItemsInventory = new List<UserPointShopItemInventory>(),
                 StoreTransactions = new List<StoreTransaction>()
