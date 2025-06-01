@@ -19,7 +19,9 @@
                         SelectionChanged="NavView_SelectionChanged"
                         Background="{StaticResource SecondaryBrush}"
                         Foreground="{StaticResource AccentBrush}"
-                        FontFamily="{StaticResource SteamFont}">
+                        FontFamily="{StaticResource SteamFont}"
+                        BorderBrush="{StaticResource AccentBrush}"
+                        BorderThickness="10">
             <NavigationView.Resources>
                 <SolidColorBrush x:Key="NavigationViewItemForeground" Color="White"/>
                 <SolidColorBrush x:Key="NavigationViewItemForegroundPointerOver" Color="White"/>
@@ -63,7 +65,7 @@
                 </NavigationViewItem>
                 <NavigationViewItem Content="Inventory" Tag="inventory" Style="{StaticResource ModernSteamNavItemStyle}">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE8D5;" Foreground="{StaticResource TextBrush}"/>
+                        <FontIcon Glyph="&#xE1D3;" Foreground="{StaticResource TextBrush}"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem Content="Trading" Tag="trading" Style="{StaticResource ModernSteamNavItemStyle}">
@@ -103,7 +105,7 @@
                 </NavigationViewItem>
                 <NavigationViewItem Content="Wallet" Tag="Wallet" Style="{StaticResource ModernSteamNavItemStyle}">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE8C8;" Foreground="{StaticResource TextBrush}"/>
+                        <FontIcon Glyph="&#xE1A6;" Foreground="{StaticResource TextBrush}"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>

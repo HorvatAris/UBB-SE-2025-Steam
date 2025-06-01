@@ -113,6 +113,8 @@ namespace SteamHub.ViewModels
                 var currentUser = await userService.GetCurrentUserAsync();
 
                 await friendsService.AddFriendAsync(currentUser.UserId, user_id);
+                await friendsService.AddFriendAsync(user_id, currentUser.UserId);
+
                 await LoadFriendsAsync();
             }
             catch (ServiceException serviceException)

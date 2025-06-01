@@ -37,15 +37,8 @@
                 Margin="20">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-
-                <!-- Back to Profile Button -->
-                <Button Content="Back to Profile"
-                        Click="BackToProfileButton_Click"
-                        Style="{StaticResource ModernSteamButton}"
-                        HorizontalAlignment="Left"/>
 
                 <!-- Title -->
                 <TextBlock Grid.Column="1"
@@ -62,17 +55,17 @@
         <StackPanel Grid.Row="1" 
                     HorizontalAlignment="Center" 
                     VerticalAlignment="Center"
-                    Margin="20">
+                    Margin="10">
             <ProgressRing IsActive="{Binding IsLoading}"
-                         Width="50" 
-                         Height="50"
+                         Width="30" 
+                         Height="30"
                          Foreground="{StaticResource AccentBrush}"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"/>
 
             <TextBlock Text="{Binding ErrorMessage}"
                       Foreground="#c94141"
-                      FontSize="16"
+                      FontSize="14"
                       TextWrapping="Wrap"
                       TextAlignment="Center"
                       VerticalAlignment="Center"
@@ -83,8 +76,7 @@
         <ScrollViewer Grid.Row="2" 
                      VerticalScrollMode="Enabled"
                      VerticalScrollBarVisibility="Auto"
-                     HorizontalScrollBarVisibility="Disabled"
-                     Style="{StaticResource ModernScrollViewer}">
+                     HorizontalScrollBarVisibility="Disabled">
             <StackPanel Orientation="Vertical" 
                         HorizontalAlignment="Center"
                         Padding="20">
@@ -92,7 +84,7 @@
                 <ItemsControl ItemsSource="{Binding PossibleFriendships}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <controls:WrapPanel Orientation="Horizontal" MaxWidth="680"/>
+                            <controls:WrapPanel Orientation="Horizontal" MaxWidth="980"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
