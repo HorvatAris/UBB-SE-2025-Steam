@@ -308,7 +308,7 @@ public class GamePageViewModel : INotifyPropertyChanged
     {
         if (parentFrame != null)
         {
-            var reviewsPage = new ReviewsPage(this.reviewService);
+            var reviewsPage = new ReviewsPage(this.reviewService, this.gameService);
             parentFrame.Navigate(typeof(ReviewsPage), gameId);
         }
     }

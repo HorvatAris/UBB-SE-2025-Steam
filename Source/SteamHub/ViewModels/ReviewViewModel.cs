@@ -12,8 +12,20 @@ namespace SteamHub.ViewModels
     public partial class ReviewViewModel : INotifyPropertyChanged
     {
         private readonly IReviewService reviewService;
+        private readonly IGameService gameService;
         private int currentGameIdentifier;
         public int CurrentGameId => currentGameIdentifier;
+
+        private string gameImagePath;
+        public string GameImagePath
+        {
+            get => gameImagePath;
+            set
+            {
+                gameImagePath = value;
+                OnPropertyChanged();
+            }
+        }
 
         public Action<string>? OnValidationFailed;
 
@@ -60,9 +72,10 @@ namespace SteamHub.ViewModels
             }
         }
 
-        public ReviewViewModel(IReviewService reviewsService)
+        public ReviewViewModel(IReviewService reviewsService, IGameService gameService)
         {
             reviewService = reviewsService;
+            this.gameService = gameService;
         }
 
         public async Task LoadReviewsForGame(int gameIdentifier)
@@ -70,6 +83,10 @@ namespace SteamHub.ViewModels
             try
             {
                 currentGameIdentifier = gameIdentifier;
+
+                // Get game image path
+                var game = await gameService.GetGameByIdAsync(gameIdentifier);
+                GameImagePath = game?.ImagePath ?? "/Assets/DefaultGame.png";
 
                 var reviews = await reviewService.GetAllReviewsForAGame(gameIdentifier);
                 reviews = await reviewService.FilterReviewsByRecommendation(reviews, CurrentRecommendationFilter);

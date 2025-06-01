@@ -12,7 +12,7 @@
         <Border Background="{StaticResource SecondaryBrush}"
                 CornerRadius="8"
                 Width="400"
-                Height="500"
+                Height="600"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
             <StackPanel VerticalAlignment="Center" 
@@ -20,6 +20,20 @@
                         Spacing="20"
                         Padding="40">
                 
+                <!-- Logo and Title -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                    <Image Source="/Assets/Images/CustomSteamLogo.png" 
+                           Width="80" 
+                           Height="80" 
+                           Stretch="Uniform"/>
+                    <TextBlock Text="SteamHub"
+                             FontSize="35"
+                             FontWeight="Bold"
+                             Foreground="{StaticResource AccentBrush}"
+                             HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
                 <TextBlock Text="Welcome Back!"
                            FontSize="28"
                            FontWeight="SemiBold"

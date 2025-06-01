@@ -12,10 +12,10 @@ namespace SteamHub.Pages
     {
         public ReviewViewModel ViewModel { get; private set; }
 
-        public ReviewExpandedView(IReviewService reviewService)
+        public ReviewExpandedView(IReviewService reviewService, IGameService gameService)
         {
             this.InitializeComponent();
-            ViewModel = new ReviewViewModel(reviewService);
+            ViewModel = new ReviewViewModel(reviewService, gameService);
             this.DataContext = ViewModel;
         }
 
