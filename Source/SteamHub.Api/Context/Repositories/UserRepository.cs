@@ -252,5 +252,6 @@ namespace SteamHub.Api.Context.Repositories
             userEntity.ProfilePicture = picturePath;
             await dataContext.SaveChangesAsync();
         }
+
     }
 }

@@ -4,14 +4,22 @@
 }
 
 <div class="container-fluid py-4">
+
+
     <div class="row">
         <!-- Left Sidebar -->
         <div class="col-md-3">
-            <div class="card bg-dark text-white border-primary mb-4">
+            <div class="card bg-dark text-white border-primary mb-4 position-relative">
+                @if (Model.IsProfileOwner)
+                {
+                    <a asp-area="" asp-controller="Settings" asp-action="Index" class="position-absolute top-0 start-0 p-2 text-light">
+                        <i class="bi bi-gear-fill"></i>
+                    </a>
+                }
                 <div class="card-body text-center">
                     <img src="@Model.ProfilePhotoPath" alt="Profile Picture" class="rounded-circle mb-3" style="width: 160px; height: 160px; object-fit: cover;" />
                     <h4 class="card-title mb-2">@Model.Username</h4>
-                    
+
                     @if (@Model.IsProfileOwner)
                     {
                         <div class="text-light mb-2">
@@ -28,7 +36,7 @@
                 </div>
             </div>
 
-            <div class="card bg-dark text-white border-primary mb-4">
+            <div class="card bg-dark text-white border-primary mt-4">
                 <div class="card-header bg-dark border-primary">
                     <h5 class="mb-0">Bio</h5>
                 </div>
@@ -44,22 +52,22 @@
                 <div class="card-body">
                     <div class="row g-3">
                         @foreach (var achievement in new[] {
-                            Model.FriendshipsAchievement,
-                            Model.OwnedGamesAchievement,
-                            Model.SoldGamesAchievement,
-                            Model.NumberOfReviewsAchievement,
-                            Model.NumberOfReviewsReceived,
-                            Model.DeveloperAchievement,
-                            Model.YearsOfActivity,
-                            Model.NumberOfPostsGetTopAchievement
+                        Model.FriendshipsAchievement,
+                        Model.OwnedGamesAchievement,
+                        Model.SoldGamesAchievement,
+                        Model.NumberOfReviewsAchievement,
+                        Model.NumberOfReviewsReceived,
+                        Model.DeveloperAchievement,
+                        Model.YearsOfActivity,
+                        Model.NumberOfPostsGetTopAchievement
                         })
                         {
                             <div class="col-6">
                                 <div class="achievement-card @(achievement.Opacity < 1 ? "locked" : "unlocked")">
                                     <div class="text-center d-flex flex-column justify-content-between h-100">
                                         <div>
-                                            <img src="@achievement.Achievement.Icon" 
-                                                 style="width: 64px; height: 64px; opacity: @achievement.Opacity;" 
+                                            <img src="@achievement.Achievement.Icon"
+                                                 style="width: 64px; height: 64px; opacity: @achievement.Opacity;"
                                                  class="mb-2" />
                                         </div>
                                         <div class="small text-truncate">@achievement.Achievement.AchievementName</div>
@@ -109,34 +117,34 @@
         flex-direction: column;
     }
 
-    .achievement-card:hover {
-        transform: translateY(-2px);
-    }
+        .achievement-card:hover {
+            transform: translateY(-2px);
+        }
 
-    .achievement-card.locked {
-        opacity: 0.7;
-        border-color: var(--steamhub-secondary);
-    }
+        .achievement-card.locked {
+            opacity: 0.7;
+            border-color: var(--steamhub-secondary);
+        }
 
-    .achievement-card.unlocked {
-        border-color: var(--steamhub-accent);
-    }
+        .achievement-card.unlocked {
+            border-color: var(--steamhub-accent);
+        }
 
-    .achievement-card .text-center {
-        height: 100%;
-    }
+        .achievement-card .text-center {
+            height: 100%;
+        }
 
-    .achievement-card img {
-        max-width: 100%;
-        height: auto;
-    }
+        .achievement-card img {
+            max-width: 100%;
+            height: auto;
+        }
 
     .collection-card {
         transition: transform 0.2s ease-in-out;
     }
 
-    .collection-card:hover {
-        transform: translateY(-2px);
-        border-color: var(--steamhub-accent);
-    }
+        .collection-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--steamhub-accent);
+        }
 </style>

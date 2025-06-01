@@ -279,10 +279,7 @@ namespace SteamHub
                         break;
 
                     case "profile":
-                        this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService,this.collectionServiceProxy, achievementsService, this.user);
-                        break;
-                    case "profileSettings":
-                        this.ContentFrame.Content = new ConfigurationsPage(this.userService, this.ContentFrame);
+                        this.ContentFrame.Content = new ProfilePage(this.userService, friendsService, featuresService,this.collectionServiceProxy, achievementsService, this.user, this.ContentFrame);
                         break;
                     case "ForgotPasswordPage":
                         ShowLoginPage();

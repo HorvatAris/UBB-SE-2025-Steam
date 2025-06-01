@@ -111,11 +111,6 @@
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem Content="Settings" Tag="profileSettings" Style="{StaticResource ModernSteamNavItemStyle}">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE713;" Foreground="{StaticResource TextBrush}"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
                 <NavigationViewItem Content="Logout" Tag="Logout" Tapped="LogoutButton_Click" Style="{StaticResource ModernSteamNavItemStyle}">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE7E8;" Foreground="{StaticResource TextBrush}"/>
