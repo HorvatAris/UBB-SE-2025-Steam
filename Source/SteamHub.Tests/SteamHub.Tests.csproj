@@ -17,11 +17,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SteamHub.ApiContract\SteamHub.ApiContract.csproj" />
+    <ProjectReference Include="..\SteamHub.Api\SteamHub.Api.csproj" />
     <ProjectReference Include="..\SteamHub.Web\SteamHub.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Repositories.Tests\" />
   </ItemGroup>
 
 </Project>
