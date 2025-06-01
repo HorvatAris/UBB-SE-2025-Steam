@@ -9,9 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamHub.Api", "SteamHub.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamHub.ApiContract", "SteamHub.ApiContract\SteamHub.ApiContract.csproj", "{286D733F-05EF-8C02-A052-67A879C5925B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamHub.Tests", "SteamHub.Tests\SteamHub.Tests.csproj", "{FE6B20A8-7739-F158-46E7-1B5922D7A703}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamHub.Web", "SteamHub.Web\SteamHub.Web.csproj", "{2026F932-37CE-5D6D-C525-75B7B02295EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamHub.Tests", "SteamHub.Tests\SteamHub.Tests.csproj", "{F2CDF470-AC05-47F1-9DB3-6B616EE41438}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,17 +65,6 @@ Global
 		{286D733F-05EF-8C02-A052-67A879C5925B}.Release|x64.Build.0 = Release|x64
 		{286D733F-05EF-8C02-A052-67A879C5925B}.Release|x86.ActiveCfg = Release|Any CPU
 		{286D733F-05EF-8C02-A052-67A879C5925B}.Release|x86.Build.0 = Release|Any CPU
-		{FE6B20A8-7739-F158-46E7-1B5922D7A703}.Debug|ARM64.ActiveCfg = Debug|arm64
-		{FE6B20A8-7739-F158-46E7-1B5922D7A703}.Debug|ARM64.Build.0 = Debug|arm64
-		{FE6B20A8-7739-F158-46E7-1B5922D7A703}.Debug|x64.ActiveCfg = Debug|x64
-		{FE6B20A8-7739-F158-46E7-1B5922D7A703}.Debug|x86.ActiveCfg = Debug|x86
-		{FE6B20A8-7739-F158-46E7-1B5922D7A703}.Debug|x86.Build.0 = Debug|x86
-		{FE6B20A8-7739-F158-46E7-1B5922D7A703}.Release|ARM64.ActiveCfg = Release|arm64
-		{FE6B20A8-7739-F158-46E7-1B5922D7A703}.Release|ARM64.Build.0 = Release|arm64
-		{FE6B20A8-7739-F158-46E7-1B5922D7A703}.Release|x64.ActiveCfg = Release|x64
-		{FE6B20A8-7739-F158-46E7-1B5922D7A703}.Release|x64.Build.0 = Release|x64
-		{FE6B20A8-7739-F158-46E7-1B5922D7A703}.Release|x86.ActiveCfg = Release|x86
-		{FE6B20A8-7739-F158-46E7-1B5922D7A703}.Release|x86.Build.0 = Release|x86
 		{2026F932-37CE-5D6D-C525-75B7B02295EE}.Debug|ARM64.ActiveCfg = Debug|Any CPU
 		{2026F932-37CE-5D6D-C525-75B7B02295EE}.Debug|ARM64.Build.0 = Debug|Any CPU
 		{2026F932-37CE-5D6D-C525-75B7B02295EE}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -88,6 +77,18 @@ Global
 		{2026F932-37CE-5D6D-C525-75B7B02295EE}.Release|x64.Build.0 = Release|Any CPU
 		{2026F932-37CE-5D6D-C525-75B7B02295EE}.Release|x86.ActiveCfg = Release|Any CPU
 		{2026F932-37CE-5D6D-C525-75B7B02295EE}.Release|x86.Build.0 = Release|Any CPU
+		{F2CDF470-AC05-47F1-9DB3-6B616EE41438}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{F2CDF470-AC05-47F1-9DB3-6B616EE41438}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{F2CDF470-AC05-47F1-9DB3-6B616EE41438}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F2CDF470-AC05-47F1-9DB3-6B616EE41438}.Debug|x64.Build.0 = Debug|Any CPU
+		{F2CDF470-AC05-47F1-9DB3-6B616EE41438}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F2CDF470-AC05-47F1-9DB3-6B616EE41438}.Debug|x86.Build.0 = Debug|Any CPU
+		{F2CDF470-AC05-47F1-9DB3-6B616EE41438}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{F2CDF470-AC05-47F1-9DB3-6B616EE41438}.Release|ARM64.Build.0 = Release|Any CPU
+		{F2CDF470-AC05-47F1-9DB3-6B616EE41438}.Release|x64.ActiveCfg = Release|Any CPU
+		{F2CDF470-AC05-47F1-9DB3-6B616EE41438}.Release|x64.Build.0 = Release|Any CPU
+		{F2CDF470-AC05-47F1-9DB3-6B616EE41438}.Release|x86.ActiveCfg = Release|Any CPU
+		{F2CDF470-AC05-47F1-9DB3-6B616EE41438}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

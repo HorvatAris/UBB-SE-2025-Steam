@@ -14,11 +14,10 @@ namespace SteamHub.Tests.RepositoriesTests
 
 		public NewsRepositoryTests()
 		{
-			var options = new DbContextOptionsBuilder<DataContext>()
-				.UseInMemoryDatabase(Guid.NewGuid().ToString())
-				.Options;
+            //this is probably erroneous
+            var options = new DbContextOptionsBuilder<DataContext>().Options;
 
-			var configuration = new ConfigurationBuilder().AddInMemoryCollection().Build();
+            var configuration = new ConfigurationBuilder().AddInMemoryCollection().Build();
 			_context = new DataContext(options, configuration);
 			_repository = new NewsRepository(_context);
 			SeedData();
