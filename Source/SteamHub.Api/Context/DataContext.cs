@@ -1025,6 +1025,12 @@ namespace SteamHub.Api.Context
                .HasForeignKey(userGames => userGames.GameId)
                .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<UsersGames>()
+                .HasMany(ug => ug.CollectionGames)
+                .WithOne(cg => cg.UsersGames)
+                .HasForeignKey(cg => new { cg.UserId, cg.GameId })
+                .OnDelete(DeleteBehavior.NoAction);
+
             var usersGamesSeed = new List<UsersGames>
             {
                 new UsersGames
@@ -1357,23 +1363,39 @@ namespace SteamHub.Api.Context
                         .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // -- CollectionGame mapping ------------------------------------------------
+            // -- CollectionGame mapping -----------------------------------------------------
             builder.Entity<CollectionGame>(entity =>
             {
-                entity.HasKey(cg => new { cg.CollectionId, cg.GameId });
-                entity.Property(cg => cg.CollectionId);
-                entity.Property(cg => cg.GameId);
-
+                entity.HasKey(cg => new { cg.CollectionId, cg.GameId, cg.UserId });
+                
                 entity.HasOne(cg => cg.Collection)
                       .WithMany(c => c.CollectionGames)
                       .HasForeignKey(cg => cg.CollectionId)
-                      .OnDelete(DeleteBehavior.NoAction);
-
-                entity.HasOne(cg => cg.OwnedGame)
-                      .WithMany(og => og.CollectionGames)
-                      .HasForeignKey(cg => cg.GameId)
                       .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(cg => cg.UsersGames)
+                      .WithMany(ug => ug.CollectionGames)
+                      .HasForeignKey(cg => new { cg.UserId, cg.GameId })
+                      .OnDelete(DeleteBehavior.NoAction);
             });
+
+            builder.Entity<UsersGames>()
+                .HasOne(userGames => userGames.User)
+                .WithMany()
+                .HasForeignKey(userGames => userGames.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<UsersGames>()
+               .HasOne(userGames => userGames.Game)
+               .WithMany()
+               .HasForeignKey(userGames => userGames.GameId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UsersGames>()
+                .HasMany(ug => ug.CollectionGames)
+                .WithOne(cg => cg.UsersGames)
+                .HasForeignKey(cg => new { cg.UserId, cg.GameId })
+                .OnDelete(DeleteBehavior.NoAction);
 
             // -- Feature mapping -------------------------------------------------------
             builder.Entity<Feature>(entity =>
@@ -1695,10 +1717,6 @@ namespace SteamHub.Api.Context
                     .IsRequired();
                 entity.Property(og => og.Description);
                 entity.Property(og => og.CoverPicture);
-
-                entity.HasMany(og => og.CollectionGames)
-                      .WithOne(cg => cg.OwnedGame)
-                      .HasForeignKey(cg => cg.GameId);
             });
 
             // -- SessionDetails mapping -----------------------------------------------------

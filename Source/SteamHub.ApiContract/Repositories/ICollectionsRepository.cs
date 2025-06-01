@@ -20,9 +20,9 @@ namespace SteamHub.ApiContract.Repositories
 
         Task<List<OwnedGame>> GetGamesInCollectionAsync(int collectionId, int userId);
 
-        Task AddGameToCollectionAsync(int collectionIdentifier, int gameIdentifier);
+        Task AddGameToCollectionAsync(int collectionIdentifier, int gameIdentifier, int userIdentifier);
 
-        Task RemoveGameFromCollectionAsync(int collectionIdentifier, int gameIdentifier);
+        Task RemoveGameFromCollectionAsync(int collectionIdentifier, int gameIdentifier, int userIdentifier);
 
         Task CreateCollectionAsync(int userIdentifier, string collectionName, string? coverPicture, bool isPublic, DateOnly createdAt);
 

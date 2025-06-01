@@ -54,7 +54,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task AddGameToCollection(int collectionIdentifier, int gameIdentifier)
+        public async Task AddGameToCollection(int collectionIdentifier, int gameIdentifier, int userId)
         {
             try
             {
@@ -63,7 +63,8 @@ namespace SteamHub.ApiContract.ServiceProxies
                 await PostAsync("Collections/add-game", new
                 {
                     CollectionId = collectionIdentifier,
-                    GameId = gameIdentifier
+                    GameId = gameIdentifier,
+                    UserId = userId
                 });
             }
             catch (Exception ex)
@@ -74,14 +75,15 @@ namespace SteamHub.ApiContract.ServiceProxies
             }
         }
 
-        public async Task RemoveGameFromCollection(int collectionIdentifier, int gameIdentifier)
+        public async Task RemoveGameFromCollection(int collectionIdentifier, int gameIdentifier, int userId)
         {
             try
             {
                 await PostAsync("Collections/remove-game", new
                 {
                     CollectionId = collectionIdentifier,
-                    GameId = gameIdentifier
+                    GameId = gameIdentifier,
+                    UserId = userId
                 });
             }
             catch (Exception ex)

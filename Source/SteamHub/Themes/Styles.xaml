@@ -38,10 +38,10 @@
 
     <!-- Modern ScrollViewer Style -->
     <Style TargetType="ScrollViewer" x:Key="ModernScrollViewer">
-        <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Hidden"/>
         <Setter Property="VerticalScrollBarVisibility" Value="Hidden"/>
         <Setter Property="HorizontalScrollMode" Value="Enabled"/>
-        <Setter Property="VerticalScrollMode" Value="Disabled"/>
+        <Setter Property="VerticalScrollMode" Value="Enabled"/>
         <Setter Property="Padding" Value="0,0,8,0"/>
     </Style>
 
@@ -156,10 +156,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-
-
-
 
     <!-- Modern Navigation View Item Style -->
     <Style x:Key="ModernSteamNavItemStyle" TargetType="NavigationViewItem">
@@ -618,4 +614,14 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- Modern Steam Slider Style -->
+    <Style x:Key="ModernSteamSlider" TargetType="Slider">
+        <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Height" Value="32"/>
+    </Style>
+
 </ResourceDictionary>

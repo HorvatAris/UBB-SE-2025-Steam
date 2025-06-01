@@ -85,7 +85,7 @@ namespace SteamHub.ViewModels
             try
             {
                 var currentUser = await userService.GetCurrentUserAsync();
-                await collectionsService.AddGameToCollection(collectionId, ownedGame.GameId);
+                await collectionsService.AddGameToCollection(collectionId, ownedGame.GameId, currentUser.UserId);
                 AvailableGames.Remove(ownedGame);
             }
             catch (Exception)

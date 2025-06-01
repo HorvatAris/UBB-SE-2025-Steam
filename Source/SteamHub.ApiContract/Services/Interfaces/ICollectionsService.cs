@@ -18,9 +18,9 @@ namespace SteamHub.ApiContract.Services.Interfaces
 
         Task<List<OwnedGame>> GetGamesInCollection(int collectionId);
 
-        Task AddGameToCollection(int collectionId, int gameId);
+        Task AddGameToCollection(int collectionId, int gameId, int userId);
 
-        Task RemoveGameFromCollection(int collectionId, int gameId);
+        Task RemoveGameFromCollection(int collectionId, int gameId, int userId);
 
         Task DeleteCollection(int collectionId, int userId);
 
