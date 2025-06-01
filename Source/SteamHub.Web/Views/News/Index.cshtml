@@ -41,7 +41,7 @@
                         <small class="text-muted">@post.UploadDate.ToString("g")</small>
                     </div>
                     <div class="card-body">
-                        <div class="post-content-preview">
+                        <div class="post-content-preview" >
                             @Html.Raw(innerHtml)
                         </div>
                     </div>
@@ -76,6 +76,7 @@
         max-height: 200px;
         overflow: hidden;
         position: relative;
+        background-color:black
     }
 
         .post-content-preview::after {
@@ -85,7 +86,7 @@
             left: 0;
             right: 0;
             height: 40px;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), white);
+            background-color: rgba(0,0,0,0)
         }
 
     .news-card {

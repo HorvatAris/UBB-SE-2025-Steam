@@ -33,7 +33,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         private static int incrementingValue = 1;
         private static int numberOfGamesToTake = 10;
 
-        public GameServiceProxy(string baseUrl = "https://localhost:7241") : base(baseUrl)
+        public GameServiceProxy(string baseUrl = "http://172.30.245.56:8000") : base(baseUrl)
         {
         }
         public void ComputeTrendingScores(Collection<Game> games)

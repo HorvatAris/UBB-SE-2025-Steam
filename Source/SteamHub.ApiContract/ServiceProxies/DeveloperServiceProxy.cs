@@ -32,7 +32,7 @@ namespace SteamHub.ApiContract.ServiceProxies
         private const string PendingState = "Pending";
 
         public IUserDetails User { get; set; }
-        public DeveloperServiceProxy(IUserDetails user, string baseUrl = "https://localhost:7241") : base(baseUrl)
+        public DeveloperServiceProxy(IUserDetails user, string baseUrl = "http://172.30.245.56:8000") : base(baseUrl)
         {
             this.User = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null");
         }

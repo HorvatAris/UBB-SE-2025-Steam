@@ -32,8 +32,6 @@
                     <div class="card-body">
                         <h5 class="card-title text-center">@friendship.FriendUsername</h5>
                         <div class="d-flex justify-content-center gap-2">
-                            <a asp-controller="Profile" asp-action="Index" asp-route-id="@friendship.FriendId" class="btn btn-primary">View</a>
-                            <a href="#" class="btn btn-primary" onclick="openChat(@friendship.FriendId)">Chat</a>
                             <form asp-controller="FriendsPage" asp-action="RemoveFriend" method="post" class="d-inline">
                                 <input type="hidden" name="friendshipId" value="@friendship.FriendshipId" />
                                 <button type="submit" class="btn btn-danger">Remove</button>

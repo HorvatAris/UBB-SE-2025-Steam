@@ -21,7 +21,7 @@ namespace SteamHub.ApiContract.ServiceProxies
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
 
-        public NewsServiceProxy(System.Net.Http.IHttpClientFactory httpClientFactory, string baseUrl = "https://localhost:7241/api/")
+        public NewsServiceProxy(System.Net.Http.IHttpClientFactory httpClientFactory, string baseUrl = "http://172.30.245.56:8000/api/")
             : base(baseUrl)
         {
             _httpClient = httpClientFactory.CreateClient("SteamHubApi");

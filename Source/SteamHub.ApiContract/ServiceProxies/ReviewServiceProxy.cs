@@ -9,7 +9,7 @@ namespace SteamHub.ApiContract.ServiceProxies
     public class ReviewServiceProxy : ServiceProxy, IReviewService
     {
         
-        public ReviewServiceProxy(string baseUrl = "https://localhost:7241") : base(baseUrl){}
+        public ReviewServiceProxy(string baseUrl = "http://172.30.245.56:8000") : base(baseUrl){}
 
 
         public async Task<bool> SubmitReview(Review reviewToSubmit)

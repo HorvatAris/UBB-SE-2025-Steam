@@ -10,7 +10,7 @@ namespace SteamHub.ApiContract.ServiceProxies
 {
     public class FriendServiceProxy : ServiceProxy, IFriendsService
     {
-        public FriendServiceProxy(string baseUrl = "https://localhost:7262/api/")
+        public FriendServiceProxy(string baseUrl = "http://172.30.245.56:8000/api/")
             : base(baseUrl)
         {
         }
