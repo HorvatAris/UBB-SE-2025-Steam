@@ -113,7 +113,7 @@ builder.Services.AddScoped<IMarketplaceService, MarketplaceService>();
 builder.Services.AddScoped<IFriendsService, FriendsService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
-// builder.Services.AddScoped<IFriendRequestService, FriendRequestService>(); // -- UNCOMMENT ONCE IFriendsService is implemented
+builder.Services.AddScoped<IFriendRequestService, FriendRequestService>();
 
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
